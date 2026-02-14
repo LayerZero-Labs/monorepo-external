@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Bundler",
+    /**
+     * Use this configuration for:
+     * - Packages that use bundlers (tsup, webpack, etc.)
+     * - Libraries that will be bundled before being consumed
+     *
+     * Note on module resolution:
+     * The bundler/ESNext configuration provides better compatibility with
+     * both ESM and CommonJS modules. Modern bundlers can handle both
+     * formats efficiently, making this the ideal choice for packages
+     * that will be bundled.
+     *
+     * Common indicators:
+     * - Presence of tsup.config.ts
+     * - Package is a shared library
+     *
+     * Do NOT use this for:
+     * - Direct Node.js applications without bundling
+     * - Scripts that run directly with node
+     * Use tsconfig.node.json instead for those cases
+     */
+    "extends": "./tsconfig.node.json",
+    "compilerOptions": {
+        // Modern bundler settings
+        "module": "ESNext",
+        "moduleResolution": "bundler"
+    }
+}

@@ -1,0 +1,4 @@
+.snfoundry_cache/
+src/*
+tmp
+!src/index.ts

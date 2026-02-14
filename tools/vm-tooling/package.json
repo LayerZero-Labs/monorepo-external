@@ -1,0 +1,49 @@
+{
+    "name": "@layerzerolabs/vm-tooling",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "require": "./dist/index.cjs",
+        "import": "./dist/index.js",
+        "default": "./dist/index.cjs"
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "bin/**/*"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-node-utils": "workspace:*",
+        "commander": "catalog:",
+        "es-toolkit": "catalog:",
+        "semver": "catalog:",
+        "zod": "catalog:",
+        "zx": "catalog:"
+    },
+    "devDependencies": {
+        "@jest/globals": "catalog:",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@types/jest": "catalog:",
+        "@types/semver": "catalog:",
+        "jest": "catalog:",
+        "ts-jest": "catalog:",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

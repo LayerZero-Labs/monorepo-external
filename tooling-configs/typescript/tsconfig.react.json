@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "React",
+    /**
+     * Use this configuration for:
+     * - React applications and components
+     * - Packages that use React's JSX syntax
+     * - UI libraries built with React
+     *
+     * Note:
+     * This extends tsconfig.frontend.json, so it inherits the bundler
+     * module resolution settings. This is appropriate since React
+     * applications are always bundled for the browser.
+     *
+     * For Next.js applications specifically, use tsconfig.next.json
+     * which adds Next.js-specific configurations.
+     */
+    "extends": "./tsconfig.frontend.json",
+    "compilerOptions": {
+        // React Specific
+        "jsx": "preserve",
+        "jsxImportSource": "react",
+
+        // Add React types
+        "types": ["react", "react-dom"]
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "name": "@layerzerolabs/ts-command-line-args",
+    "version": "2.5.1",
+    "private": false,
+    "description": "A Typescript wrapper around command-line-args with additional support for markdown usage guide generation",
+    "license": "MIT",
+    "author": "",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
+    },
+    "dependencies": {
+        "chalk": "catalog:",
+        "command-line-args": "catalog:",
+        "command-line-usage": "catalog:",
+        "string-format": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@types/command-line-args": "catalog:",
+        "@types/command-line-usage": "catalog:",
+        "@types/node": "catalog:",
+        "@types/string-format": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

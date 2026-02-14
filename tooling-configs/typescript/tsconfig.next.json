@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Next.js",
+    /**
+     * Use this configuration for:
+     * - Next.js applications only
+     * - Any package that needs Next.js-specific types
+     *
+     * Note:
+     * This extends tsconfig.react.json, inheriting all React and frontend
+     * settings, while adding Next.js-specific configurations like the
+     * Next.js TypeScript plugin.
+     *
+     * For regular React applications or components that aren't using
+     * Next.js, use tsconfig.react.json instead.
+     */
+    "extends": "./tsconfig.react.json",
+    "compilerOptions": {
+        // Next.js Specific
+        "plugins": [{ "name": "next" }]
+    },
+    "include": ["next-env.d.ts", "next.config.js", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
+}

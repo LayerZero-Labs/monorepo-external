@@ -1,0 +1,27 @@
+{
+    "name": "@layerzerolabs/tsup-configuration",
+    "version": "0.0.1",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup ./index.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
+        "clean": "rm -rf dist",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
+    },
+    "devDependencies": {
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "typescript": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

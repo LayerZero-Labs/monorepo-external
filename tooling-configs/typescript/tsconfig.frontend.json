@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Frontend Base",
+    /**
+     * Use this configuration for:
+     * - Frontend/browser-based applications and libraries
+     * - React components and UI libraries
+     * - Any code that runs in the browser
+     *
+     * Note on module resolution:
+     * We use ESNext/bundler because frontend code is always bundled
+     * and modern frontend tooling (webpack, vite, etc.) works best
+     * with this configuration.
+     */
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        // Frontend-specific module settings
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+
+        // Browser-specific settings
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "target": "ESNext"
+    }
+}

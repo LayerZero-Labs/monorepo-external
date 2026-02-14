@@ -1,0 +1,44 @@
+{
+    "name": "@layerzerolabs/vm-tooling-starknet",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "require": "./dist/index.cjs",
+        "import": "./dist/index.js",
+        "default": "./dist/index.cjs"
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "bin": {
+        "lz-tool": "./bin/lz-tool.js"
+    },
+    "files": [
+        "dist/**/*",
+        "bin/**/*"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "generate-github-matrix": "tsx src/scripts/generate-github-matrix.ts",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run"
+    },
+    "dependencies": {
+        "@layerzerolabs/vm-tooling": "workspace:*",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

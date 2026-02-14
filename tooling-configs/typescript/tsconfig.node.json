@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node",
+    /**
+     * Use this configuration for:
+     * - Direct Node.js applications and scripts
+     * - Server applications that run with node directly
+     * - CLI tools and scripts that aren't bundled
+     *
+     * Note on module resolution:
+     * We use NodeNext because it follows Node.js's native
+     * module resolution rules, which is ideal for applications
+     * that run directly with node without bundling.
+     *
+     * If your package uses a bundler (e.g., has tsup.config.ts),
+     * use tsconfig.bundler.json instead.
+     */
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        // Node-specific module settings
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+
+        // Node.js Environment
+        "types": ["node"],
+
+        // Output Configuration
+        "removeComments": true
+    }
+}

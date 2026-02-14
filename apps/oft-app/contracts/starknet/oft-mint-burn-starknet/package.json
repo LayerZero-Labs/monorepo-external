@@ -1,0 +1,53 @@
+{
+    "name": "@layerzerolabs/oft-mint-burn-starknet",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Starknet OFT Mint/Burn contracts for LayerZero v2",
+    "license": "MIT",
+    "sideEffects": false,
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.js",
+            "default": "./dist/index.cjs"
+        },
+        "./cairo/oft_mint_burn": "./contracts/oft_mint_burn"
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "contracts",
+        "Scarb.toml",
+        "Scarb.lock"
+    ],
+    "scripts": {
+        "build": "lz-tool scarb --release build && pnpm build:abi && pnpm build:verification && tsup",
+        "build:abi": "lz-tool extra starknet build-typescript-sdk oft_mint_burn target src/generated",
+        "build:verification": "generate-starknet-verification --package oft_mint_burn --path src/generated/verification",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "format": "lz-tool scarb fmt",
+        "format:check": "node --run format --check",
+        "generated:clean": "rm -rf ./target ./src/generated",
+        "lint": "pnpm format:check && lz-tool scarb lint --test",
+        "test": "lz-tool scarb test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-starknet": "workspace:*",
+        "@layerzerolabs/protocol-starknet-v2": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-starknet": "workspace:*",
+        "tsup": "catalog:"
+    },
+    "peerDependencies": {
+        "@layerzerolabs/protocol-starknet-v2": ">=0.2.0"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

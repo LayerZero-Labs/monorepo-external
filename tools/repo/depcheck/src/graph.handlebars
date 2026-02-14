@@ -1,0 +1,725 @@
+<html lang='en'>
+
+    <head>
+        <meta charset='UTF-8' />
+        <title>Graph Visualization</title>
+        <script src='https://d3js.org/d3.v7.min.js'></script>
+        <link
+            href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
+            rel='stylesheet'
+        />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                background: #0a0a0a;
+                color: #ffffff;
+                font-family:
+                    'Inter',
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    'Segoe UI',
+                    Roboto,
+                    'Helvetica Neue',
+                    Arial,
+                    'Noto Sans',
+                    'Apple Color Emoji',
+                    'Segoe UI Emoji',
+                    'Segoe UI Symbol',
+                    sans-serif;
+                overflow: hidden;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, rgba(18, 18, 18, 0.95), rgba(12, 12, 12, 0.92));
+                backdrop-filter: blur(10px);
+                padding: 12px 24px;
+                z-index: 1000;
+                border-bottom: 1px solid #202020;
+            }
+
+            .header-inner {
+                max-width: 1280px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 700;
+                color: #ffffff;
+                letter-spacing: 0.2px;
+                text-shadow: 0 0 24px rgba(255, 255, 255, 0.1);
+            }
+
+            .controls {
+                display: flex;
+                gap: 16px;
+                margin-top: 6px;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .control-group {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .control-group label {
+                font-size: 12px;
+                color: #d4d4d4;
+            }
+
+            .control-group input,
+            .control-group button {
+                font-family: inherit;
+                color: #fff;
+                font-size: 12px;
+            }
+
+            /* Buttons - sleek black/white */
+            .control-group button {
+                background: #121212;
+                border: 1px solid #2a2a2a;
+                color: #fff;
+                padding: 8px 14px;
+                border-radius: 10px;
+                cursor: pointer;
+                transition:
+                    background 0.2s ease,
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease,
+                    transform 0.05s ease;
+                box-shadow:
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                    0 4px 14px rgba(0, 0, 0, 0.4);
+            }
+
+            .control-group button:hover {
+                background: #171717;
+                border-color: #3a3a3a;
+                box-shadow:
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+                    0 6px 18px rgba(0, 0, 0, 0.5);
+            }
+
+            .control-group button:active {
+                transform: translateY(1px);
+                background: #0f0f0f;
+                border-color: #4a4a4a;
+            }
+
+            /* Sliders - black/white, high contrast borders */
+            .control-group input[type='range'] {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 260px;
+                height: 10px;
+                background: #0f0f0f;
+                border: 2px solid #5a5a5a;
+                border-radius: 999px;
+                outline: none;
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 0 0 1px rgba(0, 0, 0, 0.4);
+            }
+
+            .control-group input[type='range']::-webkit-slider-runnable-track {
+                height: 10px;
+                background: #151515;
+                border: 2px solid #5a5a5a;
+                border-radius: 999px;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            }
+
+            .control-group input[type='range']::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #ffffff;
+                border: 2px solid #2b2b2b;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+                margin-top: -6px;
+            }
+
+            .control-group input[type='range']::-moz-range-track {
+                height: 10px;
+                background: #151515;
+                border: 2px solid #5a5a5a;
+                border-radius: 999px;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            }
+
+            .control-group input[type='range']::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #ffffff;
+                border: 2px solid #2b2b2b;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            }
+
+            .control-group input[type='range']:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
+            }
+
+            .stats {
+                position: absolute;
+                right: 24px;
+                top: 18px;
+                font-size: 16px;
+                color: #ffffff;
+            }
+
+            #graph {
+                width: 100%;
+                height: 100vh;
+                display: block;
+                margin-top: 100px;
+            }
+
+            .graph-container {
+                overflow: auto;
+                width: 100%;
+                height: calc(100vh - 100px);
+                background: #0a0a0a;
+            }
+
+            .node {
+                cursor: grab;
+                transition: all 0.2s ease;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+
+            .node:hover {
+                filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+                /* Avoid transform scaling which causes layout jitter */
+                stroke: #ffffff55;
+                stroke-width: 1.5px;
+            }
+
+            .node:active {
+                cursor: grabbing;
+            }
+
+            .node-label {
+                font-size: 11px;
+                font-weight: 500;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+                pointer-events: none;
+            }
+
+            .link {
+                transition: all 0.2s ease;
+            }
+
+            .link:hover {
+                stroke-width: 3px;
+                stroke-opacity: 0.8;
+            }
+
+            .tooltip {
+                position: absolute;
+                background: rgba(20, 20, 20, 0.95);
+                backdrop-filter: blur(10px);
+                border: 1px solid #333;
+                border-radius: 6px;
+                padding: 10px 15px;
+                font-size: 12px;
+                color: #fff;
+                pointer-events: auto;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                max-width: 500px;
+                white-space: nowrap;
+                user-select: none;
+                transition: opacity 0.2s ease;
+            }
+
+            .tooltip-title {
+                font-weight: 600;
+                color: #4ade80;
+                margin-bottom: 5px;
+            }
+
+            .tooltip-content {
+                color: #ccc;
+                line-height: 1.4;
+            }
+
+            .zoom-controls {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 1000;
+            }
+
+            .zoom-btn {
+                width: 40px;
+                height: 40px;
+                background: rgba(20, 20, 20, 0.95);
+                border: 1px solid #333;
+                color: #fff;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                transition: all 0.2s;
+            }
+
+            .zoom-btn:hover {
+                background: rgba(40, 40, 40, 0.95);
+                border-color: #4ade80;
+            }
+
+            .toast {
+                position: fixed;
+                bottom: 20px;
+                right: 80px;
+                background: rgba(20, 20, 20, 0.95);
+                backdrop-filter: blur(10px);
+                border: 1px solid #4ade80;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-size: 12px;
+                color: #4ade80;
+                z-index: 1001;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: opacity 0.2s, transform 0.2s;
+                pointer-events: none;
+            }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class='header'>
+            <div class='header-inner'>
+                <div><span id="graphTitlePrefix">📊</span> <b id="graphTitle">{{packageName}}</b></div>
+                <div class='controls'>
+                    <div class='control-group'>
+                        <label>Node Distance:</label>
+                        <input
+                            type='range'
+                            id='distanceSlider'
+                            min='100'
+                            max='600'
+                            step='10'
+                        />
+                        <span id='distanceValue'></span>
+                    </div>
+                    <div class='control-group'>
+                        <label>Charge Strength:</label>
+                        <input
+                            type='range'
+                            id='chargeSlider'
+                            min='-1000'
+                            max='-100'
+                            step='50'
+                        />
+                        <span id='chargeValue'></span>
+                    </div>
+                    <div class='control-group'>
+                        <label>Node Size:</label>
+                        <input
+                            type='range'
+                            id='nodeSizeSlider'
+                            min='8'
+                            max='25'
+                            step='1'
+                        />
+                        <span id='nodeSizeValue'></span>
+                    </div>
+                    <div class='control-group'>
+                        <button id='resetBtn'>🔄 Reset</button>
+                        <button id='centerBtn'>🎯 Center</button>
+                        <button id='fitBtn'>📐 Fit View</button>
+                    </div>
+                </div>
+            </div>
+            <div class='stats'>
+                <span id='depthCount'></span>
+                |
+                <span id='nodeCount'></span>
+                |
+                <span id='linkCount'></span>
+            </div>
+        </div>
+
+        <div class='graph-container'>
+            <svg id='graph'></svg>
+        </div>
+
+        <div class='zoom-controls'>
+            <button class='zoom-btn' id='zoomIn'>+</button>
+            <button class='zoom-btn' id='zoomOut'>−</button>
+            <button class='zoom-btn' id='zoomReset'>⌂</button>
+        </div>
+
+        <div class='tooltip' id='tooltip' style='display: none;'></div>
+        <div class='toast' id='toast'></div>
+
+        <script>
+            // Node and link data
+            const depth = {{depth}};
+            const nodes = {{{nodesData}}};
+            const links = {{{linksData}}};
+            const direction = '{{direction}}';
+            const isFromDirection = direction === 'from';
+            const directionLabel = isFromDirection ? 'Dependencies of' : 'Dependents of';
+
+            // Default values (single source of truth)
+            const DEFAULTS = {
+                linkDistance: 300,
+                chargeStrength: -600,
+                nodeSize: 14,
+                collisionRadius: 50,
+                graphMinWidth: 1200,
+                graphMinHeight: 1000,
+            };
+
+            // Sync slider values with defaults
+            document.getElementById('distanceSlider').value = DEFAULTS.linkDistance;
+            document.getElementById('distanceValue').textContent = DEFAULTS.linkDistance;
+            document.getElementById('chargeSlider').value = DEFAULTS.chargeStrength;
+            document.getElementById('chargeValue').textContent = DEFAULTS.chargeStrength;
+            document.getElementById('nodeSizeSlider').value = DEFAULTS.nodeSize;
+            document.getElementById('nodeSizeValue').textContent = DEFAULTS.nodeSize;
+
+            // Update title with direction
+            document.getElementById('graphTitlePrefix').textContent = `📊 ${directionLabel}`;
+            document.getElementById('graphTitle').textContent = `{{packageName}}`;
+
+            // Update stats
+            document.getElementById('depthCount').textContent = `Depth: ${depth}`;
+            document.getElementById('nodeCount').textContent = `Packages: ${nodes.length}`;
+            document.getElementById('linkCount').textContent = `Links: ${links.length}`;
+
+            // Get dynamic dimensions
+            const width = window.innerWidth;
+            const height = window.innerHeight - 100; // Account for header
+
+            // Create SVG with zoom support
+            const svg = d3.select("#graph")
+                .attr("width", Math.max(width, DEFAULTS.graphMinWidth))
+                .attr("height", Math.max(height, DEFAULTS.graphMinHeight));
+
+            // Add zoom behavior
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 4])
+                .on("zoom", (event) => {
+                    container.attr("transform", event.transform);
+                });
+            svg.call(zoom);
+
+            // Container for all elements
+            const container = svg.append("g");
+
+            // Arrow marker for directed edges
+            container.append("defs")
+                .append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 22)
+                .attr("refY", 0)
+                .attr("orient", "auto")
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("xoverflow", "visible")
+                .append("path")
+                .attr("d", "M 0,-5 L 10,0 L 0,5")
+                .attr("fill", "#4ade80")
+                .attr("stroke", "none");
+
+            // Links
+            const link = container.append("g")
+                .selectAll("line")
+                .data(links)
+                .enter()
+                .append("line")
+                .attr("stroke", "#4ade80")
+                .attr("stroke-opacity", 0.4)
+                .attr("stroke-width", 2)
+                .attr("class", "link")
+                .attr("marker-end", "url(#arrowhead)");
+
+            // Main package identifier
+            const mainPackage = '{{packageName}}';
+
+            // Nodes with colors based on type
+            const node = container.append("g")
+                .selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .attr("r", d => d.id === mainPackage ? 18 : 14)
+                .attr("fill", d => {
+                    if (d.id === mainPackage) return "#4ade80"; // Main package - green
+                    if (d.id.includes('common-')) return "#60a5fa"; // Common packages - blue
+                    if (d.id.includes('activity-')) return "#f59e0b"; // Activity packages - amber
+                    if (d.id.includes('workflow')) return "#8b5cf6"; // Workflow packages - purple
+                    if (d.id.includes('definitions')) return "#ec4899"; // Definition packages - pink
+                    return "#6b7280"; // Default - gray
+                })
+                .attr("stroke", d => d.id === mainPackage ? "#ffffff" : "#1f2937")
+                .attr("stroke-width", d => d.id === mainPackage ? 3 : 2)
+                .attr("class", "node");
+
+            // Labels with better positioning
+            const label = container.append("g")
+                .selectAll("text")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .text(d => d.id.replace('@layerzerolabs/', ''))
+                .attr("font-size", "10px")
+                .attr("font-family", "sans-serif")
+                .attr("fill", "#ffffff")
+                .attr("class", "node-label")
+                .attr("dx", d => d.id === mainPackage ? 22 : 18)
+                .attr("dy", 4);
+
+            // Simple, non-interactive tooltip that won't interfere with the graph
+            const tooltip = d3.select("#tooltip");
+            let tooltipTimeout;
+
+            node.on("mouseover", function (event, d) {
+                // Freeze node while hovering to avoid jitter caused by force updates
+                d.fx = d.x;
+                d.fy = d.y;
+                clearTimeout(tooltipTimeout);
+                const dependencies = links.filter(l => l.source.id === d.id).length;
+                const dependents = links.filter(l => l.target.id === d.id).length;
+                tooltip.style("display", "block")
+                    .html(`
+                        <div class="tooltip-title">${d.id}</div>
+                        <div class="tooltip-content">
+                            Package: ${d.id.replace('@layerzerolabs/', '')}<br>
+                            Dependencies: ${dependencies}<br>
+                            Dependents: ${dependents}
+                        </div>
+                    `)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+            })
+            .on("mouseout", function (event, d) {
+                // Release node back to simulation
+                d.fx = null;
+                d.fy = null;
+                tooltipTimeout = setTimeout(() => {
+                    tooltip.style("display", "none");
+                }, 100);
+            })
+            .on("click", function (event, d) {
+                // Copy package name to clipboard
+                navigator.clipboard.writeText(d.id).then(() => {
+                    // Show toast notification with package name
+                    const toast = document.getElementById('toast');
+                    toast.textContent = `✓ Copied "${d.id}" to clipboard`;
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 3000);
+                });
+            });
+
+            // Make tooltip completely non-interactive
+            tooltip.style("pointer-events", "none");
+
+            // Simulation with forces using DEFAULTS
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(DEFAULTS.linkDistance))
+                .force("charge", d3.forceManyBody().strength(DEFAULTS.chargeStrength))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(DEFAULTS.collisionRadius));
+
+            // Place the focal node (main package) at the center initially and arrange others around it
+            const focalNode = nodes.find(n => n.id === mainPackage) || nodes[0];
+            if (focalNode) {
+                focalNode.fx = width / 2;
+                focalNode.fy = height / 2;
+
+                // Position direct neighbors in a ring
+                const neighbors = links.filter(l => l.source.id === focalNode.id).map(l => l.target.id);
+                const neighborNodes = nodes.filter(n => neighbors.includes(n.id));
+                const radius = 220;
+                neighborNodes.forEach((n, i) => {
+                    const angle = (2 * Math.PI * i) / Math.max(1, neighborNodes.length);
+                    n.x = width / 2 + radius * Math.cos(angle);
+                    n.y = height / 2 + radius * Math.sin(angle);
+                });
+
+                // Release the focal node after stabilization
+                setTimeout(() => {
+                    focalNode.fx = null;
+                    focalNode.fy = null;
+                }, 1500);
+            }
+
+            // Control handlers
+            document.getElementById('distanceSlider').addEventListener('input', function (e) {
+                const value = parseInt(e.target.value);
+                document.getElementById('distanceValue').textContent = value;
+                simulation.force("link").distance(value);
+                simulation.alpha(0.3).restart();
+            });
+
+            document.getElementById('chargeSlider').addEventListener('input', function (e) {
+                const value = parseInt(e.target.value);
+                document.getElementById('chargeValue').textContent = value;
+                simulation.force("charge").strength(value);
+                simulation.alpha(0.3).restart();
+            });
+
+            document.getElementById('nodeSizeSlider').addEventListener('input', function (e) {
+                const value = parseInt(e.target.value);
+                document.getElementById('nodeSizeValue').textContent = value;
+                // Update node sizes
+                node.attr("r", d => d.id === mainPackage ? value + 4 : value);
+                // Update label positioning
+                label.attr("dx", d => d.id === mainPackage ? value + 8 : value + 4);
+            });
+
+            document.getElementById('resetBtn').addEventListener('click', function () {
+                simulation.alpha(1).restart();
+            });
+
+            document.getElementById('centerBtn').addEventListener('click', function () {
+                simulation.force("center", d3.forceCenter(width / 2, height / 2));
+                simulation.alpha(0.3).restart();
+            });
+
+            document.getElementById('fitBtn').addEventListener('click', function () {
+                const bounds = container.node().getBBox();
+                const fullWidth = window.innerWidth;
+                const fullHeight = window.innerHeight - 100;
+                const width = bounds.width;
+                const height = bounds.height;
+                const midX = bounds.x + width / 2;
+                const midY = bounds.y + height / 2;
+
+                if (width === 0 || height === 0) return;
+
+                const scale = 0.9 / Math.max(width / fullWidth, height / fullHeight);
+                const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+                svg.transition().duration(750).call(
+                    zoom.transform,
+                    d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
+                );
+            });
+
+            // Zoom controls
+            document.getElementById('zoomIn').addEventListener('click', function () {
+                svg.transition().duration(300).call(zoom.scaleBy, 1.3);
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', function () {
+                svg.transition().duration(300).call(zoom.scaleBy, 0.7);
+            });
+
+            document.getElementById('zoomReset').addEventListener('click', function () {
+                svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+            });
+
+            // Resize handler
+            window.addEventListener("resize", () => {
+                const newWidth = Math.max(window.innerWidth, DEFAULTS.graphMinWidth);
+                const newHeight = Math.max(window.innerHeight - 100, DEFAULTS.graphMinHeight);
+                svg.attr("width", newWidth).attr("height", newHeight);
+                simulation
+                    .force("center", d3.forceCenter(newWidth / 2, newHeight / 2))
+                    .alpha(0.3)
+                    .restart();
+            });
+
+            // Enhanced drag behavior
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            // Make simulation more stable and less sensitive
+            simulation.alphaDecay(0.08).velocityDecay(0.7);
+
+            // Enable dragging with stronger damping while dragging
+            node.call(
+                d3.drag()
+                    .on("start", function (event, d) {
+                        dragstarted(event, d);
+                        simulation.alphaTarget(0.05);
+                    })
+                    .on("drag", dragged)
+                    .on("end", function (event, d) {
+                        dragended(event, d);
+                        simulation.alphaTarget(0);
+                    })
+            );
+
+            // Tick updates
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                label
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
+            });
+
+            // Initial fit view
+            setTimeout(() => {
+                document.getElementById('fitBtn').click();
+            }, 1000);
+        </script>
+    </body>
+
+</html>

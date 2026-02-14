@@ -1,0 +1,15 @@
+{
+    "name": "@layerzerolabs/typescript-configuration",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

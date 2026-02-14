@@ -1,0 +1,39 @@
+{
+    "name": "root",
+    "scripts": {
+        "build": "pnpm turbo run build",
+        "test": "pnpm turbo run test",
+        "lint": "pnpm turbo run lint",
+        "lint:fix": "pnpm turbo run lint -- --fix",
+        "clean": "rm -rf ./node_modules .turbo"
+    },
+    "devDependencies": {
+        "@layerzerolabs/eslint-configuration": "workspace:*",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "prettier-plugin-solidity": "catalog:",
+        "prettier-plugin-tailwindcss": "catalog:",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "turbo": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "packageManager": "pnpm@10.17.0",
+    "engines": {
+        "node": ">=22.20.0",
+        "npm": ">=10.9.0"
+    },
+    "pnpm": {
+        "overrides": {
+            "@electron/notarize": "2.3.2",
+            "axios@^0": "^0.30.2",
+            "axios@^1": "^1.12.1",
+            "form-data@^4": "^4.0.4",
+            "hardhat-deploy": "^0.12.4",
+            "jws": "4.0.1"
+        }
+    }
+}

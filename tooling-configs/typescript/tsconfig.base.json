@@ -1,0 +1,51 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Default",
+    "compilerOptions": {
+        // JavaScript Language Level Configuration
+        "lib": ["ES2023"],
+        "target": "ES2023",
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "checkJs": false,
+
+        // Module Configuration
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+
+        // Source Map and Declaration Settings
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "composite": false,
+        "inlineSources": false,
+
+        // Strict Type Checking
+        "strict": true,
+        "noImplicitAny": true,
+        "isolatedModules": false,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        "alwaysStrict": true,
+        "strictNullChecks": true,
+
+        // Code Quality Checks
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+
+        // Module Interop Settings
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+
+        // Decorator Support
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+
+        // Development Experience
+        "preserveWatchOutput": true
+    }
+}

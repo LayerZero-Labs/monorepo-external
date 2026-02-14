@@ -1,0 +1,28 @@
+{
+    "name": "@layerzerolabs/eslint-configuration",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./base": "./base.js"
+    },
+    "files": [
+        "base.js"
+    ],
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@typescript-eslint/eslint-plugin": "catalog:",
+        "@typescript-eslint/parser": "catalog:",
+        "eslint-config-prettier": "catalog:",
+        "eslint-config-turbo": "catalog:",
+        "eslint-plugin-only-warn": "catalog:",
+        "eslint-plugin-simple-import-sort": "catalog:",
+        "espree": "catalog:",
+        "globals": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

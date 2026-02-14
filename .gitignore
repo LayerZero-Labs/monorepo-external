@@ -1,0 +1,65 @@
+node_modules/
+cdk.out
+dist
+*.tsbuildinfo
+.turbo
+build
+dependencies
+hh-cache*
+artifacts*
+!tools/artifacts-copier
+target
+out/
+cache_foundry/
+cdk.out
+cdk.context.json
+docker-target
+.next
+
+.*.swp
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea
+
+.DS_Store
+
+# Ignore generated factory files
+**/src/lz_di_implGetter.ts
+
+workflow-wrapper.js
+cache/
+.cursor
+.claude/*
+!.claude/skills/
+.locks
+logs/
+
+# solana
+**/solana-keys/
+**/default-solana-keys/
+.anchor
+
+# Deployments
+deployments/**/sandbox/**
+!deployments/layerzero/**
+
+/gated-transaction-cache/
+turbo-cache-report-*.json
+
+# unit test coverage scan result
+**/coverage/
+**/coverage.json
+
+# pnpm error
+**/pnpm-error.log
+
+# sccache
+.sccache/
+
+# visualize
+visualized-reports/
+
+# cdk
+.generated-dockerfile*

@@ -1,0 +1,61 @@
+{
+    "$schema": "https://turborepo.org/schema.json",
+    "daemon": false,
+    "globalPassThroughEnv": [
+        "NPM_TOKEN",
+        "VSCODE_INSPECTOR_OPTIONS",
+        "CONFIG_PATH",
+        "GITHUB_TOKEN",
+        "REPO_SSH_KEY_*",
+        "CI",
+        "GITHUB_ACTIONS",
+        "ACTIONS_CACHE_URL",
+        "ACTIONS_RUNTIME_TOKEN"
+    ],
+    "tasks": {
+        "test": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "outputs": [],
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
+        "clean": {
+            "cache": false
+        },
+        "lint": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "outputs": [],
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
+        "build": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "outputs": [
+                // ts build output
+                "dist/**",
+
+                // factory builder
+                "src/lz_di_implGetter.ts",
+
+                // evm, tron, zk
+                "artifacts/**",
+                "artifacts-*/**",
+
+                // evm, tron, zk, starknet, ton
+                "src/generated/**",
+                "src/generated-*/**",
+
+                // solana, stellar, starknet
+                "target/**",
+
+                // sui, iota, ton
+                "build/**",
+
+                // sui
+                "dependencies/**"
+            ],
+            "dependsOn": ["^build"],
+            "outputLogs": "new-only"
+        }
+    }
+}
