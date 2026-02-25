@@ -1,11 +1,12 @@
 import { constantCase } from 'es-toolkit';
 import { join } from 'node:path';
 
-import { type Image } from '../config';
+import { type Image, type VersionCombination } from '../config';
 import { getImageTag } from '../utils/docker';
 import { getImageName } from '../utils/finder';
 
 interface ImageEntry {
+    id: string;
     name: string;
     build_args: string[];
     image_name: string;
@@ -14,6 +15,7 @@ interface ImageEntry {
 }
 
 interface MirroredImageEntry {
+    id: string;
     name: string;
     image_name: string;
     tags: string[];
@@ -23,6 +25,7 @@ interface MirroredImageEntry {
 interface GithubMatrixOutput {
     images: ImageEntry[];
     mirroredImages: MirroredImageEntry[];
+    activeImages: string[];
 }
 
 // TODO Remove underscore which is not standard in the Docker tag naming scheme.
@@ -31,13 +34,18 @@ const TAG_SEPARATORS = ['-', '_'] as const;
 export const generateGithubMatrix = (
     images: Record<string, Image>,
     directory: string,
+    versionCombinations?: VersionCombination<string>[],
 ): GithubMatrixOutput => {
-    const createImageEntry = (image: Image): { entry: ImageEntry; image: Image } => {
+    const createImageEntry = ([imageId, image]: [string, Image]): {
+        entry: ImageEntry;
+        image: Image;
+    } => {
         const imageName = getImageName(image.name);
         const tags = TAG_SEPARATORS.map((separator) => getImageTag(image, separator));
 
         return {
             entry: {
+                id: imageId,
                 name: image.name,
                 build_args: Object.entries({ ...image.versions, ...image.dependencies })
                     .sort()
@@ -50,7 +58,7 @@ export const generateGithubMatrix = (
         };
     };
 
-    const results = Object.values(images).map(createImageEntry);
+    const results = Object.entries(images).map(createImageEntry);
 
     const imageEntries = results.map((r) => r.entry);
 
@@ -58,6 +66,7 @@ export const generateGithubMatrix = (
         .filter((result) => result.image.mirrorRegistries?.length)
         .flatMap((result) =>
             result.image.mirrorRegistries!.map((mirror) => ({
+                id: result.entry.id,
                 name: result.entry.name,
                 image_name: result.entry.image_name,
                 tags: result.entry.tags,
@@ -65,5 +74,13 @@ export const generateGithubMatrix = (
             })),
         );
 
-    return { images: imageEntries, mirroredImages };
+    const activeImages: string[] = [];
+    if (versionCombinations) {
+        const activeImageIds = new Set(
+            versionCombinations.flatMap((combo) => Object.values(combo.images)),
+        );
+        activeImages.push(...activeImageIds);
+    }
+
+    return { images: imageEntries, mirroredImages, activeImages };
 };
