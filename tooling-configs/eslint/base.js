@@ -118,6 +118,7 @@ export default [
             '**/generated-zk/**',
             '**/generated-zk-artifacts/**',
             '**/generated_artifacts/**',
+            '**/contracts/target/**', // Cairo/Scarb build artifacts
         ],
     },
 

@@ -12,9 +12,7 @@ let registryConfigCache: RegistryConfig | undefined;
 
 const getRegistryConfig = async (): Promise<RegistryConfig> => {
     if (!registryConfigCache) {
-        // eslint-disable-next-line turbo/no-undeclared-env-vars
         const envRegistry = process.env.VM_TOOLING_REGISTRY;
-        // eslint-disable-next-line turbo/no-undeclared-env-vars
         const envImageDirectory = process.env.VM_TOOLING_IMAGE_DIRECTORY;
 
         if (envRegistry && envImageDirectory) {

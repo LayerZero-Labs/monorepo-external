@@ -1,0 +1,33 @@
+[package]
+name = "onesig"
+version = "0.0.1"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "onesig"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["init-if-needed", "event-cpi"] }
+hex-literal = "0.4.1"
+# Note: The default version of `proc-macro2` used in this project is 1.0.94, which leads to the following compilation error:
+# 'no method named `source_file` found for reference `&proc_macro::Span` in the current scope'.
+# This issue is documented in the Solana developer community (see: https://solana.stackexchange.com/a/21645).
+# To resolve this, we explicitly specify `proc-macro2 = "=1.0.95"` below to ensure compatibility and prevent build failures.
+proc-macro2 = "=1.0.95"
+
+[dev-dependencies]
+hex = "0.4.3"

@@ -1,0 +1,31 @@
+use anchor_lang::prelude::error_code;
+
+#[error_code]
+pub enum OneSigError {
+    InvalidSignersLen,
+    DuplicateSigners,
+    InvalidThreshold,
+    ThresholdExceedsSigners,
+    MissingSigner,
+    SignatureDataSizeMismatch,
+    InsufficientSignatures,
+    InvalidSignatureFormat,
+    FailedSignatureRecovery,
+    InvalidProof,
+    ExpiredMerkleRoot,
+    ExcessiveBalanceDeduction,
+    InvalidSignerOwner,
+    NonEmptySignerData,
+    MissingMerkleRootState,
+    MerkleRootNotExpired,
+    Reentrancy,
+    Unauthorized,
+    SeedMismatch,
+    InvalidExecutorsLen,
+    DuplicateExecutor,
+    ExecutorNotFound,
+    ExecutorRequired,
+    EmptyExecutorSet,
+    InvalidSigner,
+    InvalidExecutor,
+}

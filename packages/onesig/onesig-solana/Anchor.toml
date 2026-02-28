@@ -1,0 +1,20 @@
+[toolchain]
+anchor_version = "0.31.1"
+solana_version = "2.2.20"
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+onesig = "5XDrnPsfpZ29v7DRrUtUBJ3yr5n1mhSUDyEzPuAvakHv"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "./target/test-wallet.json"
+
+[scripts]
+test = "pnpm vitest run"

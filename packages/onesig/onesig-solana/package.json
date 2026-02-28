@@ -1,0 +1,73 @@
+{
+    "name": "@layerzerolabs/onesig-solana",
+    "version": "0.0.0",
+    "private": false,
+    "license": "GPL-3.0-only",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "build/**/*",
+        "dist/**/*"
+    ],
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "artifacts:clean": "rm -rf ./src/generated",
+        "build": "pnpm build:anchor && pnpm build:idl && pnpm compile:sdk && pnpm build:js && pnpm allow-read-write",
+        "build:anchor": "pnpm exec lz-tool anchor build --no-idl",
+        "build:idl": "mkdir -p build && pnpm exec lz-tool --script 'RUSTUP_TOOLCHAIN=nightly-2025-05-01 anchor idl build -p onesig -o build/onesig.json' anchor",
+        "build:js": "tsup",
+        "clean": "rm -rf ./node_modules .turbo ./dist ./build ./target && pnpm generated:clean",
+        "compile:sdk": "tsx scripts/generator.ts",
+        "format:rs": "pnpm exec lz-tool --script 'cargo +nightly fmt --all' anchor",
+        "generated:clean": "pnpm artifacts:clean",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "lint:rs": "pnpm exec lz-tool --script 'cargo clippy -- -D warnings' anchor",
+        "start:solana": "tsx scripts/start-validator.ts",
+        "stop:solana": "docker stop onesig-solana-validator && docker rm onesig-solana-validator",
+        "test": "pnpm test:js && pnpm test:rs && pnpm test:integration",
+        "test:integration": "pnpm start:solana && vitest run && pnpm stop:solana",
+        "test:js": "vitest --run --pass-with-no-tests --typecheck --dir src",
+        "test:rs": "pnpm exec lz-tool --script 'cargo test --package onesig -- tests --nocapture' anchor"
+    },
+    "dependencies": {
+        "@ethersproject/bytes": "catalog:",
+        "@metaplex-foundation/umi": "catalog:onesig-solana",
+        "@metaplex-foundation/umi-eddsa-web3js": "catalog:onesig-solana",
+        "@metaplex-foundation/umi-program-repository": "catalog:onesig-solana",
+        "@metaplex-foundation/umi-web3js-adapters": "catalog:onesig-solana"
+    },
+    "devDependencies": {
+        "@codama/nodes-from-anchor": "catalog:",
+        "@codama/renderers-js-umi": "catalog:",
+        "@coral-xyz/anchor": "catalog:onesig-solana",
+        "@layerzerolabs/common-node-utils": "workspace:*",
+        "@layerzerolabs/eslint-configuration": "workspace:*",
+        "@layerzerolabs/onesig-core": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-solana": "workspace:*",
+        "@metaplex-foundation/mpl-toolbox": "catalog:onesig-solana",
+        "@metaplex-foundation/umi-bundle-defaults": "catalog:onesig-solana",
+        "@solana/web3.js": "catalog:",
+        "@types/node": "catalog:",
+        "codama": "catalog:",
+        "ethers": "catalog:",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}
