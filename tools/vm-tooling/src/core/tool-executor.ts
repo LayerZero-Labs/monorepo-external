@@ -100,6 +100,7 @@ export interface ToolCommandExecutionOptions {
     volumes: readonly VolumeMapping[];
     customEntrypoint?: string;
     env: EnvironmentVariable[];
+    args?: string[];
     script?: string;
     publish?: string;
     versions?: Record<string, string>;
@@ -123,6 +124,19 @@ export async function executeToolCommand<TImageId extends string>(
     }: ToolCommandExecutionOptions,
 ): Promise<ProcessOutput> {
     const tool = findToolByName(context, toolName);
+
+    // Run pre-execution hook if defined (e.g., toolchain sync)
+    if (tool.preExecute) {
+        await tool.preExecute(context, {
+            cwd,
+            args,
+            volumes: userVolumes,
+            env: customEnvVars,
+            script,
+            publish,
+            versions,
+        });
+    }
 
     // Merge default volumes with user-specified volumes
     const defaultVolumes = tool.defaultVolumes ?? [];

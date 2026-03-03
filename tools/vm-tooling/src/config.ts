@@ -3,6 +3,9 @@ import * as z from 'zod';
 
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 
+import type { ChainContext } from './context';
+import type { ToolCommandExecutionOptions } from './core/tool-executor';
+
 interface RegistryConfig {
     registry: string;
     imageDirectory: string;
@@ -71,6 +74,12 @@ export interface Tool {
 
     // Optional version parsing and validation functions
     getSecondaryVersion?: (args: { cwd: string }) => Promise<string>;
+
+    // Optional hook called before every tool command execution (e.g., toolchain sync)
+    preExecute?: (
+        context: ChainContext<string>,
+        options: ToolCommandExecutionOptions,
+    ) => Promise<void>;
 }
 
 export enum DockerRegistryMirror {

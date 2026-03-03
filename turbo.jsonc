@@ -15,13 +15,6 @@
         "VM_TOOLING_IMAGE_DIRECTORY"
     ],
     "tasks": {
-        "setup:toolchain": {
-            "dependsOn": ["^build"],
-            "inputs": ["rust-toolchain.toml"],
-            "outputs": [],
-            "cache": false,
-            "outputLogs": "new-only"
-        },
         "test": {
             "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
             "outputs": [],
