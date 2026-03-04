@@ -15,6 +15,7 @@ cdk.out
 cdk.context.json
 docker-target
 .next
+.claude
 
 .*.swp
 .vscode/*
@@ -40,6 +41,10 @@ logs/
 **/solana-keys/
 **/default-solana-keys/
 .anchor
+
+# canton
+.daml/
+*.dar
 
 # Deployments
 deployments/**/sandbox/**
