@@ -6,7 +6,7 @@ dist
 build
 dependencies
 hh-cache*
-artifacts*
+artifacts*/
 !tools/artifacts-copier
 target
 out/

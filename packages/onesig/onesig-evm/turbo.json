@@ -1,0 +1,14 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "outputs": [
+                "artifacts/**/*",
+                "artifacts-zk/**/*",
+                "artifacts-tron/**/*",
+                "typechain-types/**/*",
+                "dist/**/*"
+            ]
+        }
+    }
+}
