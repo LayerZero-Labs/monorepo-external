@@ -108,7 +108,7 @@ catalogs:
     '@metaplex-foundation/umi-eddsa-web3js': ~1.1.1
     '@metaplex-foundation/umi-program-repository': ~1.1.1
     '@metaplex-foundation/umi-web3js-adapters': ~1.1.1
-  paxos-cross-chain:
+  paxos-mint-burn:
     ethers: 5.7.2
     hardhat: ^2.22.10
     hardhat-deploy: 0.12.1
