@@ -22,7 +22,7 @@ export type Filter<
 /**
  * @description Checks if {@link T} can be narrowed further than {@link U}
  * @param T - Type to check
- * @param U - Type to against
+ * @param U - Type to compare against
  * @example
  * type Result = IsNarrowable<'foo', string>
  * //   ^? true

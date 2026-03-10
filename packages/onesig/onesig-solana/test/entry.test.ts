@@ -54,7 +54,7 @@ describe('OneSig Solana', () => {
 
     // Run feature tests with proper binding
 
-    describe('One-Step Transactionon Execution', oneStepExecutionTests.bind(this, ctx));
+    describe(`One-Step Transaction Execution`, oneStepExecutionTests.bind(this, ctx));
     describe('Two-Step Transaction Execution', twoStepExecutionTests.bind(this, ctx));
     describe('SetConfig Operations', setConfigTests.bind(this, ctx));
     // describe('Transaction Size', txSizeTests.bind(this, ctx))

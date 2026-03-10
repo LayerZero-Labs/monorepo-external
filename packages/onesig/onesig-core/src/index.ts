@@ -189,7 +189,7 @@ export class Signature {
     /**
      * Concatenate and order signatures based on data provided
      * @param input An array of signatures to concat
-     * @param sortMethod Parameter specifing how to order each signature
+     * @param sortMethod Parameter specifying how to order each signature
      * @returns The concatenated signature
      */
     static concatenateSignatures(
@@ -229,7 +229,7 @@ export class Signature {
             if (addresses.length !== signatureBuffers.length) {
                 throw new OneSigCoreError(
                     'ADDRESS_SIGNATURE_LENGTH_MISMATCH',
-                    'Mismatch in addresses provided signatures',
+                    `Mismatch between addresses and provided signatures`,
                 );
             }
 

@@ -55,7 +55,7 @@ export function solanaLeafGenerator(
     leafs: SolanaLeafData[],
 ): GenerateLeafsResult<SolanaLeafData> {
     if (leafs.length === 0) {
-        throw new Error('Cannot generate Solana leaf with empty leafs');
+        throw new Error(`Cannot generate Solana leaf with empty leaves`);
     }
     const oneSigState = leafs[0].targetOneSigAddress;
     const oneSig = new OneSig(programId, createNoopSigner(oneSigState));
