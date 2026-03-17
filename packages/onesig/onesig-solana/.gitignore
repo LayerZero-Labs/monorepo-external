@@ -4,7 +4,7 @@ target
 .turbo
 .anchor
 test-ledger
-src/generated
+src/generated*/**
 *.d.ts
 *.d.ts.map
 !build/onesig.json

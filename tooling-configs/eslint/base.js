@@ -112,11 +112,7 @@ export default [
             '**/tooling-configs/eslint/**',
             '**/*.hbs',
             '**/generated/**',
-            '**/generated-artifacts/**',
-            '**/generated-tron/**',
-            '**/generated-tron-artifacts/**',
-            '**/generated-zk/**',
-            '**/generated-zk-artifacts/**',
+            '**/generated-*/**',
             '**/generated_artifacts/**',
             '**/contracts/target/**', // Cairo/Scarb build artifacts
         ],

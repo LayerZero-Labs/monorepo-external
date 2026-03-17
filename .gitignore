@@ -41,6 +41,7 @@ logs/
 **/solana-keys/
 **/default-solana-keys/
 .anchor
+test-ledger/
 
 # canton
 .daml/

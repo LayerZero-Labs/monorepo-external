@@ -279,6 +279,8 @@ overrides:
   minimatch@^10: ^10.2.3
   qs@^6: ^6.14.1
   rollup@^4: ^4.59.0
+  fast-xml-parser@^4: ^4.5.4
+  fast-xml-parser@^5: ^5.3.6
 
 importers:
 
