@@ -14,6 +14,7 @@ packages:
   - workflows/**
   - '!**/cdk.out/**'
   - '!**/debug_info/**'
+  - '!apps/oapp-app/contracts/solana'
 catalogs:
   default:
     '@codama/nodes-from-anchor': 1.2.9
@@ -23,7 +24,7 @@ catalogs:
     '@ethersproject/abstract-signer': ^5.8.0
     '@ethersproject/bytes': ^5.8.0
     '@jest/globals': ^29.7.0
-    '@layerzerolabs/hardhat-tron': 3.0.159
+    '@layerzerolabs/hardhat-tron': 3.0.165
     '@layerzerolabs/toolbox-foundry': ^0.1.13
     '@nomicfoundation/hardhat-chai-matchers': ^1.0.6
     '@nomicfoundation/hardhat-ethers': ^3.0.5

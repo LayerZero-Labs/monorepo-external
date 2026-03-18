@@ -28,8 +28,8 @@ catalogs:
       specifier: ^29.7.0
       version: 29.7.0
     '@layerzerolabs/hardhat-tron':
-      specifier: 3.0.159
-      version: 3.0.159
+      specifier: 3.0.165
+      version: 3.0.165
     '@layerzerolabs/toolbox-foundry':
       specifier: ^0.1.13
       version: 0.1.13
@@ -458,7 +458,7 @@ importers:
         version: link:../../../tooling-configs/eslint
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.159(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
+        version: 3.0.165(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
@@ -1833,8 +1833,8 @@ packages:
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
 
-  '@layerzerolabs/hardhat-tron@3.0.159':
-    resolution: {integrity: sha512-wiow3qyCRsA0cu91GUyGF/8w+KIvvQX7By1/dMK1g8izaTnME6qzD2/y1ksat9a6pqTuZdGCwbZPa/uKCejMLA==}
+  '@layerzerolabs/hardhat-tron@3.0.165':
+    resolution: {integrity: sha512-XjTN+r6ybvjEuHj4dm0+y9gJXic/rGJ6oRQcSFIUVLEjM0BK+OlKYTbE/xmn66utVXkO6WupxplhIuTC1IaqaA==}
     peerDependencies:
       hardhat: ^2.19.0
       hardhat-deploy: ^0.12.4
@@ -7650,7 +7650,7 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
-  '@layerzerolabs/hardhat-tron@3.0.159(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
+  '@layerzerolabs/hardhat-tron@3.0.165(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
     dependencies:
       '@ethersproject/abstract-signer': 5.8.0
       '@ethersproject/address': 5.8.0
