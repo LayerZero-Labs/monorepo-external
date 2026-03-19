@@ -16,6 +16,7 @@ interface GlobalOptions {
     cwd?: string;
     volume: VolumeMapping[];
     env: EnvironmentVariable[];
+    publish?: string[];
     script?: string;
     customEntrypoint?: string;
 }
@@ -153,7 +154,9 @@ const createCli = <TImageId extends string>(
         )
         .option(
             '-p, --publish <host_port:container_port>',
-            "Publish a container's port(s) to the host",
+            "Publish a container's port(s) to the host (repeatable)",
+            (value: string, previous: string[]) => [...previous, value],
+            [],
         );
 
     // Add version options for each tool dynamically

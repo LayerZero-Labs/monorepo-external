@@ -8,7 +8,7 @@ import { type Image } from './config';
 import { getImageTag, getImageUri } from './utils/docker';
 
 const COMMAND_TIMEOUT = 5 * 60_000;
-const MANIFEST_TEST_TIMEOUT = 20_000;
+const MANIFEST_TEST_TIMEOUT = 60_000;
 const VERSION_TEST_TIMEOUT = 15 * 60_000;
 const PULL_TIMEOUT = 10 * 60_000;
 

@@ -102,7 +102,7 @@ export interface ToolCommandExecutionOptions {
     env: EnvironmentVariable[];
     args?: string[];
     script?: string;
-    publish?: string;
+    publish?: string[];
     versions?: Record<string, string>;
 }
 
@@ -249,7 +249,7 @@ export async function executeToolCommand<TImageId extends string>(
         `${workspaceRoot}:/workspace`,
         '-w',
         `/workspace/${relativePath}`,
-        ...(publish ? ['-p', publish.trim()] : []),
+        ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
         ...resolveVolumePaths(volumes, workspaceRoot).flatMap((volume) => [
             '-v',
             getVolumeName(volume),
@@ -274,7 +274,10 @@ export async function executeToolCommand<TImageId extends string>(
     );
 
     if (output.exitCode) {
-        throw new Error(`Failed to run Docker container (exit code: ${output.exitCode})`);
+        const stdout = output.stdout.trim();
+        throw new Error(
+            `Failed to run Docker container (exit code: ${output.exitCode})${stdout ? `\n${stdout}` : ''}`,
+        );
     }
 
     return output;
