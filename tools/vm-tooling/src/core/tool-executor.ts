@@ -70,7 +70,11 @@ const ensureDockerImage = async (imageUri: string): Promise<void> => {
         // `stdout.includes(<full-ref>)` is not reliable. Use `inspect` instead: exitCode=0
         // means the image exists locally.
         // Keep output minimal to avoid dumping full inspect JSON into CI logs.
-        output = await $`docker image inspect --format {{.Id}} ${imageUri}`.nothrow();
+        //
+        // NOTE: Using `.quiet()` to avoid stderr being captured in the CI logs. If the image
+        // is not in the cache, the process prints "Error response from daemon: No such image: ..."
+        // which can confuse the uninitiated. It's just a cache miss, not an error.
+        output = await $`docker image inspect --format {{.Id}} ${imageUri}`.nothrow().quiet();
         if (!output.exitCode) {
             console.info(`✅ Using cached Docker image: ${imageUri}`);
             return;
@@ -243,6 +247,7 @@ export async function executeToolCommand<TImageId extends string>(
         'run',
         ...(tool.privileged ? ['--privileged'] : []),
         '--rm',
+        '--add-host=host.docker.internal:host-gateway',
         ...envArgs,
         ...userIdEnvArgs,
         '-v',
