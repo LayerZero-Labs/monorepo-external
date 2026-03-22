@@ -18,6 +18,8 @@ RUN scripts/cargo-install-all.sh /opt/solana
 
 FROM rust:$RUST_VERSION-$OS_VERSION AS anchor_build
 
+RUN apt-get -y update --fix-missing && apt-get -y install --no-install-recommends libudev-dev pkg-config && rm -rf /var/lib/apt/lists/*
+
 ARG ANCHOR_VERSION=0.31.1
 RUN cargo install --locked --root /opt/solana --git https://github.com/solana-foundation/anchor --tag v$ANCHOR_VERSION anchor-cli
 
@@ -110,14 +112,21 @@ COPY --from=solana_verify_build /opt/solana /usr/local
 # /usr/local/cargo is mounted as a volume for caching
 RUN find /usr/local/cargo/bin -maxdepth 1 -type f -exec cp {} /usr/local/bin/ \;
 
+# Install pinned nightly toolchain for rustfmt (unstable formatting options)
+# Version passed via --build-arg RUST_NIGHTLY_VERSION from config.ts dependencies
+ARG RUST_NIGHTLY_VERSION
+RUN if [ -n "$RUST_NIGHTLY_VERSION" ]; then \
+      rustup install $RUST_NIGHTLY_VERSION && \
+      rustup component add rustfmt clippy --toolchain $RUST_NIGHTLY_VERSION; \
+    fi
+
 # Verify installation
 RUN <<-EOF
   set -e
-  echo "PATH=$PATH"
-  cargo --version
   anchor --version
   cargo-expand --version
   rustup toolchain list -v
+  if [ -n "$RUST_NIGHTLY_VERSION" ]; then cargo +${RUST_NIGHTLY_VERSION} fmt --version; fi
   solana --version
   solana-verify --version
   docker --version

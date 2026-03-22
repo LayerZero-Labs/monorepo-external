@@ -14,7 +14,6 @@ packages:
   - workflows/**
   - '!**/cdk.out/**'
   - '!**/debug_info/**'
-  - '!apps/oapp-app/contracts/solana'
 catalogs:
   default:
     '@codama/nodes-from-anchor': 1.2.9

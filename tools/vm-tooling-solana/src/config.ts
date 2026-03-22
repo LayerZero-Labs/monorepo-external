@@ -101,6 +101,19 @@ export const images = {
         patch: 4,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-0.32.1-solana-2.3.0']: {
+        name: 'solana',
+        versions: {
+            anchor: '0.32.1',
+            solana: '2.3.0',
+        },
+        dependencies: {
+            rust: '1.92.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+        unreleased: true,
+    },
 } satisfies Record<string, Image>;
 
 export type ImageId = keyof typeof images;
@@ -114,6 +127,15 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
                 'solana-verify': 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-4',
             },
             description: 'Latest stable release',
+            stable: true,
+        },
+        {
+            images: {
+                anchor: 'solana:anchor-0.32.1-solana-2.3.0',
+                solana: 'solana:anchor-0.32.1-solana-2.3.0',
+            },
+            description:
+                'Console OFT + Token-2022 (Anchor 0.32.1 with pausable support, nightly-2025-06-01 rustfmt)',
             stable: true,
         },
         {

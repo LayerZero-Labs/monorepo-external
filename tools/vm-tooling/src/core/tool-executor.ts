@@ -17,7 +17,7 @@ import { resolveTypeVersions } from './version-resolver';
 /**
  * Get the current user's UID and GID for Docker container user matching.
  * This prevents permission issues when containers write to bind-mounted directories.
- * On Windows, returns undefined as UID/GID matching is not needed.
+ * On Windows or when running as root, returns undefined as UID/GID matching is not needed.
  */
 const getHostUserIds = (): { uid: number; gid: number } | undefined => {
     // os.userInfo() returns uid/gid on POSIX systems, -1 on Windows
@@ -25,6 +25,7 @@ const getHostUserIds = (): { uid: number; gid: number } | undefined => {
     if (userInfo.uid === -1 || userInfo.gid === -1) {
         return undefined;
     }
+
     return { uid: userInfo.uid, gid: userInfo.gid };
 };
 
