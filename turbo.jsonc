@@ -12,7 +12,8 @@
         "ACTIONS_CACHE_URL",
         "ACTIONS_RUNTIME_TOKEN",
         "VM_TOOLING_REGISTRY",
-        "VM_TOOLING_IMAGE_DIRECTORY"
+        "VM_TOOLING_IMAGE_DIRECTORY",
+        "VITEST"
     ],
     "tasks": {
         "test": {

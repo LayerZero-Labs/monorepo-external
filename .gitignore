@@ -15,7 +15,6 @@ cdk.out
 cdk.context.json
 docker-target
 .next
-.claude
 
 .*.swp
 .vscode/*
@@ -32,8 +31,9 @@ docker-target
 workflow-wrapper.js
 cache/
 .cursor
-.claude/*
+.claude/**
 !.claude/skills/
+!.claude/skills/**
 .locks
 logs/
 

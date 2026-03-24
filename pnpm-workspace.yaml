@@ -23,12 +23,12 @@ catalogs:
     '@ethersproject/abstract-signer': ^5.8.0
     '@ethersproject/bytes': ^5.8.0
     '@jest/globals': ^29.7.0
-    '@layerzerolabs/hardhat-tron': 3.0.165
+    '@layerzerolabs/hardhat-tron': 3.0.167
     '@layerzerolabs/toolbox-foundry': ^0.1.13
     '@nomicfoundation/hardhat-chai-matchers': ^1.0.6
     '@nomicfoundation/hardhat-ethers': ^3.0.5
     '@nomiclabs/hardhat-ethers': ^2.2.3
-    '@solana/web3.js': ^1.95.8
+    '@solana/web3.js': 1.95.8
     '@typechain/ethers-v5': ^10.2.1
     '@typechain/hardhat': ^6.1.6
     '@types/chai': ^4.3.10
@@ -125,6 +125,7 @@ catalogs:
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true
 ignoredBuiltDependencies:
+  - bigint-buffer
   - cpu-features
   - ssh2
 minimumReleaseAge: 10080
