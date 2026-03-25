@@ -38,40 +38,40 @@ describe('safeRegexMatch', () => {
             expect(safeRegexMatch({ str: '', pattern: '.+' })).toBe(false);
         });
 
-        test('should support generator pattern like @projectName/oftName-.+', () => {
-            // Tests the pattern used by generator: @projectName/oftName-.+
-            // This matches packages like @myproject/my-oft-app-activity-factory
+        test('should support generator pattern like @projectName/appName-.+', () => {
+            // Tests the pattern used by generator: @projectName/appName-.+
+            // This matches packages like @myproject/my-example-oft-app-activity-factory
             const projectName = 'myproject';
-            const oftNameKebab = 'my-oft-app';
-            const pattern = `@${projectName}/${oftNameKebab}-.+`;
+            const appName = 'my-example-oft-app';
+            const pattern = `@${projectName}/${appName}-.+`;
 
             expect(
                 safeRegexMatch({
-                    str: '@myproject/my-oft-app-activity-factory',
+                    str: '@myproject/my-example-oft-app-activity-factory',
                     pattern,
                 }),
             ).toBe(true);
             expect(
                 safeRegexMatch({
-                    str: '@myproject/my-oft-app-workflows',
+                    str: '@myproject/my-example-oft-app-workflows',
                     pattern,
                 }),
             ).toBe(true);
             expect(
                 safeRegexMatch({
-                    str: '@myproject/my-oft-app-config',
+                    str: '@myproject/my-example-oft-app-config',
                     pattern,
                 }),
             ).toBe(true);
             expect(
                 safeRegexMatch({
-                    str: '@myproject/my-oft-app', // No suffix after -
+                    str: '@myproject/my-example-oft-app', // No suffix after -
                     pattern,
                 }),
             ).toBe(false); // Must have something after the dash
             expect(
                 safeRegexMatch({
-                    str: '@otherproject/my-oft-app-activity-factory',
+                    str: '@otherproject/my-example-oft-app-activity-factory',
                     pattern,
                 }),
             ).toBe(false); // Different project name

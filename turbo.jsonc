@@ -13,7 +13,9 @@
         "ACTIONS_RUNTIME_TOKEN",
         "VM_TOOLING_REGISTRY",
         "VM_TOOLING_IMAGE_DIRECTORY",
-        "VITEST"
+        "VITEST",
+        "VERCEL",
+        "VERCEL_*"
     ],
     "tasks": {
         "test": {
@@ -51,7 +53,7 @@
                 // solana, stellar, starknet
                 "target/**",
 
-                // sui, iota, ton
+                // sui, iota, ton, aptos
                 "build/**",
 
                 // sui

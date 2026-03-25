@@ -25,3 +25,20 @@ export const parseAnchorTomlVersion = async (
 
     throw new Error(`${name} version not found in ${path}`);
 };
+
+/**
+ * Read all tool versions from Anchor.toml [toolchain] section.
+ * Returns a map of tool name → version. Returns empty record if
+ * no Anchor.toml is found (non-Solana packages just get defaults).
+ */
+export const readAnchorTomlVersions = async (cwd: string): Promise<Record<string, string>> => {
+    const versions: Record<string, string> = {};
+    for (const name of ['anchor', 'solana'] as const) {
+        try {
+            versions[name] = await parseAnchorTomlVersion(cwd, name);
+        } catch {
+            // Anchor.toml not found or key missing — skip
+        }
+    }
+    return versions;
+};

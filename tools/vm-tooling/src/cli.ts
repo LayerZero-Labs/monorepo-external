@@ -23,7 +23,7 @@ interface GlobalOptions {
 
 type RegisterExtraCommands = (
     program: Command,
-    parseGlobalOptions: (command: Command) => ToolCommandExecutionOptions,
+    parseGlobalOptions: (command: Command) => Promise<ToolCommandExecutionOptions>,
 ) => void;
 
 const createCli = <TImageId extends string>(
@@ -35,18 +35,26 @@ const createCli = <TImageId extends string>(
         tools.map(({ name }) => [`${camelCase(name)}Version`, name]),
     );
 
-    const parseGlobalOptions = (command: Command): ToolCommandExecutionOptions => {
+    const parseGlobalOptions = async (command: Command): Promise<ToolCommandExecutionOptions> => {
         const { cwd, volume, ...options } = command.opts<GlobalOptions>();
+        const resolvedCwd = cwd ?? process.cwd();
+
+        // CLI flags take precedence over project config versions
+        const cliVersions = Object.fromEntries(
+            Object.entries(options)
+                .map(([name, version]) => [toolVersionOptions[name], version])
+                .filter(([tool]) => tool),
+        );
+
+        // Read defaults from project config (e.g., Anchor.toml) if the chain provides a hook
+        const configVersions = (await context.getDefaultVersions?.(resolvedCwd)) ?? {};
+        const versions = { ...configVersions, ...cliVersions };
 
         return {
             ...options,
-            cwd: cwd ?? process.cwd(),
+            cwd: resolvedCwd,
             volumes: volume,
-            versions: Object.fromEntries(
-                Object.entries(options)
-                    .map(([name, version]) => [toolVersionOptions[name], version])
-                    .filter(([tool]) => tool),
-            ),
+            versions,
         };
     };
 
@@ -190,7 +198,12 @@ const createCli = <TImageId extends string>(
             .helpOption(false) // Disable automatic help option to pass --help to the tool
             .argument('[args...]', 'Arguments to pass to the tool')
             .action(async (args: string[]) => {
-                await executeToolCommand(context, tool.name, args, parseGlobalOptions(program));
+                await executeToolCommand(
+                    context,
+                    tool.name,
+                    args,
+                    await parseGlobalOptions(program),
+                );
             });
     }
 

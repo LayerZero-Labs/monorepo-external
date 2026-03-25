@@ -112,7 +112,6 @@ export const images = {
             'rust-nightly': 'nightly-2025-06-01',
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-        unreleased: true,
     },
 } satisfies Record<string, Image>;
 
