@@ -1,0 +1,44 @@
+{
+    "name": "@layerzerolabs/console-oft-contracts-evm",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten && pnpm contract-sizes",
+        "clean": "rm -rf ./node_modules .turbo ./dist artifacts* hh-cache* cache out",
+        "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.js",
+        "compile:tron": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network tron-mainnet",
+        "compile:zksync": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network zksync-mainnet",
+        "flatten": "pnpm exec lz-tool -e flatten_dir.sh hardhat ./contracts ./artifacts-flattened-contracts/contracts",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
+        "test": "pnpm lz-tool forge test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/contract-sizes-evm": "workspace:*",
+        "@layerzerolabs/hardhat-tron": "catalog:",
+        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:console",
+        "@layerzerolabs/lz-evm-protocol-v2": "catalog:console",
+        "@layerzerolabs/lz-evm-v1-0.7": "catalog:console",
+        "@layerzerolabs/oapp-evm-impl": "workspace:*",
+        "@layerzerolabs/oapp-evm-upgradeable-impl": "workspace:*",
+        "@layerzerolabs/oft-evm-impl": "workspace:*",
+        "@layerzerolabs/oft-evm-upgradeable-impl": "workspace:*",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/test-utils-evm": "workspace:*",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/utils-evm-impl": "workspace:*",
+        "@layerzerolabs/utils-evm-upgradeable-impl": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@matterlabs/hardhat-zksync-solc": "catalog:console",
+        "@openzeppelin/contracts": "catalog:console",
+        "@openzeppelin/contracts-upgradeable": "catalog:console",
+        "ethers": "catalog:",
+        "hardhat-deploy": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

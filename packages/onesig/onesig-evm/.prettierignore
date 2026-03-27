@@ -1,7 +1,0 @@
-typechain-types/
-scripts/
-certora/**/*.conf
-out/
-.turbo/
-dist/
-node_modules/

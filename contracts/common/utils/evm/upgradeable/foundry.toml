@@ -1,0 +1,27 @@
+[profile.default]
+solc = '0.8.22'
+verbosity = 3
+src = "contracts"
+test = "test"
+out = "artifacts"
+cache_path = "cache"
+libs = ['node_modules', 'node_modules/@layerzerolabs/toolbox-foundry/lib']
+optimizer = true
+optimizer_runs = 200
+
+remappings = [
+    'ds-test/=node_modules/@layerzerolabs/toolbox-foundry/lib/ds-test/',
+    'forge-std/=node_modules/@layerzerolabs/toolbox-foundry/lib/forge-std/',
+    'solidity-bytes-utils/contracts/=node_modules/@layerzerolabs/toolbox-foundry/lib/solidity-bytes-utils/',
+    '@openzeppelin/=node_modules/@openzeppelin/',
+    '@layerzerolabs/=node_modules/@layerzerolabs/',
+]
+
+[fuzz]
+runs = 1000
+
+[invariant]
+runs = 256
+depth = 15
+fail_on_revert = false
+shrink_run_limit = 2048

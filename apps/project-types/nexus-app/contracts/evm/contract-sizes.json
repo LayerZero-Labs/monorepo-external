@@ -1,0 +1,142 @@
+{
+    "Nexus": {
+        "evm": {
+            "runtimeSize": 23470,
+            "initcodeSize": 24080
+        },
+        "tron": {
+            "runtimeSize": 23111,
+            "initcodeSize": 23699
+        },
+        "zksync": {
+            "runtimeSize": 64672,
+            "initcodeSize": 64672
+        }
+    },
+    "NexusAlt": {
+        "evm": {
+            "runtimeSize": 23406,
+            "initcodeSize": 24205
+        },
+        "tron": {
+            "runtimeSize": 23045,
+            "initcodeSize": 23834
+        },
+        "zksync": {
+            "runtimeSize": 65312,
+            "initcodeSize": 65312
+        }
+    },
+    "NexusERC20": {
+        "evm": {
+            "runtimeSize": 16829,
+            "initcodeSize": 17150
+        },
+        "tron": {
+            "runtimeSize": 16253,
+            "initcodeSize": 16539
+        },
+        "zksync": {
+            "runtimeSize": 39392,
+            "initcodeSize": 39392
+        }
+    },
+    "NexusERC20Guard": {
+        "evm": {
+            "runtimeSize": 13846,
+            "initcodeSize": 14062
+        },
+        "tron": {
+            "runtimeSize": 12195,
+            "initcodeSize": 12386
+        },
+        "zksync": {
+            "runtimeSize": 30432,
+            "initcodeSize": 30432
+        }
+    },
+    "NexusFeeConfigModule": {
+        "evm": {
+            "runtimeSize": 5228,
+            "initcodeSize": 5584
+        },
+        "tron": {
+            "runtimeSize": 4587,
+            "initcodeSize": 4907
+        },
+        "zksync": {
+            "runtimeSize": 11872,
+            "initcodeSize": 11872
+        }
+    },
+    "NexusMsgCodec": {
+        "evm": {
+            "runtimeSize": 58,
+            "initcodeSize": 87
+        },
+        "tron": {
+            "runtimeSize": 58,
+            "initcodeSize": 87
+        },
+        "zksync": {
+            "runtimeSize": 352,
+            "initcodeSize": 352
+        }
+    },
+    "NexusOFT": {
+        "evm": {
+            "runtimeSize": 4618,
+            "initcodeSize": 5047
+        },
+        "tron": {
+            "runtimeSize": 4573,
+            "initcodeSize": 5022
+        },
+        "zksync": {
+            "runtimeSize": 19936,
+            "initcodeSize": 19936
+        }
+    },
+    "NexusOFTAlt": {
+        "evm": {
+            "runtimeSize": 4919,
+            "initcodeSize": 5514
+        },
+        "tron": {
+            "runtimeSize": 4819,
+            "initcodeSize": 5443
+        },
+        "zksync": {
+            "runtimeSize": 21216,
+            "initcodeSize": 21216
+        }
+    },
+    "NexusPauseModule": {
+        "evm": {
+            "runtimeSize": 5627,
+            "initcodeSize": 5990
+        },
+        "tron": {
+            "runtimeSize": 4941,
+            "initcodeSize": 5268
+        },
+        "zksync": {
+            "runtimeSize": 13088,
+            "initcodeSize": 13088
+        }
+    },
+    "NexusRateLimiterModule": {
+        "evm": {
+            "runtimeSize": 11332,
+            "initcodeSize": 11800
+        },
+        "tron": {
+            "runtimeSize": 11157,
+            "initcodeSize": 11599
+        },
+        "zksync": {
+            "runtimeSize": 34464,
+            "initcodeSize": 34464
+        }
+    }
+}

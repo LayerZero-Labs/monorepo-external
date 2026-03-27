@@ -1,0 +1,42 @@
+{
+    "name": "@layerzerolabs/oft-evm-upgradeable-impl",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero Labs reference EVM upgradeable OFT implementation",
+    "license": "MIT",
+    "scripts": {
+        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "compile:evm": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js",
+        "compile:tron": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network tron-mainnet",
+        "compile:zksync": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network zksync-mainnet",
+        "generated:clean": "rm -rf ./artifacts ./artifacts-tron ./artifacts-zk ./hh-cache ./hh-cache-tron ./hh-cache-zk",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
+        "test": "pnpm lz-tool forge test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
+        "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
+        "@layerzerolabs/lz-evm-v1-0.7": "catalog:",
+        "@layerzerolabs/oapp-evm-impl": "workspace:*",
+        "@layerzerolabs/oapp-evm-upgradeable-impl": "workspace:*",
+        "@layerzerolabs/oft-evm-impl": "workspace:*",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/test-utils-evm": "workspace:*",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/utils-evm-impl": "workspace:*",
+        "@layerzerolabs/utils-evm-upgradeable-impl": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:",
+        "@openzeppelin/contracts-upgradeable": "catalog:",
+        "ethers": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "@layerzerolabs/test-utils-evm",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero Labs shared EVM test mocks and utilities",
+    "license": "MIT",
+    "scripts": {
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' --fix --noPrompt"
+    },
+    "devDependencies": {
+        "@layerzerolabs/oapp-evm-impl": "workspace:*",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/utils-evm-impl": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

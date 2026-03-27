@@ -1,0 +1,31 @@
+[profile.default]
+solc = '0.8.26'
+verbosity = 3
+src = "contracts"
+test = "test"
+out = "artifacts"
+cache_path = "cache"
+libs = ['node_modules', 'node_modules/@layerzerolabs/toolbox-foundry/lib']
+optimizer = true
+optimizer_runs = 750
+evm_version = 'paris'
+via_ir = true
+
+additional_compiler_profiles = [
+    { name = 'erc20', optimizer_runs = 1_000_000 },
+]
+
+compilation_restrictions = [
+    { paths = 'contracts/ERC20Plus.sol', optimizer_runs = 1_000_000 },
+]
+
+remappings = [
+    'ds-test/=node_modules/@layerzerolabs/toolbox-foundry/lib/ds-test/',
+    'forge-std/=node_modules/@layerzerolabs/toolbox-foundry/lib/forge-std/',
+    'solidity-bytes-utils/contracts/=node_modules/@layerzerolabs/toolbox-foundry/lib/solidity-bytes-utils/',
+    '@openzeppelin/=node_modules/@openzeppelin/',
+    '@layerzerolabs/=node_modules/@layerzerolabs/',
+]
+
+[fuzz]
+runs = 1000

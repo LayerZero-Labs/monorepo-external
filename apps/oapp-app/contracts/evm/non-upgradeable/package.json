@@ -1,0 +1,31 @@
+{
+    "name": "@layerzerolabs/oapp-evm-impl",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero Labs reference EVM OApp implementation",
+    "license": "MIT",
+    "scripts": {
+        "clean-artifacts": "rm -rf artifacts* cache hh-cache*",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt"
+    },
+    "devDependencies": {
+        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
+        "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
+        "@layerzerolabs/lz-evm-v1-0.7": "catalog:",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:",
+        "@openzeppelin/contracts-upgradeable": "catalog:",
+        "ethers": "catalog:",
+        "solhint": "catalog:",
+        "solidity-bytes-utils": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

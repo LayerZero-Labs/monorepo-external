@@ -1,0 +1,18 @@
+{
+    "name": "@layerzerolabs/solhint-configuration",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Shared Solhint configuration for LayerZero Labs projects",
+    "license": "MIT",
+    "main": "./.solhint.json",
+    "files": [
+        ".solhint.json"
+    ],
+    "scripts": {
+        "clean": "rm -rf ./node_modules .turbo"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "name": "@layerzerolabs/utils-evm-upgradeable-impl",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero Labs reference EVM upgradeable utility implementations",
+    "license": "MIT",
+    "scripts": {
+        "clean-artifacts": "rm -rf artifacts* cache hh-cache*",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
+        "test": "pnpm lz-tool forge test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/utils-evm-impl": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:",
+        "@openzeppelin/contracts-upgradeable": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

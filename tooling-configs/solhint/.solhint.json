@@ -1,0 +1,16 @@
+{
+    "extends": "solhint:recommended",
+    "rules": {
+        "no-global-import": "error",
+        "compiler-version": "off",
+        "no-unused-import": "error",
+        "explicit-types": "error",
+        "func-name-mixedcase": "off",
+        "func-visibility": ["warn", { "ignoreConstructors": true }],
+        "immutable-vars-naming": "off",
+        "no-inline-assembly": "off",
+        "const-name-snakecase": "error",
+        "max-line-length": "off",
+        "imports-order": "warn"
+    }
+}
