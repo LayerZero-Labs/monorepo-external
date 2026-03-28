@@ -88,11 +88,19 @@ const ensureDockerImage = async (imageUri: string): Promise<void> => {
     }
 
     if (output.exitCode) {
+        const stderr = output.stderr ?? '';
+        const isAuthError =
+            stderr.includes('authorization token has expired') ||
+            stderr.includes('denied') ||
+            stderr.includes('pull access denied');
+
         throw new Error(
             [
                 'Docker image not available:',
                 `  - Image: ${imageUri} (pull failed)`,
-                '  - Check if the image tag exists in image registry.',
+                isAuthError
+                    ? '  - ECR auth expired. Run: pnpm localnet login'
+                    : '  - Check if the image tag exists in image registry.',
             ].join('\n'),
         );
     }
