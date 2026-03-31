@@ -20,8 +20,8 @@ export type Catalog = Record<string, string>;
 
 export interface PnpmWorkspace {
     packages: string[];
-    catalog: Catalog;
-    cleanupUnusedCatalogs: boolean;
+    catalogs?: Record<string, Catalog>;
+    cleanupUnusedCatalogs?: boolean;
 }
 
 export interface FixDependenciesParams {

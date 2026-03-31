@@ -129,18 +129,17 @@ export const getPnpmWorkspace = async () => {
 };
 
 /**
- * Returns the catalog values from pnpm-workspace.yaml.
+ * Returns the default catalog values from catalogs.default in pnpm-workspace.yaml.
  * It reads the file everytime, so ensure it's used accordingly.
- * If you need to read the catalog multiple times, use getCachedCatalog.
+ * If you need to read it multiple times, use getCachedCatalog.
  */
 export const getCatalog = async (): Promise<Catalog> => {
     const pnpmWorkspace = await getPnpmWorkspace();
-    return pnpmWorkspace.catalog || {};
+    return pnpmWorkspace.catalogs?.default ?? {};
 };
 
 /**
- * Returns a function that returns a promise,
- * resolved is the cached catalog values from pnpm-workspace.yaml.
+ * Returns the cached default catalog values from catalogs.default in pnpm-workspace.yaml.
  */
 let cachedCatalog: Catalog | null = null;
 
@@ -169,7 +168,10 @@ export const writeCatalog = async (
     const { pnpmLsObject } = await getPnpmLs();
     let rootPackage: PnpmPackageObject = pnpmLsObject['root'];
     const pnpmWorkspace = await getPnpmWorkspace();
-    pnpmWorkspace.catalog = catalog;
+    if (!pnpmWorkspace.catalogs) {
+        pnpmWorkspace.catalogs = {};
+    }
+    pnpmWorkspace.catalogs.default = catalog;
     if (options.preventCatalogsCleanup) {
         pnpmWorkspace.cleanupUnusedCatalogs = false;
     }
