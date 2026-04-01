@@ -43,6 +43,12 @@ export const generateGithubMatrix = (
         const imageName = getImageName(image.name);
         const tags = TAG_SEPARATORS.map((separator) => getImageTag(image, separator));
 
+        if (tags.length === 0 || !tags[0]) {
+            throw new Error(
+                `Image "${imageId}" produced no tags. Every image must have at least one non-empty tag.`,
+            );
+        }
+
         return {
             entry: {
                 id: imageId,

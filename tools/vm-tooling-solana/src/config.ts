@@ -48,11 +48,14 @@ export const tools: readonly [Tool, ...Tool[]] = [
 
 export const images = {
     ['solana:anchor-0.29.0-solana-1.17.31']: {
-        // Built in the old `monorepo` repository.
         name: 'solana',
         versions: {
             solana: '1.17.31',
             anchor: '0.29.0',
+        },
+        dependencies: {
+            // Anchor 0.29.0 depends on `time` crate which fails to compile with Rust >= 1.80
+            rust: '1.79.0',
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },

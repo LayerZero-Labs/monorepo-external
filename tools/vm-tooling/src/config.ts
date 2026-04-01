@@ -91,7 +91,6 @@ export interface Image {
     versions: Record<string, string>;
     dependencies?: Record<string, string>;
     patch?: number;
-    unreleased?: boolean;
     mirrorRegistries?: DockerRegistryMirror[];
 }
 

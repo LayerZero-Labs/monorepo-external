@@ -49,7 +49,15 @@ RUN <<-EOF
   mkdir /tmp/platform-tools
   cd /tmp/platform-tools
 
-  curl -fsSL https://github.com/anza-xyz/agave/releases/download/v$SOLANA_VERSION/sbf-sdk.tar.bz2 | tar jx
+  # Solana v1.x releases live under solana-labs/solana, v2.x+ under anza-xyz/agave
+  MAJOR_VERSION=$(echo "$SOLANA_VERSION" | cut -d. -f1)
+  if [ "$MAJOR_VERSION" -ge 2 ]; then
+    SBF_SDK_REPO="anza-xyz/agave"
+  else
+    SBF_SDK_REPO="solana-labs/solana"
+  fi
+
+  curl -fsSL https://github.com/$SBF_SDK_REPO/releases/download/v$SOLANA_VERSION/sbf-sdk.tar.bz2 | tar jx
   # Fix architecture detection bug in install.sh
   sed -i 's/arm64\*)/arm64*|aarch64*)/' sbf-sdk/scripts/install.sh
   sbf-sdk/scripts/install.sh

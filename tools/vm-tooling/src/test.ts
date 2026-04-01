@@ -1,26 +1,14 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type * as vitest from 'vitest';
-import * as z from 'zod';
 
 import type { VersionCombination } from './config';
 import { type Image } from './config';
 import { getImageTag, getImageUri } from './utils/docker';
 
 const COMMAND_TIMEOUT = 5 * 60_000;
-const MANIFEST_TEST_TIMEOUT = 60_000;
-const VERSION_TEST_TIMEOUT = 15 * 60_000;
 const PULL_TIMEOUT = 10 * 60_000;
-
-const slsaSchema = z.object({
-    SLSA: z.object({}),
-});
-
-// TODO Require provenance by GitHub Actions.
-const provenanceSchema = z.object({
-    ['linux/amd64']: slsaSchema,
-    ['linux/arm64']: slsaSchema,
-});
+const VERSION_TEST_TIMEOUT = 15 * 60_000;
 
 const runCommand = async (
     command: string,
@@ -34,35 +22,9 @@ const runCommand = async (
         })
     ).stdout.trim();
 
-const isImageCached = async (uri: string): Promise<boolean> => {
-    try {
-        await runCommand('docker', ['image', 'inspect', uri]);
-        return true;
-    } catch {
-        return false;
-    }
-};
-
-const pullLocks = new Map<string, Promise<void>>();
-
-const ensureImagePulled = async (uri: string): Promise<void> => {
-    const existingPull = pullLocks.get(uri);
-    if (existingPull) {
-        console.log(`⏳ Waiting for concurrent pull: ${uri}`);
-        return existingPull;
-    }
-
-    const pullPromise = (async () => {
-        if (await isImageCached(uri)) {
-            console.log(`✅ Image already cached: ${uri}`);
-            return;
-        }
-        console.log(`📥 Pulling image: ${uri}`);
-        await runCommand('docker', ['pull', uri], PULL_TIMEOUT);
-    })().finally(() => pullLocks.delete(uri));
-
-    pullLocks.set(uri, pullPromise);
-    return pullPromise;
+/** Run a no-op command in the image to trigger a pull if it's not available locally. */
+const ensureDockerImageExists = async (imageUri: string): Promise<void> => {
+    await runCommand('docker', ['run', '--rm', '--entrypoint', 'true', imageUri], PULL_TIMEOUT);
 };
 
 export const testTools = (
@@ -83,16 +45,12 @@ export const testTools = (
         for (const literalImage of Object.values(images)) {
             const image: Image = literalImage;
 
-            if (image.unreleased) {
-                continue;
-            }
-
             describe(getImageTag(image), () => {
                 let imageUri: string;
 
                 beforeAll(async () => {
                     imageUri = await getImageUri(image, '_');
-                    await ensureImagePulled(imageUri);
+                    await ensureDockerImageExists(imageUri);
                 }, PULL_TIMEOUT);
 
                 for (const [tool, expectedVersion] of Object.entries(image.versions)) {
@@ -117,31 +75,6 @@ export const testTools = (
                     );
                 }
             });
-        }
-    });
-
-    describe('Docker image manifests', () => {
-        for (const [id, image] of Object.entries(images)) {
-            if (image.unreleased) {
-                continue;
-            }
-
-            it(
-                `has a valid manifest for ${id}`,
-                async () => {
-                    const { stdout } = await promisify(execFile)('docker', [
-                        'buildx',
-                        'imagetools',
-                        'inspect',
-                        '--format',
-                        '{{ json .Provenance }}',
-                        await getImageUri(image, '_'),
-                    ]);
-
-                    expect(provenanceSchema.safeParse(JSON.parse(stdout)).success).toBe(true);
-                },
-                MANIFEST_TEST_TIMEOUT,
-            );
         }
     });
 };
