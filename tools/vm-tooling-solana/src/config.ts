@@ -47,7 +47,7 @@ export const tools: readonly [Tool, ...Tool[]] = [
 ];
 
 export const images = {
-    ['solana:anchor-0.29.0-solana-1.17.31']: {
+    ['solana:anchor-0.29.0-solana-1.17.31-patch-2']: {
         name: 'solana',
         versions: {
             solana: '1.17.31',
@@ -56,7 +56,15 @@ export const images = {
         dependencies: {
             // Anchor 0.29.0 depends on `time` crate which fails to compile with Rust >= 1.80
             rust: '1.79.0',
+            // cargo-expand 1.0.100 requires rustc 1.81+; pin to 1.0.95 (MSRV 1.70)
+            'cargo-expand': '1.0.95',
+            // Pre-populate platform-tools cache for arm64 (no prebuilt binaries for v1.37)
+            'platform-tools': '1.37',
+            // Rust version for building platform-tools from source (cargo fork has no lockfile,
+            // transitive deps require modern Rust). Currently highest MSRV is 1.88 (home, time).
+            'platform-tools-rust': '1.88.0',
         },
+        patch: 2,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
     ['solana:anchor-0.31.1-solana-2.2.20']: {
@@ -141,10 +149,9 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
             stable: true,
         },
         {
-            // Built in the old `monorepo` repository.
             images: {
-                solana: 'solana:anchor-0.29.0-solana-1.17.31',
-                anchor: 'solana:anchor-0.29.0-solana-1.17.31',
+                solana: 'solana:anchor-0.29.0-solana-1.17.31-patch-2',
+                anchor: 'solana:anchor-0.29.0-solana-1.17.31-patch-2',
             },
             description: 'Stable and well-tested',
             stable: true,

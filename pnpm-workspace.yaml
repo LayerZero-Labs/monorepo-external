@@ -75,7 +75,7 @@ catalogs:
     ethers: ^5.8.0
     glob: ^10.3.10
     globals: ^16.4.0
-    handlebars: 4.7.8
+    handlebars: 4.7.9
     hardhat: ^2.19.0
     hardhat-contract-sizer: ^2.10.0
     hardhat-deploy: ^0.12.4
@@ -106,7 +106,7 @@ catalogs:
     vitest: ^3.2.3
     zod: 4.3.5
     zx: ^8.8.5
-  everdawn-asset0:
+  everdawn-oft:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
     '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
     '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
