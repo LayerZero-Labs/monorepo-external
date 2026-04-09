@@ -2,18 +2,20 @@ packages:
   - activities/**
   - adapters/**
   - apps/**
+  - clusters/**
   - configs/**
   - contracts/**
+  - infrastructure/**
   - onboarding/**
   - packages/**
   - scripts/**
-  - clusters/**
-  - tools/**
   - tooling-configs/**
+  - tools/**
   - views/**
   - workflows/**
   - '!**/cdk.out/**'
   - '!**/debug_info/**'
+  - '!**/src/daml/**'
 catalogs:
   console:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.149
@@ -66,7 +68,7 @@ catalogs:
     depcheck: ^1.4.3
     dotenv: 16.4.5
     es-toolkit: ^1.39.10
-    eslint: ^9.17.0
+    eslint: 9.39.1
     eslint-config-prettier: ^10.1.2
     eslint-config-turbo: ^2.5.8
     eslint-plugin-only-warn: 1.1.0

@@ -42,6 +42,9 @@ const config = {
                     },
                     viaIR: true,
                     evmVersion: 'paris',
+                    // Making the implicit `hardhat-deploy` behaviour explicit.
+                    // https://github.com/wighawag/hardhat-deploy/blob/v0.12.4/src/index.ts#L317
+                    metadata: { useLiteralContent: true },
                 },
             },
         ],
@@ -52,6 +55,8 @@ const config = {
                     optimizer: { enabled: true, runs: 1_000_000 },
                     viaIR: true,
                     evmVersion: 'paris',
+                    // `hardhat-deploy` does not support `overrides`.
+                    metadata: { useLiteralContent: true },
                 },
             },
         },

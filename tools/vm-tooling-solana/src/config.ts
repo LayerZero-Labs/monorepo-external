@@ -124,6 +124,24 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.0.0-solana-3.1.10']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.0.0',
+            solana: '3.1.10',
+        },
+        dependencies: {
+            // Agave v3.1.10 pins Rust 1.86.0 upstream, but Anchor 1.0.0's locked dependency
+            // graph currently requires rustc >= 1.88. Use 1.89.0 so both toolchains build.
+            rust: '1.89.0',
+            // Solana 3.1.10's platform-tools installer pins v1.52 and links Rust 1.89.0.
+            'platform-tools': '1.52',
+            'platform-tools-rust': '1.89.0',
+            // Keep the existing nightly rustfmt toolchain used by our Solana package scripts.
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
 } satisfies Record<string, Image>;
 
 export type ImageId = keyof typeof images;
@@ -147,6 +165,13 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
             description:
                 'Console OFT + Token-2022 (Anchor 0.32.1 with pausable support, nightly-2025-06-01 rustfmt)',
             stable: true,
+        },
+        {
+            images: {
+                anchor: 'solana:anchor-1.0.0-solana-3.1.10',
+                solana: 'solana:anchor-1.0.0-solana-3.1.10',
+            },
+            description: 'Anchor 1.0.0 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
         },
         {
             images: {
