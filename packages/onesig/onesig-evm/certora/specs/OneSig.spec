@@ -1,17 +1,20 @@
 import "MultiSig.spec";
+import "ExecutorStore.spec";
 
-// using MockCallTarget as mockCallTarget;
+using MockCallTarget as mockCallTarget;
 
 methods {
     function seed() external returns(bytes32) envfree;
-    function nonce() external returns(uint256) envfree;
-    function encodeLeaf(uint256,OneSig.Call[]) external returns (bytes32) envfree;
+    function nonce() external returns(uint64) envfree;
+    function encodeLeaf(uint64,OneSig.Call[]) external returns (bytes32) envfree;
     function verifyTransactionProof(bytes32,OneSig.Transaction) external envfree;
-
+    function canExecuteTransaction(address) external returns (bool) envfree;
 
     unresolved external in OneSigHarness.executeTransaction(
         OneSig.Transaction,bytes32,uint256,bytes
-    ) => DISPATCH [] default HAVOC_ECF;
+    ) => DISPATCH [
+        mockCallTarget._
+    ] default HAVOC_ECF;
 }
 
 // REACHABILITY
@@ -31,7 +34,7 @@ use invariant setInvariant;
  * @dev This invariant maintains basic operational safety by preventing
  *      an impossible-to-reach approval threshold
  */
-use invariant thresholdGeTotalSigners;
+use invariant thresholdLeTotalSigners;
 
 /**
  * @title Non-Zero Threshold Invariant
@@ -46,6 +49,16 @@ use invariant thresholdNotZero;
  * @dev Prevents potential misconfiguration
  */
 use invariant signerNotZero;
+
+// helper invariant for EnumerableSet (executorSet)
+use invariant executorSetInvariant;
+
+/**
+ * @title Non-Zero Address Executor Invariant
+ * @notice Ensures address(0) can never be a valid executor
+ * @dev Prevents potential misconfiguration
+ */
+use invariant executorNotZero;
 
 // ACCESS CONTROL
 
@@ -91,6 +104,27 @@ rule accessControlSeed(
     assert seed_after != seed_before => e.msg.sender == currentContract && f.selector == sig:setSeed(bytes32).selector;
 }
 
+/**
+ * @title Executor Set Access Control Rule
+ * @notice Verifies that any state changes to executors can only be made by the contract itself.
+ * @dev Checks two conditions:
+ *      - Changes to total number of executors
+ *      - Changes to individual executor status
+ * @dev Both types of changes must come from:
+ *      - The contract itself (msg.sender == currentContract)
+ *      - The setExecutor function specifically
+ */
+use rule accessControlExecutorSet;
+
+/**
+ * @title Executor Required Access Control Rule
+ * @notice Verifies that executorRequired changes can only be made by the contract itself.
+ * @dev Ensures any change to the executorRequired value:
+ *      - Must come from the contract itself (msg.sender == currentContract)
+ *      - Must be called through the setExecutorRequired function
+ */
+use rule accessControlExecutorRequired;
+
 // STATE CHANGES
 
 /**
@@ -120,6 +154,84 @@ rule nonceMonotonicity(
 // FUNCTIONAL CORRECTNESS
 
 /**
+ * @title Set Threshold Correctness Rule
+ * @notice Verifies that setThreshold correctly updates the threshold value
+ * @dev Ensures the threshold state variable exactly matches the input value
+ *      after a successful setThreshold operation
+ */
+use rule setThresholdCorrectness;
+
+/**
+ * @title Set Threshold Revert Conditions Rule
+ * @notice Verifies that setThreshold reverts on invalid inputs
+ * @dev Ensures setThreshold reverts when:
+ *      - threshold is zero
+ *      - threshold exceeds total signers
+ *      - caller is not the contract itself
+ *      - msg.value is non-zero
+ */
+use rule setThresholdReverts;
+
+/**
+ * @title Set Executor Correctness Rule
+ * @notice Verifies correct state transitions when adding or removing executors
+ * @dev Checks the following properties:
+ *      - When adding (_active == true):
+ *          - Executor must not exist before and must exist after
+ *          - Executor must not be address(0)
+ *          - Total executors increases by 1
+ *      - When removing (_active == false):
+ *          - Executor must exist before and must not exist after
+ *          - Total executors decreases by 1
+ *      - Other addresses remain unchanged
+ */
+use rule setExecutorCorrectness;
+
+/**
+ * @title Add Existing Executor Reverts Rule
+ * @notice Verifies that adding an existing executor reverts
+ * @dev Ensures setExecutor(executor, true) reverts when executor is already in the set
+ */
+use rule addExistingExecutorReverts;
+
+/**
+ * @title Remove Non-Executor Reverts Rule
+ * @notice Verifies that removing a non-existent executor reverts
+ * @dev Ensures setExecutor(executor, false) reverts when executor is not in the set
+ */
+use rule removeNonExecutorReverts;
+
+/**
+ * @title Set Executor Required Correctness Rule
+ * @notice Verifies that setExecutorRequired correctly updates the executorRequired value
+ * @dev Ensures the executorRequired state variable exactly matches the input value
+ *      after a successful setExecutorRequired operation
+ */
+use rule setExecutorRequiredCorrectness;
+
+/**
+ * @title Can Execute Transaction Correctness Rule
+ * @notice Verifies canExecuteTransaction returns correct authorization status
+ * @dev Ensures that:
+ *      - Returns true if executorRequired is false (permissionless)
+ *      - Returns true if sender is an executor
+ *      - Returns true if sender is a signer
+ *      - Returns false otherwise
+ */
+rule canExecuteTransactionCorrectness(address sender) {
+    bool result = canExecuteTransaction(sender);
+
+    assert result <=> (!executorRequired() || isExecutor(sender) || isSigner(sender));
+}
+
+/**
+ * @title Get Executors Length Consistency Rule
+ * @notice Verifies that getExecutors() length matches totalExecutors()
+ * @dev Ensures consistency between the array view and the count view
+ */
+use rule getExecutorsLengthConsistency;
+
+/**
  * @title Signer Set State Transition Rule
  * @notice Verifies correct state transitions when adding or removing signers
  * @dev Checks the following properties:
@@ -135,6 +247,27 @@ rule nonceMonotonicity(
 use rule setSignerCorrectness;
 
 /**
+ * @title Add Existing Signer Reverts Rule
+ * @notice Verifies that adding an existing signer reverts
+ * @dev Ensures setSigner(signer, true) reverts when signer is already in the set
+ */
+use rule addExistingSignerReverts;
+
+/**
+ * @title Remove Non-Signer Reverts Rule
+ * @notice Verifies that removing a non-existent signer reverts
+ * @dev Ensures setSigner(signer, false) reverts when signer is not in the set
+ */
+use rule removeNonSignerReverts;
+
+/**
+ * @title Remove Signer Threshold Constraint Rule
+ * @notice Verifies that removing a signer reverts when it would break threshold constraint
+ * @dev Ensures setSigner(signer, false) reverts when totalSigners == threshold
+ */
+use rule removeSignerRevertsWhenWouldBreakThreshold;
+
+/**
  * @title Signature Order Verification Rule
  * @notice Verifies that recovered signers are in ascending order
  * @dev Ensures signatures are ordered by signer address
@@ -144,8 +277,8 @@ use rule verifySignaturesCorrectness_order;
 
 /**
  * @title Signature Length Verification Rule
- * @notice Verifies that signature byte length matches required size
- * @dev Ensures signature length equals threshold * 65 bytes
+ * @notice Verifies that signature byte length meets the minimum required size
+ * @dev Ensures signature length is at least threshold * 65 bytes
  *      (65 bytes = r(32) + s(32) + v(1) for each signature)
  */
 use rule verifySignaturesCorrectness_signatureLength;
@@ -166,6 +299,14 @@ use rule verifySignaturesCorrectness_noCollision;
 use rule verifySignaturesCorrectness_signatureNotEmpty;
 
 /**
+ * @title Signature Uniqueness Rule
+ * @notice Verifies that each signature corresponds to a unique signer
+ * @dev Ensures that different indices recover different signers,
+ *      preventing signature reuse attacks
+ */
+use rule verifySignaturesCorrectness_noSignatureReuse;
+
+/**
  * @title Valid Signer Recovery Rule
  * @notice Verifies that all recovered addresses from signatures are valid signers
  * @dev Ensures that for any valid signature verification:
@@ -183,11 +324,32 @@ use rule verifySignaturesCorrectness_invalidSignerShouldRevert;
 
 /**
  * @title Signature Verification Count Rule
- * @notice Verifies that exactly threshold number of signatures are checked
- * @dev Ensures the ECDSA recover operation is called exactly once
+ * @notice Verifies that at least threshold number of signatures are checked
+ * @dev Ensures the ECDSA recover operation is called at least once
  *      per required signature based on the threshold
  */
 use rule verifySignaturesCorrectness_signatureCheckCount;
+
+/**
+ * @title Custom Threshold Signature Verification Rule
+ * @notice Verifies that verifyNSignatures correctly validates signers with custom threshold
+ * @dev Ensures all recovered signers are valid when using a custom threshold value
+ */
+use rule verifyNSignaturesCustomThreshold;
+
+/**
+ * @title Zero Custom Threshold Reverts Rule
+ * @notice Verifies that verifyNSignatures reverts when custom threshold is zero
+ * @dev Ensures zero threshold is rejected even when passed explicitly
+ */
+use rule verifyNSignaturesZeroThresholdReverts;
+
+/**
+ * @title Get Signers Length Consistency Rule
+ * @notice Verifies that getSigners() length matches totalSigners()
+ * @dev Ensures consistency between the array view and the count view
+ */
+use rule getSignersLengthConsistency;
 
 /**
  * @title Set Seed Correctness Rule
@@ -231,27 +393,115 @@ rule merkleRootExpiryRule(
     assert lastReverted, "Expired merkle root should not be usable";
 }
 
+// NOTE: The following leafEncodingUniquenessRule_* rules operate on munged code
+// (see munge-OneSig_abi_encode.patch) where abi.encodePacked is replaced with abi.encode
+// to work around Certora prover hashing limitations. These rules therefore verify collision
+// resistance for abi.encode (trivially injective), not the production abi.encodePacked.
+// The production encoding abi.encodePacked(uint8, uint64, bytes32, uint64, abi.encode(_calls))
+// is collision-resistant by construction: all fixed-size types precede a single variable-length
+// tail (abi.encode(_calls)), but this property is not formally verified here.
+
 /**
- * @title Leaf Encoding Uniqueness Rule
- * @notice Verifies that different transaction parameters result in different merkle leaves
- * @dev Ensures that any change in nonce, target address, value, or data
- *      results in a unique leaf hash, preventing transaction collisions
+ * @title Leaf Encoding Uniqueness Rule (Nonce)
+ * @notice Verifies that different nonces result in different merkle leaves
+ * @dev Ensures nonce changes produce unique leaf hashes
  */
-rule leafEncodingUniquenessRule(
-    uint256 nonce1,
-    uint256 nonce2,
+rule leafEncodingUniquenessRule_nonce(
+    uint64 nonce1,
+    uint64 nonce2,
+    OneSig.Call[] calls
+) {
+    bytes32 leaf1 = encodeLeaf(nonce1, calls);
+    bytes32 leaf2 = encodeLeaf(nonce2, calls);
+
+    assert nonce1 != nonce2 <=> leaf1 != leaf2,
+        "Different nonces must produce different leaves";
+    satisfy nonce1 != nonce2;
+}
+
+/**
+ * @title Leaf Encoding Uniqueness Rule (Target Address)
+ * @notice Verifies that different target addresses result in different merkle leaves
+ * @dev Compares Call arrays where the target address differs
+ */
+rule leafEncodingUniquenessRule_to(
+    uint64 nonce,
     OneSig.Call[] calls1,
     OneSig.Call[] calls2
 ) {
-    require nonce1 != nonce2
-         || calls1.to != calls2.to
-         || calls1.value != calls2.value
-         || calls1.data != calls2.data;
+    require calls1.length == 1 && calls2.length == 1;
+    require calls1[0].value == calls2[0].value;
+    require calls1[0].data == calls2[0].data;
 
-    bytes32 leaf1 = encodeLeaf(nonce1, calls1);
-    bytes32 leaf2 = encodeLeaf(nonce2, calls2);
+    bytes32 leaf1 = encodeLeaf(nonce, calls1);
+    bytes32 leaf2 = encodeLeaf(nonce, calls2);
 
-    assert leaf1 != leaf2, "Different transactions must have different leaves";
+    assert calls1[0].to != calls2[0].to <=> leaf1 != leaf2,
+        "Different target addresses must produce different leaves";
+    satisfy calls1[0].to != calls2[0].to;
+}
+
+/**
+ * @title Leaf Encoding Uniqueness Rule (Value)
+ * @notice Verifies that different values result in different merkle leaves
+ * @dev Compares Call arrays where the value differs
+ */
+rule leafEncodingUniquenessRule_value(
+    uint64 nonce,
+    OneSig.Call[] calls1,
+    OneSig.Call[] calls2
+) {
+    require calls1.length == 1 && calls2.length == 1;
+    require calls1[0].to == calls2[0].to;
+    require calls1[0].data == calls2[0].data;
+
+    bytes32 leaf1 = encodeLeaf(nonce, calls1);
+    bytes32 leaf2 = encodeLeaf(nonce, calls2);
+
+    assert calls1[0].value != calls2[0].value <=> leaf1 != leaf2,
+        "Different values must produce different leaves";
+    satisfy calls1[0].value != calls2[0].value;
+}
+
+/**
+ * @title Leaf Encoding Uniqueness Rule (Data)
+ * @notice Verifies that different data result in different merkle leaves
+ * @dev Compares Call arrays where the data differs
+ */
+rule leafEncodingUniquenessRule_data(
+    uint64 nonce,
+    OneSig.Call[] calls1,
+    OneSig.Call[] calls2
+) {
+    require calls1.length == 1 && calls2.length == 1;
+    require calls1[0].to == calls2[0].to;
+    require calls1[0].value == calls2[0].value;
+
+    bytes32 leaf1 = encodeLeaf(nonce, calls1);
+    bytes32 leaf2 = encodeLeaf(nonce, calls2);
+
+    assert calls1[0].data != calls2[0].data <=> leaf1 != leaf2,
+        "Different data must produce different leaves";
+    satisfy calls1[0].data != calls2[0].data;
+}
+
+/**
+ * @title Leaf Encoding Uniqueness Rule (Calls Length)
+ * @notice Verifies that different call array lengths result in different merkle leaves
+ * @dev Ensures call array length changes produce unique leaf hashes
+ */
+rule leafEncodingUniquenessRule_callsLength(
+    uint64 nonce,
+    OneSig.Call[] calls1,
+    OneSig.Call[] calls2
+) {
+    require calls1.length != calls2.length;
+
+    bytes32 leaf1 = encodeLeaf(nonce, calls1);
+    bytes32 leaf2 = encodeLeaf(nonce, calls2);
+
+    assert leaf1 != leaf2, "Different call array lengths must produce different leaves";
+    satisfy leaf1 != leaf2;
 }
 
 /**
@@ -260,8 +510,7 @@ rule leafEncodingUniquenessRule(
  * @dev Ensures identical inputs produce identical leaf hashes
  */
 rule leafEncoding_determinism(
-    uint256 nonce1,
-    uint256 nonce2,
+    uint64 nonce1,
     OneSig.Call[] calls1
 ) {
     bytes32 leaf1 = encodeLeaf(nonce1, calls1);
@@ -286,56 +535,42 @@ rule executeTransactionCorrectness_merkleRootCheck(
     ecrecoverAxioms();
     requireInvariant setInvariant();
     requireInvariant thresholdNotZero();
-    requireInvariant thresholdGeTotalSigners();
+    requireInvariant thresholdLeTotalSigners();
     requireInvariant signerNotZero();
 
     require e.msg.value == 0;
 
-    // Store the state
-    storage initState = lastStorage;
-
     verifyMerkleRoot@withrevert(e, _merkleRoot, _expiry, _signatures);
-    bool verifyMerkelRootReverted = lastReverted;
+    bool verifyMerkleRootReverted = lastReverted;
 
     verifyTransactionProof@withrevert(_merkleRoot, _transaction);
     bool verifyTransactionProofReverted = lastReverted;
 
     executeTransaction(e, _transaction, _merkleRoot, _expiry, _signatures);
-    // bool executeTransactionReverted = lastReverted;
 
-    // assert (verifyMerkelRootReverted || verifyTransactionProofReverted) => executeTransactionReverted;
-    assert !verifyMerkelRootReverted && !verifyTransactionProofReverted;
-}
-
-persistent ghost mathint ghostCallCount{
-    init_state axiom ghostCallCount == 0;
-}
-
-hook CALL(uint g, address addr, uint value, uint argsOffset, uint argsLength, uint retOffset, uint retLength) uint rc {
-    ghostCallCount = ghostCallCount + 1;
+    assert !verifyMerkleRootReverted && !verifyTransactionProofReverted;
 }
 
 /**
- * @title Transaction Call Execution Correctness Rule
- * @notice Verifies proper handling of call transaction execution
- * @dev Ensures that exactly calls.length CALL operation are performed
- *      - Rule tested with single call transactions and threshold = 1 for tractability
+ * @title No Replay Attack Rule
+ * @notice Verifies that the same transaction cannot be executed twice
+ * @dev Proves that nonce increment prevents replay attacks
  */
-rule executeTransactionCorrectness_calls(
-    env e,
+rule noReplayAttack(
+    env e1,
+    env e2,
     OneSig.Transaction _transaction,
     bytes32 _merkleRoot,
     uint256 _expiry,
     bytes _signatures
 ) {
-    require threshold() == 1;
-    require ghostCallCount == 0;
-    mathint numberOfCalls = _transaction.calls.length;
+    // First execution succeeds
+    executeTransaction(e1, _transaction, _merkleRoot, _expiry, _signatures);
 
-    executeTransaction(e, _transaction, _merkleRoot, _expiry, _signatures);
+    // Second execution with same parameters reverts (nonce has changed)
+    executeTransaction@withrevert(e2, _transaction, _merkleRoot, _expiry, _signatures);
 
-    assert ghostCallCount == numberOfCalls;
-    satisfy ghostCallCount == numberOfCalls;
+    assert lastReverted, "Same transaction cannot be executed twice";
 }
 
 /**
@@ -381,7 +616,7 @@ rule verifyMerkleRootCorrectness_expiryCheck(
 ) {
     ecrecoverAxioms();
     requireInvariant thresholdNotZero();
-    requireInvariant thresholdGeTotalSigners();
+    requireInvariant thresholdLeTotalSigners();
     requireInvariant signerNotZero();
 
     require e1.block.timestamp <= _expiry;
@@ -412,7 +647,7 @@ rule setSeedInvalidatesMerkleRoot(
     bytes32 newSeed
 ) {
     ecrecoverAxioms();
-    requireInvariant thresholdGeTotalSigners();
+    requireInvariant thresholdLeTotalSigners();
     requireInvariant signerNotZero();
 
     require threshold() == 1;

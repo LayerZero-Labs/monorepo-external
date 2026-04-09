@@ -1,0 +1,24 @@
+diff --git a/packages/onesig/onesig-evm/contracts/OneSig.sol b/packages/onesig/onesig-evm/contracts/OneSig.sol
+--- a/packages/onesig/onesig-evm/contracts/OneSig.sol
++++ b/packages/onesig/onesig-evm/contracts/OneSig.sol
+@@ -225,7 +225,7 @@ contract OneSig is MultiSig, ReentrancyGuard, ExecutorStore {
+
+         // Compute the EIP-712 hash
+         bytes32 digest = keccak256(
+-            abi.encodePacked(
++            abi.encode(
+                 EIP191_PREFIX_FOR_EIP712,
+                 DOMAIN_SEPARATOR,
+                 keccak256(abi.encode(SIGN_MERKLE_ROOT_TYPE_HASH, seed, _merkleRoot, _expiry))
+@@ -257,9 +257,9 @@ contract OneSig is MultiSig, ReentrancyGuard, ExecutorStore {
+     function encodeLeaf(uint64 _nonce, Call[] calldata _calls) public view returns (bytes32) {
+         return
+             keccak256(
+-                abi.encodePacked(
++                abi.encode(
+                     keccak256(
+-                        abi.encodePacked(
++                        abi.encode(
+                             LEAF_ENCODING_VERSION,
+                             ONE_SIG_ID,
+                             bytes32(uint256(uint160(address(this)))), // convert address(this) into bytes32

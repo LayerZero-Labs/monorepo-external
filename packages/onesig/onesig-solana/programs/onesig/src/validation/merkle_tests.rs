@@ -5,9 +5,9 @@
 // 2. Transaction Merkle proofs are verified consistently across chains
 // 3. Merkle root signature verification works the same way as in EVM
 //
-// The test uses hardcoded values from EVM tests (packages/onesig-evm/test/hardhat/one-sig.test.ts)
-// to verify cross-chain compatibility. To obtain these values, add these console.log
-// statements in EVM tests:
+// The test uses hardcoded values from EVM tests
+// (packages/onesig/onesig-evm/test/hardhat/one-sig.test.ts) to verify cross-chain compatibility. To
+// obtain these values, add these console.log statements in EVM tests:
 // ```typescript
 // console.log('signers:', sortedSigners.map((s) => s.publicKey))
 // console.log('seed', SEED)

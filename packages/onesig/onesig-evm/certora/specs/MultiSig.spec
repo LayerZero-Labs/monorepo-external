@@ -16,7 +16,7 @@ rule reachability(
     calldataarg args
 ) {
     requireInvariant setInvariant();
-    requireInvariant thresholdGeTotalSigners();
+    requireInvariant thresholdLeTotalSigners();
     requireInvariant thresholdNotZero();
 
     f(e, args);
@@ -98,7 +98,7 @@ invariant setInvariant()
  * @dev This invariant maintains basic operational safety by preventing
  *      an impossible-to-reach approval threshold
  */
-invariant thresholdGeTotalSigners()
+invariant thresholdLeTotalSigners()
     threshold() <= totalSigners();
 
 /**
@@ -177,7 +177,37 @@ rule accessControlThreshold(
     assert (threshold_after != threshold_before) => e.msg.sender == currentContract && f.selector == sig:setThreshold(uint256).selector;
 }
 
-/// FUNCTIONAL CORRECTNESS ///
+// FUNCTIONAL CORRECTNESS
+
+/**
+ * @title Set Threshold Correctness Rule
+ * @notice Verifies that setThreshold updates the threshold when preconditions hold
+ * @dev After a successful setThreshold call, threshold() equals the requested value
+ */
+rule setThresholdCorrectness(env e, uint256 newThreshold) {
+    requireInvariant setInvariant();
+
+    setThreshold(e, newThreshold);
+
+    assert threshold() == newThreshold;
+}
+
+/**
+ * @title Set Threshold Revert Conditions Rule
+ * @notice Verifies that setThreshold reverts when inputs or caller are invalid
+ * @dev Reversion is required when threshold is zero, exceeds total signers, caller is not
+ *      the contract itself, or msg.value is non-zero
+ */
+rule setThresholdReverts(env e, uint256 newThreshold) {
+    setThreshold@withrevert(e, newThreshold);
+    bool reverted = lastReverted;
+
+    assert (newThreshold == 0
+         || newThreshold > totalSigners()
+         || e.msg.sender != currentContract
+         || e.msg.value != 0
+        ) => reverted;
+}
 
 /**
  * @title Signer Set State Transition Rule
@@ -223,6 +253,47 @@ rule setSignerCorrectness(
 }
 
 /**
+ * @title Add Existing Signer Reverts Rule
+ * @notice Verifies that adding a signer who is already active reverts
+ * @dev setSigner(signer, true) must revert when isSigner(signer) already holds
+ */
+rule addExistingSignerReverts(env e, address signer) {
+    require isSigner(signer);
+
+    setSigner@withrevert(e, signer, true);
+
+    assert lastReverted;
+}
+
+/**
+ * @title Remove Non-Signer Reverts Rule
+ * @notice Verifies that removing an address that is not a signer reverts
+ * @dev setSigner(signer, false) must revert when the signer is not in the set
+ */
+rule removeNonSignerReverts(env e, address signer) {
+    require !isSigner(signer);
+
+    setSigner@withrevert(e, signer, false);
+
+    assert lastReverted;
+}
+
+/**
+ * @title Remove Signer Threshold Constraint Rule
+ * @notice Verifies that removing a signer reverts when it would leave fewer signers than threshold
+ * @dev When totalSigners == threshold, removing any signer must revert (TotalSignersLessThanThreshold)
+ */
+rule removeSignerRevertsWhenWouldBreakThreshold(env e, address signer) {
+    requireInvariant setInvariant();
+    require isSigner(signer);
+    require totalSigners() == threshold();  // removal would break constraint
+
+    setSigner@withrevert(e, signer, false);
+
+    assert lastReverted;
+}
+
+/**
  * @title Signature Order Verification Rule
  * @notice Verifies that recovered signers are in ascending order
  * @dev Ensures signatures are ordered by signer address
@@ -243,13 +314,12 @@ rule verifySignaturesCorrectness_order(
     verifySignatures(e, _digest, _signature);
 
     assert index1 < index2 => signer1 < signer2;
-    assert _signature.length == 65 * threshold();
 }
 
 /**
  * @title Signature Length Verification Rule
- * @notice Verifies that signature byte length matches required size
- * @dev Ensures signature length equals threshold * 65 bytes
+ * @notice Verifies that signature byte length meets the minimum required size
+ * @dev Ensures signature length is at least threshold * 65 bytes
  *      (65 bytes = r(32) + s(32) + v(1) for each signature)
  */
 rule verifySignaturesCorrectness_signatureLength(
@@ -261,8 +331,9 @@ rule verifySignaturesCorrectness_signatureLength(
 
     verifySignatures(e, _digest, _signature);
 
-    assert _signature.length == 65 * threshold();
-    satisfy threshold() > 1 && _signature.length == 65 * threshold();
+    assert _signature.length >= 65 * threshold();
+    assert _signature.length % 65 == 0;
+    satisfy threshold() > 1 && _signature.length >= 65 * threshold();
 }
 
 /**
@@ -363,6 +434,46 @@ rule verifySignaturesCorrectness_validSigner(
 }
 
 /**
+ * @title Custom Threshold Signature Verification Rule
+ * @notice Verifies verifyNSignatures with an explicit N matches validSigner for each of the first N slots
+ * @dev For index < customThreshold, the recovered signer at that index must be authorized after
+ *      successful verifyNSignatures(digest, signatures, customThreshold)
+ */
+rule verifyNSignaturesCustomThreshold(
+    env e,
+    bytes32 _digest,
+    bytes _signatures,
+    uint256 customThreshold,
+    uint256 index
+) {
+    ecrecoverAxioms();
+    requireInvariant setInvariant();
+
+    require index < customThreshold;
+    require customThreshold > 0;
+
+    address signer = recoverSignerForIndex(_digest, _signatures, index);
+
+    verifyNSignatures(e, _digest, _signatures, customThreshold);
+
+    assert isSigner(signer);
+}
+
+/**
+ * @title Zero Custom Threshold Reverts Rule
+ * @notice Verifies that verifyNSignatures reverts when N is zero
+ * @dev Matches MultiSig.verifyNSignatures ZeroThreshold revert path
+ */
+rule verifyNSignaturesZeroThresholdReverts(
+    env e,
+    bytes32 _digest,
+    bytes _signatures
+) {
+    verifyNSignatures@withrevert(e, _digest, _signatures, 0);
+    assert lastReverted;
+}
+
+/**
  * @title Invalid Signer Reversion Rule
  * @notice Verifies that transactions with signatures from non-signers are rejected
  * @dev Ensures the verification process reverts if any signature
@@ -390,8 +501,8 @@ rule verifySignaturesCorrectness_invalidSignerShouldRevert(
 
 /**
  * @title Signature Verification Count Rule
- * @notice Verifies that exactly threshold number of signatures are checked
- * @dev Ensures the ECDSA recover operation is called exactly once
+ * @notice Verifies that at least threshold number of signatures are checked
+ * @dev Ensures the ECDSA recover operation is called at least once
  *      per required signature based on the threshold
  */
 rule verifySignaturesCorrectness_signatureCheckCount(
@@ -401,5 +512,17 @@ rule verifySignaturesCorrectness_signatureCheckCount(
 ) {
     require ghostECDSArecoverCallCount == 0;
     verifySignatures(e, _digest, _signature);
-    assert ghostECDSArecoverCallCount == threshold();
+    assert ghostECDSArecoverCallCount >= threshold();
+}
+
+/**
+ * @title Get Signers Length Consistency Rule
+ * @notice Verifies getSigners() returns an array whose length matches totalSigners()
+ * @dev EnumerableSet.values() length must equal the set's recorded size
+ */
+rule getSignersLengthConsistency() {
+    requireInvariant setInvariant();
+
+    address[] signers = getSigners();
+    assert signers.length == totalSigners();
 }

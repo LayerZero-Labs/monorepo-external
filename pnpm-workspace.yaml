@@ -109,23 +109,23 @@ catalogs:
     zod: 4.3.5
     zx: ^8.8.5
   everdawn-oft:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.151
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.151
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.151
     '@openzeppelin/contracts': 5.2.0
     '@openzeppelin/contracts-upgradeable': 5.2.0
   evm-snapshot-v1:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.151
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.151
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.151
     '@layerzerolabs/test-devtools-evm-foundry': 6.0.2
     '@openzeppelin/contracts': 5.4.0
     '@openzeppelin/contracts-upgradeable': 5.4.0
     solidity-bytes-utils: 0.8.4
   evm-snapshot-v2:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.151
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.151
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.151
     '@openzeppelin/contracts': 5.4.0
     '@openzeppelin/contracts-upgradeable': 5.4.0
     solidity-bytes-utils: 0.8.4

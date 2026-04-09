@@ -69,3 +69,6 @@ visualized-reports/
 
 # cdk
 .generated-dockerfile*
+
+# certora
+.certora_internal/
