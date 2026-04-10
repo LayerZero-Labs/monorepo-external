@@ -1,9 +1,11 @@
 import { delay } from 'es-toolkit';
 import * as console from 'node:console';
 import { rmSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import { constants, mkdir, open } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { env } from 'node:process';
 
 interface LockOptions {
     interval?: number;
@@ -20,11 +22,9 @@ export const lock = async <T>(key: string, run: () => Promise<T>, options: LockO
     const { interval, timeout } = { ...defaultOptions, ...options };
 
     const path = buildLockFilePath(key);
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    const packageName = process.env.npm_package_name;
+    const packageName = env.npm_package_name;
     const info = [...(packageName ? ['for', packageName] : []), 'at', path].join(' ');
 
-    const time = Date.now();
     const unlock = () => rmSync(path, { force: true });
 
     while (true) {
@@ -39,7 +39,15 @@ export const lock = async <T>(key: string, run: () => Promise<T>, options: LockO
             lockError = error as Error;
         }
 
-        if (Date.now() - time > timeout) {
+        let time: Date | undefined;
+
+        try {
+            time = (await stat(path)).birthtime;
+        } catch (_error) {
+            // "Crush" errors as the lock is unlocked between the `open` and `stat`.
+        }
+
+        if (time && Date.now() - time.getTime() > timeout) {
             // If the timeout is reached, we assume that the previous run is
             // in a bad state and recover automatically by removing the lock file
             // even when it is actually running still.

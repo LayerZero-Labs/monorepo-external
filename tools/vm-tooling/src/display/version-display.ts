@@ -58,7 +58,7 @@ export function displayToolVersionInfo<TImageId extends string>(
     console.log(`Supported versions: ${supportedVersions.join(', ')}`);
     console.log();
 
-    // Display default cache volumes
+    // Display default volumes
     if (tool.defaultVolumes && tool.defaultVolumes.length > 0) {
         console.log('📦 Default cache volumes:');
         tool.defaultVolumes.forEach((volume) => {

@@ -8,6 +8,7 @@ const defaultVolumes: readonly VolumeMapping[] = [
         type: 'isolate',
         containerPath: '/usr/local/cargo',
         name: 'solana-cargo',
+        locked: true,
     },
     {
         type: 'isolate',

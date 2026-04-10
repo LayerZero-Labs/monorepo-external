@@ -8,7 +8,7 @@ import { $, type ProcessOutput } from 'zx';
 import type { EnvironmentVariable, VolumeMapping } from '../config';
 import type { ChainContext } from '../context';
 import { findWorkspaceRoot } from '../utils';
-import { getImageUriForTool, getVolumeName } from '../utils/docker';
+import { getImageUriForTool, qualifyVolumeName } from '../utils/docker';
 import { stringifyError } from '../utils/error';
 import { findToolByName } from '../utils/finder';
 import { lockMany } from './lock';
@@ -43,23 +43,18 @@ const mergeVolumes = (
 ): VolumeMapping[] => uniqBy([...userVolumes, ...defaultVolumes], (volume) => volume.containerPath);
 
 /**
- * Resolve host paths in volumes to absolute paths
+ * Resolve a host path in a volume to an absolute path.
  * - Paths starting with ~ are resolved to home directory
  * - Relative paths (starting with . or no prefix) are resolved to workspace root
  * - Absolute paths are left unchanged
  */
-const resolveVolumePaths = (volumes: VolumeMapping[], workspaceRoot: string): VolumeMapping[] =>
-    volumes.map((volume) =>
-        volume.type === 'host'
-            ? {
-                  ...volume,
-                  hostPath: path.resolve(
-                      workspaceRoot,
-                      volume.hostPath.replace(/^~/, os.homedir()),
-                  ),
-              }
-            : volume,
-    );
+const resolveVolumePath = (volume: VolumeMapping, workspaceRoot: string): VolumeMapping =>
+    volume.type === 'host'
+        ? {
+              ...volume,
+              hostPath: path.resolve(workspaceRoot, volume.hostPath.replace(/^~/, os.homedir())),
+          }
+        : volume;
 
 const ensureDockerImage = async (imageUri: string): Promise<void> => {
     let output: ProcessOutput;
@@ -117,6 +112,7 @@ export interface ToolCommandExecutionOptions {
     script?: string;
     publish?: string[];
     versions?: Record<string, string>;
+    defaultVolumesEnabled?: boolean;
 }
 
 /**
@@ -134,6 +130,7 @@ export async function executeToolCommand<TImageId extends string>(
         script,
         publish,
         versions = {},
+        defaultVolumesEnabled = true,
     }: ToolCommandExecutionOptions,
 ): Promise<ProcessOutput> {
     const tool = findToolByName(context, toolName);
@@ -148,15 +145,19 @@ export async function executeToolCommand<TImageId extends string>(
             script,
             publish,
             versions,
+            defaultVolumesEnabled,
         });
     }
 
-    // Merge default volumes with user-specified volumes
-    const defaultVolumes = tool.defaultVolumes ?? [];
-    const volumes = mergeVolumes(defaultVolumes, userVolumes);
+    const workspaceRoot = await findWorkspaceRoot(cwd);
+
+    const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
+    const volumes = mergeVolumes(defaultVolumes, userVolumes)
+        .map((volume) => resolveVolumePath(volume, workspaceRoot))
+        .map(qualifyVolumeName);
 
     if (defaultVolumes.length > 0) {
-        console.info(`📦 Using ${defaultVolumes.length} default cache volume(s) for ${tool.name}`);
+        console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
         if (userVolumes.length > 0) {
             const overrides = userVolumes.filter((uv) =>
                 defaultVolumes.some((dv) => dv.containerPath === uv.containerPath),
@@ -194,7 +195,6 @@ export async function executeToolCommand<TImageId extends string>(
 
     // Use Docker image with merged volumes
     const imageUri = await getImageUriForTool(context, tool.name, resolvedVersion);
-    const workspaceRoot = await findWorkspaceRoot(cwd);
     const relativePath = path.relative(workspaceRoot, cwd);
 
     await ensureDockerImage(imageUri);
@@ -209,7 +209,7 @@ export async function executeToolCommand<TImageId extends string>(
     // Check if Docker socket is mounted (for tools that spawn Docker containers like anchor --verifiable)
     // If so, inject HOST_CWD and HOST_WORKSPACE_ROOT so the inner container knows the host paths
     const hasDockerSocketMount = volumes.some(
-        (v) => v.type === 'host' && v.containerPath === '/var/run/docker.sock',
+        (volume) => volume.type === 'host' && volume.containerPath === '/var/run/docker.sock',
     );
     const dockerSocketEnv: EnvironmentVariable[] = hasDockerSocketMount
         ? [
@@ -264,9 +264,9 @@ export async function executeToolCommand<TImageId extends string>(
         '-w',
         `/workspace/${relativePath}`,
         ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
-        ...resolveVolumePaths(volumes, workspaceRoot).flatMap((volume) => [
+        ...volumes.flatMap((volume) => [
             '-v',
-            getVolumeName(volume),
+            `${volume.type === 'host' ? volume.hostPath : volume.name}:${volume.containerPath}`,
         ]),
         ...(entrypoint ? ['--entrypoint', entrypoint] : []),
         imageUri,
@@ -278,7 +278,7 @@ export async function executeToolCommand<TImageId extends string>(
             volume.type === 'isolate' && volume.locked ? [volume.name] : [],
         ),
         async () => {
-            const label = `⏱️ ${finalArgs.join(' ')}`;
+            const label = `⏳ ${finalArgs.join(' ')}`;
             console.time(label);
             const result = await $`docker ${dockerArgs}`.nothrow();
             console.timeEnd(label);

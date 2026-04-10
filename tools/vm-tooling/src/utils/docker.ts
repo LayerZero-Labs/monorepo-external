@@ -1,4 +1,5 @@
 import { basename, join } from 'node:path';
+import { env } from 'node:process';
 
 import type { Image, VolumeMapping } from '../config';
 import { getImageDirectory, getRegistry } from '../config';
@@ -44,18 +45,16 @@ export const getImageUri = async (image: Image, separator: '_' | '-' = '_'): Pro
 export const getImageTag = ({ versions, patch }: Image, separator: '_' | '-' = '_'): string =>
     [...Object.entries(versions).sort().flat(), ...(patch ? ['patch', patch] : [])].join(separator);
 
-// passing workspaceRoot is necessary for host volumes to resolve relative paths to the workspace root
-export const getVolumeName = (volume: VolumeMapping): string => {
-    if (volume.type === 'host') {
-        return `${volume.hostPath}:${volume.containerPath}`;
+export const qualifyVolumeName = (volume: VolumeMapping): VolumeMapping => {
+    if (volume.type !== 'isolate') {
+        return volume;
     }
 
     const components = ['lz-tooling-cache', volume.name];
 
     if (!volume.shared) {
         // This is the package name where the `lz-tool` command is executed.
-        // eslint-disable-next-line turbo/no-undeclared-env-vars
-        const packageName = process.env.npm_package_name;
+        const packageName = env.npm_package_name;
 
         if (!packageName) {
             throw new Error('npm_package_name environment variable not defined');
@@ -64,5 +63,5 @@ export const getVolumeName = (volume: VolumeMapping): string => {
         components.push(basename(packageName));
     }
 
-    return `${components.join('-')}:${volume.containerPath}`;
+    return { ...volume, name: components.join('-') };
 };

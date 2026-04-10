@@ -19,6 +19,7 @@ interface GlobalOptions {
     publish?: string[];
     script?: string;
     customEntrypoint?: string;
+    defaultVolumes: boolean;
 }
 
 type RegisterExtraCommands = (
@@ -36,7 +37,7 @@ const createCli = <TImageId extends string>(
     );
 
     const parseGlobalOptions = async (command: Command): Promise<ToolCommandExecutionOptions> => {
-        const { cwd, volume, ...options } = command.opts<GlobalOptions>();
+        const { cwd, volume, defaultVolumes, ...options } = command.opts<GlobalOptions>();
         const resolvedCwd = cwd ?? process.cwd();
 
         // CLI flags take precedence over project config versions
@@ -55,6 +56,7 @@ const createCli = <TImageId extends string>(
             cwd: resolvedCwd,
             volumes: volume,
             versions,
+            defaultVolumesEnabled: defaultVolumes,
         };
     };
 
@@ -165,7 +167,8 @@ const createCli = <TImageId extends string>(
             "Publish a container's port(s) to the host (repeatable)",
             (value: string, previous: string[]) => [...previous, value],
             [],
-        );
+        )
+        .option('--no-default-volumes', 'Disable default volumes for the tool');
 
     // Add version options for each tool dynamically
     for (const tool of tools) {

@@ -17,9 +17,9 @@ it('throws an error on timeout', async () => {
     const key = 'timeout';
     const path = buildLockFilePath(key);
     await mkdir(dirname(path), { recursive: true });
-    await writeFile(path, '');
+    await writeFile(path, Date.now().toString());
 
-    await expect(lock(key, async () => null, { timeout: 0 })).rejects.toThrowError(/timeout/i);
+    await expect(lock(key, async () => null, { timeout: 1 })).rejects.toThrowError(/timeout/i);
 
     // The `lock` function call cleans up the lock file of a bad state.
     await expect(stat(path)).rejects.toThrowError(/ENOENT/);
