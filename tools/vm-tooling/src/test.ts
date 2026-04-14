@@ -36,7 +36,7 @@ export const testTools = (
     describe('Docker image IDs', () => {
         for (const [name, image] of Object.entries(images)) {
             it(`has an image ID of ${name}`, () => {
-                expect([image.name, getImageTag(image, '-')].join(':')).toBe(name);
+                expect([image.name, getImageTag(image)].join(':')).toBe(name);
             });
         }
     });
@@ -49,7 +49,7 @@ export const testTools = (
                 let imageUri: string;
 
                 beforeAll(async () => {
-                    imageUri = await getImageUri(image, '_');
+                    imageUri = await getImageUri(image);
                     await ensureDockerImageExists(imageUri);
                 }, PULL_TIMEOUT);
 

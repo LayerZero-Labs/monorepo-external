@@ -28,9 +28,6 @@ interface GithubMatrixOutput {
     activeImages: string[];
 }
 
-// TODO Remove underscore which is not standard in the Docker tag naming scheme.
-const TAG_SEPARATORS = ['-', '_'] as const;
-
 export const generateGithubMatrix = (
     images: Record<string, Image>,
     directory: string,
@@ -40,10 +37,9 @@ export const generateGithubMatrix = (
         entry: ImageEntry;
         image: Image;
     } => {
-        const imageName = getImageName(image.name);
-        const tags = TAG_SEPARATORS.map((separator) => getImageTag(image, separator));
+        const tag = getImageTag(image);
 
-        if (tags.length === 0 || !tags[0]) {
+        if (!tag) {
             throw new Error(
                 `Image "${imageId}" produced no tags. Every image must have at least one non-empty tag.`,
             );
@@ -57,8 +53,8 @@ export const generateGithubMatrix = (
                     .sort()
                     .map(([key, value]) => `${constantCase(key)}_VERSION=${value}`),
                 directory: join(directory, 'docker', image.name),
-                image_name: imageName,
-                tags,
+                image_name: getImageName(image.name),
+                tags: [tag],
             },
             image,
         };
@@ -70,12 +66,12 @@ export const generateGithubMatrix = (
 
     const mirroredImages = results
         .filter((result) => result.image.mirrorRegistries?.length)
-        .flatMap((result) =>
-            result.image.mirrorRegistries!.map((mirror) => ({
-                id: result.entry.id,
-                name: result.entry.name,
-                image_name: result.entry.image_name,
-                tags: result.entry.tags,
+        .flatMap(({ entry, image }) =>
+            image.mirrorRegistries!.map((mirror) => ({
+                id: entry.id,
+                name: entry.name,
+                image_name: entry.image_name,
+                tags: entry.tags,
                 mirror,
             })),
         );

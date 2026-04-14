@@ -10,7 +10,6 @@ export const getImageUriForTool = async <TImageId extends string>(
     context: ChainContext<TImageId>,
     toolName: string,
     version: string,
-    separator: '_' | '-' = '_',
 ): Promise<string> => {
     const [image] = context.versionCombinations.flatMap((combination) => {
         const imageId = combination.images[toolName];
@@ -32,18 +31,18 @@ export const getImageUriForTool = async <TImageId extends string>(
         );
     }
 
-    return getImageUri(image, separator);
+    return getImageUri(image);
 };
 
-export const getImageUri = async (image: Image, separator: '_' | '-' = '_'): Promise<string> =>
+export const getImageUri = async (image: Image): Promise<string> =>
     join(
         await getRegistry(),
         await getImageDirectory(),
-        `${getImageName(image.name)}:${getImageTag(image, separator)}`,
+        `${getImageName(image.name)}:${getImageTag(image)}`,
     );
 
-export const getImageTag = ({ versions, patch }: Image, separator: '_' | '-' = '_'): string =>
-    [...Object.entries(versions).sort().flat(), ...(patch ? ['patch', patch] : [])].join(separator);
+export const getImageTag = ({ versions, patch }: Image): string =>
+    [...Object.entries(versions).sort().flat(), ...(patch ? ['patch', patch] : [])].join('-');
 
 export const qualifyVolumeName = (volume: VolumeMapping): VolumeMapping => {
     if (volume.type !== 'isolate') {
