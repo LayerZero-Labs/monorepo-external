@@ -7,13 +7,13 @@ import {
     OFTLimit,
     OFTReceipt,
     OFTFeeDetail
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { IOFTExtended } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFTExtended.sol";
-import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/access/AccessControl2StepUpgradeable.sol";
-import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
-import { FeeConfigRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/fee-config/FeeConfigRBACUpgradeable.sol";
-import { PauseByIDRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
-import { RateLimiterRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/rate-limiter/RateLimiterRBACUpgradeable.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { IOFTExtended } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFTExtended.sol";
+import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
+import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
+import { FeeConfigRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-config/FeeConfigRBACUpgradeable.sol";
+import { PauseByIDRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
+import { RateLimiterRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/rate-limiter/RateLimiterRBACUpgradeable.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { OFTCoreBaseUpgradeable } from "./../oft/OFTCoreBaseUpgradeable.sol";
 import { OFTCoreRBACUpgradeable } from "./../oft/OFTCoreRBACUpgradeable.sol";

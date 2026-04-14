@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 import { ILayerZeroEndpointV2 } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
-import { IOAppCore } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppCore.sol";
+import { IOAppCore } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppCore.sol";
 import {
     IOFT,
     SendParam,
@@ -11,7 +11,7 @@ import {
     OFTFeeDetail,
     MessagingReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { INexus } from "./interfaces/INexus.sol";

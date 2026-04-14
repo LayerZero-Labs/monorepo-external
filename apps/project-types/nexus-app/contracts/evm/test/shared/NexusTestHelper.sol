@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OptionsBuilder } from "@layerzerolabs/oapp-evm-impl/contracts/oapp/libs/OptionsBuilder.sol";
-import { SendParam } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+import { OptionsBuilder } from "@layerzerolabs/oapp-evm-contracts/contracts/oapp/libs/OptionsBuilder.sol";
+import { SendParam } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { TestHelperOz5 } from "@layerzerolabs/test-devtools-evm-foundry/contracts/TestHelperOz5.sol";
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { INexusFeeConfigModule } from "./../../contracts/interfaces/INexusFeeConfigModule.sol";
 import { ITokenScales } from "./../../contracts/interfaces/ITokenScales.sol";

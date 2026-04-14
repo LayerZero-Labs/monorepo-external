@@ -6,20 +6,20 @@ import {
     MessagingFee
 } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
 import { IMessagingComposer } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/IMessagingComposer.sol";
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
-import { OptionsBuilder } from "@layerzerolabs/oapp-evm-impl/contracts/oapp/libs/OptionsBuilder.sol";
-import { SendParam } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-impl/contracts/libs/OFTComposeMsgCodec.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { OptionsBuilder } from "@layerzerolabs/oapp-evm-contracts/contracts/oapp/libs/OptionsBuilder.sol";
+import { SendParam } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
 import { EndpointV2Mock as EndpointV2 } from "@layerzerolabs/test-devtools-evm-foundry/contracts/mocks/EndpointV2Mock.sol";
 import {
     MockBurnerMinterRedeemIssue,
     MockBurnerMinterCrosschain
-} from "@layerzerolabs/test-utils-evm/contracts/mocks/MockBurnerMinterVariants.sol";
-import { MockComposer } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockComposer.sol";
-import { MockERC20 } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockERC20.sol";
-import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm/contracts/mocks/RejectingMsgInspector.sol";
-import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm/contracts/mocks/WhitelistMsgInspector.sol";
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+} from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockBurnerMinterVariants.sol";
+import { MockComposer } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockComposer.sol";
+import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
+import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/RejectingMsgInspector.sol";
+import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/WhitelistMsgInspector.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { INexusOFT } from "./../contracts/interfaces/INexusOFT.sol";
 import { INexusPause } from "./../contracts/interfaces/INexusPause.sol";
 import { INexusPauseModule } from "./../contracts/interfaces/INexusPauseModule.sol";

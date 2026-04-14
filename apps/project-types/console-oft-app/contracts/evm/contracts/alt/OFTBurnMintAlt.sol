@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OFTBurnMintExtendedRBACAltUpgradeable } from "@layerzerolabs/oft-evm-upgradeable-impl/contracts/extended/alt/OFTBurnMintExtendedRBACAltUpgradeable.sol";
+import { OFTBurnMintExtendedRBACAltUpgradeable } from "@layerzerolabs/oft-upgradeable-evm-contracts/contracts/extended/alt/OFTBurnMintExtendedRBACAltUpgradeable.sol";
 
 /**
  * @title OFTBurnMintAlt

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OFTLockUnlockExtendedRBACTest } from "@layerzerolabs/oft-evm-upgradeable-impl/test/OFTLockUnlockExtendedRBAC.t.sol";
+import { OFTLockUnlockExtendedRBACTest } from "@layerzerolabs/oft-upgradeable-evm-contracts/test/OFTLockUnlockExtendedRBAC.t.sol";
 import { OFTLockUnlock } from "../contracts/OFTLockUnlock.sol";
 
 contract OFTLockUnlockHarness is OFTLockUnlock {

@@ -1,5 +1,5 @@
 {
-    "name": "@layerzerolabs/utils-evm-impl",
+    "name": "@layerzerolabs/utils-evm-contracts",
     "version": "0.0.0",
     "private": false,
     "description": "LayerZero Labs reference EVM utility implementations",

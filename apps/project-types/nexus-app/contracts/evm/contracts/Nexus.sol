@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
-import { IOAppReceiver } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppReceiver.sol";
-import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
-import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppCoreRBACUpgradeable.sol";
-import { OAppReceiverUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppReceiverUpgradeable.sol";
-import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppSenderUpgradeable.sol";
-import { OAppUpgradeable, Origin } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppUpgradeable.sol";
-import { OAppOptionsType3RBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { IOAppReceiver } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
+import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
+import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppCoreRBACUpgradeable.sol";
+import { OAppReceiverUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppReceiverUpgradeable.sol";
+import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppSenderUpgradeable.sol";
+import {
+    OAppUpgradeable,
+    Origin
+} from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppUpgradeable.sol";
+import { OAppOptionsType3RBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
 import {
     IOFT,
     SendParam,
@@ -17,10 +20,10 @@ import {
     OFTFeeDetail,
     MessagingReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-impl/contracts/libs/OFTComposeMsgCodec.sol";
-import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/access/AccessControl2StepUpgradeable.sol";
-import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
+import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
+import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { OFTRegistryRBACUpgradeable } from "./extensions/OFTRegistryRBACUpgradeable.sol";
 import { INexus } from "./interfaces/INexus.sol";

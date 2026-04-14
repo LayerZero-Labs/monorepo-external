@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppSenderUpgradeable.sol";
+import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppSenderUpgradeable.sol";
 import {
     IOFT,
     SendParam,
     MessagingFee,
     MessagingReceipt,
     OFTReceipt
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { OFTCoreBaseUpgradeable } from "./../oft/OFTCoreBaseUpgradeable.sol";
 import { OFTCoreExtendedRBACUpgradeable } from "./OFTCoreExtendedRBACUpgradeable.sol";
 

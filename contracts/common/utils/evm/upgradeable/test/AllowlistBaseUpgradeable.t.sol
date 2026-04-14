@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IAllowlist } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IAllowlist.sol";
+import { IAllowlist } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IAllowlist.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { Test } from "forge-std/Test.sol";
 import { AllowlistBaseUpgradeable } from "./../contracts/allowlist/AllowlistBaseUpgradeable.sol";

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppMsgInspection } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspection.sol";
-import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/access/AccessControl2StepUpgradeable.sol";
+import { IOAppMsgInspection } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspection.sol";
+import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
 import { OAppMsgInspectionBaseUpgradeable } from "./OAppMsgInspectionBaseUpgradeable.sol";
 
 /**

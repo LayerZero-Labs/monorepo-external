@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppOptionsType3 } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppOptionsType3.sol";
-import { OptionsBuilder } from "@layerzerolabs/oapp-evm-impl/contracts/oapp/libs/OptionsBuilder.sol";
+import { IOAppOptionsType3 } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppOptionsType3.sol";
+import { OptionsBuilder } from "@layerzerolabs/oapp-evm-contracts/contracts/oapp/libs/OptionsBuilder.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { Test } from "forge-std/Test.sol";

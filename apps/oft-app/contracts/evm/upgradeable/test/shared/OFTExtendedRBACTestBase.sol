@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
 import {
     IOFT,
     SendParam,
@@ -9,11 +9,11 @@ import {
     OFTFeeDetail,
     OFTReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { TestHelperOz5 } from "@layerzerolabs/test-devtools-evm-foundry/contracts/TestHelperOz5.sol";
-import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm/contracts/mocks/RejectingMsgInspector.sol";
-import { IPauseByID } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IPauseByID.sol";
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/RejectingMsgInspector.sol";
+import { IPauseByID } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IPauseByID.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { OFTCoreExtendedRBACUpgradeable } from "./../../contracts/extended/OFTCoreExtendedRBACUpgradeable.sol";

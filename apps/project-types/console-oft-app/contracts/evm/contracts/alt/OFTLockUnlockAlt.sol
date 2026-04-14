@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OFTLockUnlockExtendedRBACAltUpgradeable } from "@layerzerolabs/oft-evm-upgradeable-impl/contracts/extended/alt/OFTLockUnlockExtendedRBACAltUpgradeable.sol";
+import { OFTLockUnlockExtendedRBACAltUpgradeable } from "@layerzerolabs/oft-upgradeable-evm-contracts/contracts/extended/alt/OFTLockUnlockExtendedRBACAltUpgradeable.sol";
 
 /**
  * @title OFTLockUnlockAlt

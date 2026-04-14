@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IAccessControl2Step } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IAccessControl2Step.sol";
+import { IAccessControl2Step } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IAccessControl2Step.sol";
 import { AccessControlUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 

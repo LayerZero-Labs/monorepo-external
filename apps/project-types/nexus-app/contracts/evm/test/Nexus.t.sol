@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppCore } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppCore.sol";
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
-import { Origin } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppReceiver.sol";
-import { OptionsBuilder } from "@layerzerolabs/oapp-evm-impl/contracts/oapp/libs/OptionsBuilder.sol";
+import { IOAppCore } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppCore.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { Origin } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
+import { OptionsBuilder } from "@layerzerolabs/oapp-evm-contracts/contracts/oapp/libs/OptionsBuilder.sol";
 import {
     SendParam,
     OFTLimit,
     OFTFeeDetail,
     OFTReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm/contracts/mocks/WhitelistMsgInspector.sol";
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/WhitelistMsgInspector.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { INexus } from "./../contracts/interfaces/INexus.sol";

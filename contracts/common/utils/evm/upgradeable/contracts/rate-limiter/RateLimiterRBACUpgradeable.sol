@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { AccessControl2StepUpgradeable } from "./../access/AccessControl2StepUpgradeable.sol";
 import { RateLimiterBaseUpgradeable } from "./RateLimiterBaseUpgradeable.sol";
 

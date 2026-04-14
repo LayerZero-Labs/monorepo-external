@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppAlt } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppAlt.sol";
-import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppSenderUpgradeable.sol";
+import { IOAppAlt } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppAlt.sol";
+import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppSenderUpgradeable.sol";
 
 import { Nexus } from "./Nexus.sol";
 

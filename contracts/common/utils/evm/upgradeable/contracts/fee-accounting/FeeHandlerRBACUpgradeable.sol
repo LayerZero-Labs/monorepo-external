@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IFeeHandler } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IFeeHandler.sol";
+import { IFeeHandler } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFeeHandler.sol";
 import { AccessControl2StepUpgradeable } from "./../access/AccessControl2StepUpgradeable.sol";
 import { FeeHandlerBaseUpgradeable } from "./FeeHandlerBaseUpgradeable.sol";
 

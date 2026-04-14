@@ -427,7 +427,7 @@ importers:
       '@layerzerolabs/lz-evm-v1-0.7':
         specifier: 'catalog:'
         version: 3.0.167(@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0))(@openzeppelin/contracts@5.4.0)(hardhat-deploy@1.0.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../non-upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -436,7 +436,7 @@ importers:
       '@layerzerolabs/test-devtools-evm-foundry':
         specifier: 'catalog:'
         version: 8.0.1(4a7d48a8586e3f078bbced53c6442049)
-      '@layerzerolabs/test-utils-evm':
+      '@layerzerolabs/test-utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/test-utils/evm
       '@layerzerolabs/toolbox-foundry':
@@ -448,10 +448,10 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/typescript
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
-      '@layerzerolabs/utils-evm-upgradeable-impl':
+      '@layerzerolabs/utils-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -484,7 +484,7 @@ importers:
       '@layerzerolabs/lz-evm-v1-0.7':
         specifier: 'catalog:'
         version: 3.0.167(@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0))(@openzeppelin/contracts@5.4.0)(hardhat-deploy@1.0.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/non-upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -502,7 +502,7 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/typescript
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -532,13 +532,13 @@ importers:
       '@layerzerolabs/lz-evm-v1-0.7':
         specifier: 'catalog:'
         version: 3.0.167(@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0))(@openzeppelin/contracts@5.4.0)(hardhat-deploy@1.0.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/non-upgradeable
-      '@layerzerolabs/oapp-evm-upgradeable-impl':
+      '@layerzerolabs/oapp-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/upgradeable
-      '@layerzerolabs/oft-evm-impl':
+      '@layerzerolabs/oft-evm-contracts':
         specifier: workspace:*
         version: link:../non-upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -547,7 +547,7 @@ importers:
       '@layerzerolabs/test-devtools-evm-foundry':
         specifier: 'catalog:'
         version: 8.0.1(4a7d48a8586e3f078bbced53c6442049)
-      '@layerzerolabs/test-utils-evm':
+      '@layerzerolabs/test-utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/test-utils/evm
       '@layerzerolabs/toolbox-foundry':
@@ -559,10 +559,10 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/typescript
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
-      '@layerzerolabs/utils-evm-upgradeable-impl':
+      '@layerzerolabs/utils-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -640,16 +640,16 @@ importers:
       '@layerzerolabs/lz-evm-v1-0.7':
         specifier: catalog:console
         version: 3.0.149(@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0))(@openzeppelin/contracts@5.4.0)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/non-upgradeable
-      '@layerzerolabs/oapp-evm-upgradeable-impl':
+      '@layerzerolabs/oapp-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/upgradeable
-      '@layerzerolabs/oft-evm-impl':
+      '@layerzerolabs/oft-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oft-app/contracts/evm/non-upgradeable
-      '@layerzerolabs/oft-evm-upgradeable-impl':
+      '@layerzerolabs/oft-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oft-app/contracts/evm/upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -658,16 +658,16 @@ importers:
       '@layerzerolabs/test-devtools-evm-foundry':
         specifier: 'catalog:'
         version: 8.0.1(9a9b7f653c55aabaa746bbbd3efe18cc)
-      '@layerzerolabs/test-utils-evm':
+      '@layerzerolabs/test-utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/test-utils/evm
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
-      '@layerzerolabs/utils-evm-upgradeable-impl':
+      '@layerzerolabs/utils-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -709,16 +709,16 @@ importers:
       '@layerzerolabs/lz-evm-v1-0.7':
         specifier: catalog:console
         version: 3.0.149(@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0))(@openzeppelin/contracts@5.4.0)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/non-upgradeable
-      '@layerzerolabs/oapp-evm-upgradeable-impl':
+      '@layerzerolabs/oapp-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oapp-app/contracts/evm/upgradeable
-      '@layerzerolabs/oft-evm-impl':
+      '@layerzerolabs/oft-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oft-app/contracts/evm/non-upgradeable
-      '@layerzerolabs/oft-evm-upgradeable-impl':
+      '@layerzerolabs/oft-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../oft-app/contracts/evm/upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -727,7 +727,7 @@ importers:
       '@layerzerolabs/test-devtools-evm-foundry':
         specifier: 'catalog:'
         version: 8.0.1(ba5a7755d8eac5b4c517aeb6ef7e6354)
-      '@layerzerolabs/test-utils-evm':
+      '@layerzerolabs/test-utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/test-utils/evm
       '@layerzerolabs/toolbox-foundry':
@@ -739,10 +739,10 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/typescript
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
-      '@layerzerolabs/utils-evm-upgradeable-impl':
+      '@layerzerolabs/utils-upgradeable-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -766,7 +766,7 @@ importers:
 
   contracts/common/test-utils/evm:
     devDependencies:
-      '@layerzerolabs/oapp-evm-impl':
+      '@layerzerolabs/oapp-evm-contracts':
         specifier: workspace:*
         version: link:../../../../apps/oapp-app/contracts/evm/non-upgradeable
       '@layerzerolabs/solhint-configuration':
@@ -775,7 +775,7 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../utils/evm/non-upgradeable
       '@layerzerolabs/vm-tooling-evm':
@@ -832,7 +832,7 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/typescript
-      '@layerzerolabs/utils-evm-impl':
+      '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../non-upgradeable
       '@layerzerolabs/vm-tooling-evm':

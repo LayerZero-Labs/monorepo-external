@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppReceiver, Origin } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppReceiver.sol";
+import { IOAppReceiver, Origin } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
 import { OAppCoreBaseUpgradeable } from "./OAppCoreBaseUpgradeable.sol";
 
 /**

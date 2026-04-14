@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOFTDecimalUtils } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFTDecimalUtils.sol";
+import { IOFTDecimalUtils } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFTDecimalUtils.sol";
 
 /**
  * @title IOFTRegistry

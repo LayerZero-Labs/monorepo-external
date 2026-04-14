@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppCore } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppCore.sol";
-import { SendParam, OFTReceipt, MessagingFee } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { MockERC20 } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockERC20.sol";
+import { IOAppCore } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppCore.sol";
+import { SendParam, OFTReceipt, MessagingFee } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
 
 import { OFTCoreExtendedRBACUpgradeable } from "./../contracts/extended/OFTCoreExtendedRBACUpgradeable.sol";
 import { OFTLockUnlockExtendedRBACUpgradeable } from "./../contracts/extended/OFTLockUnlockExtendedRBACUpgradeable.sol";

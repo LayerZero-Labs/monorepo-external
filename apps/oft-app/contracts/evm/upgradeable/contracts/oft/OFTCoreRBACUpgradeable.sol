@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
-import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppCoreRBACUpgradeable.sol";
-import { OAppOptionsType3RBACUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
-import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/access/AccessControl2StepUpgradeable.sol";
+import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
+import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppCoreRBACUpgradeable.sol";
+import { OAppOptionsType3RBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
+import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
 import { OFTCoreBaseUpgradeable } from "./OFTCoreBaseUpgradeable.sol";
 
 /**

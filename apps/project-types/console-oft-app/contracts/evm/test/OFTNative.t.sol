@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OFTNativeExtendedRBACTest } from "@layerzerolabs/oft-evm-upgradeable-impl/test/OFTNativeExtendedRBAC.t.sol";
+import { OFTNativeExtendedRBACTest } from "@layerzerolabs/oft-upgradeable-evm-contracts/test/OFTNativeExtendedRBAC.t.sol";
 import { OFTNative } from "../contracts/OFTNative.sol";
 
 contract OFTNativeHarness is OFTNative {

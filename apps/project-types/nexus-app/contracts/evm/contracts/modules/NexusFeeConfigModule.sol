@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { EnumerableSetPagination } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/libs/EnumerableSetPagination.sol";
+import { EnumerableSetPagination } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/libs/EnumerableSetPagination.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import { INexusFeeConfig } from "./../interfaces/INexusFeeConfig.sol";

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IRateLimiter } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IRateLimiter.sol";
+import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
 import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 import { INexusModule } from "./../../contracts/interfaces/INexusModule.sol";
 import { ITokenScales } from "./../../contracts/interfaces/ITokenScales.sol";

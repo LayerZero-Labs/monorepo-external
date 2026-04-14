@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IPauseByID } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IPauseByID.sol";
+import { IPauseByID } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IPauseByID.sol";
 import { AccessControl2StepUpgradeable } from "./../access/AccessControl2StepUpgradeable.sol";
 import { PauseByIDBaseUpgradeable } from "./PauseByIDBaseUpgradeable.sol";
 

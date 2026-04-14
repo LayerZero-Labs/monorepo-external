@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IFeeConfig } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IFeeConfig.sol";
+import { IFeeConfig } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFeeConfig.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { Test } from "forge-std/Test.sol";
 import { FeeConfigBaseUpgradeable } from "./../contracts/fee-config/FeeConfigBaseUpgradeable.sol";

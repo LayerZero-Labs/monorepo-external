@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { AllowlistRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/allowlist/AllowlistRBACUpgradeable.sol";
-import { PauseByIDRBACUpgradeable } from "@layerzerolabs/utils-evm-upgradeable-impl/contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
+import { AllowlistRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/allowlist/AllowlistRBACUpgradeable.sol";
+import { PauseByIDRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
 import { INexusERC20Guard } from "./interfaces/INexusERC20Guard.sol";
 
 /**

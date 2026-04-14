@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOFT } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { OFTDecimalUtils } from "@layerzerolabs/oft-evm-impl/contracts/utils/OFTDecimalUtils.sol";
+import { IOFT } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFTDecimalUtils } from "@layerzerolabs/oft-evm-contracts/contracts/utils/OFTDecimalUtils.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { INexusOFT } from "./../interfaces/INexusOFT.sol";

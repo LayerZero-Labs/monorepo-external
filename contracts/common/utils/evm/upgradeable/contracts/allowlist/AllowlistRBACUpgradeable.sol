@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IAllowlist } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IAllowlist.sol";
+import { IAllowlist } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IAllowlist.sol";
 import { AccessControl2StepUpgradeable } from "./../access/AccessControl2StepUpgradeable.sol";
 import { AllowlistBaseUpgradeable } from "./AllowlistBaseUpgradeable.sol";
 

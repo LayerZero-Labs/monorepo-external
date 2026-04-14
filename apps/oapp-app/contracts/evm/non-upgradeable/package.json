@@ -1,5 +1,5 @@
 {
-    "name": "@layerzerolabs/oapp-evm-impl",
+    "name": "@layerzerolabs/oapp-evm-contracts",
     "version": "0.0.0",
     "private": false,
     "description": "LayerZero Labs reference EVM OApp implementation",

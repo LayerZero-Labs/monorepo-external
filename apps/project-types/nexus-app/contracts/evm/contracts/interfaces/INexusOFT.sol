@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOFT } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+import { IOFT } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 
 /**
  * @title INexusOFT

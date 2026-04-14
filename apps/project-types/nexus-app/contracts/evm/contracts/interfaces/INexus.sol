@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppExtended } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppExtended.sol";
+import { IOAppExtended } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppExtended.sol";
 import {
     SendParam,
     OFTLimit,
@@ -9,8 +9,8 @@ import {
     OFTFeeDetail,
     MessagingReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { IFeeHandler } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IFeeHandler.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { IFeeHandler } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFeeHandler.sol";
 import { INexusFeeConfig } from "./INexusFeeConfig.sol";
 import { INexusPause } from "./INexusPause.sol";
 import { INexusRateLimiter } from "./INexusRateLimiter.sol";

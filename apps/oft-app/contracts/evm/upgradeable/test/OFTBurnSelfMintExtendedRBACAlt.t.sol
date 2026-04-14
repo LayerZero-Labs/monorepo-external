@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppAlt } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppAlt.sol";
-import { SendParam, MessagingFee, OFTReceipt } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+import { IOAppAlt } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppAlt.sol";
+import { SendParam, MessagingFee, OFTReceipt } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { EndpointV2AltMock } from "@layerzerolabs/test-devtools-evm-foundry/contracts/mocks/EndpointV2AltMock.sol";
-import { MockMinterBurnerMsgSender } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockBurnerMinterVariants.sol";
-import { MockERC20 } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockERC20.sol";
+import { MockMinterBurnerMsgSender } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockBurnerMinterVariants.sol";
+import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { OFTBurnSelfMintExtendedRBACAltUpgradeable } from "./../contracts/extended/alt/OFTBurnSelfMintExtendedRBACAltUpgradeable.sol";
 import { OFTBurnMintExtendedRBACUpgradeable } from "./../contracts/extended/OFTBurnMintExtendedRBACUpgradeable.sol";

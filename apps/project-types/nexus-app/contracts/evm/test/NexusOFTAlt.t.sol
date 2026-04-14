@@ -5,13 +5,13 @@ import {
     MessagingReceipt,
     MessagingFee
 } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
-import { IOAppAlt } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppAlt.sol";
-import { SendParam } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
+import { IOAppAlt } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppAlt.sol";
+import { SendParam } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import {
     MockBurnerMinterRedeemIssue,
     MockBurnerMinterCrosschain
-} from "@layerzerolabs/test-utils-evm/contracts/mocks/MockBurnerMinterVariants.sol";
-import { MockERC20 } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockERC20.sol";
+} from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockBurnerMinterVariants.sol";
+import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
 import { INexusOFT } from "./../contracts/interfaces/INexusOFT.sol";
 import { Nexus } from "./../contracts/Nexus.sol";
 import { NexusAlt } from "./../contracts/NexusAlt.sol";

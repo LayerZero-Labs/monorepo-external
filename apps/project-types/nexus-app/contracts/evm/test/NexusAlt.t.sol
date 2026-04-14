@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppAlt } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppAlt.sol";
-import { SendParam, MessagingFee } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { MockERC20 } from "@layerzerolabs/test-utils-evm/contracts/mocks/MockERC20.sol";
+import { IOAppAlt } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppAlt.sol";
+import { SendParam, MessagingFee } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
 import { Nexus } from "./../contracts/Nexus.sol";
 import { NexusAlt } from "./../contracts/NexusAlt.sol";
 import { NexusOFTAlt } from "./../contracts/NexusOFTAlt.sol";

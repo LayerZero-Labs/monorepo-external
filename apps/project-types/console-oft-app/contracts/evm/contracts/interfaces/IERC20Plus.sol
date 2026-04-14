@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IAllowlist } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IAllowlist.sol";
-import { IBurnableMintable } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IBurnableMintable.sol";
-import { IFundRecovery } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IFundRecovery.sol";
-import { IPause } from "@layerzerolabs/utils-evm-impl/contracts/interfaces/IPause.sol";
+import { IAllowlist } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IAllowlist.sol";
+import { IBurnableMintable } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IBurnableMintable.sol";
+import { IFundRecovery } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFundRecovery.sol";
+import { IPause } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IPause.sol";
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { IERC20Permit } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 

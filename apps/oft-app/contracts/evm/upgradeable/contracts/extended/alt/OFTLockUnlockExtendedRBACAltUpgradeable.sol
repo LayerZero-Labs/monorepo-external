@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OAppAltUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/alt/OAppAltUpgradeable.sol";
-import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppSenderUpgradeable.sol";
+import { OAppAltUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/alt/OAppAltUpgradeable.sol";
+import { OAppSenderUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppSenderUpgradeable.sol";
 import { OFTLockUnlockExtendedRBACUpgradeable } from "./../OFTLockUnlockExtendedRBACUpgradeable.sol";
 
 /**

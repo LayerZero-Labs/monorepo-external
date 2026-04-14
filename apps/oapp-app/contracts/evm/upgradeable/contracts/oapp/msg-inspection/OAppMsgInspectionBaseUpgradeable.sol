@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppMsgInspection } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspection.sol";
+import { IOAppMsgInspection } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspection.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**

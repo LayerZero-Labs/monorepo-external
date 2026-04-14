@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppCore } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppCore.sol";
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
-import { MessagingFee, SendParam, OFTReceipt } from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm/contracts/mocks/RejectingMsgInspector.sol";
+import { IOAppCore } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppCore.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { MessagingFee, SendParam, OFTReceipt } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/RejectingMsgInspector.sol";
 
 import { OFTCoreExtendedRBACUpgradeable } from "./../contracts/extended/OFTCoreExtendedRBACUpgradeable.sol";
 import { OFTNativeExtendedRBACUpgradeable } from "./../contracts/extended/OFTNativeExtendedRBACUpgradeable.sol";

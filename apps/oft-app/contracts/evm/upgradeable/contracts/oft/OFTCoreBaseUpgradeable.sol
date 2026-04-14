@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-impl/contracts/interfaces/IOAppMsgInspector.sol";
-import { OAppMsgInspectionBaseUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/msg-inspection/OAppMsgInspectionBaseUpgradeable.sol";
-import { OAppUpgradeable, Origin } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/OAppUpgradeable.sol";
-import { OAppOptionsType3BaseUpgradeable } from "@layerzerolabs/oapp-evm-upgradeable-impl/contracts/oapp/options-type-3/OAppOptionsType3BaseUpgradeable.sol";
+import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { OAppMsgInspectionBaseUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/msg-inspection/OAppMsgInspectionBaseUpgradeable.sol";
+import {
+    OAppUpgradeable,
+    Origin
+} from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppUpgradeable.sol";
+import { OAppOptionsType3BaseUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/options-type-3/OAppOptionsType3BaseUpgradeable.sol";
 import {
     IOFT,
     SendParam,
@@ -13,9 +16,9 @@ import {
     OFTFeeDetail,
     MessagingReceipt,
     MessagingFee
-} from "@layerzerolabs/oft-evm-impl/contracts/interfaces/IOFT.sol";
-import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-impl/contracts/libs/OFTComposeMsgCodec.sol";
-import { OFTMsgCodec } from "@layerzerolabs/oft-evm-impl/contracts/libs/OFTMsgCodec.sol";
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
+import { OFTMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTMsgCodec.sol";
 
 /**
  * @title OFTCoreBaseUpgradeable

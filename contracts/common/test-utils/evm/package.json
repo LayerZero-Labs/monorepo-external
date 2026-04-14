@@ -1,5 +1,5 @@
 {
-    "name": "@layerzerolabs/test-utils-evm",
+    "name": "@layerzerolabs/test-utils-evm-contracts",
     "version": "0.0.0",
     "private": false,
     "description": "LayerZero Labs shared EVM test mocks and utilities",
@@ -8,10 +8,10 @@
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' --fix --noPrompt"
     },
     "devDependencies": {
-        "@layerzerolabs/oapp-evm-impl": "workspace:*",
+        "@layerzerolabs/oapp-evm-contracts": "workspace:*",
         "@layerzerolabs/solhint-configuration": "workspace:*",
         "@layerzerolabs/toolbox-foundry": "catalog:",
-        "@layerzerolabs/utils-evm-impl": "workspace:*",
+        "@layerzerolabs/utils-evm-contracts": "workspace:*",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
         "@openzeppelin/contracts": "catalog:",
         "solhint": "catalog:"

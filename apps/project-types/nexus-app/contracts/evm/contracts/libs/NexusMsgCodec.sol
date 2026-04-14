@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { OFTMsgCodec } from "@layerzerolabs/oft-evm-impl/contracts/libs/OFTMsgCodec.sol";
+import { OFTMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTMsgCodec.sol";
 
 /**
  * @title NexusMsgCodec
