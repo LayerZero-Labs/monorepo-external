@@ -114,8 +114,8 @@ catalogs:
     '@layerzerolabs/lz-evm-v1-0.7': 3.0.156
     '@openzeppelin/contracts': 5.4.0
   ethena-token:
-    '@openzeppelin/contracts': 4.9.0
-    '@openzeppelin/contracts-upgradeable': 4.9.0
+    '@openzeppelin/contracts': 4.9.5
+    '@openzeppelin/contracts-upgradeable': 4.9.5
   everdawn-oft:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.151
     '@layerzerolabs/lz-evm-protocol-v2': 3.0.151
