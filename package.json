@@ -30,6 +30,7 @@
         "overrides": {
             "@electron/notarize": "2.3.2",
             "@solana/web3.js": "1.95.8",
+            "@ton/core": "0.59.1",
             "axios@^0": "^0.30.3",
             "axios@^1": "^1.13.5",
             "elliptic": "^6.6.1",

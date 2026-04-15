@@ -109,11 +109,10 @@ catalogs:
     zod: 4.3.5
     zx: ^8.8.5
   ethena-oft:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.66
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.66
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.66
-    '@openzeppelin/contracts': ^5.0.1
-    '@openzeppelin/contracts-upgradeable': ^5.0.1
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.156
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.156
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.156
+    '@openzeppelin/contracts': 5.4.0
   ethena-token:
     '@openzeppelin/contracts': 4.9.0
     '@openzeppelin/contracts-upgradeable': 4.9.0
