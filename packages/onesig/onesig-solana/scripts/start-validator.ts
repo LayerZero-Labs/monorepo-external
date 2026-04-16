@@ -16,7 +16,7 @@ async function getImageUri(): Promise<string> {
     ).default;
 
     const { images, versionCombinations } = await import(
-        join(workspaceRoot, 'tools', 'vm-tooling-solana', 'src', 'config.ts')
+        join(workspaceRoot, 'tools', 'vm-tooling', 'vm-tooling-solana', 'src', 'config.ts')
     );
 
     const stableCombination = versionCombinations.find((c: { stable?: boolean }) => c.stable);

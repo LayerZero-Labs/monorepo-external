@@ -400,7 +400,7 @@ importers:
         version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -457,7 +457,7 @@ importers:
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -508,7 +508,7 @@ importers:
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -568,7 +568,7 @@ importers:
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -586,7 +586,7 @@ importers:
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
-        version: link:../../../../../tools/build-utils-starknet
+        version: link:../../../../../tools/vm-utils/starknet/build-utils
       '@layerzerolabs/protocol-starknet-v2':
         specifier: workspace:*
         version: link:../../../../../contracts/protocol/starknet
@@ -598,7 +598,7 @@ importers:
         version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-starknet':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-starknet
+        version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -607,7 +607,7 @@ importers:
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
-        version: link:../../../../../tools/build-utils-starknet
+        version: link:../../../../../tools/vm-utils/starknet/build-utils
       '@layerzerolabs/protocol-starknet-v2':
         specifier: workspace:*
         version: link:../../../../../contracts/protocol/starknet
@@ -619,7 +619,7 @@ importers:
         version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-starknet':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-starknet
+        version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -628,7 +628,7 @@ importers:
     devDependencies:
       '@layerzerolabs/contract-sizes-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/contract-sizes-evm
+        version: link:../../../../../tools/vm-utils/evm/contract-sizes
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
         version: 3.0.167(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
@@ -673,7 +673,7 @@ importers:
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: catalog:console
         version: 1.3.2(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
@@ -697,7 +697,7 @@ importers:
     devDependencies:
       '@layerzerolabs/contract-sizes-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/contract-sizes-evm
+        version: link:../../../../../tools/vm-utils/evm/contract-sizes
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
         version: 3.0.167(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
@@ -748,7 +748,7 @@ importers:
         version: link:../../../../../contracts/common/utils/evm/upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: catalog:console
         version: 1.3.2(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
@@ -781,7 +781,7 @@ importers:
         version: link:../../utils/evm/non-upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../tools/vm-tooling-evm
+        version: link:../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -808,7 +808,7 @@ importers:
         version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -838,7 +838,7 @@ importers:
         version: link:../non-upgradeable
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling-evm
+        version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.4.0
@@ -853,7 +853,7 @@ importers:
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
-        version: link:../../../tools/build-utils-starknet
+        version: link:../../../tools/vm-utils/starknet/build-utils
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/tsup
@@ -862,7 +862,7 @@ importers:
         version: link:../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-starknet':
         specifier: workspace:*
-        version: link:../../../tools/vm-tooling-starknet
+        version: link:../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -954,7 +954,7 @@ importers:
         version: link:../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
-        version: link:../../../tools/vm-tooling-evm
+        version: link:../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: catalog:onesig-evm
         version: 1.3.2(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
@@ -1072,7 +1072,7 @@ importers:
         version: link:../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-solana':
         specifier: workspace:*
-        version: link:../../../tools/vm-tooling-solana
+        version: link:../../../tools/vm-tooling/vm-tooling-solana
       '@metaplex-foundation/mpl-toolbox':
         specifier: catalog:onesig-solana
         version: 0.10.0(@metaplex-foundation/umi@1.1.1)
@@ -1194,58 +1194,6 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  tools/build-utils-starknet:
-    dependencies:
-      '@layerzerolabs/args':
-        specifier: workspace:*
-        version: link:../args
-      '@layerzerolabs/repo-utils':
-        specifier: workspace:*
-        version: link:../repo/repo-utils
-      glob:
-        specifier: 'catalog:'
-        version: 10.5.0
-      toml:
-        specifier: 'catalog:'
-        version: 3.0.0
-      zod:
-        specifier: 'catalog:'
-        version: 4.3.5
-    devDependencies:
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../tooling-configs/typescript
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
-      vitest:
-        specifier: 'catalog:'
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
-
-  tools/contract-sizes-evm:
-    devDependencies:
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../tooling-configs/typescript
-      prettier:
-        specifier: 'catalog:'
-        version: 3.5.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
-      tsx:
-        specifier: 'catalog:'
-        version: 4.20.6
-      vitest:
-        specifier: 'catalog:'
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
-
   tools/repo/depcheck:
     dependencies:
       commander:
@@ -1357,11 +1305,11 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
 
-  tools/vm-tooling:
+  tools/vm-tooling/core:
     dependencies:
       '@layerzerolabs/common-node-utils':
         specifier: workspace:*
-        version: link:../../packages/common/common-node-utils
+        version: link:../../../packages/common/common-node-utils
       commander:
         specifier: 'catalog:'
         version: 13.1.0
@@ -1383,10 +1331,10 @@ importers:
         version: 29.7.0
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/tsup
+        version: link:../../../tooling-configs/tsup
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/typescript
+        version: link:../../../tooling-configs/typescript
       '@types/jest':
         specifier: 'catalog:'
         version: 29.5.14
@@ -1412,18 +1360,18 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  tools/vm-tooling-evm:
+  tools/vm-tooling/vm-tooling-evm:
     dependencies:
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
-        version: link:../vm-tooling
+        version: link:../core
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/tsup
+        version: link:../../../tooling-configs/tsup
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/typescript
+        version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1437,18 +1385,18 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  tools/vm-tooling-solana:
+  tools/vm-tooling/vm-tooling-solana:
     dependencies:
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
-        version: link:../vm-tooling
+        version: link:../core
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/tsup
+        version: link:../../../tooling-configs/tsup
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/typescript
+        version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1462,21 +1410,21 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  tools/vm-tooling-starknet:
+  tools/vm-tooling/vm-tooling-starknet:
     dependencies:
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
-        version: link:../vm-tooling
+        version: link:../core
       zod:
         specifier: 'catalog:'
         version: 4.3.5
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/tsup
+        version: link:../../../tooling-configs/tsup
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
-        version: link:../../tooling-configs/typescript
+        version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1486,6 +1434,58 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
+  tools/vm-utils/evm/contract-sizes:
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      prettier:
+        specifier: 'catalog:'
+        version: 3.5.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.20.6
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
+  tools/vm-utils/starknet/build-utils:
+    dependencies:
+      '@layerzerolabs/args':
+        specifier: workspace:*
+        version: link:../../../args
+      '@layerzerolabs/repo-utils':
+        specifier: workspace:*
+        version: link:../../../repo/repo-utils
+      glob:
+        specifier: 'catalog:'
+        version: 10.5.0
+      toml:
+        specifier: 'catalog:'
+        version: 3.0.0
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
