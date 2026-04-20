@@ -1,0 +1,5 @@
+error[E0277]: the trait bound `MyContract: Ownable` is not satisfied
+  --> tests/ui/multisig/fail/rejects_ownable_trait.rs:16:18
+   |
+16 |         let _ = <Self as utils::ownable::Ownable>::owner(&env);
+   |                  ^^^^ the trait `Ownable` is not implemented for `MyContract`

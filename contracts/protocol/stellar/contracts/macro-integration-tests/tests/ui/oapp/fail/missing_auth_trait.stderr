@@ -1,0 +1,397 @@
+error[E0412]: cannot find type `MyOAppClient` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the attribute macro `soroban_sdk::contractclient` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppArgs` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the attribute macro `soroban_sdk::contractargs` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppClient` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppArgs` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppClient` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppArgs` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppClient` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppArgs` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppClient` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyOAppArgs` in this scope
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:12:1
+   |
+12 | #[oapp]
+   | ^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` which comes from the expansion of the attribute macro `oapp` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `OAppCore`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore`
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `RoleBasedAccessControl`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl`
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+   = note: required for `MyOApp` to implement `OAppCore`
+note: required by a bound in `OAppSenderInternal`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_sender.rs
+   |
+   | pub trait OAppSenderInternal: OAppCore {
+   |                               ^^^^^^^^ required by this bound in `OAppSenderInternal`
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+   = note: required for `MyOApp` to implement `OAppCore`
+note: required by a bound in `OAppReceiver`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_receiver.rs
+   |
+   | pub trait OAppReceiver: OAppCore + LzReceiveInternal {
+   |                         ^^^^^^^^ required by this bound in `OAppReceiver`
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+   = note: required for `MyOApp` to implement `RoleBasedAccessControl`
+note: required by a bound in `OAppOptionsType3`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_options_type3.rs
+   |
+   | pub trait OAppOptionsType3: RoleBasedAccessControl {
+   |                             ^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `OAppOptionsType3`
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `oapp_version`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore::oapp_version`
+...
+   |     fn oapp_version(_env: &soroban_sdk::Env) -> (u64, u64) {
+   |        ------------ required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `endpoint`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore::endpoint`
+...
+   |     fn endpoint(env: &soroban_sdk::Env) -> soroban_sdk::Address {
+   |        -------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `peer`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore::peer`
+...
+   |     fn peer(env: &soroban_sdk::Env, eid: u32) -> Option<soroban_sdk::BytesN<32>> {
+   |        ---- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `set_peer`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore::set_peer`
+...
+   |     fn set_peer(
+   |        -------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: Ownable` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `Ownable` is not implemented for `MyOApp`
+   |
+   = help: the trait `Ownable` is implemented for `EndpointV2`
+note: required by a bound in `oapp::oapp_core::OAppCore::set_delegate`
+  --> $WORKSPACE/contracts/oapps/oapp/src/oapp_core.rs
+   |
+   | pub trait OAppCore: Ownable + RoleBasedAccessControl {
+   |                     ^^^^^^^ required by this bound in `OAppCore::set_delegate`
+...
+   |     fn set_delegate(env: &soroban_sdk::Env, delegate: &Option<soroban_sdk::Address>, operator: &soroban_sdk::Address) {
+   |        ------------ required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: ContractFunctionRegister` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `ContractFunctionRegister` is not implemented for `MyOApp`
+   |
+   = help: the following other types implement trait `ContractFunctionRegister`:
+             EndpointV2
+             MockAuthContract
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `grant_role`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::grant_role`
+...
+   |     fn grant_role(
+   |        ---------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `revoke_role`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::revoke_role`
+...
+   |     fn revoke_role(
+   |        ----------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `renounce_role`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::renounce_role`
+...
+   |     fn renounce_role(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol, caller: &soroban_sdk::Address) {
+   |        ------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `set_role_admin`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::set_role_admin`
+...
+   |     fn set_role_admin(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol, admin_role: &soroban_sdk::Symbol) {
+   |        -------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `remove_role_admin`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::remove_role_admin`
+...
+   |     fn remove_role_admin(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol) {
+   |        ----------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `has_role`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::has_role`
+...
+   |     fn has_role(env: &soroban_sdk::Env, account: &soroban_sdk::Address, role: &soroban_sdk::Symbol) -> Option<u32> {
+   |        -------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `get_role_admin`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::get_role_admin`
+...
+   |     fn get_role_admin(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol) -> Option<soroban_sdk::Symbol> {
+   |        -------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `get_role_member_count`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::get_role_member_count`
+...
+   |     fn get_role_member_count(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol) -> u32 {
+   |        --------------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `get_role_member`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::get_role_member`
+...
+   |     fn get_role_member(env: &soroban_sdk::Env, role: &soroban_sdk::Symbol, index: u32) -> soroban_sdk::Address {
+   |        --------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyOApp: utils::auth::Auth` is not satisfied
+  --> tests/ui/oapp/fail/missing_auth_trait.rs:13:12
+   |
+13 | pub struct MyOApp;
+   |            ^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyOApp`
+   |
+   = help: the trait `utils::auth::Auth` is implemented for `EndpointV2`
+note: required by a bound in `get_existing_roles`
+  --> $WORKSPACE/contracts/utils/src/rbac.rs
+   |
+   | pub trait RoleBasedAccessControl: Auth {
+   |                                   ^^^^ required by this bound in `RoleBasedAccessControl::get_existing_roles`
+...
+   |     fn get_existing_roles(env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Symbol> {
+   |        ------------------ required by a bound in this associated function

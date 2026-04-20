@@ -1,0 +1,77 @@
+---
+source: contracts/common-macros/src/tests/contract_ttl.rs
+expression: combined
+---
+// === Inherent Impl (no attr) ===
+
+#[soroban_sdk::contractimpl]
+impl MyContract {
+    const A_CONST: u32 = 1;
+    type Alias = u32;
+    /// Public method with Env - should have TTL extension
+    pub fn public_with_env(env: Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        value * 2
+    }
+    /// Public method with qualified Env path - should have TTL extension
+    pub fn with_qualified_env(env: soroban_sdk::Env) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        42
+    }
+    /// Public method with Env not as first parameter - should have TTL extension
+    pub fn env_second(value: u32, env: &Env) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(env);
+        value * 2
+    }
+    /// Public method without Env - should NOT have TTL extension
+    pub fn public_without_env(value: u32) -> u32 {
+        value * 4
+    }
+    /// Private method with Env - should NOT have TTL extension (not public)
+    fn private_with_env(env: Env, value: u32) -> u32 {
+        value * 5
+    }
+    /// Pub(crate) method with Env - should NOT have TTL extension (not fully public)
+    pub(crate) fn pub_crate_with_env(env: Env, value: u32) -> u32 {
+        value * 7
+    }
+    /// Constructor method - should have init_default_ttl_configs
+    pub fn __constructor(env: &Env, value: u32) {
+        utils::ttl_configurable::init_default_ttl_configs(env);
+        let _ = value * 2;
+    }
+}
+
+
+// === Trait Impl (no attr) ===
+
+#[soroban_sdk::contractimpl]
+impl SomeTrait for MyContract {
+    /// Trait method with Env - should have TTL extension
+    fn trait_method_with_env(env: Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        value * 2
+    }
+    /// Trait method without Env - should NOT have TTL extension
+    fn trait_method_without_env(value: u32) -> u32 {
+        value * 4
+    }
+    /// Trait method with macro attribute - should have TTL extension
+    #[common_macros::only_auth]
+    fn trait_method_with_only_auth_attribute(env: Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        value * 5
+    }
+}
+
+
+// === Trait Impl (contracttrait attr) ===
+
+#[soroban_sdk::contractimpl(contracttrait)]
+impl AnotherTrait for MyContract {
+    /// Trait method with contracttrait attr - should have TTL extension
+    fn contracttrait_method(env: &Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(env);
+        value * 3
+    }
+}

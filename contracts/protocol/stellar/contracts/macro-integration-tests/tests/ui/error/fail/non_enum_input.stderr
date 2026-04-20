@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/error/fail/non_enum_input.rs:7:1
+  |
+7 | #[common_macros::contract_error]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse enum: expected `enum`

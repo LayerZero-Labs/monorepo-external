@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/oapp/fail/unknown_custom_option.rs:5:1
+  |
+5 | #[oapp(custom = [core, not_a_real_option])]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse oapp attributes: expected one of `core`, `sender`, `receiver`, `options_type3`

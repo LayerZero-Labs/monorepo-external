@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/unknown_variant_attr.rs:6:1
+  |
+6 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage variant for Counter: unknown attribute 'wat' on variant 'Counter'. Supported attributes are: doc, instance, persistent, temporary, default, name, no_ttl_extension

@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/no_ttl_extension_on_non_persistent.rs:3:1
+  |
+3 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage variant for Counter: #[no_ttl_extension] can only be used with #[persistent(...)] storage

@@ -1,0 +1,23 @@
+[package]
+name = "message-lib-common"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[features]
+testutils = []
+
+[dependencies]
+soroban-sdk = { workspace = true }
+# workspace dependencies
+utils = { workspace = true }
+common-macros = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+hex-literal = { workspace = true }

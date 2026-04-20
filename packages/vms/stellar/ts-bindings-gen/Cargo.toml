@@ -1,0 +1,17 @@
+[package]
+name = "stellar-ts-bindings-gen"
+version = "0.0.1"
+edition = "2021"
+license = "MIT"
+
+[[bin]]
+name = "stellar-ts-bindings-gen"
+path = "src/main.rs"
+
+[dependencies]
+soroban-spec-typescript = "25.1.0"
+anyhow = "1.0"
+sha2 = "0.10"
+base64 = "0.22"
+toml = "0.8"
+serde = { version = "1.0", features = ["derive"] }

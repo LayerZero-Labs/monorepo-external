@@ -1,0 +1,12 @@
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ownable/fail/only_auth_missing_auth.rs:13:5
+   |
+13 |     #[common_macros::only_auth]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `require_auth`
+  --> $WORKSPACE/contracts/utils/src/auth.rs
+   |
+   | pub fn require_auth<T: Auth>(env: &Env) {
+   |                        ^^^^ required by this bound in `require_auth`
+   = note: this error originates in the attribute macro `common_macros::only_auth` (in Nightly builds, run with -Z macro-backtrace for more info)

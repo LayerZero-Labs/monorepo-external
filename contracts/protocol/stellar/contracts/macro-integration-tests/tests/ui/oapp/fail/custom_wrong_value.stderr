@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/oapp/fail/custom_wrong_value.rs:5:1
+  |
+5 | #[oapp(custom = core)]
+  | ^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse oapp attributes: expected square brackets

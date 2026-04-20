@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "private": false,
     "description": "Starknet implementation of LayerZero protocol v2",
-    "license": "MIT",
+    "license": "LZBL-1.3",
     "sideEffects": false,
     "type": "module",
     "exports": {

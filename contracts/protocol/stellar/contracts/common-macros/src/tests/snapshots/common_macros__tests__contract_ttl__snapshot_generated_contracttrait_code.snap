@@ -1,0 +1,46 @@
+---
+source: contracts/common-macros/src/tests/contract_ttl.rs
+expression: combined
+---
+// === Trait (no attr) ===
+
+#[soroban_sdk::contracttrait]
+pub trait MyTrait: Sized {
+    const A_CONST: u32;
+    type Alias;
+    /// Default method with Env - should have TTL extension
+    fn default_with_env(env: Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        value * 2
+    }
+    /// Default method with qualified Env path - should have TTL extension
+    fn with_qualified_env(env: soroban_sdk::Env) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(&env);
+        42
+    }
+    /// Default method with Env not as first parameter - should have TTL extension
+    fn env_second(value: u32, env: &Env) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(env);
+        value * 2
+    }
+    /// Default method without Env - should NOT have TTL extension
+    fn default_without_env(value: u32) -> u32 {
+        value * 4
+    }
+    /// Abstract method with Env - should NOT have TTL extension (no body)
+    fn abstract_with_env(env: Env, value: u32) -> u32;
+    /// Abstract method without Env - should NOT have TTL extension (no body)
+    fn abstract_without_env(value: u32) -> u32;
+}
+
+
+// === Trait (crate attr) ===
+
+#[soroban_sdk::contracttrait(crate = "other_sdk")]
+pub trait AnotherTrait {
+    /// Default method with Env - should have TTL extension
+    fn method_with_env(env: &Env, value: u32) -> u32 {
+        utils::ttl_configurable::extend_instance_ttl(env);
+        value * 3
+    }
+}

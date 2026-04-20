@@ -1,0 +1,89 @@
+[workspace]
+resolver = "2"
+members = [
+    "contracts/*",
+    "contracts/message-libs/*",
+    "contracts/oapps/*",
+    "contracts/workers/*",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+version = "0.0.1"
+
+[workspace.dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+
+# Third-party dependencies (production)
+cfg-if = { version = "1.0", default-features = false }
+heck = "0.5"
+itertools = "0.14"
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+
+# Third-party dependencies (testing only)
+ed25519-dalek = "2"
+hex-literal = "1.0.0"
+insta = "1.44.3"
+k256 = "0.13"
+prettyplease = "0.2.37"
+rand = "0.8"
+anyhow = "1.0"
+sha2 = "0.10"
+base64 = "0.22"
+sha3 = "0.10"
+trybuild = "1.0.114"
+
+# Internal workspace dependencies
+common-macros = { path = "contracts/common-macros" }
+dvn = { path = "contracts/workers/dvn" }
+dvn-fee-lib = { path = "contracts/workers/dvn-fee-lib" }
+endpoint-v2 = { path = "contracts/endpoint-v2", default-features = false }
+executor = { path = "contracts/workers/executor" }
+executor-fee-lib = { path = "contracts/workers/executor-fee-lib" }
+executor-helper = { path = "contracts/workers/executor-helper" }
+fee-lib-interfaces = { path = "contracts/workers/fee-lib-interfaces" }
+message-lib-common = { path = "contracts/message-libs/message-lib-common" }
+blocked-message-lib = { path = "contracts/message-libs/blocked-message-lib" }
+oapp = { path = "contracts/oapps/oapp" }
+oapp-macros = { path = "contracts/oapps/oapp-macros" }
+oft = { path = "contracts/oapps/oft" }
+oft-core = { path = "contracts/oapps/oft-core" }
+price-feed = { path = "contracts/workers/price-feed" }
+simple-message-lib = { path = "contracts/message-libs/simple-message-lib" }
+treasury = { path = "contracts/message-libs/treasury" }
+uln302 = { path = "contracts/message-libs/uln-302", default-features = false }
+utils = { path = "contracts/utils" }
+worker = { path = "contracts/workers/worker" }
+
+# Fast dev builds for testing
+[profile.dev]
+opt-level = 0
+incremental = true
+codegen-units = 256
+
+# Optimize dependencies even in dev (compile once, run many tests)
+[profile.dev.package."*"]
+opt-level = 2
+
+# Test profile optimizations
+[profile.test]
+opt-level = 1
+incremental = true
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+# For more information about this profile see https://soroban.stellar.org/docs/basic-tutorials/logging#cargotoml-profile
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

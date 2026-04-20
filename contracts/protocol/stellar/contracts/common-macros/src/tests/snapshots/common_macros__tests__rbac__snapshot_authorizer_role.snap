@@ -1,0 +1,21 @@
+---
+source: contracts/common-macros/src/tests/rbac.rs
+expression: combined
+---
+// === has_role(operator, AUTHORIZER) ===
+
+pub fn admin_action(env: Env, operator: Address) {
+    utils::rbac::ensure_role::<
+        Self,
+    >(&env, &soroban_sdk::Symbol::new(&env, AUTHORIZER), &operator);
+}
+
+
+// === only_role(operator, AUTHORIZER) ===
+
+pub fn admin_action(env: Env, operator: Address) {
+    utils::rbac::ensure_role::<
+        Self,
+    >(&env, &soroban_sdk::Symbol::new(&env, AUTHORIZER), &operator);
+    operator.require_auth();
+}

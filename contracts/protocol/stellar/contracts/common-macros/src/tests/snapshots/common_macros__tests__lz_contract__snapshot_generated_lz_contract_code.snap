@@ -1,0 +1,51 @@
+---
+source: contracts/common-macros/src/tests/lz_contract.rs
+expression: combined
+---
+// === Default (ownable) ===
+
+#[soroban_sdk::contract]
+#[common_macros::ttl_configurable]
+#[common_macros::ttl_extendable]
+#[common_macros::ownable]
+pub struct MyContract;
+
+
+// === MultiSig + Upgradeable ===
+
+#[soroban_sdk::contract]
+#[common_macros::ttl_configurable]
+#[common_macros::ttl_extendable]
+#[common_macros::multisig]
+#[common_macros::upgradeable]
+pub struct MyContract;
+
+
+// === Upgradeable (no_migration) ===
+
+#[soroban_sdk::contract]
+#[common_macros::ttl_configurable]
+#[common_macros::ttl_extendable]
+#[common_macros::ownable]
+#[common_macros::upgradeable(no_migration)]
+pub struct MyContract;
+
+
+// === Upgradeable (rbac) ===
+
+#[soroban_sdk::contract]
+#[common_macros::ttl_configurable]
+#[common_macros::ttl_extendable]
+#[common_macros::ownable]
+#[common_macros::upgradeable(rbac)]
+pub struct MyContract;
+
+
+// === Upgradeable (rbac, no_migration) pass-through ===
+
+#[soroban_sdk::contract]
+#[common_macros::ttl_configurable]
+#[common_macros::ttl_extendable]
+#[common_macros::ownable]
+#[common_macros::upgradeable(rbac, no_migration)]
+pub struct MyContract;

@@ -1,0 +1,26 @@
+[package]
+name = "simple-message-lib"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+
+[dependencies]
+cfg-if = { workspace = true }
+soroban-sdk = { workspace = true }
+# workspace dependencies
+common-macros = { workspace = true }
+utils = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+message-lib-common = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

@@ -1,0 +1,41 @@
+{
+    "name": "@layerzerolabs/lz-v2-stellar-sdk",
+    "version": "0.0.1",
+    "private": false,
+    "description": "TypeScript SDK for endpoint-v2 Stellar contract",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/layerzerolabs/monorepo-internal.git",
+        "directory": "contracts/protocol/stellar/sdk"
+    },
+    "license": "MIT",
+    "type": "module",
+    "exports": "./dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "@noble/hashes": "catalog:",
+        "@noble/secp256k1": "catalog:",
+        "@stellar/stellar-sdk": "catalog:",
+        "buffer": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/common-node-utils": "workspace:*",
+        "@layerzerolabs/lz-v2-utilities": "catalog:",
+        "@layerzerolabs/protocol-stellar-v2": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "buffer": "catalog:"
+    }
+}

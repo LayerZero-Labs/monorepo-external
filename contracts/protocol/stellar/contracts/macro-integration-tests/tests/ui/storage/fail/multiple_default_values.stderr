@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/multiple_default_values.rs:3:1
+  |
+3 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage variant for Counter: multiple default values specified: got at least 2 elements when exactly one was expected

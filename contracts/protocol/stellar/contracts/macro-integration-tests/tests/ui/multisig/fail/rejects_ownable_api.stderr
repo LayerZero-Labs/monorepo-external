@@ -1,0 +1,12 @@
+error[E0599]: no function or associated item named `init_owner` found for struct `MyContract` in the current scope
+  --> tests/ui/multisig/fail/rejects_ownable_api.rs:16:15
+   |
+10 | pub struct MyContract;
+   | --------------------- function or associated item `init_owner` not found for this struct
+...
+16 |         Self::init_owner(&env, &owner);
+   |               ^^^^^^^^^^ function or associated item not found in `MyContract`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `init_owner`, perhaps you need to implement it:
+           candidate #1: `OwnableInitializer`

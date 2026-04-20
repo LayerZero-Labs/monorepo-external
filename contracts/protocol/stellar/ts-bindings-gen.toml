@@ -1,0 +1,67 @@
+# Protocol contracts
+[[contracts]]
+wasm_name = "endpoint_v2"
+output_name = "endpoint.ts"
+
+[[contracts]]
+wasm_name = "simple_message_lib"
+output_name = "sml.ts"
+
+[[contracts]]
+wasm_name = "blocked_message_lib"
+output_name = "bml.ts"
+
+[[contracts]]
+wasm_name = "uln302"
+output_name = "uln302.ts"
+
+[[contracts]]
+wasm_name = "treasury"
+output_name = "treasury.ts"
+
+[[contracts]]
+wasm_name = "upgrader"
+output_name = "upgrader.ts"
+
+# Worker contracts
+[[contracts]]
+wasm_name = "dvn"
+output_name = "dvn.ts"
+
+[[contracts]]
+wasm_name = "dvn_fee_lib"
+output_name = "dvn_fee_lib.ts"
+
+[[contracts]]
+wasm_name = "executor"
+output_name = "executor.ts"
+
+[[contracts]]
+wasm_name = "executor_fee_lib"
+output_name = "executor_fee_lib.ts"
+
+[[contracts]]
+wasm_name = "executor_helper"
+output_name = "executor_helper.ts"
+
+[[contracts]]
+wasm_name = "price_feed"
+output_name = "price_feed.ts"
+
+# OApp contracts
+[[contracts]]
+wasm_name = "counter"
+output_name = "counter.ts"
+
+[[contracts]]
+wasm_name = "oft"
+output_name = "oft.ts"
+
+[[contracts]]
+wasm_name = "sac_manager"
+output_name = "sac_manager.ts"
+
+# View contracts
+[[contracts]]
+wasm_name = "layerzero_views"
+output_name = "layerzero_view.ts"

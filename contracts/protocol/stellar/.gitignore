@@ -1,0 +1,11 @@
+# Rust's output directory
+target
+
+# Local settings
+.soroban
+.stellar
+
+test_snapshots/
+
+# Auto-generated SDK files
+sdk/src/generated*/**

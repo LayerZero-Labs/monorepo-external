@@ -1,0 +1,16 @@
+error: custom attribute panicked
+  --> tests/ui/rbac/fail/missing_env.rs:11:5
+   |
+11 |     #[common_macros::has_role(caller, "minter")]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: message: function must have an Env argument
+
+error[E0599]: no function or associated item named `bad` found for struct `MyContract` in the current scope
+  --> tests/ui/rbac/fail/missing_env.rs:12:12
+   |
+ 6 | pub struct MyContract;
+   | --------------------- function or associated item `bad` not found for this struct
+...
+12 |     pub fn bad(caller: Address) {
+   |            ^^^ function or associated item not found in `MyContract`

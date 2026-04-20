@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/multiple_type_params.rs:6:1
+  |
+6 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage type for #[persistent(...)] : unexpected token

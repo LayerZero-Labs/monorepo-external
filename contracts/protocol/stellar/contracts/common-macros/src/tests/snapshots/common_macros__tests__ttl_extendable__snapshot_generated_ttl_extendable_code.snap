@@ -1,0 +1,8 @@
+---
+source: contracts/common-macros/src/tests/ttl_extendable.rs
+expression: formatted
+---
+pub struct MyContract;
+use utils::ttl_extendable::TtlExtendable as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::ttl_extendable::TtlExtendable for MyContract {}

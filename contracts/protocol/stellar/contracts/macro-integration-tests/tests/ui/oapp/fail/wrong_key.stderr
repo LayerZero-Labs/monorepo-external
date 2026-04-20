@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/oapp/fail/wrong_key.rs:5:1
+  |
+5 | #[oapp(nope = [core])]
+  | ^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse oapp attributes: expected `custom`

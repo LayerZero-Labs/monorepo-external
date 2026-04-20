@@ -1,0 +1,39 @@
+---
+source: contracts/common-macros/src/tests/auth.rs
+assertion_line: 36
+expression: combined
+---
+// === Unit struct ===
+
+pub struct MyContract;
+use utils::{auth::Auth as _, ownable::{Ownable as _, OwnableInitializer as _}};
+impl utils::ownable::OwnableInitializer for MyContract {}
+#[common_macros::contract_impl]
+impl utils::auth::Auth for MyContract {
+    fn authorizer(env: &soroban_sdk::Env) -> Option<soroban_sdk::Address> {
+        <Self as utils::ownable::Ownable>::owner(env)
+    }
+}
+#[common_macros::contract_impl(contracttrait)]
+impl utils::ownable::Ownable for MyContract {}
+
+
+// === Generics + fields ===
+
+#[derive(Clone, Debug)]
+pub struct MyContract<T>
+where
+    T: Clone,
+{
+    pub value: T,
+}
+use utils::{auth::Auth as _, ownable::{Ownable as _, OwnableInitializer as _}};
+impl utils::ownable::OwnableInitializer for MyContract {}
+#[common_macros::contract_impl]
+impl utils::auth::Auth for MyContract {
+    fn authorizer(env: &soroban_sdk::Env) -> Option<soroban_sdk::Address> {
+        <Self as utils::ownable::Ownable>::owner(env)
+    }
+}
+#[common_macros::contract_impl(contracttrait)]
+impl utils::ownable::Ownable for MyContract {}

@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/no_ttl_extension_rejects_args.rs:6:1
+  |
+6 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage variant for Value: #[no_ttl_extension] does not accept arguments

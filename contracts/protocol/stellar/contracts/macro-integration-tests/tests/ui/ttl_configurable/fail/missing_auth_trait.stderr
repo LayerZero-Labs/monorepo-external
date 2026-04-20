@@ -1,0 +1,71 @@
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ttl_configurable/fail/missing_auth_trait.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `TtlConfigurable`
+  --> $WORKSPACE/contracts/utils/src/ttl_configurable.rs
+   |
+   | pub trait TtlConfigurable: Auth {
+   |                            ^^^^ required by this bound in `TtlConfigurable`
+
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ttl_configurable/fail/missing_auth_trait.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `set_ttl_configs`
+  --> $WORKSPACE/contracts/utils/src/ttl_configurable.rs
+   |
+   | pub trait TtlConfigurable: Auth {
+   |                            ^^^^ required by this bound in `TtlConfigurable::set_ttl_configs`
+...
+   |     fn set_ttl_configs(
+   |        --------------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ttl_configurable/fail/missing_auth_trait.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `ttl_configs`
+  --> $WORKSPACE/contracts/utils/src/ttl_configurable.rs
+   |
+   | pub trait TtlConfigurable: Auth {
+   |                            ^^^^ required by this bound in `TtlConfigurable::ttl_configs`
+...
+   |     fn ttl_configs(
+   |        ----------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ttl_configurable/fail/missing_auth_trait.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `freeze_ttl_configs`
+  --> $WORKSPACE/contracts/utils/src/ttl_configurable.rs
+   |
+   | pub trait TtlConfigurable: Auth {
+   |                            ^^^^ required by this bound in `TtlConfigurable::freeze_ttl_configs`
+...
+   |     fn freeze_ttl_configs(env: &soroban_sdk::Env) {
+   |        ------------------ required by a bound in this associated function
+
+error[E0277]: the trait bound `MyContract: utils::auth::Auth` is not satisfied
+  --> tests/ui/ttl_configurable/fail/missing_auth_trait.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `utils::auth::Auth` is not implemented for `MyContract`
+   |
+note: required by a bound in `is_ttl_configs_frozen`
+  --> $WORKSPACE/contracts/utils/src/ttl_configurable.rs
+   |
+   | pub trait TtlConfigurable: Auth {
+   |                            ^^^^ required by this bound in `TtlConfigurable::is_ttl_configs_frozen`
+...
+   |     fn is_ttl_configs_frozen(env: &soroban_sdk::Env) -> bool {
+   |        --------------------- required by a bound in this associated function

@@ -1,0 +1,28 @@
+---
+source: contracts/common-macros/src/tests/upgradeable.rs
+assertion_line: 80
+expression: combined
+---
+// ============================================
+// Default: requires manual UpgradeableInternal
+// ============================================
+
+pub struct MyContract;
+use utils::upgradeable::Upgradeable as _;
+soroban_sdk::contractmeta!(key = "binver", val = "0.0.1");
+#[common_macros::contract_impl(contracttrait)]
+impl utils::upgradeable::Upgradeable for MyContract {}
+
+// ============================================
+// With no_migration: auto-generates impl
+// ============================================
+
+pub struct MyContract;
+use utils::upgradeable::Upgradeable as _;
+soroban_sdk::contractmeta!(key = "binver", val = "0.0.1");
+impl utils::upgradeable::UpgradeableInternal for MyContract {
+    type MigrationData = ();
+    fn __migrate(_env: &soroban_sdk::Env, _migration_data: &Self::MigrationData) {}
+}
+#[common_macros::contract_impl(contracttrait)]
+impl utils::upgradeable::Upgradeable for MyContract {}

@@ -1,0 +1,25 @@
+[package]
+name = "treasury"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+
+[dependencies]
+cfg-if = { workspace = true }
+soroban-sdk = { workspace = true }
+common-macros = { workspace = true }
+utils = { workspace = true }
+message-lib-common = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }

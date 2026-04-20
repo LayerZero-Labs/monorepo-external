@@ -1,0 +1,29 @@
+error: custom attribute panicked
+ --> tests/ui/upgradeable/fail/attr_args.rs:7:1
+  |
+7 | #[common_macros::upgradeable(not_migration)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse upgradeable config: expected `no_migration` or `rbac`
+
+error[E0433]: failed to resolve: could not find `MyContract` in the crate root
+ --> tests/ui/upgradeable/fail/attr_args.rs:6:1
+  |
+6 | #[common_macros::ownable]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^ could not find `MyContract` in the crate root
+  |
+  = note: this error originates in the attribute macro `soroban_sdk::contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyContract` in this scope
+ --> tests/ui/upgradeable/fail/attr_args.rs:8:12
+  |
+8 | pub struct MyContract;
+  |            ^^^^^^^^^^ not found in this scope
+
+error[E0412]: cannot find type `MyContract` in this scope
+ --> tests/ui/upgradeable/fail/attr_args.rs:6:1
+  |
+6 | #[common_macros::ownable]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+  |
+  = note: this error originates in the attribute macro `soroban_sdk::contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,16 @@
+error: custom attribute panicked
+  --> tests/ui/ownable/fail/only_auth_missing_env.rs:16:5
+   |
+16 |     #[common_macros::only_auth]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: message: function must have an Env argument
+
+error[E0599]: no function or associated item named `bad` found for struct `MyContract` in the current scope
+  --> tests/ui/ownable/fail/only_auth_missing_env.rs:17:12
+   |
+11 | pub struct MyContract;
+   | --------------------- function or associated item `bad` not found for this struct
+...
+17 |     pub fn bad(x: u32) {
+   |            ^^^ function or associated item not found in `MyContract`

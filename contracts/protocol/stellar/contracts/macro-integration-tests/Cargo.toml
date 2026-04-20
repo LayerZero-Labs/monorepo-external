@@ -1,0 +1,20 @@
+[package]
+name = "macro-integration-tests"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+# This crate is primarily for testing macros.
+# The lib.rs provides shared testing utilities.
+doctest = false
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+trybuild = { workspace = true }
+common-macros = { workspace = true }
+utils = { workspace = true, features = ["testutils"] }
+endpoint-v2 = { workspace = true, features = ["testutils"] }
+oapp = { workspace = true }
+oapp-macros = { workspace = true }

@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/multiple_storage_kinds.rs:3:1
+  |
+3 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage variant for Counter: storage type must be specified exactly once as '#[instance(Type)]', '#[persistent(Type)]', or '#[temporary(Type)]': got at least 2 elements when exactly one was expected

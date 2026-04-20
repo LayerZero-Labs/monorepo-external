@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/oapp/fail/non_struct_input.rs:5:1
+  |
+5 | #[oapp]
+  | ^^^^^^^
+  |
+  = help: message: failed to parse struct: expected `struct`

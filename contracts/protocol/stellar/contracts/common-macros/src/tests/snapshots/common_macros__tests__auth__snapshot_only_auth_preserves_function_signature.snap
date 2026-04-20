@@ -1,0 +1,19 @@
+---
+source: contracts/common-macros/src/tests/auth.rs
+assertion_line: 67
+expression: combined
+---
+// === Borrowed Env (&Env) ===
+
+pub(crate) async fn admin_action<T: Clone>(env: &Env, value: T) -> Result<T, Error> {
+    utils::auth::require_auth::<Self>(env);
+    Ok(value.clone())
+}
+
+
+// === Owned Env (Env) ===
+
+pub(crate) async fn admin_action<T: Clone>(env: Env, value: T) -> Result<T, Error> {
+    utils::auth::require_auth::<Self>(&env);
+    Ok(value.clone())
+}

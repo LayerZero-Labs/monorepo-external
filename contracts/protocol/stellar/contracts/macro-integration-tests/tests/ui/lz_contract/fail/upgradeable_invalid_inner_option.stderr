@@ -1,0 +1,30 @@
+error: custom attribute panicked
+ --> tests/ui/lz_contract/fail/upgradeable_invalid_inner_option.rs:7:1
+  |
+7 | #[common_macros::lz_contract(upgradeable(bad_inner))]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse upgradeable config: expected `no_migration` or `rbac`
+  = note: this error originates in the attribute macro `common_macros::lz_contract` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0433]: failed to resolve: could not find `MyContract` in the crate root
+ --> tests/ui/lz_contract/fail/upgradeable_invalid_inner_option.rs:7:1
+  |
+7 | #[common_macros::lz_contract(upgradeable(bad_inner))]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ could not find `MyContract` in the crate root
+  |
+  = note: this error originates in the attribute macro `soroban_sdk::contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0412]: cannot find type `MyContract` in this scope
+ --> tests/ui/lz_contract/fail/upgradeable_invalid_inner_option.rs:8:12
+  |
+8 | pub struct MyContract;
+  |            ^^^^^^^^^^ not found in this scope
+
+error[E0412]: cannot find type `MyContract` in this scope
+ --> tests/ui/lz_contract/fail/upgradeable_invalid_inner_option.rs:7:1
+  |
+7 | #[common_macros::lz_contract(upgradeable(bad_inner))]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+  |
+  = note: this error originates in the attribute macro `soroban_sdk::contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)

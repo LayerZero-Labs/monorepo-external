@@ -1,0 +1,31 @@
+---
+source: contracts/common-macros/src/tests/auth.rs
+expression: combined
+---
+// === Unit struct ===
+
+pub struct MyContract;
+use utils::{auth::Auth as _, multisig::MultiSig as _};
+#[common_macros::contract_impl]
+impl utils::auth::Auth for MyContract {
+    fn authorizer(env: &soroban_sdk::Env) -> Option<soroban_sdk::Address> {
+        Some(env.current_contract_address())
+    }
+}
+#[common_macros::contract_impl(contracttrait)]
+impl utils::multisig::MultiSig for MyContract {}
+
+
+// === Tuple struct ===
+
+#[derive(Copy, Clone)]
+pub struct MyContract(pub u32);
+use utils::{auth::Auth as _, multisig::MultiSig as _};
+#[common_macros::contract_impl]
+impl utils::auth::Auth for MyContract {
+    fn authorizer(env: &soroban_sdk::Env) -> Option<soroban_sdk::Address> {
+        Some(env.current_contract_address())
+    }
+}
+#[common_macros::contract_impl(contracttrait)]
+impl utils::multisig::MultiSig for MyContract {}

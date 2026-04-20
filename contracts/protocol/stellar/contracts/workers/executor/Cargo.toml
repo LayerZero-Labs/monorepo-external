@@ -1,0 +1,33 @@
+[package]
+name = "executor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+
+[dependencies]
+cfg-if = { workspace = true }
+soroban-sdk = { workspace = true }
+# workspace dependencies
+utils = { workspace = true }
+worker = { workspace = true }
+fee-lib-interfaces = { workspace = true }
+common-macros = { workspace = true }
+message-lib-common = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+rand = { workspace = true }
+ed25519-dalek = { workspace = true }
+utils = { workspace = true, features = ["testutils"] }
+
+

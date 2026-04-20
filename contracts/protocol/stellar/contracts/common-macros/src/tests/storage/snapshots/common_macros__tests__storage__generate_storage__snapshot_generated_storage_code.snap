@@ -1,0 +1,412 @@
+---
+source: contracts/common-macros/src/tests/storage/generate_storage.rs
+assertion_line: 409
+expression: formatted
+---
+#[soroban_sdk::contracttype]
+pub enum StorageKeys {
+    Counter,
+    Message(Address),
+    Flag(String),
+    Owner,
+    OptionalData(BytesN<32>),
+    TempData,
+    PrimitiveKey(u32),
+    NonPrimitiveKey(String),
+    NamedVariant(u32, String, Address),
+    CachedValue(Address),
+}
+impl StorageKeys {
+    pub fn counter(env: &soroban_sdk::Env) -> u32 {
+        let key = StorageKeys::Counter;
+        let value = env.storage().instance().get::<_, u32>(&key);
+        value.unwrap_or_else(|| 0)
+    }
+    pub fn set_counter(env: &soroban_sdk::Env, value: &u32) {
+        let key = StorageKeys::Counter;
+        env.storage().instance().set(&key, value);
+    }
+    pub fn remove_counter(env: &soroban_sdk::Env) {
+        let key = StorageKeys::Counter;
+        env.storage().instance().remove(&key);
+    }
+    pub fn set_or_remove_counter(env: &soroban_sdk::Env, value: &Option<u32>) {
+        match value.as_ref() {
+            Some(v) => Self::set_counter(env, v),
+            None => Self::remove_counter(env),
+        }
+    }
+    pub fn has_counter(env: &soroban_sdk::Env) -> bool {
+        let key = StorageKeys::Counter;
+        env.storage().instance().has(&key)
+    }
+    pub fn message(env: &soroban_sdk::Env, sender: &Address) -> String {
+        let key = StorageKeys::Message(sender.clone());
+        let value = env.storage().persistent().get::<_, String>(&key);
+        if value.is_some() {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        value.unwrap_or_else(|| String::from_str(env, "hello"))
+    }
+    pub fn set_message(env: &soroban_sdk::Env, sender: &Address, value: &String) {
+        let key = StorageKeys::Message(sender.clone());
+        env.storage().persistent().set(&key, value);
+        utils::ttl_configurable::extend_persistent_ttl(env, &key);
+    }
+    pub fn remove_message(env: &soroban_sdk::Env, sender: &Address) {
+        let key = StorageKeys::Message(sender.clone());
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_message(
+        env: &soroban_sdk::Env,
+        sender: &Address,
+        value: &Option<String>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_message(env, sender, v),
+            None => Self::remove_message(env, sender),
+        }
+    }
+    pub fn has_message(env: &soroban_sdk::Env, sender: &Address) -> bool {
+        let key = StorageKeys::Message(sender.clone());
+        let exists = env.storage().persistent().has(&key);
+        if exists {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        exists
+    }
+    pub fn extend_message_ttl(
+        env: &soroban_sdk::Env,
+        sender: &Address,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::Message(sender.clone());
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn flag(env: &soroban_sdk::Env, key: &String) -> Option<bool> {
+        let key = StorageKeys::Flag(key.clone());
+        let value = env.storage().temporary().get::<_, bool>(&key);
+        value
+    }
+    pub fn set_flag(env: &soroban_sdk::Env, key: &String, value: &bool) {
+        let key = StorageKeys::Flag(key.clone());
+        env.storage().temporary().set(&key, value);
+    }
+    pub fn remove_flag(env: &soroban_sdk::Env, key: &String) {
+        let key = StorageKeys::Flag(key.clone());
+        env.storage().temporary().remove(&key);
+    }
+    pub fn set_or_remove_flag(
+        env: &soroban_sdk::Env,
+        key: &String,
+        value: &Option<bool>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_flag(env, key, v),
+            None => Self::remove_flag(env, key),
+        }
+    }
+    pub fn has_flag(env: &soroban_sdk::Env, key: &String) -> bool {
+        let key = StorageKeys::Flag(key.clone());
+        env.storage().temporary().has(&key)
+    }
+    pub fn extend_flag_ttl(
+        env: &soroban_sdk::Env,
+        key: &String,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::Flag(key.clone());
+        env.storage().temporary().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn owner(env: &soroban_sdk::Env) -> Option<Address> {
+        let key = StorageKeys::Owner;
+        let value = env.storage().persistent().get::<_, Address>(&key);
+        if value.is_some() {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        value
+    }
+    pub fn set_owner(env: &soroban_sdk::Env, value: &Address) {
+        let key = StorageKeys::Owner;
+        env.storage().persistent().set(&key, value);
+        utils::ttl_configurable::extend_persistent_ttl(env, &key);
+    }
+    pub fn remove_owner(env: &soroban_sdk::Env) {
+        let key = StorageKeys::Owner;
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_owner(env: &soroban_sdk::Env, value: &Option<Address>) {
+        match value.as_ref() {
+            Some(v) => Self::set_owner(env, v),
+            None => Self::remove_owner(env),
+        }
+    }
+    pub fn has_owner(env: &soroban_sdk::Env) -> bool {
+        let key = StorageKeys::Owner;
+        let exists = env.storage().persistent().has(&key);
+        if exists {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        exists
+    }
+    pub fn extend_owner_ttl(env: &soroban_sdk::Env, threshold: u32, extend_to: u32) {
+        let key = StorageKeys::Owner;
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn custom_key_name(
+        env: &soroban_sdk::Env,
+        key: &BytesN<32>,
+    ) -> Option<Option<Address>> {
+        let key = StorageKeys::OptionalData(key.clone());
+        let value = env.storage().persistent().get::<_, Option<Address>>(&key);
+        if value.is_some() {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        value
+    }
+    pub fn set_custom_key_name(
+        env: &soroban_sdk::Env,
+        key: &BytesN<32>,
+        value: &Option<Address>,
+    ) {
+        let key = StorageKeys::OptionalData(key.clone());
+        env.storage().persistent().set(&key, value);
+        utils::ttl_configurable::extend_persistent_ttl(env, &key);
+    }
+    pub fn remove_custom_key_name(env: &soroban_sdk::Env, key: &BytesN<32>) {
+        let key = StorageKeys::OptionalData(key.clone());
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_custom_key_name(
+        env: &soroban_sdk::Env,
+        key: &BytesN<32>,
+        value: &Option<Option<Address>>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_custom_key_name(env, key, v),
+            None => Self::remove_custom_key_name(env, key),
+        }
+    }
+    pub fn has_custom_key_name(env: &soroban_sdk::Env, key: &BytesN<32>) -> bool {
+        let key = StorageKeys::OptionalData(key.clone());
+        let exists = env.storage().persistent().has(&key);
+        if exists {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        exists
+    }
+    pub fn extend_custom_key_name_ttl(
+        env: &soroban_sdk::Env,
+        key: &BytesN<32>,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::OptionalData(key.clone());
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn temp_data(env: &soroban_sdk::Env) -> Option<u64> {
+        let key = StorageKeys::TempData;
+        let value = env.storage().temporary().get::<_, u64>(&key);
+        value
+    }
+    pub fn set_temp_data(env: &soroban_sdk::Env, value: &u64) {
+        let key = StorageKeys::TempData;
+        env.storage().temporary().set(&key, value);
+    }
+    pub fn remove_temp_data(env: &soroban_sdk::Env) {
+        let key = StorageKeys::TempData;
+        env.storage().temporary().remove(&key);
+    }
+    pub fn set_or_remove_temp_data(env: &soroban_sdk::Env, value: &Option<u64>) {
+        match value.as_ref() {
+            Some(v) => Self::set_temp_data(env, v),
+            None => Self::remove_temp_data(env),
+        }
+    }
+    pub fn has_temp_data(env: &soroban_sdk::Env) -> bool {
+        let key = StorageKeys::TempData;
+        env.storage().temporary().has(&key)
+    }
+    pub fn extend_temp_data_ttl(env: &soroban_sdk::Env, threshold: u32, extend_to: u32) {
+        let key = StorageKeys::TempData;
+        env.storage().temporary().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn primitive_key(env: &soroban_sdk::Env, key: u32) -> Option<u32> {
+        let key = StorageKeys::PrimitiveKey(key);
+        let value = env.storage().persistent().get::<_, u32>(&key);
+        if value.is_some() {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        value
+    }
+    pub fn set_primitive_key(env: &soroban_sdk::Env, key: u32, value: &u32) {
+        let key = StorageKeys::PrimitiveKey(key);
+        env.storage().persistent().set(&key, value);
+        utils::ttl_configurable::extend_persistent_ttl(env, &key);
+    }
+    pub fn remove_primitive_key(env: &soroban_sdk::Env, key: u32) {
+        let key = StorageKeys::PrimitiveKey(key);
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_primitive_key(
+        env: &soroban_sdk::Env,
+        key: u32,
+        value: &Option<u32>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_primitive_key(env, key, v),
+            None => Self::remove_primitive_key(env, key),
+        }
+    }
+    pub fn has_primitive_key(env: &soroban_sdk::Env, key: u32) -> bool {
+        let key = StorageKeys::PrimitiveKey(key);
+        let exists = env.storage().persistent().has(&key);
+        if exists {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        exists
+    }
+    pub fn extend_primitive_key_ttl(
+        env: &soroban_sdk::Env,
+        key: u32,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::PrimitiveKey(key);
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn non_primitive_key(env: &soroban_sdk::Env, key: &String) -> Option<u32> {
+        let key = StorageKeys::NonPrimitiveKey(key.clone());
+        let value = env.storage().instance().get::<_, u32>(&key);
+        value
+    }
+    pub fn set_non_primitive_key(env: &soroban_sdk::Env, key: &String, value: &u32) {
+        let key = StorageKeys::NonPrimitiveKey(key.clone());
+        env.storage().instance().set(&key, value);
+    }
+    pub fn remove_non_primitive_key(env: &soroban_sdk::Env, key: &String) {
+        let key = StorageKeys::NonPrimitiveKey(key.clone());
+        env.storage().instance().remove(&key);
+    }
+    pub fn set_or_remove_non_primitive_key(
+        env: &soroban_sdk::Env,
+        key: &String,
+        value: &Option<u32>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_non_primitive_key(env, key, v),
+            None => Self::remove_non_primitive_key(env, key),
+        }
+    }
+    pub fn has_non_primitive_key(env: &soroban_sdk::Env, key: &String) -> bool {
+        let key = StorageKeys::NonPrimitiveKey(key.clone());
+        env.storage().instance().has(&key)
+    }
+    pub fn named_variant(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+    ) -> Option<u32> {
+        let key = StorageKeys::NamedVariant(first, second.clone(), third.clone());
+        let value = env.storage().persistent().get::<_, u32>(&key);
+        if value.is_some() {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        value
+    }
+    pub fn set_named_variant(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+        value: &u32,
+    ) {
+        let key = StorageKeys::NamedVariant(first, second.clone(), third.clone());
+        env.storage().persistent().set(&key, value);
+        utils::ttl_configurable::extend_persistent_ttl(env, &key);
+    }
+    pub fn remove_named_variant(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+    ) {
+        let key = StorageKeys::NamedVariant(first, second.clone(), third.clone());
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_named_variant(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+        value: &Option<u32>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_named_variant(env, first, second, third, v),
+            None => Self::remove_named_variant(env, first, second, third),
+        }
+    }
+    pub fn has_named_variant(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+    ) -> bool {
+        let key = StorageKeys::NamedVariant(first, second.clone(), third.clone());
+        let exists = env.storage().persistent().has(&key);
+        if exists {
+            utils::ttl_configurable::extend_persistent_ttl(env, &key);
+        }
+        exists
+    }
+    pub fn extend_named_variant_ttl(
+        env: &soroban_sdk::Env,
+        first: u32,
+        second: &String,
+        third: &Address,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::NamedVariant(first, second.clone(), third.clone());
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+    pub fn cached_value(env: &soroban_sdk::Env, key: &Address) -> Option<u64> {
+        let key = StorageKeys::CachedValue(key.clone());
+        let value = env.storage().persistent().get::<_, u64>(&key);
+        value
+    }
+    pub fn set_cached_value(env: &soroban_sdk::Env, key: &Address, value: &u64) {
+        let key = StorageKeys::CachedValue(key.clone());
+        env.storage().persistent().set(&key, value);
+    }
+    pub fn remove_cached_value(env: &soroban_sdk::Env, key: &Address) {
+        let key = StorageKeys::CachedValue(key.clone());
+        env.storage().persistent().remove(&key);
+    }
+    pub fn set_or_remove_cached_value(
+        env: &soroban_sdk::Env,
+        key: &Address,
+        value: &Option<u64>,
+    ) {
+        match value.as_ref() {
+            Some(v) => Self::set_cached_value(env, key, v),
+            None => Self::remove_cached_value(env, key),
+        }
+    }
+    pub fn has_cached_value(env: &soroban_sdk::Env, key: &Address) -> bool {
+        let key = StorageKeys::CachedValue(key.clone());
+        env.storage().persistent().has(&key)
+    }
+    pub fn extend_cached_value_ttl(
+        env: &soroban_sdk::Env,
+        key: &Address,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        let key = StorageKeys::CachedValue(key.clone());
+        env.storage().persistent().extend_ttl(&key, threshold, extend_to);
+    }
+}

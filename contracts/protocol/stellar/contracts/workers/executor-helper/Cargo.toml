@@ -1,0 +1,23 @@
+[package]
+name = "executor-helper"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+# workspace dependencies
+common-macros = { workspace = true }
+utils = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+executor = { workspace = true, features = ["library"] }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
+

@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/error/fail/non_unit_variant.rs:7:1
+  |
+7 | #[common_macros::contract_error]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: Error enum variants must be unit variants

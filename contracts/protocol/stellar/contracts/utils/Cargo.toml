@@ -1,0 +1,20 @@
+[package]
+name = "utils"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[features]
+testutils = []
+
+[dependencies]
+soroban-sdk = { workspace = true }
+common-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

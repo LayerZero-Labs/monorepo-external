@@ -1,0 +1,56 @@
+error[E0277]: the trait bound `MyContract: UpgradeableInternal` is not satisfied
+  --> tests/ui/lz_contract/fail/upgradeable_missing_internal.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `UpgradeableInternal` is not implemented for `MyContract`
+   |
+note: required by a bound in `Upgradeable`
+  --> $WORKSPACE/contracts/utils/src/upgradeable.rs
+   |
+   | pub trait Upgradeable: UpgradeableInternal + Auth {
+   |                        ^^^^^^^^^^^^^^^^^^^ required by this bound in `Upgradeable`
+
+error[E0277]: the trait bound `MyContract: UpgradeableInternal` is not satisfied
+  --> tests/ui/lz_contract/fail/upgradeable_missing_internal.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `UpgradeableInternal` is not implemented for `MyContract`
+   |
+note: required by a bound in `utils::upgradeable::Upgradeable::upgrade`
+  --> $WORKSPACE/contracts/utils/src/upgradeable.rs
+   |
+   | pub trait Upgradeable: UpgradeableInternal + Auth {
+   |                        ^^^^^^^^^^^^^^^^^^^ required by this bound in `Upgradeable::upgrade`
+...
+   |     fn upgrade(env: &soroban_sdk::Env, new_wasm_hash: &soroban_sdk::BytesN<32>) {
+   |        ------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyContract: UpgradeableInternal` is not satisfied
+  --> tests/ui/lz_contract/fail/upgradeable_missing_internal.rs:12:12
+   |
+12 | pub struct MyContract;
+   |            ^^^^^^^^^^ the trait `UpgradeableInternal` is not implemented for `MyContract`
+   |
+note: required by a bound in `utils::upgradeable::Upgradeable::migrate`
+  --> $WORKSPACE/contracts/utils/src/upgradeable.rs
+   |
+   | pub trait Upgradeable: UpgradeableInternal + Auth {
+   |                        ^^^^^^^^^^^^^^^^^^^ required by this bound in `Upgradeable::migrate`
+...
+   |     fn migrate(env: &soroban_sdk::Env, migration_data: &soroban_sdk::Bytes) {
+   |        ------- required by a bound in this associated function
+
+error[E0277]: the trait bound `MyContract: UpgradeableInternal` is not satisfied
+  --> tests/ui/lz_contract/fail/upgradeable_missing_internal.rs:17:5
+   |
+17 |     MyContract::upgrade(env, &hash);
+   |     ^^^^^^^^^^ the trait `UpgradeableInternal` is not implemented for `MyContract`
+   |
+note: required by a bound in `utils::upgradeable::Upgradeable::upgrade`
+  --> $WORKSPACE/contracts/utils/src/upgradeable.rs
+   |
+   | pub trait Upgradeable: UpgradeableInternal + Auth {
+   |                        ^^^^^^^^^^^^^^^^^^^ required by this bound in `Upgradeable::upgrade`
+...
+   |     fn upgrade(env: &soroban_sdk::Env, new_wasm_hash: &soroban_sdk::BytesN<32>) {
+   |        ------- required by a bound in this associated function

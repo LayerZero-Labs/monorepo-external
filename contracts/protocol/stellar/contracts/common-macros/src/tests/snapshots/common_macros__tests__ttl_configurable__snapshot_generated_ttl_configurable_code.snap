@@ -1,0 +1,10 @@
+---
+source: contracts/common-macros/src/tests/ttl_configurable.rs
+expression: formatted
+---
+pub struct MyContract {
+    some_field: u32,
+}
+use utils::ttl_configurable::TtlConfigurable as _;
+#[common_macros::contract_impl(contracttrait)]
+impl utils::ttl_configurable::TtlConfigurable for MyContract {}

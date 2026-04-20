@@ -1,0 +1,34 @@
+[package]
+name = "layerzero-views"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+# Network selection
+mainnet = []
+testnet = []
+sandbox = []
+
+[dependencies]
+soroban-sdk = { workspace = true }
+# workspace dependencies
+utils = { workspace = true }
+common-macros = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+message-lib-common = { workspace = true }
+uln302 = { workspace = true, features = ["library"] }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+endpoint-v2 = { workspace = true, features = ["testutils"] }
+message-lib-common = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+uln302 = { workspace = true, features = ["testutils"] }

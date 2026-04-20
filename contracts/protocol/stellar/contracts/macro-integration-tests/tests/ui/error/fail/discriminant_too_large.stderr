@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/error/fail/discriminant_too_large.rs:6:1
+  |
+6 | #[common_macros::contract_error]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: Error enum discriminant must be a valid u32 integer: Error("number too large to fit in target type")

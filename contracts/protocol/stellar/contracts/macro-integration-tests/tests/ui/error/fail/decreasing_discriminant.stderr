@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/error/fail/decreasing_discriminant.rs:6:1
+  |
+6 | #[common_macros::contract_error]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: Error enum discriminant must be greater than the previous discriminant

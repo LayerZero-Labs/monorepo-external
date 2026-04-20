@@ -1,0 +1,39 @@
+[package]
+name = "counter"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+utils = { workspace = true }
+oapp = { workspace = true }
+common-macros = { workspace = true }
+oapp-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+simple-message-lib = { workspace = true, features = ["testutils"] }
+blocked-message-lib = { workspace = true }
+message-lib-common = { workspace = true, features = ["testutils"] }
+endpoint-v2 = { workspace = true, features = ["testutils"] }
+executor = { workspace = true, features = ["testutils"] }
+uln302 = { workspace = true, features = ["testutils"] }
+dvn = { workspace = true, features = ["testutils"] }
+dvn-fee-lib = { workspace = true, features = ["testutils"] }
+executor-fee-lib = { workspace = true, features = ["testutils"] }
+treasury = { workspace = true, features = ["testutils"] }
+price-feed = { workspace = true, features = ["testutils"] }
+fee-lib-interfaces = { workspace = true }
+executor-helper = { workspace = true }
+# For real DVN signature verification in integration tests
+k256 = { workspace = true }
+sha3 = { workspace = true }
+rand = { workspace = true }
+ed25519-dalek = { workspace = true }

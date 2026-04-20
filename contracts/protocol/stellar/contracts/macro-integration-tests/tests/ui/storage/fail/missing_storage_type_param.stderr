@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/storage/fail/missing_storage_type_param.rs:7:1
+  |
+7 | #[common_macros::storage]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse storage type for #[instance(...)] : expected attribute arguments in parentheses: #[instance(...)]

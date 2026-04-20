@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/error/fail/non_int_discriminant.rs:9:1
+  |
+9 | #[common_macros::contract_error]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: Error enum discriminant must be an integer literal

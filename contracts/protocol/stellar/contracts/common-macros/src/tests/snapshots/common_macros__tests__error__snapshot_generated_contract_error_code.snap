@@ -1,0 +1,20 @@
+---
+source: contracts/common-macros/src/tests/error.rs
+expression: formatted
+---
+#[soroban_sdk::contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[repr(u32)]
+/// Example error enum
+pub enum MyError {
+    /// Implicit (should start at 1)
+    A = 1u32,
+    /// Implicit (should be 2)
+    B = 2u32,
+    /// Explicit (must be >= previous + 1)
+    C = 10,
+    /// Implicit (should be 11)
+    D = 11u32,
+    /// Explicit max boundary (u32::MAX)
+    E = 4294967295,
+}

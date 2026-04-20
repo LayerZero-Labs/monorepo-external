@@ -1,0 +1,12 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "outputs": [
+                "sdk/src/generated/**",
+                "target/wasm32v1-none/release/*.wasm",
+                "target/wasm32v1-none/release/*.d"
+            ]
+        }
+    }
+}

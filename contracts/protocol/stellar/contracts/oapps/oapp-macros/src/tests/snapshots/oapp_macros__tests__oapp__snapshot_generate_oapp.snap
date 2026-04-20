@@ -1,0 +1,111 @@
+---
+source: contracts/oapps/oapp-macros/src/tests/oapp.rs
+assertion_line: 87
+expression: combined
+---
+// === Default (no custom impls) ===
+
+pub struct MyOApp;
+use oapp::oapp_core::OAppCore as _;
+use utils::rbac::RoleBasedAccessControl as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_core::OAppCore for MyOApp {}
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::rbac::RoleBasedAccessControl for MyOApp {}
+use oapp::oapp_sender::OAppSenderInternal as _;
+impl oapp::oapp_sender::OAppSenderInternal for MyOApp {}
+use oapp::oapp_receiver::OAppReceiver as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_receiver::OAppReceiver for MyOApp {}
+use oapp::oapp_options_type3::OAppOptionsType3 as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_options_type3::OAppOptionsType3 for MyOApp {}
+
+
+// === custom = [core] ===
+
+pub struct MyOApp;
+use oapp::oapp_sender::OAppSenderInternal as _;
+impl oapp::oapp_sender::OAppSenderInternal for MyOApp {}
+use oapp::oapp_receiver::OAppReceiver as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_receiver::OAppReceiver for MyOApp {}
+use oapp::oapp_options_type3::OAppOptionsType3 as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_options_type3::OAppOptionsType3 for MyOApp {}
+
+
+// === custom = [sender] ===
+
+pub struct MyOApp;
+use oapp::oapp_core::OAppCore as _;
+use utils::rbac::RoleBasedAccessControl as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_core::OAppCore for MyOApp {}
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::rbac::RoleBasedAccessControl for MyOApp {}
+use oapp::oapp_receiver::OAppReceiver as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_receiver::OAppReceiver for MyOApp {}
+use oapp::oapp_options_type3::OAppOptionsType3 as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_options_type3::OAppOptionsType3 for MyOApp {}
+
+
+// === custom = [receiver] ===
+
+pub struct MyOApp;
+use oapp::oapp_core::OAppCore as _;
+use utils::rbac::RoleBasedAccessControl as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_core::OAppCore for MyOApp {}
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::rbac::RoleBasedAccessControl for MyOApp {}
+use oapp::oapp_sender::OAppSenderInternal as _;
+impl oapp::oapp_sender::OAppSenderInternal for MyOApp {}
+use oapp::oapp_options_type3::OAppOptionsType3 as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_options_type3::OAppOptionsType3 for MyOApp {}
+
+
+// === custom = [options_type3] ===
+
+pub struct MyOApp;
+use oapp::oapp_core::OAppCore as _;
+use utils::rbac::RoleBasedAccessControl as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_core::OAppCore for MyOApp {}
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::rbac::RoleBasedAccessControl for MyOApp {}
+use oapp::oapp_sender::OAppSenderInternal as _;
+impl oapp::oapp_sender::OAppSenderInternal for MyOApp {}
+use oapp::oapp_receiver::OAppReceiver as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_receiver::OAppReceiver for MyOApp {}
+
+
+// === custom = [core, sender, receiver, options_type3] ===
+
+pub struct MyOApp;
+
+
+// === Struct attributes + fields are preserved ===
+
+#[derive(Clone, Debug)]
+pub struct FancyOApp {
+    pub x: u32,
+}
+use oapp::oapp_core::OAppCore as _;
+use utils::rbac::RoleBasedAccessControl as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_core::OAppCore for FancyOApp {}
+#[soroban_sdk::contractimpl(contracttrait)]
+impl utils::rbac::RoleBasedAccessControl for FancyOApp {}
+use oapp::oapp_sender::OAppSenderInternal as _;
+impl oapp::oapp_sender::OAppSenderInternal for FancyOApp {}
+use oapp::oapp_receiver::OAppReceiver as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_receiver::OAppReceiver for FancyOApp {}
+use oapp::oapp_options_type3::OAppOptionsType3 as _;
+#[soroban_sdk::contractimpl(contracttrait)]
+impl oapp::oapp_options_type3::OAppOptionsType3 for FancyOApp {}

@@ -1,0 +1,22 @@
+[package]
+name = "oapp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+# workspace dependencies
+utils = { workspace = true }
+common-macros = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+oapp-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+endpoint-v2 = { workspace = true, features = ["testutils"] }

@@ -1,0 +1,24 @@
+error: custom attribute panicked
+  --> tests/ui/rbac/fail/param_not_address.rs:11:5
+   |
+11 |     #[common_macros::has_role(caller, "minter")]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: message: Parameter `caller` must be of type `Address` or `&Address`
+
+warning: unused import: `Env`
+ --> tests/ui/rbac/fail/param_not_address.rs:3:43
+  |
+3 | use soroban_sdk::{contract, contractimpl, Env};
+  |                                           ^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0599]: no function or associated item named `bad` found for struct `MyContract` in the current scope
+  --> tests/ui/rbac/fail/param_not_address.rs:12:12
+   |
+ 6 | pub struct MyContract;
+   | --------------------- function or associated item `bad` not found for this struct
+...
+12 |     pub fn bad(env: Env, caller: u32) {
+   |            ^^^ function or associated item not found in `MyContract`

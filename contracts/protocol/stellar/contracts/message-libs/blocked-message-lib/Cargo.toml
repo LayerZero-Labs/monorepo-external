@@ -1,0 +1,20 @@
+[package]
+name = "blocked-message-lib"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+# workspace dependencies
+endpoint-v2 = { workspace = true, features = ["library"] }
+utils = { workspace = true }
+common-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

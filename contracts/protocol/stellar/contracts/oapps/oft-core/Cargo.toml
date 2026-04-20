@@ -1,0 +1,24 @@
+[package]
+name = "oft-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+endpoint-v2 = { workspace = true, features = ["library"] }
+utils = { workspace = true }
+oapp = { workspace = true }
+common-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+simple-message-lib = { workspace = true }
+message-lib-common = { workspace = true, features = ["testutils"] }
+endpoint-v2 = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+oapp-macros = { workspace = true }

@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/ui/ownable/fail/non_struct_input.rs:3:1
+  |
+3 | #[common_macros::ownable]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: failed to parse struct: expected `struct`

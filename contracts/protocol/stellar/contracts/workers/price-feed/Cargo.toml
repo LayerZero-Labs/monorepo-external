@@ -1,0 +1,26 @@
+[package]
+name = "price-feed"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+
+[dependencies]
+cfg-if = { workspace = true }
+soroban-sdk = { workspace = true }
+utils = { workspace = true }
+fee-lib-interfaces = { workspace = true }
+common-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+

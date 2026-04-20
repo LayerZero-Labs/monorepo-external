@@ -1,0 +1,21 @@
+---
+source: contracts/common-macros/src/tests/rbac.rs
+expression: combined
+---
+// === has_role ===
+
+pub fn mint(env: Env, caller: Address, amount: i128) {
+    utils::rbac::ensure_role::<
+        Self,
+    >(&env, &soroban_sdk::Symbol::new(&env, "minter"), &caller);
+}
+
+
+// === only_role ===
+
+pub fn mint(env: Env, caller: Address, amount: i128) {
+    utils::rbac::ensure_role::<
+        Self,
+    >(&env, &soroban_sdk::Symbol::new(&env, "minter"), &caller);
+    caller.require_auth();
+}

@@ -1,0 +1,26 @@
+[package]
+name = "endpoint-v2"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = []
+
+[dependencies]
+cfg-if = { workspace = true }
+soroban-sdk = { workspace = true }
+# workspace dependencies
+utils = { workspace = true }
+common-macros = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+utils = { workspace = true, features = ["testutils"] }
+hex-literal = { workspace = true }
