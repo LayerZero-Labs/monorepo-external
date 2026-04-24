@@ -317,11 +317,11 @@ overrides:
   '@electron/notarize': 2.3.2
   '@solana/web3.js': 1.95.8
   '@ton/core': 0.59.1
-  axios@^0: ^0.30.3
-  axios@^1: ^1.13.5
+  axios@^0: ^0.31.0
+  axios@^1: ^1.15.0
   elliptic: ^6.6.1
-  fast-xml-parser@^4: ^4.5.4
-  fast-xml-parser@^5: ^5.3.6
+  fast-xml-parser@^4: ^4.5.5
+  fast-xml-parser@^5: ^5.5.7
   flatted: ^3.4.2
   form-data@^4: ^4.0.4
   h3@^1: ^1.15.6
@@ -333,6 +333,8 @@ overrides:
   minimatch@^7: ^7.4.8
   minimatch@^9: ^9.0.7
   minimatch@^10: ^10.2.3
+  protobufjs@^7: ^7.5.5
+  protobufjs@^8: ^8.0.1
   qs@^6: ^6.14.1
   rollup@^2: ^2.80.0
   rollup@^4: ^4.59.0
@@ -3946,11 +3948,11 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axios@0.30.3:
-    resolution: {integrity: sha512-5/tmEb6TmE/ax3mdXBc/Mi6YdPGxQsv+0p5YlciXWt3PHIn0VamqCXhRMtScnwY3lbgSXLneOuXAKUhgmSRpwg==}
+  axios@0.31.0:
+    resolution: {integrity: sha512-HGIUj/P74co3rSLBV9SHz9LMgCmrXFEtkfMcC5r6bS5j3dBHUcAje2tS4fmU6WM20kuhvUX04XE58594dpgi1g==}
 
-  axios@1.13.5:
-    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
+  axios@1.15.0:
+    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
 
   babel-jest@29.7.0:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
@@ -6295,12 +6297,16 @@ packages:
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
 
-  protobufjs@7.5.4:
-    resolution: {integrity: sha512-CvexbZtbov6jW2eXAvLukXjXUW1TzFaivC46BpWc/3BpcCysb5Vffu+B3XHMm8lVEuy2Mm4XGex8hBSg1yapPg==}
+  protobufjs@7.5.5:
+    resolution: {integrity: sha512-3wY1AxV+VBNW8Yypfd1yQY9pXnqTAN+KwQxL8iYm3/BjKYMNg4i0owhEe26PWDOMaIrzeeF98Lqd5NGz4omiIg==}
     engines: {node: '>=12.0.0'}
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
 
   pump@1.0.3:
     resolution: {integrity: sha512-8k0JupWme55+9tCVE+FS5ULT3K6AbgqrGa58lTT49RpyfwwcGedHqaC5LlQNdEAumn/wFsu6aPwkuPMioy8kqw==}
@@ -8266,14 +8272,14 @@ snapshots:
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
-      protobufjs: 7.5.4
+      protobufjs: 7.5.5
       yargs: 17.7.2
 
   '@grpc/proto-loader@0.8.0':
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
-      protobufjs: 7.5.4
+      protobufjs: 7.5.5
       yargs: 17.7.2
 
   '@humanfs/core@0.19.1': {}
@@ -8513,7 +8519,7 @@ snapshots:
       '@ethersproject/solidity': 5.8.0
       '@ethersproject/transactions': 5.8.0
       '@ethersproject/wallet': 5.8.0
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       chalk: 5.6.2
       chokidar: 3.6.0
       debug: 4.4.3(supports-color@8.1.1)
@@ -9689,7 +9695,7 @@ snapshots:
   '@stellar/stellar-sdk@14.3.3':
     dependencies:
       '@stellar/stellar-base': 14.0.2
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       bignumber.js: 9.3.1
       eventsource: 2.0.2
       feaxios: 0.0.23
@@ -10274,7 +10280,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@0.30.3(debug@4.4.3):
+  axios@0.31.0(debug@4.4.3):
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
@@ -10282,11 +10288,11 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.13.5(debug@4.4.3):
+  axios@1.15.0(debug@4.4.3):
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
-      proxy-from-env: 1.1.0
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -10930,7 +10936,7 @@ snapshots:
       '@grpc/grpc-js': 1.14.3
       '@grpc/proto-loader': 0.7.15
       docker-modem: 5.0.6
-      protobufjs: 7.5.4
+      protobufjs: 7.5.5
       tar-fs: 2.1.4
       uuid: 10.0.0
     transitivePeerDependencies:
@@ -11649,7 +11655,7 @@ snapshots:
       '@ethersproject/transactions': 5.8.0
       '@ethersproject/wallet': 5.8.0
       '@types/qs': 6.9.17
-      axios: 0.30.3(debug@4.4.3)
+      axios: 0.31.0(debug@4.4.3)
       chalk: 4.1.2
       chokidar: 3.6.0
       debug: 4.4.3(supports-color@8.1.1)
@@ -11679,7 +11685,7 @@ snapshots:
       '@ethersproject/solidity': 5.8.0
       '@ethersproject/transactions': 5.8.0
       '@ethersproject/wallet': 5.8.0
-      axios: 0.30.3(debug@4.4.3)
+      axios: 0.31.0(debug@4.4.3)
       chalk: 4.1.2
       chokidar: 3.6.0
       debug: 4.4.3(supports-color@8.1.1)
@@ -12919,7 +12925,7 @@ snapshots:
 
   posthog-node@4.18.0(debug@4.4.3):
     dependencies:
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
     transitivePeerDependencies:
       - debug
 
@@ -12972,7 +12978,7 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  protobufjs@7.5.4:
+  protobufjs@7.5.5:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -12988,6 +12994,8 @@ snapshots:
       long: 5.3.2
 
   proxy-from-env@1.1.0: {}
+
+  proxy-from-env@2.1.0: {}
 
   pump@1.0.3:
     dependencies:
@@ -13660,7 +13668,7 @@ snapshots:
       '@babel/runtime': 7.28.4
       '@ethersproject/abi': 5.8.0
       '@tronweb3/google-protobuf': 3.21.4
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       bignumber.js: 9.3.1
       ethereum-cryptography: 2.2.1
       ethers: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
