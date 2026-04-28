@@ -19,6 +19,9 @@ remappings = [
     '@layerzerolabs/=node_modules/@layerzerolabs/',
 ]
 
+[profile.test]
+via_ir = false
+
 [fuzz]
 runs = 1000
 

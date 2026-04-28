@@ -143,6 +143,22 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.0.1-solana-3.1.10']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.0.1',
+            solana: '3.1.10',
+        },
+        dependencies: {
+            // Anchor 1.0.1 is a patch release on the same Agave 3.1.10 toolchain.
+            // Keep the same Rust/platform-tools stack as 1.0.0 unless upstream proves otherwise.
+            rust: '1.89.0',
+            'platform-tools': '1.52',
+            'platform-tools-rust': '1.89.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
 } satisfies Record<string, Image>;
 
 export type ImageId = keyof typeof images;
@@ -173,6 +189,13 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
                 solana: 'solana:anchor-1.0.0-solana-3.1.10',
             },
             description: 'Anchor 1.0.0 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
+        },
+        {
+            images: {
+                anchor: 'solana:anchor-1.0.1-solana-3.1.10',
+                solana: 'solana:anchor-1.0.1-solana-3.1.10',
+            },
+            description: 'Anchor 1.0.1 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
         },
         {
             images: {

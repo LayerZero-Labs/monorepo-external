@@ -18,9 +18,15 @@ packages:
   - '!**/src/daml/**'
 catalogs:
   console:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.149
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.149
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.149
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
+    '@layerzerolabs/oapp-evm-contracts': 0.2.78
+    '@layerzerolabs/oapp-upgradeable-evm-contracts': 0.2.78
+    '@layerzerolabs/oft-evm-contracts': 0.2.78
+    '@layerzerolabs/oft-upgradeable-evm-contracts': 0.2.78
+    '@layerzerolabs/utils-evm-contracts': 0.2.78
+    '@layerzerolabs/utils-upgradeable-evm-contracts': 0.2.78
     '@matterlabs/hardhat-zksync-solc': 1.3.2
     '@openzeppelin/contracts': 5.4.0
     '@openzeppelin/contracts-upgradeable': 5.4.0
