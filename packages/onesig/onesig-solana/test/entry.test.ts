@@ -8,6 +8,7 @@ import { beforeAll, describe } from 'vitest';
 import { OneSig, ONESIG_PROGRAM_ID } from '../src';
 import { oneStepExecutionTests } from './features/one-step-exec';
 import { setConfigTests } from './features/set-config';
+import { signerAsExecutorTests } from './features/signer-as-exec';
 import { twoStepExecutionTests } from './features/two-step-exec';
 import { DEFAULT_CONFIG, LOCAL_RPC_URL, setupOneSig, TransactionContext } from './helpers';
 
@@ -56,6 +57,7 @@ describe('OneSig Solana', () => {
 
     describe(`One-Step Transaction Execution`, oneStepExecutionTests.bind(this, ctx));
     describe('Two-Step Transaction Execution', twoStepExecutionTests.bind(this, ctx));
+    describe('Signer-as-Executor', signerAsExecutorTests);
     describe('SetConfig Operations', setConfigTests.bind(this, ctx));
     // describe('Transaction Size', txSizeTests.bind(this, ctx))
 });

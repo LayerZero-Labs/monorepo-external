@@ -3,6 +3,7 @@
 pub mod constants;
 pub mod errors;
 pub mod events;
+pub mod execution;
 pub mod instructions;
 pub mod state;
 pub mod types;
@@ -47,6 +48,13 @@ pub mod onesig {
         params: ExecuteTransactionParams,
     ) -> Result<()> {
         ExecuteTransaction::apply(&mut ctx, &params)
+    }
+
+    pub fn signer_execute_transaction(
+        mut ctx: Context<SignerExecuteTransaction>,
+        params: SignerExecuteTransactionParams,
+    ) -> Result<()> {
+        SignerExecuteTransaction::apply(&mut ctx, &params)
     }
 
     pub fn close_merkle_root(mut ctx: Context<CloseMerkleRoot>) -> Result<()> {

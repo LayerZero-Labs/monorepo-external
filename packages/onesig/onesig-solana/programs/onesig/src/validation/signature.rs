@@ -1,6 +1,9 @@
 use std::collections::HashSet;
 
-use anchor_lang::{prelude::*, solana_program::secp256k1_recover::secp256k1_recover};
+use anchor_lang::{
+    prelude::*,
+    solana_program::{keccak, secp256k1_recover::secp256k1_recover},
+};
 
 use crate::{
     constants::*,
@@ -11,6 +14,28 @@ use crate::{
 pub struct SignatureValidator;
 
 impl SignatureValidator {
+    /// Verifies that a registered signer authorized `delegate` to execute `leaf` within
+    /// `signer_proof_expiry`.
+    pub fn verify_signer_proof(
+        leaf: &Hash,
+        delegate: Pubkey,
+        signer_proof_expiry: u64,
+        signers: &[Address],
+        signature: &Signature,
+    ) -> Result<()> {
+        let now = Clock::get()?.unix_timestamp;
+        require!((now as u64) <= signer_proof_expiry, OneSigError::ExpiredSignerProof);
+
+        // digest = keccak256(EIP191 || keccak256(leaf || delegate || expiry_be))
+        let inner =
+            keccak::hashv(&[leaf.as_ref(), delegate.as_ref(), &signer_proof_expiry.to_be_bytes()]);
+        let digest: Hash = keccak::hashv(&[EIP191_PERSONAL_SIGN_PREFIX_32, inner.as_ref()]).into();
+
+        let recovered: Address = Self::recover_signer(&digest, signature)?.into();
+        require!(signers.contains(&recovered), OneSigError::SignerProofUnauthorized);
+        Ok(())
+    }
+
     // Verifies multiple signatures against signer list and threshold
     pub fn verify_signatures(
         threshold: u8,

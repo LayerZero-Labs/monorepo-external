@@ -108,7 +108,7 @@ const main = async (): Promise<void> => {
         .map((packageName) => {
             const pkgFileName = generateVerificationFileName(packageName);
             const baseName = pkgFileName.replace(/\.ts$/, '');
-            const exportName = `${generatePackageName(packageName.replace(/_/g, '-'), PackageNameCaseOption.CAMEL_CASE)}VerificationArtifact`;
+            const exportName = `${generatePackageName(packageName.replace(/_/g, '-'), PackageNameCaseOption.CAMEL)}VerificationArtifact`;
             return `export { default as ${exportName} } from './${baseName}';`;
         })
         .join('\n');

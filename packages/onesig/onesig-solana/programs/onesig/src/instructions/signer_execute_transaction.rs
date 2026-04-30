@@ -6,16 +6,18 @@ use crate::{
     events::TransactionExecuted,
     execution::{build_instruction, execute_instruction, resolve_merkle_root},
     state::{MerkleRootState, OneSigState},
-    types::ExecuteTransactionParams,
-    validation::merkle::MerkleValidator,
+    types::SignerExecuteTransactionParams,
+    validation::{merkle::MerkleValidator, signature::SignatureValidator},
 };
 
 #[event_cpi]
 #[derive(Accounts)]
-pub struct ExecuteTransaction<'info> {
-    pub executor: Signer<'info>,
+pub struct SignerExecuteTransaction<'info> {
+    /// The `delegate` from the signer-as-executor spec: the native account
+    /// the off-chain signer bound as the intended submitter via `signer_proof`.
+    pub delegate: Signer<'info>,
     /// CHECK: This is the same PDA used in invoke_signed when executing transactions.
-    /// It signs on behalf of the program in execute_transaction.
+    /// It signs on behalf of the program in signer_execute_transaction.
     #[account(seeds = [ONE_SIG_SEED, one_sig_state.key().as_ref()], bump = one_sig_state.bump)]
     pub one_sig_signer: AccountInfo<'info>,
     #[account(mut)]
@@ -29,36 +31,26 @@ pub struct ExecuteTransaction<'info> {
     pub merkle_root_state: Option<Account<'info, MerkleRootState>>,
 }
 
-impl ExecuteTransaction<'_> {
-    /// Executes a transaction with a pre-verified merkle root permissionlessly
+impl SignerExecuteTransaction<'_> {
+    /// "Signer-as-executor" path: a registered secp256k1 signer off-chain authorizes the
+    /// submitter (`delegate`) to land a specific leaf via `signer_proof`.
     ///
-    /// Process:
-    /// 1. Verify signatures on Merkle root (or check pre-verified merkle root state)
-    /// 2. Build and verify the transaction against Merkle proof
-    /// 3. Execute the instruction with proper authorization
-    /// 4. Increment nonce for replay protection
-    /// 5. Emit successful transaction event
+    /// Flow:
+    /// 1. Resolve merkle root (direct or pre-verified).
+    /// 2. Encode the leaf and verify the merkle proof.
+    /// 3. If `executor_required`: run `verify_signer_proof` with digest bound to `delegate.key()`.
+    ///    Skipped in permissionless mode.
+    /// 4. Execute, increment nonce, emit event.
     pub fn apply(
-        ctx: &mut Context<ExecuteTransaction>,
-        params: &ExecuteTransactionParams,
+        ctx: &mut Context<SignerExecuteTransaction>,
+        params: &SignerExecuteTransactionParams,
     ) -> Result<()> {
-        // NOTE: Executor validation - Key difference from EVM implementation
-        //
-        // In EVM (OneSig.sol), when executor_required is true, transactions can be executed by:
-        // 1. An approved executor, OR
-        // 2. One of the multisig signers (who can sign transactions AND execute them)
-        // 3. When executor_required is false, anyone can execute (permissionless)
-        //
-        // In Solana, this instruction supports option 1 and 3 only. A signer wishing to
-        // self-submit uses `signer_execute_transaction` (see signer_execute_transaction.rs).
-        if ctx.accounts.one_sig_state.executors.executor_required {
-            let executor = ctx.accounts.executor.key();
-            require!(
-                ctx.accounts.one_sig_state.executors.executors.contains(&executor),
-                OneSigError::ExecutorRequired
-            );
-        }
-        let ExecuteTransactionParams { transaction, merkle_root_verification } = params;
+        let SignerExecuteTransactionParams {
+            transaction,
+            merkle_root_verification,
+            signer_proof,
+            signer_proof_expiry,
+        } = params;
 
         // Verify merkle root and get the root hash
         let merkle_root = resolve_merkle_root(
@@ -83,6 +75,18 @@ impl ExecuteTransaction<'_> {
         )?;
         MerkleValidator::verify_merkle_proof(&merkle_root, &transaction.proof, &leaf)?;
 
+        // Signer-proof gate: only when executor_required. In permissionless mode both the
+        // signer_proof and signer_proof_expiry fields are accepted but not verified.
+        if ctx.accounts.one_sig_state.executors.executor_required {
+            SignatureValidator::verify_signer_proof(
+                &leaf,
+                ctx.accounts.delegate.key(),
+                *signer_proof_expiry,
+                &ctx.accounts.one_sig_state.multisig.signers,
+                signer_proof,
+            )?;
+        }
+
         // Execute the verified OneSigInstruction
         execute_instruction(
             &ctx.accounts.one_sig_signer,
@@ -94,11 +98,11 @@ impl ExecuteTransaction<'_> {
         // Reload the state account to ensure it's updated after execution
         ctx.accounts.one_sig_state.reload()?;
 
-        // Increment nonce for replay protection. Since the re-entry is limited by a simple
-        // self-recursion on Solana, the nonce can be incremented after the execution
+        // Increment nonce for replay protection.
         ctx.accounts.one_sig_state.nonce = nonce + 1;
 
-        // Emit successful transaction event
+        // Emit successful transaction event (shared with execute_transaction; observers
+        // disambiguate via the top-level instruction discriminator).
         emit_cpi!(TransactionExecuted {
             one_sig_account: ctx.accounts.one_sig_state.key(),
             merkle_root,

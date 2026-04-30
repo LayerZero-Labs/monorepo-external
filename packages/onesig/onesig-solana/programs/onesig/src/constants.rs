@@ -13,6 +13,9 @@ pub const MERKLE_ROOT_SEED: &[u8] = b"MerkleRoot";
 /// EIP-191 prefix for EIP-712 style digests
 pub const EIP191_PREFIX_FOR_EIP712: [u8; 2] = [0x19, 0x01];
 
+/// EIP-191 prefix for personal_sign of a 32-byte hash.
+pub const EIP191_PERSONAL_SIGN_PREFIX_32: &[u8] = b"\x19Ethereum Signed Message:\n32";
+
 /// Maximum number of signers (20) for a OneSig account.
 /// Solana limits account size to 10KB, which could theoretically support up to 159 signers,
 /// but we limit to 20 for 2 reasons:

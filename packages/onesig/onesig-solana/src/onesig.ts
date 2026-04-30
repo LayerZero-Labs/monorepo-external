@@ -35,6 +35,8 @@ import type {
     OneSigState,
     OneSigTransactionArgs,
     SetConfigParamsArgs,
+    SignatureArgs,
+    SignerExecuteTransactionInstructionDataArgs,
     VerifyMerkleRootParamsArgs,
 } from './index';
 import type { SolanaCallData } from './index';
@@ -48,6 +50,7 @@ import {
     ONESIG_PROGRAM_ID,
     setConfig as setConfigInstruction,
     setConfigParams,
+    signerExecuteTransaction,
     verifyMerkleRoot as verifyMerkleRootInstruction,
 } from './index';
 
@@ -210,6 +213,73 @@ export class OneSig {
             {
                 ...args,
                 executor: signer,
+                oneSigState: this.state.publicKey,
+                program: this.programId,
+                eventAuthority: this.eventPda.eventAuthority(),
+                oneSigSigner: oneSigSigner,
+                merkleRootState: hasMerkleRootVerification
+                    ? undefined
+                    : this.pda.merkleRootState(merkleRoot),
+            },
+        ).items;
+
+        params.call.keys.forEach((key) => {
+            key.isSigner = false;
+            ix.instruction.keys.push(key);
+        });
+        return ix;
+    }
+
+    /**
+     * Signer-as-executor path: a registered secp256k1 signer authorizes `delegate`
+     * (Ed25519) to land a single leaf via `signerProof` — a 65-byte secp256k1
+     * signature over an EIP-191 wrap of `keccak(leaf || delegatePk || expiry)`.
+     *
+     * In permissionless mode (`executor_required = false`), neither the proof nor
+     * its expiry is enforced.
+     */
+    signerExecuteTransaction(
+        delegate: Signer,
+        merkleRoot: Uint8Array,
+        params: {
+            call: SolanaCallData;
+            proof: string[];
+            merkleRootVerification: OptionOrNullable<
+                Pick<VerifyMerkleRootParamsArgs, 'expiry' | 'signatures'>
+            >;
+            signerProof: SignatureArgs;
+            signerProofExpiry: number | bigint;
+        },
+    ): WrappedInstruction {
+        const hasMerkleRootVerification =
+            isOption(params.merkleRootVerification) && isSome(params.merkleRootVerification);
+
+        const oneSigTransactionArgs: OneSigTransactionArgs = {
+            ixData: params.call.data,
+            value: params.call.value,
+            proof: params.proof.map((p) => [arrayify(p)]),
+        };
+        const args: SignerExecuteTransactionInstructionDataArgs = {
+            transaction: oneSigTransactionArgs,
+            merkleRootVerification: hasMerkleRootVerification
+                ? some({
+                      ...(params.merkleRootVerification as Some<VerifyMerkleRootParamsArgs>).value,
+                      merkleRoot: [merkleRoot],
+                  })
+                : null,
+            signerProof: params.signerProof,
+            signerProofExpiry: params.signerProofExpiry,
+        };
+
+        const [oneSigSigner] = this.pda.oneSigSigner();
+        const [ix] = signerExecuteTransaction(
+            {
+                programs: this.programRepo,
+                eddsa: EDDSA,
+            },
+            {
+                ...args,
+                delegate,
                 oneSigState: this.state.publicKey,
                 program: this.programId,
                 eventAuthority: this.eventPda.eventAuthority(),

@@ -1,20 +1,18 @@
 export enum PackageNameCaseOption {
-    PASCAL_CASE = 'pascalCase',
-    KEBAB_CASE = 'kebabCase',
-    TITLE_CASE = 'titleCase',
-    CAMEL_CASE = 'camelCase',
-    UPPER_CASE = 'upperCase',
-    SNAKE_CASE = 'snakeCase',
+    PASCAL = 'pascal',
+    KEBAB = 'kebab',
+    TITLE = 'title',
+    CAMEL = 'camel',
+    UPPER = 'upper',
+    SNAKE = 'snake',
 }
 
 /**
  * Generates a camelCase name from the package name by default.
  *
  * @param packageName - The name of the package.
- * @param options - The options for the package name.
- *  - pascalCase: Whether to capitalize the first letter of the name. Default is false.
- *  - kebabCase: Whether to convert the name to kebab case. Default is false.
- *
+ * @param caseOption - Optional `PackageNameCaseOption` controlling the output casing
+ *  (PASCAL, KEBAB, TITLE, CAMEL, UPPER, SNAKE). Defaults to camelCase when omitted.
  * @returns The package name.
  */
 export const generatePackageName = (
@@ -23,29 +21,29 @@ export const generatePackageName = (
 ): string => {
     const sanitizedPackageName = packageName.toLowerCase().replace(/[^a-z0-9-]/g, '');
 
-    if (caseOption === PackageNameCaseOption.SNAKE_CASE) {
+    if (caseOption === PackageNameCaseOption.SNAKE) {
         return sanitizedPackageName.toLowerCase().replace(/[^a-z0-9]/g, '_');
     }
 
-    if (caseOption === PackageNameCaseOption.KEBAB_CASE) {
+    if (caseOption === PackageNameCaseOption.KEBAB) {
         return sanitizedPackageName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     }
 
-    if (caseOption === PackageNameCaseOption.UPPER_CASE) {
+    if (caseOption === PackageNameCaseOption.UPPER) {
         return sanitizedPackageName.replace(/(-)/g, '_').toUpperCase();
     }
 
     const name = sanitizedPackageName.replace(/(-)(\w)/g, (_, __, c) => c.toUpperCase());
 
-    if (caseOption === PackageNameCaseOption.CAMEL_CASE) {
+    if (caseOption === PackageNameCaseOption.CAMEL) {
         return name.charAt(0).toLowerCase() + name.slice(1);
     }
 
-    if (caseOption === PackageNameCaseOption.PASCAL_CASE) {
+    if (caseOption === PackageNameCaseOption.PASCAL) {
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    if (caseOption === PackageNameCaseOption.TITLE_CASE) {
+    if (caseOption === PackageNameCaseOption.TITLE) {
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
