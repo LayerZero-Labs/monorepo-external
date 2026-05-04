@@ -51,6 +51,7 @@ test-ledger*/
 deployments/**/sandbox/**
 !deployments/layerzero/**
 
+**/wiringplanner
 /gated-transaction-cache/
 turbo-cache-report-*.json
 

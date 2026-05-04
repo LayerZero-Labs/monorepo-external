@@ -69,6 +69,8 @@ impl OFTInternal for MyOFT {
 }
 ```
 
+When the underlying token is a Stellar Classic Asset wrapped as a SAC, you can route mints through the [SAC Manager](#sac-manager) instead of granting raw SAC admin authority to the OFT contract.
+
 ### LockUnlock
 
 Locks tokens in contract on send, unlocks on receive. Use for wrapping existing tokens (OFT Adapter pattern).
@@ -317,6 +319,79 @@ oft.set_rate_limit(
 // Query capacity
 let available = oft.rate_limit_capacity(&Direction::Outbound, 30101);
 ```
+
+## SAC Manager
+
+Wraps a Stellar Asset Contract (SAC) behind role-based admin so OFT MintBurn can mint without granting raw SAC admin authority to the OFT contract. Useful when the underlying token is a Stellar Classic Asset.
+
+The SAC Manager:
+
+- Becomes the admin of the underlying SAC
+- Exposes a `mint` entry point that the OFT calls during credit
+- Gates SAC admin operations (`mint`, `clawback`, `set_authorized`, `set_admin`) behind RBAC roles
+- Inherits ownership and role management from `Ownable` and `RoleBasedAccessControl`
+
+### Trust Model Requirement
+
+**The issuer account must be locked (master weight set to 0).** In Stellar classic assets, transfers from/to the issuer are equivalent to minting/burning. The issuer can always mint more tokens and perform other classic operations directly, even when an explicit admin (this contract) is set. If the issuer account is not locked, the RBAC model enforced by this contract can be bypassed, breaking the trust model.
+
+### Roles
+
+Four roles guard the wrapped admin operations. Roles are passed as `Symbol` values to `grant_role`:
+
+- `MINTER_ROLE`: authorizes `mint` (granted to the OFT contract for the credit path)
+- `CLAWBACK_ROLE`: authorizes `clawback`
+- `BLACKLISTER_ROLE`: authorizes `set_authorized`
+- `ADMIN_MANAGER_ROLE`: authorizes `set_admin`
+
+### Initialization
+
+Deploy the SAC Manager and grant `MINTER_ROLE` to the OFT contract:
+
+```rust
+use soroban_sdk::{Env, Address, Symbol};
+
+// Deploy the SAC Manager bound to the SAC and an owner
+let manager = env.register(SACManager, (&sac_token, &owner));
+let manager_client = SACManagerClient::new(&env, &manager);
+
+// Grant MINTER_ROLE to the OFT contract so it can mint on credit
+let minter_role = Symbol::new(&env, "MINTER_ROLE");
+manager_client.grant_role(&oft_address, &minter_role, &owner);
+
+// Make the manager the admin of the SAC
+sac_client.set_admin(&manager);
+```
+
+### SAC admin operations
+
+Each operation is gated by an `#[only_role(operator, ROLE)]` check. The `operator` argument must hold the role and authorize the call.
+
+```rust
+fn mint(env: &Env, to: &Address, amount: i128, operator: &Address);            // MINTER_ROLE
+fn clawback(env: &Env, from: &Address, amount: i128, operator: &Address);      // CLAWBACK_ROLE
+fn set_authorized(env: &Env, id: &Address, authorize: bool, operator: &Address); // BLACKLISTER_ROLE
+fn set_admin(env: &Env, new_admin: &Address, operator: &Address);              // ADMIN_MANAGER_ROLE
+```
+
+`mint` and `clawback` proxy to the SAC's corresponding admin functions. `clawback` additionally requires the SAC issuer to have the `ClawbackEnabled` flag set; `set_authorized` requires the `Revocable` flag.
+
+### Integrating with OFT MintBurn
+
+1. Deploy the SAC and lock its issuer (master weight = 0).
+2. Deploy the SAC Manager with the SAC address and owner.
+3. Make the SAC Manager the admin of the SAC via `sac_client.set_admin(&manager)`.
+4. Deploy the OFT in MintBurn mode, configured with the SAC as the token and the SAC Manager as the mint authority.
+5. Grant `MINTER_ROLE` on the SAC Manager to the OFT contract address.
+
+On send, the OFT burns directly on the SAC via SEP-41 `burn(sender, amount)` — this is signed by the sender and does not go through the SAC Manager. On receive, the OFT calls `manager.mint(to, amount, oft_address)`, which the SAC Manager forwards to the SAC.
+
+### Ownership and role management
+
+The SAC Manager inherits standard ownership and RBAC entry points:
+
+- `owner`, `pending_owner`, `transfer_ownership`, `begin_ownership_transfer`, `accept_ownership`
+- `grant_role`, `revoke_role`, `renounce_role`, `set_role_admin`, `remove_role_admin`
 
 ## Key traits summary
 

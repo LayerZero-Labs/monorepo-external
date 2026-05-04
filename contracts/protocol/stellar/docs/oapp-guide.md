@@ -75,6 +75,77 @@ The `init_ownable_oapp` function:
 2. Stores the LayerZero endpoint address
 3. Sets a delegate on the endpoint
 
+## Access control
+
+OApps use a two-layer authorization model. The `Auth` trait returns the contract's authorizer — the owner under `#[lz_contract]`, or the contract itself under `#[lz_contract(multisig)]`. On top of that, `RoleBasedAccessControl` adds OpenZeppelin-style role membership so administrative actions can be delegated without surrendering ownership. A vanilla `#[lz_contract] #[oapp]` contract exposes both layers automatically.
+
+### Custom roles
+
+Declare a role as a `&str` constant and gate methods with `#[only_role]` (role check + `require_auth`) or `#[has_role]` (role check only — use when the address has already been authenticated to avoid a duplicate `require_auth` panic):
+
+```rust
+use common_macros::only_role;
+
+pub const CONFIG_MANAGER_ROLE: &str = "CONFIG_MANAGER";
+
+#[contract_impl]
+impl MyOApp {
+    #[only_role(operator, CONFIG_MANAGER_ROLE)]
+    pub fn set_config(env: &Env, value: u64, operator: &Address) {
+        // operator must hold CONFIG_MANAGER_ROLE
+    }
+}
+```
+
+The role argument is expanded to `Symbol::new(env, ROLE)` internally.
+
+### Managing roles
+
+The standard RBAC entry points are auto-exposed by `#[oapp]`:
+
+```rust
+let role = Symbol::new(env, "CONFIG_MANAGER");
+
+oapp_client.grant_role(&account, &role, &caller);     // authorizer or role-admin
+oapp_client.revoke_role(&account, &role, &caller);    // authorizer or role-admin
+oapp_client.renounce_role(&role, &account);           // self only
+oapp_client.set_role_admin(&role, &admin_role);       // authorizer only
+oapp_client.remove_role_admin(&role);                 // authorizer only
+
+oapp_client.has_role(&account, &role);                // Option<u32>
+oapp_client.get_role_admin(&role);                    // Option<Symbol>
+oapp_client.get_role_member_count(&role);             // u32
+oapp_client.get_role_member(&role, index);            // Address — panics if out of bounds
+oapp_client.get_existing_roles();                     // Vec<Symbol>, capped at 256
+```
+
+Operations emit `RoleGranted`, `RoleRevoked`, and `RoleAdminChanged` events; failures surface as `RbacError` variants (`Unauthorized`, `RoleNotHeld`, `AdminRoleNotFound`, `MaxRolesExceeded`, etc.).
+
+### Constructor-time setup
+
+Constructors run before an authorizer is in scope, so use the `_no_auth` helpers to seed roles:
+
+```rust
+use utils::rbac::{grant_role_no_auth, set_role_admin_no_auth};
+
+#[contract_impl]
+impl MyOApp {
+    pub fn __constructor(
+        env: &Env,
+        owner: &Address,
+        endpoint: &Address,
+        delegate: &Address,
+        config_manager: &Address,
+    ) {
+        init_ownable_oapp::<Self>(env, owner, endpoint, delegate);
+
+        let role = Symbol::new(env, "CONFIG_MANAGER");
+        grant_role_no_auth(env, config_manager, &role, owner);
+        set_role_admin_no_auth(env, &role, &Symbol::new(env, "CONFIG_ADMIN"));
+    }
+}
+```
+
 ## Peer management
 
 Before sending or receiving messages, configure peers for each destination chain:
@@ -217,10 +288,11 @@ See `contracts/oapps/counter/` for a complete example demonstrating:
 
 ## Key traits summary
 
-| Trait                | Purpose                          | Default behavior                            |
-| -------------------- | -------------------------------- | ------------------------------------------- |
-| `OAppCore`           | Peer management, endpoint access | Stores endpoint, manages peers              |
-| `OAppSenderInternal` | Send cross-chain messages        | Handles fee payment and message dispatch    |
-| `OAppReceiver`       | Receive cross-chain messages     | Clears payload, delegates to `__lz_receive` |
-| `LzReceiveInternal`  | Application message handling     | **Must implement**                          |
-| `OAppOptionsType3`   | Enforced execution options       | No enforced options                         |
+| Trait                    | Purpose                          | Default behavior                                                |
+| ------------------------ | -------------------------------- | --------------------------------------------------------------- |
+| `OAppCore`               | Peer management, endpoint access | Stores endpoint, manages peers                                  |
+| `OAppSenderInternal`     | Send cross-chain messages        | Handles fee payment and message dispatch                        |
+| `OAppReceiver`           | Receive cross-chain messages     | Clears payload, delegates to `__lz_receive`                     |
+| `LzReceiveInternal`      | Application message handling     | **Must implement**                                              |
+| `OAppOptionsType3`       | Enforced execution options       | No enforced options                                             |
+| `RoleBasedAccessControl` | Role-based access control        | Provided automatically; manages role grants and admin hierarchy |

@@ -46,6 +46,11 @@ const config = {
             },
         ],
     },
+    zksolc: {
+        version: '1.5.15',
+        compilerSource: 'binary',
+        settings: {},
+    },
     tronSolc: {
         enable: true,
         versionRemapping: [['0.8.22', '0.8.20']],
