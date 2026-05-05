@@ -190,9 +190,8 @@ pub struct SignerExecuteTransactionParams {
     // Optional merkle root verification parameters
     // If None, we'll check for a pre-verified merkle root state
     pub merkle_root_verification: Option<VerifyMerkleRootParams>,
-    // secp256k1 signature by a registered signer over:
-    //   inner  = keccak256(leaf_hash || delegate.key()(32) || signer_proof_expiry(u64 BE))
-    //   digest = keccak256(EIP191_PERSONAL_SIGN_PREFIX_32 || inner)
+    // secp256k1 signature (r‖s‖v, 65 bytes) over the EIP-712 digest of
+    // SignerProof { leafHash, delegate, signerProofExpiry } (domain: OneSig v1).
     pub signer_proof: Signature,
     // Unix-seconds cutoff past which the signer_proof is no longer accepted.
     // Only enforced when `executor_required=true` (together with the signer_proof itself).

@@ -353,46 +353,34 @@ export async function executeWithVerifiedMerkleRoot(
 // signer-as-executor helpers
 // ============================================================================
 
-/**
- * Builds the 32-byte inner hash of a signer_proof: `keccak256(leaf || delegatePk || expiry_be)`.
- * The on-chain program wraps this with `\x19Ethereum Signed Message:\n32` and keccaks again
- * to produce the digest that ecrecover recovers from.
- */
-export function buildSignerProofInner(
-    leaf: Uint8Array,
-    delegate: PublicKey,
-    signerProofExpiry: bigint,
-): Uint8Array {
-    if (leaf.byteLength !== 32) {
-        throw new Error(`leaf must be 32 bytes, got ${leaf.byteLength}`);
-    }
-    const delegateBytes = publicKeyBytes(delegate);
-    if (delegateBytes.byteLength !== 32) {
-        throw new Error(`delegate must be 32 bytes, got ${delegateBytes.byteLength}`);
-    }
-    // u64 big-endian
-    const expiryBe = new Uint8Array(8);
-    let v = signerProofExpiry;
-    for (let i = 7; i >= 0; i--) {
-        expiryBe[i] = Number(v & 0xffn);
-        v >>= 8n;
-    }
-    const payload = new Uint8Array(32 + 32 + 8);
-    payload.set(leaf, 0);
-    payload.set(delegateBytes, 32);
-    payload.set(expiryBe, 64);
-    return arrayify(ethers.utils.keccak256(payload));
-}
+const SIGNER_PROOF_DOMAIN = { name: 'OneSig', version: '1' } as const;
+const SIGNER_PROOF_TYPES = {
+    SignerProof: [
+        { name: 'leafHash', type: 'bytes32' },
+        { name: 'delegate', type: 'bytes' },
+        { name: 'signerProofExpiry', type: 'uint64' },
+    ],
+} as const;
 
 /**
- * Signs the inner hash with ethers' personal_sign, which prepends
- * `\x19Ethereum Signed Message:\n32` and keccaks before ecdsa-signing — matching
- * the on-chain digest reconstruction in `SignatureValidator::verify_signer_proof`.
- * Returns the raw 65 bytes (r || s || v) with v ∈ {27, 28}. On-chain
- * `recover_signer` normalizes v.
+ * Signs an EIP-712 `SignerProof` struct, matching the on-chain digest in
+ * `SignatureValidator::verify_signer_proof`.
+ *
+ * Domain: { name: "OneSig", version: "1" }
+ * Type:   SignerProof(bytes32 leafHash, bytes delegate, uint64 signerProofExpiry)
  */
-export async function signSignerProof(wallet: Wallet, inner: Uint8Array): Promise<Uint8Array> {
-    return arrayify(await wallet.signMessage(inner));
+export async function signSignerProof(
+    wallet: Wallet,
+    leafHash: Uint8Array,
+    delegate: PublicKey,
+    signerProofExpiry: bigint,
+): Promise<Uint8Array> {
+    const value = {
+        leafHash: ethers.utils.hexlify(leafHash),
+        delegate: ethers.utils.hexlify(publicKeyBytes(delegate)),
+        signerProofExpiry,
+    };
+    return arrayify(await wallet._signTypedData(SIGNER_PROOF_DOMAIN, SIGNER_PROOF_TYPES, value));
 }
 
 /**
@@ -493,12 +481,12 @@ export async function performSignerExecution(
     if (overrideSignerProof) {
         signerProof = overrideSignerProof;
     } else {
-        const inner = buildSignerProofInner(
+        signerProof = await signSignerProof(
+            proofSigner,
             leaf,
             overrideDelegateForSigning ?? delegate.publicKey,
             signerProofExpiry,
         );
-        signerProof = await signSignerProof(proofSigner, inner);
     }
 
     const instructions: WrappedInstruction[] = [];
@@ -565,8 +553,12 @@ export async function performSignerExecutionTwoStep(
     const leaf = arrayify(encodeLeaf(solanaGen, 0));
 
     const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + signerProofExpiryOffsetSec);
-    const inner = buildSignerProofInner(leaf, delegate.publicKey, signerProofExpiry);
-    const signerProof = await signSignerProof(proofSigner, inner);
+    const signerProof = await signSignerProof(
+        proofSigner,
+        leaf,
+        delegate.publicKey,
+        signerProofExpiry,
+    );
 
     const instructions: WrappedInstruction[] = [];
     if (call.value > 0) {

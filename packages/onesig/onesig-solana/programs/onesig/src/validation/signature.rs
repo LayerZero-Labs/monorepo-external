@@ -26,10 +26,7 @@ impl SignatureValidator {
         let now = Clock::get()?.unix_timestamp;
         require!((now as u64) <= signer_proof_expiry, OneSigError::ExpiredSignerProof);
 
-        // digest = keccak256(EIP191 || keccak256(leaf || delegate || expiry_be))
-        let inner =
-            keccak::hashv(&[leaf.as_ref(), delegate.as_ref(), &signer_proof_expiry.to_be_bytes()]);
-        let digest: Hash = keccak::hashv(&[EIP191_PERSONAL_SIGN_PREFIX_32, inner.as_ref()]).into();
+        let digest = build_signer_proof_digest(leaf, &delegate, signer_proof_expiry);
 
         let recovered: Address = Self::recover_signer(&digest, signature)?.into();
         require!(signers.contains(&recovered), OneSigError::SignerProofUnauthorized);
@@ -89,4 +86,29 @@ impl SignatureValidator {
 
         Ok(signer)
     }
+}
+
+// EIP-712 signer proof digest:
+//   structHash = keccak256(SIGNER_PROOF_TYPE_HASH || leafHash || keccak256(delegate) ||
+// expiry_padded)   digest     = keccak256(0x1901 || SIGNER_PROOF_DOMAIN_SEPARATOR || structHash)
+pub(crate) fn build_signer_proof_digest(
+    leaf: &Hash,
+    delegate: &Pubkey,
+    signer_proof_expiry: u64,
+) -> Hash {
+    let delegate_hash = keccak::hash(delegate.as_ref());
+    let mut expiry_padded = [0u8; 32];
+    expiry_padded[24..].copy_from_slice(&signer_proof_expiry.to_be_bytes());
+    let struct_hash = keccak::hashv(&[
+        &SIGNER_PROOF_TYPE_HASH,
+        leaf.as_ref(),
+        delegate_hash.as_ref(),
+        &expiry_padded,
+    ]);
+    keccak::hashv(&[
+        &EIP191_PREFIX_FOR_EIP712,
+        &SIGNER_PROOF_DOMAIN_SEPARATOR,
+        struct_hash.as_ref(),
+    ])
+    .into()
 }

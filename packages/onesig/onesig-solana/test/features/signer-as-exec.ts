@@ -17,7 +17,6 @@ import {
 } from '../../src';
 import {
     buildOneSigMerkleDataWithLeaf,
-    buildSignerProofInner,
     createTransferInstruction,
     DEFAULT_CONFIG,
     LOCAL_RPC_URL,
@@ -204,8 +203,12 @@ export function signerAsExecutorTests() {
 
         // Sign inner with expiry X, but send params with expiry X+60.
         const signedExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const inner = buildSignerProofInner(leaf, delegate.publicKey, signedExpiry);
-        const signerProof = await signSignerProof(proofSigner, inner);
+        const signerProof = await signSignerProof(
+            proofSigner,
+            leaf,
+            delegate.publicKey,
+            signedExpiry,
+        );
 
         const {
             multisig: { threshold },
@@ -249,8 +252,12 @@ export function signerAsExecutorTests() {
             call,
         );
         const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const inner = buildSignerProofInner(leaf, delegate.publicKey, signerProofExpiry);
-        const rawSig = await signSignerProof(proofSigner, inner);
+        const rawSig = await signSignerProof(
+            proofSigner,
+            leaf,
+            delegate.publicKey,
+            signerProofExpiry,
+        );
         const bogusSig = new Uint8Array(rawSig);
         bogusSig[64] = 99; // secp256k1_recover requires v ∈ {0,1} (or 27,28 after normalize)
 
@@ -286,8 +293,12 @@ export function signerAsExecutorTests() {
             call,
         );
         const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const inner = buildSignerProofInner(leaf, delegate.publicKey, signerProofExpiry);
-        const signerProof = await signSignerProof(proofSigner, inner);
+        const signerProof = await signSignerProof(
+            proofSigner,
+            leaf,
+            delegate.publicKey,
+            signerProofExpiry,
+        );
 
         const {
             multisig: { threshold },

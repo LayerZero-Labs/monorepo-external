@@ -15,11 +15,15 @@
 // ```
 #[cfg(test)]
 mod tests {
-    use anchor_lang::solana_program::secp256k1_recover::SECP256K1_PUBLIC_KEY_LENGTH;
+    use anchor_lang::solana_program::{keccak, secp256k1_recover::SECP256K1_PUBLIC_KEY_LENGTH};
 
     use crate::{
-        constants::SIGNATURE_BYTES_LEN, validation::signature::SignatureValidator, Address, Hash,
-        OneSigError, Secp256k1Pubkey,
+        constants::{
+            EIP191_PREFIX_FOR_EIP712, SIGNATURE_BYTES_LEN, SIGNER_PROOF_DOMAIN_SEPARATOR,
+            SIGNER_PROOF_TYPE_HASH,
+        },
+        validation::signature::{build_signer_proof_digest, SignatureValidator},
+        Address, Hash, OneSigError, Secp256k1Pubkey,
     };
 
     // Test fixture struct to avoid duplicating test data
@@ -203,5 +207,53 @@ mod tests {
         );
 
         assert_eq!(result.unwrap_err(), OneSigError::SignatureDataSizeMismatch.into());
+    }
+
+    #[test]
+    fn test_signer_proof_type_hash_matches_source_string() {
+        let computed =
+            keccak::hash(b"SignerProof(bytes32 leafHash,bytes delegate,uint64 signerProofExpiry)");
+        assert_eq!(computed.0, SIGNER_PROOF_TYPE_HASH);
+    }
+
+    #[test]
+    fn test_signer_proof_domain_separator_matches_formula() {
+        let domain_type_hash = keccak::hash(b"EIP712Domain(string name,string version)");
+        let name_hash = keccak::hash(b"OneSig");
+        let version_hash = keccak::hash(b"1");
+        let mut encoded = [0u8; 96];
+        encoded[0..32].copy_from_slice(domain_type_hash.as_ref());
+        encoded[32..64].copy_from_slice(name_hash.as_ref());
+        encoded[64..96].copy_from_slice(version_hash.as_ref());
+        let computed = keccak::hash(&encoded);
+        assert_eq!(computed.0, SIGNER_PROOF_DOMAIN_SEPARATOR);
+    }
+
+    #[test]
+    fn test_build_signer_proof_digest_matches_manual_eip712_computation() {
+        let leaf_hash = Hash([0xAAu8; 32]);
+        let delegate = anchor_lang::prelude::Pubkey::from([0xBBu8; 32]);
+        let signer_proof_expiry: u64 = 0x0123_4567_89AB_CDEF;
+
+        // structHash = keccak256(typeHash || leafHash || keccak256(delegate) || expiry_padded)
+        let delegate_hash = keccak::hash(delegate.as_ref());
+        let mut expiry_padded = [0u8; 32];
+        expiry_padded[24..].copy_from_slice(&signer_proof_expiry.to_be_bytes());
+        let struct_hash = keccak::hashv(&[
+            &SIGNER_PROOF_TYPE_HASH,
+            leaf_hash.as_ref(),
+            delegate_hash.as_ref(),
+            &expiry_padded,
+        ]);
+
+        // digest = keccak256(0x1901 || domainSeparator || structHash)
+        let expected = keccak::hashv(&[
+            &EIP191_PREFIX_FOR_EIP712,
+            &SIGNER_PROOF_DOMAIN_SEPARATOR,
+            struct_hash.as_ref(),
+        ]);
+
+        let computed = build_signer_proof_digest(&leaf_hash, &delegate, signer_proof_expiry);
+        assert_eq!(computed.0, expected.0);
     }
 }
