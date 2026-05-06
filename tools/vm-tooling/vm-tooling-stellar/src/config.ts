@@ -61,19 +61,20 @@ export const tools: readonly [Tool, ...Tool[]] = [
 ];
 
 export const images = {
-    ['stellar:stellar-25.1.0-patch-1']: {
+    ['stellar:stellar-25.1.0-patch-2']: {
         name: 'stellar',
         versions: {
             stellar: '25.1.0',
         },
-        patch: 1,
+        patch: 2,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
-    ['stellar:stellar-25.2.0']: {
+    ['stellar:stellar-25.2.0-patch-1']: {
         name: 'stellar',
         versions: {
             stellar: '25.2.0',
         },
+        patch: 1,
         dependencies: {
             rust: '1.91.0',
         },
@@ -87,14 +88,14 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
     [
         {
             images: {
-                stellar: 'stellar:stellar-25.1.0-patch-1',
+                stellar: 'stellar:stellar-25.1.0-patch-2',
             },
             description: 'Latest stable release',
             stable: true,
         },
         {
             images: {
-                stellar: 'stellar:stellar-25.2.0',
+                stellar: 'stellar:stellar-25.2.0-patch-1',
             },
             description: 'Stellar 25.2.0',
             stable: true,

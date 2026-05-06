@@ -27,6 +27,10 @@ export SCCACHE_DIR="$CACHE_SCCACHE"
 # If UID/GID not provided (e.g., Windows), run as root
 if [ -z "${LOCAL_UID}" ] || [ -z "${LOCAL_GID}" ] || [ "${LOCAL_UID}" = "0" ] || [ "${LOCAL_GID}" = "0" ]; then
     echo "ℹ️  LOCAL_UID/LOCAL_GID not set, running as root"
+    # Redirect HOME to a mounted cache volume; otherwise tools that fall back
+    # to $HOME (e.g. for keys, credentials, history) would write to the
+    # container's ephemeral /root and lose state across runs.
+    export HOME="$CACHE_STELLAR"
     exec "$@"
 fi
 
