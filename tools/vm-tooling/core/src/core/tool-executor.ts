@@ -225,7 +225,7 @@ export async function executeToolCommand<TImageId extends string>(
 
     // Add host user UID/GID for permission matching on Linux/macOS
     // This prevents artifacts created in containers from having root ownership
-    // Currently only used for stellar which has an entrypoint that handles UID/GID
+    // Used by stellar, sui, and iota images which have an entrypoint that handles UID/GID
     const hostUserIds = getHostUserIds();
     const userIdEnvArgs = hostUserIds
         ? ['-e', `LOCAL_UID=${hostUserIds.uid}`, '-e', `LOCAL_GID=${hostUserIds.gid}`]

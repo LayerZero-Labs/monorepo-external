@@ -14,10 +14,12 @@ use crate::{
 pub struct SignatureValidator;
 
 impl SignatureValidator {
-    /// Verifies that a registered signer authorized `delegate` to execute `leaf` within
-    /// `signer_proof_expiry`.
+    /// Verifies that a registered signer authorized `delegate` to execute `leaf`
+    /// within `signer_proof_expiry`, **as part of the operator-approved batch
+    /// identified by `merkle_root`**.
     pub fn verify_signer_proof(
         leaf: &Hash,
+        merkle_root: &Hash,
         delegate: Pubkey,
         signer_proof_expiry: u64,
         signers: &[Address],
@@ -26,7 +28,7 @@ impl SignatureValidator {
         let now = Clock::get()?.unix_timestamp;
         require!((now as u64) <= signer_proof_expiry, OneSigError::ExpiredSignerProof);
 
-        let digest = build_signer_proof_digest(leaf, &delegate, signer_proof_expiry);
+        let digest = build_signer_proof_digest(leaf, merkle_root, &delegate, signer_proof_expiry);
 
         let recovered: Address = Self::recover_signer(&digest, signature)?.into();
         require!(signers.contains(&recovered), OneSigError::SignerProofUnauthorized);
@@ -89,10 +91,17 @@ impl SignatureValidator {
 }
 
 // EIP-712 signer proof digest:
-//   structHash = keccak256(SIGNER_PROOF_TYPE_HASH || leafHash || keccak256(delegate) ||
-// expiry_padded)   digest     = keccak256(0x1901 || SIGNER_PROOF_DOMAIN_SEPARATOR || structHash)
+//   structHash = keccak256(
+//       SIGNER_PROOF_TYPE_HASH || leafHash || merkleRoot ||
+//       keccak256(delegate) || expiry_padded
+//   )
+//   digest     = keccak256(0x1901 || SIGNER_PROOF_DOMAIN_SEPARATOR || structHash)
+//
+// `merkleRoot` pins the proof to one operator-approved batch so the delegate
+// cannot pick a different root that happens to contain the same leaf.
 pub(crate) fn build_signer_proof_digest(
     leaf: &Hash,
+    merkle_root: &Hash,
     delegate: &Pubkey,
     signer_proof_expiry: u64,
 ) -> Hash {
@@ -102,6 +111,7 @@ pub(crate) fn build_signer_proof_digest(
     let struct_hash = keccak::hashv(&[
         &SIGNER_PROOF_TYPE_HASH,
         leaf.as_ref(),
+        merkle_root.as_ref(),
         delegate_hash.as_ref(),
         &expiry_padded,
     ]);

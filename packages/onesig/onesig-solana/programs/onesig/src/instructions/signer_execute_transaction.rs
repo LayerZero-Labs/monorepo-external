@@ -80,6 +80,7 @@ impl SignerExecuteTransaction<'_> {
         if ctx.accounts.one_sig_state.executors.executor_required {
             SignatureValidator::verify_signer_proof(
                 &leaf,
+                &merkle_root,
                 ctx.accounts.delegate.key(),
                 *signer_proof_expiry,
                 &ctx.accounts.one_sig_state.multisig.signers,

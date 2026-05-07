@@ -211,8 +211,9 @@ mod tests {
 
     #[test]
     fn test_signer_proof_type_hash_matches_source_string() {
-        let computed =
-            keccak::hash(b"SignerProof(bytes32 leafHash,bytes delegate,uint64 signerProofExpiry)");
+        let computed = keccak::hash(
+            b"SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)",
+        );
         assert_eq!(computed.0, SIGNER_PROOF_TYPE_HASH);
     }
 
@@ -232,16 +233,20 @@ mod tests {
     #[test]
     fn test_build_signer_proof_digest_matches_manual_eip712_computation() {
         let leaf_hash = Hash([0xAAu8; 32]);
+        let merkle_root = Hash([0xCCu8; 32]);
         let delegate = anchor_lang::prelude::Pubkey::from([0xBBu8; 32]);
         let signer_proof_expiry: u64 = 0x0123_4567_89AB_CDEF;
 
-        // structHash = keccak256(typeHash || leafHash || keccak256(delegate) || expiry_padded)
+        // structHash = keccak256(
+        //   typeHash || leafHash || merkleRoot || keccak256(delegate) || expiry_padded
+        // )
         let delegate_hash = keccak::hash(delegate.as_ref());
         let mut expiry_padded = [0u8; 32];
         expiry_padded[24..].copy_from_slice(&signer_proof_expiry.to_be_bytes());
         let struct_hash = keccak::hashv(&[
             &SIGNER_PROOF_TYPE_HASH,
             leaf_hash.as_ref(),
+            merkle_root.as_ref(),
             delegate_hash.as_ref(),
             &expiry_padded,
         ]);
@@ -253,7 +258,8 @@ mod tests {
             struct_hash.as_ref(),
         ]);
 
-        let computed = build_signer_proof_digest(&leaf_hash, &delegate, signer_proof_expiry);
+        let computed =
+            build_signer_proof_digest(&leaf_hash, &merkle_root, &delegate, signer_proof_expiry);
         assert_eq!(computed.0, expected.0);
     }
 }

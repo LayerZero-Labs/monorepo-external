@@ -357,26 +357,32 @@ const SIGNER_PROOF_DOMAIN = { name: 'OneSig', version: '1' } as const;
 const SIGNER_PROOF_TYPES = {
     SignerProof: [
         { name: 'leafHash', type: 'bytes32' },
+        { name: 'merkleRoot', type: 'bytes32' },
         { name: 'delegate', type: 'bytes' },
         { name: 'signerProofExpiry', type: 'uint64' },
     ],
-} as const;
+};
 
 /**
  * Signs an EIP-712 `SignerProof` struct, matching the on-chain digest in
  * `SignatureValidator::verify_signer_proof`.
  *
  * Domain: { name: "OneSig", version: "1" }
- * Type:   SignerProof(bytes32 leafHash, bytes delegate, uint64 signerProofExpiry)
+ * Type:   SignerProof(bytes32 leafHash, bytes32 merkleRoot, bytes delegate, uint64 signerProofExpiry)
+ *
+ * `merkleRoot` is bound so the proof is valid only against the operator-approved
+ * batch the signer intended (see signer-as-executor.md §"Binding to merkle_root").
  */
 export async function signSignerProof(
     wallet: Wallet,
     leafHash: Uint8Array,
+    merkleRoot: Uint8Array,
     delegate: PublicKey,
     signerProofExpiry: bigint,
 ): Promise<Uint8Array> {
     const value = {
         leafHash: ethers.utils.hexlify(leafHash),
+        merkleRoot: ethers.utils.hexlify(merkleRoot),
         delegate: ethers.utils.hexlify(publicKeyBytes(delegate)),
         signerProofExpiry,
     };
@@ -436,6 +442,10 @@ export async function buildOneSigMerkleDataWithLeaf(
  * `overrideDelegateForSigning` decouples the pubkey bound into the digest from the
  * actual delegate — used to exercise the delegate-binding violation path which must
  * fail with `SignerProofUnauthorized` (recovered address is garbage).
+ *
+ * `overrideMerkleRootForSigning` decouples the merkle root the signer commits to
+ * from the root carried in the executing transaction — used to exercise the
+ * cross-root binding check (signer-as-executor.md §"Binding to merkle_root").
  */
 export async function performSignerExecution(
     ctx: TransactionContext,
@@ -449,6 +459,7 @@ export async function performSignerExecution(
         overrideSignerProof?: Uint8Array;
         overrideSignerProofExpiry?: bigint;
         overrideDelegateForSigning?: PublicKey;
+        overrideMerkleRootForSigning?: Uint8Array;
     } = {},
 ): Promise<{ merkleRoot: Uint8Array; expiry: number; leaf: Uint8Array }> {
     const {
@@ -457,6 +468,7 @@ export async function performSignerExecution(
         overrideSignerProof,
         overrideSignerProofExpiry,
         overrideDelegateForSigning,
+        overrideMerkleRootForSigning,
     } = options;
 
     const { merkleRoot, expiry, signatures, proof, leaf } = await buildOneSigMerkleDataWithLeaf(
@@ -484,6 +496,7 @@ export async function performSignerExecution(
         signerProof = await signSignerProof(
             proofSigner,
             leaf,
+            overrideMerkleRootForSigning ?? merkleRoot,
             overrideDelegateForSigning ?? delegate.publicKey,
             signerProofExpiry,
         );
@@ -556,6 +569,7 @@ export async function performSignerExecutionTwoStep(
     const signerProof = await signSignerProof(
         proofSigner,
         leaf,
+        merkleRoot,
         delegate.publicKey,
         signerProofExpiry,
     );

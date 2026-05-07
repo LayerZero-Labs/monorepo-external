@@ -206,6 +206,7 @@ export function signerAsExecutorTests() {
         const signerProof = await signSignerProof(
             proofSigner,
             leaf,
+            merkleRoot,
             delegate.publicKey,
             signedExpiry,
         );
@@ -235,6 +236,29 @@ export function signerAsExecutorTests() {
     });
 
     // --------------------------------------------------------------------------
+    // Negative: tampered merkle_root (cross-root binding)
+    // --------------------------------------------------------------------------
+    it('rejects when signer commits proof to a different merkle_root than the executing one', async () => {
+        // Cross-root binding check: signer commits to root R1 in `signer_proof`, but
+        // the executing transaction carries the actual root R2. The on-chain digest
+        // is reconstructed from R2 → ecrecover yields a different (unregistered)
+        // address → SignerProofUnauthorized. Regression for the auditor's request
+        // to bind merkle_root into the signed message
+        // (signer-as-executor.md §"Binding to merkle_root").
+        const { nonce } = await oneSig.getState(umi.rpc);
+        const call = transfer(10n);
+        const proofSigner = sortedSigners[0];
+        const otherRoot = arrayify(randomBytes(32));
+
+        await shouldBeRejected(
+            performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
+                overrideMerkleRootForSigning: otherRoot,
+            }),
+            new SignerProofUnauthorizedError(oneSig.getProgram()),
+        );
+    });
+
+    // --------------------------------------------------------------------------
     // Negative: malformed signer_proof (bad recovery id)
     // --------------------------------------------------------------------------
     it('rejects a malformed signer_proof with FailedSignatureRecovery', async () => {
@@ -243,7 +267,7 @@ export function signerAsExecutorTests() {
         const proofSigner = sortedSigners[0];
 
         // Start with a valid signature, then clobber the recovery-id byte to an invalid value.
-        const { leaf } = await buildOneSigMerkleDataWithLeaf(
+        const { merkleRoot, leaf } = await buildOneSigMerkleDataWithLeaf(
             umi,
             oneSig,
             oneSigSeed,
@@ -255,6 +279,7 @@ export function signerAsExecutorTests() {
         const rawSig = await signSignerProof(
             proofSigner,
             leaf,
+            merkleRoot,
             delegate.publicKey,
             signerProofExpiry,
         );
@@ -296,6 +321,7 @@ export function signerAsExecutorTests() {
         const signerProof = await signSignerProof(
             proofSigner,
             leaf,
+            merkleRoot,
             delegate.publicKey,
             signerProofExpiry,
         );
