@@ -1,6 +1,5 @@
-import { execSync } from 'child_process';
-
 import { BASE_FEE, Operation, rpc, TransactionBuilder } from '@stellar/stellar-sdk';
+import { execSync } from 'node:child_process';
 
 import {
     CHAIN_B_DEPLOYER,
@@ -10,8 +9,8 @@ import {
     NETWORK_PASSPHRASE,
     RPC_URL,
     ZRO_DISTRIBUTOR,
-} from './constants';
-import { deployNativeSac, deployZroToken } from './deploy';
+} from './constants.js';
+import { deployNativeSac, deployZroToken } from './deploy.js';
 
 const CONTAINER_NAME = 'stellar-protocol-sdk';
 const ECR_IMAGE = '438003944538.dkr.ecr.us-east-1.amazonaws.com/layerzerolabs/stellar:2026-03-02';

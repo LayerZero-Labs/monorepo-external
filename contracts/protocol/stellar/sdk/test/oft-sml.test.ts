@@ -14,11 +14,11 @@ import { beforeAll, describe, expect, inject, it } from 'vitest';
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 import { PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
 
-import { Client as EndpointClient } from '../src/generated/endpoint';
-import { Client as ExecutorHelperClient } from '../src/generated/executor_helper';
-import { Client as OFTClient, SendParam } from '../src/generated/oft';
-import { Client as SACManagerClient } from '../src/generated/sac_manager';
-import { Client as SMLClient } from '../src/generated/sml';
+import { Client as EndpointClient } from '../src/generated/endpoint.js';
+import { Client as ExecutorHelperClient } from '../src/generated/executor_helper.js';
+import { Client as OFTClient, SendParam } from '../src/generated/oft.js';
+import { Client as SACManagerClient } from '../src/generated/sac_manager.js';
+import { Client as SMLClient } from '../src/generated/sml.js';
 import {
     DEFAULT_DEPLOYER,
     EID_A,
@@ -26,17 +26,17 @@ import {
     EXECUTOR_ADMIN,
     NETWORK_PASSPHRASE,
     RPC_URL,
-} from './suites/constants';
-import { deployAssetSac, deployContract } from './suites/deploy';
-import type { ChainAddresses } from './suites/globalSetup';
-import { fundAccount } from './suites/localnet';
-import { PacketSentEvent, scanPacketSentEvents } from './suites/scan';
+} from './suites/constants.js';
+import { deployAssetSac, deployContract } from './suites/deploy.js';
+import type { ChainAddresses } from './suites/globalSetup.js';
+import { fundAccount } from './suites/localnet.js';
+import { PacketSentEvent, scanPacketSentEvents } from './suites/scan.js';
 import {
     assertTransactionSucceeded,
     createClient,
     getTokenBalance,
     signAndSendWithExecutorAuth,
-} from './utils';
+} from './utils.js';
 
 // Chain addresses (injected from globalSetup)
 let chainA: ChainAddresses;

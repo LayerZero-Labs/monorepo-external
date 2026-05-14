@@ -15,11 +15,11 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 
-import { Client as SACManagerClient } from '../src/generated/sac_manager';
-import { DEFAULT_DEPLOYER, NETWORK_PASSPHRASE, RPC_URL } from './suites/constants';
-import { deployAssetSac, deployContract } from './suites/deploy';
-import { fundAccount } from './suites/localnet';
-import { getTokenAuthorized, getTokenBalance } from './utils';
+import { Client as SACManagerClient } from '../src/generated/sac_manager.js';
+import { DEFAULT_DEPLOYER, NETWORK_PASSPHRASE, RPC_URL } from './suites/constants.js';
+import { deployAssetSac, deployContract } from './suites/deploy.js';
+import { fundAccount } from './suites/localnet.js';
+import { getTokenAuthorized, getTokenBalance } from './utils.js';
 
 // ============================================================================
 // Test Accounts

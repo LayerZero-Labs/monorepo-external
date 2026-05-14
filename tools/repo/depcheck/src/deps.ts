@@ -435,7 +435,6 @@ export const processPackageDependencies = async (params: {
     const packageJsonPath = path.join(packageInfo.path, 'package.json');
     const packagePath = path.dirname(packageJsonPath);
     const patterns = [
-        '.eslintrc.cjs',
         'docker/**/*.cjs',
         // Common heavy/generated dirs we can safely skip during dep scan
         'dist/**',

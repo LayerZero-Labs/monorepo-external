@@ -5,17 +5,17 @@ import type { GlobalSetupContext } from 'vitest/node';
 
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 
-import { Client as DvnClient } from '../../src/generated/dvn';
-import { Client as DvnFeeLibClient } from '../../src/generated/dvn_fee_lib';
-import { Client as EndpointClient } from '../../src/generated/endpoint';
-import { Client as ExecutorClient } from '../../src/generated/executor';
-import { Client as ExecutorFeeLibClient } from '../../src/generated/executor_fee_lib';
-import { Client as ExecutorHelperClient } from '../../src/generated/executor_helper';
-import { Client as PriceFeedClient } from '../../src/generated/price_feed';
-import { Client as SMLClient } from '../../src/generated/sml';
-import { Client as TreasuryClient } from '../../src/generated/treasury';
-import { Client as Uln302Client } from '../../src/generated/uln302';
-import { createClient } from '../utils';
+import { Client as DvnClient } from '../../src/generated/dvn.js';
+import { Client as DvnFeeLibClient } from '../../src/generated/dvn_fee_lib.js';
+import { Client as EndpointClient } from '../../src/generated/endpoint.js';
+import { Client as ExecutorClient } from '../../src/generated/executor.js';
+import { Client as ExecutorFeeLibClient } from '../../src/generated/executor_fee_lib.js';
+import { Client as ExecutorHelperClient } from '../../src/generated/executor_helper.js';
+import { Client as PriceFeedClient } from '../../src/generated/price_feed.js';
+import { Client as SMLClient } from '../../src/generated/sml.js';
+import { Client as TreasuryClient } from '../../src/generated/treasury.js';
+import { Client as Uln302Client } from '../../src/generated/uln302.js';
+import { createClient } from '../utils.js';
 import {
     CHAIN_B_DEPLOYER,
     DEFAULT_DEPLOYER,
@@ -27,9 +27,9 @@ import {
     NATIVE_TOKEN_ADDRESS,
     RPC_URL,
     ZRO_TOKEN_ADDRESS,
-} from './constants';
-import { deployContract, uploadWasm } from './deploy';
-import { startStellarLocalnet, stopStellarLocalnet } from './localnet';
+} from './constants.js';
+import { deployContract, uploadWasm } from './deploy.js';
+import { startStellarLocalnet, stopStellarLocalnet } from './localnet.js';
 
 /**
  * Addresses for a single chain's protocol contracts

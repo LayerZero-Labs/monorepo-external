@@ -3,6 +3,8 @@
     "compilerOptions": {
         "rootDir": ".",
         "noEmit": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "strictPropertyInitialization": false,
         "noUnusedLocals": false,
         "noUnusedParameters": false

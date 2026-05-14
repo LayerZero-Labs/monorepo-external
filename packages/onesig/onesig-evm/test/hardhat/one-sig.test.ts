@@ -3,12 +3,12 @@ import { expect } from 'chai';
 import { BigNumber, Signer, Wallet } from 'ethers';
 import { ethers } from 'hardhat';
 
-import {
-    compareAddresses,
-    encodeLeaf,
-    makeOneSigTree,
-    Signature,
-    signOneSigTree,
+import type {
+    compareAddresses as _compareAddresses,
+    encodeLeaf as _encodeLeaf,
+    makeOneSigTree as _makeOneSigTree,
+    Signature as _Signature,
+    signOneSigTree as _signOneSigTree,
 } from '@layerzerolabs/onesig-core';
 
 import { evmLeafGenerator } from '../../src';
@@ -24,6 +24,12 @@ import {
 
 const OneSigIdETH = BigInt(101);
 const OneSigIdBSC = BigInt(102);
+
+let compareAddresses: typeof _compareAddresses;
+let encodeLeaf: typeof _encodeLeaf;
+let makeOneSigTree: typeof _makeOneSigTree;
+let Signature: typeof _Signature;
+let signOneSigTree: typeof _signOneSigTree;
 
 describe('OneSig', () => {
     let signers: SignerWithAddress[];
@@ -60,6 +66,10 @@ describe('OneSig', () => {
     }
 
     before(async () => {
+        ({ compareAddresses, encodeLeaf, makeOneSigTree, Signature, signOneSigTree } = await import(
+            '@layerzerolabs/onesig-core'
+        ));
+
         signers = (await ethers.getSigners()) as unknown as SignerWithAddress[];
         signer1 = signers[0];
         signer2 = signers[1];

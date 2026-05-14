@@ -5,10 +5,10 @@ import { beforeAll, describe, expect, inject, it } from 'vitest';
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 import { Options, PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
 
-import { Client as CounterClient } from '../src/generated/counter';
-import { Client as EndpointClient } from '../src/generated/endpoint';
-import { Client as ExecutorHelperClient } from '../src/generated/executor_helper';
-import { Client as SMLClient } from '../src/generated/sml';
+import { Client as CounterClient } from '../src/generated/counter.js';
+import { Client as EndpointClient } from '../src/generated/endpoint.js';
+import { Client as ExecutorHelperClient } from '../src/generated/executor_helper.js';
+import { Client as SMLClient } from '../src/generated/sml.js';
 import {
     DEFAULT_DEPLOYER,
     EID_A,
@@ -17,11 +17,11 @@ import {
     MSG_TYPE_ABA,
     MSG_TYPE_VANILLA,
     NETWORK_PASSPHRASE,
-} from './suites/constants';
-import { deployContract } from './suites/deploy';
-import type { ChainAddresses } from './suites/globalSetup';
-import { PacketSentEvent, scanPacketSentEvents } from './suites/scan';
-import { assertTransactionSucceeded, createClient, signAndSendWithExecutorAuth } from './utils';
+} from './suites/constants.js';
+import { deployContract } from './suites/deploy.js';
+import type { ChainAddresses } from './suites/globalSetup.js';
+import { PacketSentEvent, scanPacketSentEvents } from './suites/scan.js';
+import { assertTransactionSucceeded, createClient, signAndSendWithExecutorAuth } from './utils.js';
 
 // Chain addresses (injected from globalSetup)
 let chainA: ChainAddresses;

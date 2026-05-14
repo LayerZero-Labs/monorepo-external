@@ -5,10 +5,10 @@ import { beforeAll, describe, expect, inject, it } from 'vitest';
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 import { Options, PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
 
-import { Client as CounterClient } from '../src/generated/counter';
-import { Client as DvnClient } from '../src/generated/dvn';
-import { Client as ExecutorHelperClient } from '../src/generated/executor_helper';
-import { Client as Uln302Client } from '../src/generated/uln302';
+import { Client as CounterClient } from '../src/generated/counter.js';
+import { Client as DvnClient } from '../src/generated/dvn.js';
+import { Client as ExecutorHelperClient } from '../src/generated/executor_helper.js';
+import { Client as Uln302Client } from '../src/generated/uln302.js';
 import {
     DEFAULT_DEPLOYER,
     DVN_SIGNER,
@@ -19,17 +19,17 @@ import {
     MSG_TYPE_COMPOSED_ABA,
     MSG_TYPE_VANILLA,
     NETWORK_PASSPHRASE,
-} from './suites/constants';
-import { deployContract } from './suites/deploy';
-import type { ChainAddresses } from './suites/globalSetup';
-import { PacketSentEvent, scanPacketSentEvents } from './suites/scan';
+} from './suites/constants.js';
+import { deployContract } from './suites/deploy.js';
+import type { ChainAddresses } from './suites/globalSetup.js';
+import { PacketSentEvent, scanPacketSentEvents } from './suites/scan.js';
 import {
     assertTransactionSucceeded,
     createClient,
     getNativeBalance,
     signAndSendWithExecutorAuth,
     signDvnAuthEntries,
-} from './utils';
+} from './utils.js';
 
 // Chain addresses (injected from globalSetup)
 let chainA: ChainAddresses;

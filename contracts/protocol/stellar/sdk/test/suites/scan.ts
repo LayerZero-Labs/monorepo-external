@@ -1,6 +1,6 @@
 import { rpc, xdr } from '@stellar/stellar-sdk';
 
-import { RPC_URL } from './constants';
+import { RPC_URL } from './constants.js';
 
 /**
  * Event filter for scanning contract events
@@ -70,13 +70,7 @@ export async function scanEvents(
                 const parsedEvent: ParsedContractEvent = {
                     type: event.type,
                     contractId: event.contractId?.contractId() || '',
-                    topics: event.topic.map((t) => {
-                        try {
-                            return xdr.ScVal.fromXDR(Buffer.from(t, 'base64'));
-                        } catch {
-                            return t;
-                        }
-                    }),
+                    topics: event.topic,
                     data: event.value ? xdr.ScVal.fromXDR(event.value.toXDR()) : undefined,
                     ledger: event.ledger,
                     txHash: event.txHash,

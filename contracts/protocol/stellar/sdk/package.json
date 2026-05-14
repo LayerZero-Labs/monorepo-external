@@ -14,7 +14,7 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "test": "vitest --run --pass-with-no-tests --typecheck"
+        "test": "vitest"
     },
     "dependencies": {
         "@noble/hashes": "catalog:",
@@ -28,6 +28,7 @@
         "@layerzerolabs/protocol-stellar-v2": "workspace:*",
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vitest-configuration": "workspace:*",
         "typescript": "catalog:",
         "vitest": "catalog:"
     },

@@ -274,9 +274,6 @@ catalogs:
     ts-jest:
       specifier: ^29.3.1
       version: 29.4.5
-    ts-node:
-      specifier: 10.9.2
-      version: 10.9.2
     tsup:
       specifier: ^8.4.0
       version: 8.5.1
@@ -954,6 +951,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/vitest
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -969,6 +969,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1103,9 +1106,6 @@ importers:
       solidity-coverage:
         specifier: 'catalog:'
         version: 0.8.17(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
-      ts-node:
-        specifier: 'catalog:'
-        version: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2)
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1278,6 +1278,24 @@ importers:
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.6)
 
+  tooling-configs/vitest:
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
   tools/args:
     dependencies:
       '@layerzerolabs/ts-command-line-args':
@@ -1438,6 +1456,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       '@types/jest':
         specifier: 'catalog:'
         version: 29.5.14
@@ -1475,6 +1496,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1500,6 +1524,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1528,6 +1555,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -1556,6 +1586,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
@@ -7734,6 +7767,7 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+    optional: true
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true
@@ -8511,6 +8545,7 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+    optional: true
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
@@ -9789,13 +9824,17 @@ snapshots:
 
   '@tronweb3/google-protobuf@3.21.4': {}
 
-  '@tsconfig/node10@1.0.12': {}
+  '@tsconfig/node10@1.0.12':
+    optional: true
 
-  '@tsconfig/node12@1.0.11': {}
+  '@tsconfig/node12@1.0.11':
+    optional: true
 
-  '@tsconfig/node14@1.0.3': {}
+  '@tsconfig/node14@1.0.3':
+    optional: true
 
-  '@tsconfig/node16@1.0.4': {}
+  '@tsconfig/node16@1.0.4':
+    optional: true
 
   '@typechain/ethers-v5@10.2.1(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.8.2))(typescript@5.8.2)':
     dependencies:
@@ -10174,6 +10213,7 @@ snapshots:
   acorn-walk@8.3.4:
     dependencies:
       acorn: 8.16.0
+    optional: true
 
   acorn@8.16.0: {}
 
@@ -10254,7 +10294,8 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  arg@4.1.3: {}
+  arg@4.1.3:
+    optional: true
 
   argparse@1.0.10:
     dependencies:
@@ -10797,7 +10838,8 @@ snapshots:
       - supports-color
       - ts-node
 
-  create-require@1.1.1: {}
+  create-require@1.1.1:
+    optional: true
 
   cross-fetch@3.2.0(encoding@0.1.13):
     dependencies:
@@ -10910,7 +10952,8 @@ snapshots:
 
   diff3@0.0.3: {}
 
-  diff@4.0.2: {}
+  diff@4.0.2:
+    optional: true
 
   diff@5.2.0: {}
 
@@ -13757,6 +13800,7 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.15.2(@swc/helpers@0.5.17)
+    optional: true
 
   ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@25.5.0)(typescript@5.8.2):
     dependencies:
@@ -13948,7 +13992,8 @@ snapshots:
 
   uuid@8.3.2: {}
 
-  v8-compile-cache-lib@3.0.1: {}
+  v8-compile-cache-lib@3.0.1:
+    optional: true
 
   v8-to-istanbul@9.3.0:
     dependencies:
@@ -14248,7 +14293,8 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 21.1.1
 
-  yn@3.1.1: {}
+  yn@3.1.1:
+    optional: true
 
   yocto-queue@0.1.0: {}
 

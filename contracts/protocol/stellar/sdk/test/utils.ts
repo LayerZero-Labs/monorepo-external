@@ -15,12 +15,13 @@ import {
 } from '@stellar/stellar-sdk';
 import * as rpc from '@stellar/stellar-sdk/rpc';
 
+import { Secp256k1KeyPair } from './secp256k1.js';
 import {
     DEFAULT_DEPLOYER,
     NATIVE_TOKEN_ADDRESS,
     NETWORK_PASSPHRASE,
     RPC_URL,
-} from './suites/constants';
+} from './suites/constants.js';
 
 // ============================================================================
 // Client Factory Helper
@@ -151,8 +152,6 @@ export async function getTokenAuthorized(
     }
     return false;
 }
-
-import { Secp256k1KeyPair } from './secp256k1';
 
 // ============================================================================
 // DVN Abstract Account Auth Signing

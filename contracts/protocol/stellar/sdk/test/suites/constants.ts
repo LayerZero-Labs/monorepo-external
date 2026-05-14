@@ -1,6 +1,6 @@
 import { Asset, Keypair, Networks } from '@stellar/stellar-sdk';
 
-import { Secp256k1KeyPair } from '../secp256k1';
+import { Secp256k1KeyPair } from '../secp256k1.js';
 
 const CORE_URL = 'http://localhost:8086';
 export const RPC_URL = `${CORE_URL}/soroban/rpc`;

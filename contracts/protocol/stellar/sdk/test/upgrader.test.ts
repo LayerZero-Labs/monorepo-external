@@ -6,17 +6,17 @@ import { describe, expect, it } from 'vitest';
 
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 
-import { Client as DvnClient } from '../src/generated/dvn';
-import { Client as UpgraderClient } from '../src/generated/upgrader';
+import { Client as DvnClient } from '../src/generated/dvn.js';
+import { Client as UpgraderClient } from '../src/generated/upgrader.js';
 import {
     DEFAULT_DEPLOYER,
     DVN_SIGNER,
     DVN_VID,
     NETWORK_PASSPHRASE,
     RPC_URL,
-} from './suites/constants';
-import { deployContract, uploadWasm } from './suites/deploy';
-import { signDvnAuthEntries } from './utils';
+} from './suites/constants.js';
+import { deployContract, uploadWasm } from './suites/deploy.js';
+import { signDvnAuthEntries } from './utils.js';
 
 let upgraderClient: UpgraderClient;
 let dvnClient: DvnClient;

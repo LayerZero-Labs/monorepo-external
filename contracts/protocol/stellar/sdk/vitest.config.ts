@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from '@layerzerolabs/vitest-configuration';
 
 export default defineConfig({
     test: {

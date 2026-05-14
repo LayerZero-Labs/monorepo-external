@@ -67,7 +67,6 @@
         "solhint": "catalog:",
         "solidity-bytes-utils": "catalog:",
         "solidity-coverage": "catalog:",
-        "ts-node": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
         "typechain": "catalog:",

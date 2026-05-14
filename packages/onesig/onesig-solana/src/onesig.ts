@@ -234,7 +234,9 @@ export class OneSig {
      * Signer-as-executor path: a registered secp256k1 signer authorizes `delegate`
      * (Ed25519) to land a single leaf via `signerProof` — a 65-byte secp256k1
      * signature over the EIP-712 digest of
-     * `SignerProof { leafHash, delegate, signerProofExpiry }` (domain: `OneSig v1`).
+     * `SignerProof { leafHash, merkleRoot, delegate, signerProofExpiry }` (domain: `OneSig v1`).
+     * `merkleRoot` pins the proof to one operator-approved batch so a delegate
+     * cannot reuse it against a different root that happens to contain the same leaf.
      *
      * In permissionless mode (`executor_required = false`), neither the proof nor
      * its expiry is enforced.

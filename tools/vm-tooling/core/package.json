@@ -5,11 +5,10 @@
     "type": "module",
     "exports": {
         "types": "./dist/index.d.ts",
-        "require": "./dist/index.cjs",
         "import": "./dist/index.js",
-        "default": "./dist/index.cjs"
+        "default": "./dist/index.js"
     },
-    "main": "./dist/index.cjs",
+    "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -19,7 +18,7 @@
     "scripts": {
         "build": "tsup",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
-        "test": "vitest --run"
+        "test": "vitest"
     },
     "dependencies": {
         "@layerzerolabs/common-node-utils": "workspace:*",
@@ -33,6 +32,7 @@
         "@jest/globals": "catalog:",
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vitest-configuration": "workspace:*",
         "@types/jest": "catalog:",
         "@types/semver": "catalog:",
         "jest": "catalog:",

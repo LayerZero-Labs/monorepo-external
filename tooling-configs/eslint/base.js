@@ -171,7 +171,7 @@ export default [
 
     // Test files
     {
-        files: ['**/*.test.*', '**/*.spec.*', '**/tests/**', '**/test/**'],
+        files: ['**/*.{test,spec}.{,m,c}{j,t}s{,x}', '**/tests/**', '**/test/**'],
 
         languageOptions: {
             parserOptions: {

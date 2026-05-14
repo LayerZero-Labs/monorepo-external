@@ -1,153 +1,97 @@
 import { execFile, spawn } from 'node:child_process';
-import * as fs from 'node:fs/promises';
-import { join } from 'path';
+import { relative, sep } from 'path';
 import { promisify } from 'util';
 
 const execFilePromise = promisify(execFile);
 
 export type RunCodeFormattersOptions = {
+    directoriesToLint?: string[];
     skipFormatting?: boolean;
     skipLint?: boolean;
-    silent?: boolean;
-    detached?: boolean;
+    verbose?: boolean;
+};
+
+const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
+    const relativePath = relative(fromPath, absolutePath).split(sep).join('/');
+
+    // `./path/**` matches every workspace package located under `./path/`.
+    return `./${relativePath}/**`;
 };
 
 /**
- * Gets the package name from package.json
- */
-const getPackageName = async (packagePath: string): Promise<string> => {
-    const packageJsonPath = join(packagePath, 'package.json');
-    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
-    return packageJson.name;
-};
-
-/**
- * Builds formatter commands based on options
- */
-const buildFormatterCommands = async (
-    filepath: string,
-    packagePath: string,
-    skipFormatting: boolean,
-    skipLint: boolean,
-): Promise<string[]> => {
-    const commands: string[] = [];
-
-    if (!skipFormatting) {
-        commands.push(`pnpm -w prettier --write "${filepath}"`);
-    }
-
-    if (!skipLint) {
-        const packageName = await getPackageName(packagePath);
-        commands.push(`pnpm --filter="${packageName}" lint`);
-    }
-
-    return commands;
-};
-
-/**
- * Runs formatters in detached mode
- */
-const runDetachedFormatters = (
-    shellCommand: string,
-    packagePath: string,
-    silent: boolean,
-): void => {
-    const child = spawn('sh', ['-c', shellCommand], {
-        detached: true,
-        stdio: silent ? 'ignore' : ['ignore', 'pipe', 'pipe'],
-        cwd: packagePath,
-    });
-
-    // Unref the child so the parent can exit independently
-    child.unref();
-
-    if (!silent) {
-        child.stdout?.on('data', (data) => {
-            console.log(`[Formatter]: ${data.toString().trim()}`);
-        });
-        child.stderr?.on('data', (data) => {
-            console.error(`[Formatter Error]: ${data.toString().trim()}`);
-        });
-    }
-};
-
-/**
- * Runs formatters synchronously
- */
-const runSyncFormatters = async (
-    filepath: string,
-    packagePath: string,
-    skipFormatting: boolean,
-    skipLint: boolean,
-    silent: boolean,
-): Promise<void> => {
-    if (!skipFormatting) {
-        const { stderr: prettierStderr } = await execFilePromise(
-            'pnpm',
-            ['prettier', '--write', filepath],
-            { cwd: packagePath },
-        );
-        if (prettierStderr && !silent) {
-            console.error('Error running prettier:', prettierStderr);
-        }
-    }
-
-    if (!skipLint) {
-        const packageName = await getPackageName(packagePath);
-        const { stderr: lintStderr } = await execFilePromise('pnpm', [
-            '--filter=' + packageName,
-            'lint',
-        ]);
-
-        if (lintStderr && !silent) {
-            console.error('Error running lint:fix:', lintStderr);
-        }
-    }
-};
-
-/**
- * Runs the code formatters for the given filepath in the given package path.
- * @param filepath - The path to the file to format.
- * @param packagePath - The path to the package directory.
- * @param options {RunCodeFormattersOptions} - The options for running the code formatters.
+ * Runs prettier on `filepath` and lint on the relevant package(s).
+ *
+ * @param filepath - The file or directory path to run prettier against.
+ * @param packagePath - The package root used as the working directory for formatter commands.
+ * @param options - Optional formatter configuration.
+ * @param options.directoriesToLint - When provided, lint runs against every workspace package
+ *   located under these directories. When omitted, lint runs only against the package at `packagePath`.
+ * @param options.skipFormatting - Skip prettier when true.
+ * @param options.skipLint - Skip package lint commands when true.
+ * @param options.verbose - When true, echo formatter stderr and log errors before rethrowing.
+ *   Failures always throw regardless of this flag.
  */
 export const runCodeFormatters = async (
     filepath: string,
     packagePath: string,
     {
+        directoriesToLint,
         skipFormatting = false,
         skipLint = false,
-        silent = false,
-        detached = false,
+        verbose = false,
     }: RunCodeFormattersOptions = {},
-) => {
+): Promise<void> => {
+    if (skipFormatting && skipLint) {
+        return;
+    }
+
     try {
-        if (skipFormatting && skipLint) {
-            return;
+        if (!skipFormatting) {
+            const { stderr } = await execFilePromise('pnpm', ['prettier', '--write', filepath], {
+                cwd: packagePath,
+            });
+            if (stderr && verbose) {
+                console.error('Error running prettier:', stderr);
+            }
         }
 
-        if (detached) {
-            const commands = await buildFormatterCommands(
-                filepath,
-                packagePath,
-                skipFormatting,
-                skipLint,
-            );
-            if (commands.length === 0) {
-                return;
-            }
+        if (!skipLint) {
+            const filters =
+                directoriesToLint?.flatMap((directory) => [
+                    '--filter',
+                    toPnpmFilterPath(directory, packagePath),
+                ]) ?? [];
+            const isMultiPackage = filters.length > 0;
 
-            const shellCommand = commands.join(' & ');
-            runDetachedFormatters(shellCommand, packagePath, silent);
-        } else {
-            await runSyncFormatters(filepath, packagePath, skipFormatting, skipLint, silent);
+            try {
+                // --no-bail is a recursive-only flag: in multi-package mode it lets every
+                // matched package take its auto-fix pass instead of bailing at the first
+                // failure. Passing it to a single-package run triggers a pnpm bug that
+                // swallows the script's exit code (pnpm/pnpm#8013)
+                await execFilePromise(
+                    'pnpm',
+                    [
+                        ...filters,
+                        'run',
+                        ...(isMultiPackage ? ['--no-bail'] : []),
+                        '--if-present',
+                        'lint',
+                    ],
+                    { cwd: packagePath },
+                );
+            } catch {
+                // Lint scripts conventionally exit non-zero after applying auto-fixes; the
+                // retry verifies whether the file is actually clean now or a real failure
+                // remains.
+                await execFilePromise('pnpm', [...filters, 'run', '--if-present', 'lint'], {
+                    cwd: packagePath,
+                });
+            }
         }
     } catch (error) {
-        if (silent) {
-            return;
+        if (verbose) {
+            console.error('Error formatting file:', error);
         }
-
-        console.error('Error formatting file:', error);
         throw error;
     }
 };

@@ -9,16 +9,15 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "require": "./dist/index.cjs",
             "import": "./dist/index.js",
-            "default": "./dist/index.cjs"
+            "default": "./dist/index.js"
         },
         "./cairo/layerzero": "./layerzero",
         "./cairo/libs/lz_utils": "./libs/lz_utils",
         "./cairo/libs/enumerable_set": "./libs/enumerable_set",
         "./cairo/libs/multisig": "./libs/multisig"
     },
-    "main": "./dist/index.cjs",
+    "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {

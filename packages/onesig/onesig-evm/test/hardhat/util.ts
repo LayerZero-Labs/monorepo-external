@@ -3,14 +3,11 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 
-import {
-    encodeLeaf,
+import type {
     GenerateLeafsResult,
-    makeOneSigTree,
     MerkleTree,
     SigningOptions,
-    signOneSigTree,
-    type TypedDataSigner,
+    TypedDataSigner,
 } from '@layerzerolabs/onesig-core';
 
 import { ETHLeafData, evmLeafGenerator } from '../../src';
@@ -29,6 +26,7 @@ export async function createSingleTxMerkleTree(
     seed: string | Uint8Array,
     nonce = 0n,
 ) {
+    const { makeOneSigTree } = await import('@layerzerolabs/onesig-core');
     const gen = evmLeafGenerator([
         {
             nonce,
@@ -53,6 +51,7 @@ export async function signAndExecuteSingleTx(
     signingData: SigningOptions,
     executor: SignerWithAddress,
 ) {
+    const { encodeLeaf, signOneSigTree } = await import('@layerzerolabs/onesig-core');
     const signatures = await signOneSigTree(tree, signers, signingData);
     const proof = tree.getHexProof(encodeLeaf(generator, 0));
     await oneSig

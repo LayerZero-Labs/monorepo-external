@@ -16,7 +16,7 @@ import {
     RPC_URL,
     ZRO_ASSET,
     ZRO_DISTRIBUTOR,
-} from './constants';
+} from './constants.js';
 
 /**
  * Query and display the TTL (Time To Live) of uploaded WASM code
