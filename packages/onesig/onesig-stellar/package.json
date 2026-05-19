@@ -1,0 +1,32 @@
+{
+    "name": "@layerzerolabs/onesig-stellar",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Stellar Soroban contracts for LayerZero OneSig protocol",
+    "license": "GPL-3.0-only",
+    "scripts": {
+        "build": "pnpm build:contract && pnpm compile:sdk",
+        "build:contract": "pnpm exec lz-tool stellar contract build --package onesig",
+        "build:mocks": "pnpm exec lz-tool --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
+        "clean": "pnpm clean:contract && pnpm clean:sdk",
+        "clean:contract": "pnpm exec lz-tool --script \"cd contracts/onesig && cargo clean\" stellar",
+        "clean:sdk": "rm -rf sdk/src/generated",
+        "compile:sdk": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
+        "lint": "pnpm exec lz-tool --script \"cd contracts/onesig && cargo fmt --check && cargo clippy -- -D warnings\" stellar",
+        "lint:fix": "pnpm exec lz-tool --script \"cd contracts/onesig && cargo fmt && cargo clippy --fix --allow-dirty --allow-staged\" stellar",
+        "start:stellar": "tsx scripts/start-validator.ts",
+        "stop:stellar": "docker stop onesig-stellar-service && docker rm onesig-stellar-service",
+        "test": "pnpm test:contract",
+        "test:contract": "pnpm exec lz-tool --script \"cd contracts/onesig && cargo test\" stellar"
+    },
+    "devDependencies": {
+        "@layerzerolabs/protocol-stellar-v2": "workspace:*",
+        "@layerzerolabs/stellar-ts-bindings-gen": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
+        "tsx": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

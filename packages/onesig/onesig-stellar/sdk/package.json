@@ -1,0 +1,46 @@
+{
+    "name": "@layerzerolabs/onesig-stellar-sdk",
+    "version": "0.0.0",
+    "private": false,
+    "description": "TypeScript SDK for OneSig Stellar contract",
+    "license": "MIT",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "require": "./dist/index.js",
+        "import": "./dist/index.mjs",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build:contract": "cd .. && pnpm build:contract",
+        "compile:sdk": "cd .. && pnpm compile:sdk",
+        "build": "pnpm build:contract && pnpm compile:sdk && tsup",
+        "clean": "rm -rf dist .turbo",
+        "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts",
+        "test:integration": "cd .. && pnpm build:mocks && pnpm start:stellar && cd sdk && vitest run test/integration.test.ts; cd .. && pnpm stop:stellar"
+    },
+    "dependencies": {
+        "@layerzerolabs/onesig-core": "workspace:*",
+        "@stellar/stellar-sdk": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/onesig-stellar": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
+        "@types/node": "catalog:",
+        "ethers": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

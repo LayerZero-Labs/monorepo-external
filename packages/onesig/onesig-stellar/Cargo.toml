@@ -1,0 +1,57 @@
+[workspace]
+resolver = "2"
+members = [
+  "contracts/onesig",
+  "tests/mock_vault",
+  "tests/mock_chain",
+  "tests/mock_factory",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.0.1"
+license = "MIT"
+
+[workspace.dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+common-macros = { path = "./node_modules/@layerzerolabs/protocol-stellar-v2/contracts/common-macros" }
+utils = { path = "./node_modules/@layerzerolabs/protocol-stellar-v2/contracts/utils" }
+
+# Third-party deps required by common-macros and utils (inherited via workspace = true)
+heck = "0.5"
+itertools = "0.14"
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+insta = "1.44.3"
+prettyplease = "0.2.37"
+
+# Fast dev builds for testing
+[profile.dev]
+opt-level = 0
+incremental = true
+codegen-units = 256
+
+# Optimize dependencies even in dev (compile once, run many tests)
+[profile.dev.package."*"]
+opt-level = 2
+
+# Test profile optimizations
+[profile.test]
+opt-level = 1
+incremental = true
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+# For more information about this profile see https://soroban.stellar.org/docs/basic-tutorials/logging#cargotoml-profile
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

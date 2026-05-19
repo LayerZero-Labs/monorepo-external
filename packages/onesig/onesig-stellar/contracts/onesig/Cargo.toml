@@ -1,0 +1,25 @@
+[package]
+name = "onesig"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+library = []
+testutils = ["soroban-sdk/testutils"]
+
+[dependencies]
+soroban-sdk = { workspace = true, features = ["hazmat-crypto"] }
+common-macros = { workspace = true }
+utils = { workspace = true }
+cfg-if = "1.0"
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+k256 = { version = "0.13", features = ["ecdsa"] }
+rand = "0.8"
+insta = "1.44.3"

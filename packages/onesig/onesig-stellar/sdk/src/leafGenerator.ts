@@ -1,0 +1,77 @@
+import type { xdr } from '@stellar/stellar-sdk';
+import { Address, StrKey } from '@stellar/stellar-sdk';
+
+import { type BaseLeafData, type GenerateLeafsResult } from '@layerzerolabs/onesig-core';
+
+import { Client } from './generated/index';
+
+// Get the contract spec and Call type at module load
+const ONE_SIG_SPEC = new Client({
+    contractId: '',
+    rpcUrl: '',
+    networkPassphrase: '',
+    allowHttp: true,
+}).spec;
+const callInput = ONE_SIG_SPEC.getFunc('encode_leaf')
+    .inputs()
+    .find((input: xdr.ScSpecFunctionInputV0) => input.name().toString() === 'call');
+if (!callInput) throw new Error('Could not find call parameter in encode_leaf function');
+const CALL_TYPE = callInput.type();
+
+/**
+ * Stellar contract call data structure
+ *
+ * Arguments are provided as pre-encoded ScVal[] matching the contract function's parameter types.
+ * The entire Call struct (to, func, args) is encoded using nativeToScVal for XDR encoding.
+ */
+export interface StellarCall {
+    contractAddress: string; // Soroban contract address (C...)
+    functionName: string; // Function name to call
+    args: xdr.ScVal[]; // Function arguments as ScVal[] matching contract parameters
+}
+
+export type StellarLeafData = BaseLeafData<string, StellarCall>;
+
+/** Generates Stellar leaf data for OneSig Merkle tree */
+export function stellarLeafGenerator(
+    leafs: StellarLeafData[],
+): GenerateLeafsResult<StellarLeafData> {
+    return {
+        leafs,
+
+        /** Encode OneSig contract address (C...) to 32-byte buffer */
+        encodeAddress(address: string): Buffer {
+            try {
+                return StrKey.decodeContract(address);
+            } catch {
+                throw new Error(`Invalid OneSig contract address: ${address}. Expected: C...`);
+            }
+        },
+
+        /**
+         * Encode a single self-call to XDR buffer using Call encoding.
+         *
+         * Each leaf contains exactly one self-call (e.g. `set_seed`, `execute_transaction`).
+         * To dispatch multiple external contract calls, use a single `execute_transaction`
+         * call whose args carry the list of external calls.
+         */
+        encodeCalls(calls: StellarCall[]): Buffer {
+            if (calls.length !== 1) {
+                throw new Error(
+                    'Stellar leaf must have exactly one self-call. ' +
+                        'For multiple external calls, use execute_transaction whose args contain the call list.',
+                );
+            }
+
+            const call = calls[0];
+            const callObject = {
+                to: Address.fromString(call.contractAddress),
+                func: call.functionName,
+                args: call.args,
+                sub_invocations: [],
+            };
+
+            return ONE_SIG_SPEC.nativeToScVal(callObject, CALL_TYPE).toXDR();
+        },
+    };
+}
