@@ -18,9 +18,9 @@ packages:
   - '!**/src/daml/**'
 catalogs:
   console:
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
     '@layerzerolabs/oapp-evm-contracts': 0.2.78
     '@layerzerolabs/oapp-upgradeable-evm-contracts': 0.2.78
     '@layerzerolabs/oft-evm-contracts': 0.2.78
@@ -38,11 +38,11 @@ catalogs:
     '@ethersproject/abstract-signer': ^5.8.0
     '@ethersproject/bytes': ^5.8.0
     '@jest/globals': ^29.7.0
-    '@layerzerolabs/hardhat-tron': 3.0.167
-    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.167
-    '@layerzerolabs/lz-evm-protocol-v2': 3.0.167
-    '@layerzerolabs/lz-evm-v1-0.7': 3.0.167
-    '@layerzerolabs/lz-v2-utilities': 3.0.167
+    '@layerzerolabs/hardhat-tron': 3.0.168
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
+    '@layerzerolabs/lz-v2-utilities': 3.0.168
     '@layerzerolabs/test-devtools-evm-foundry': 8.0.1
     '@layerzerolabs/toolbox-foundry': ^0.1.13
     '@noble/hashes': ^1.1.5
