@@ -6,8 +6,14 @@
     "license": "MIT",
     "author": "",
     "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "scripts": {
         "build": "tsup",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"

@@ -1,21 +1,11 @@
 {
     "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
-    "$schema": "https://json.schemastore.org/tsconfig",
-    "display": "Node 16",
     "compilerOptions": {
-        "module": "commonjs",
-        "experimentalDecorators": true,
-        "allowJs": true,
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "sourceMap": true,
-        "strictPropertyInitialization": false,
-        "emitDecoratorMetadata": true,
-        "resolveJsonModule": true,
-        "outDir": "./dist",
         "rootDir": "./src",
+        "outDir": "./dist",
+        "strictPropertyInitialization": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
         "jsx": "react-jsx"
     },
     "exclude": [

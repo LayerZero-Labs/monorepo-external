@@ -57,7 +57,7 @@ async function queryWasmTtl(wasmHash: string, server: rpc.Server, rpcUrl?: strin
             }),
         });
 
-        const result = await response.json();
+        const result = (await response.json()) as any;
         if (result.error) {
             console.warn(`Warning: Could not retrieve WASM TTL: ${result.error.message}`);
         } else if (result.result?.entries?.[0]?.liveUntilLedgerSeq) {

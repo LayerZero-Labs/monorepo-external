@@ -10,8 +10,8 @@
         "checkJs": false,
 
         // Module Configuration
-        "module": "CommonJS",
-        "moduleResolution": "Node",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
 
         // Source Map and Declaration Settings
         "sourceMap": true,

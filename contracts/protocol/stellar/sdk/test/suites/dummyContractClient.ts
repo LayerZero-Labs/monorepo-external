@@ -11,10 +11,9 @@ export * from '@stellar/stellar-sdk';
 export * as contract from '@stellar/stellar-sdk/contract';
 export * as rpc from '@stellar/stellar-sdk/rpc';
 
-if (typeof window !== 'undefined') {
-    //@ts-ignore Buffer exists
-    window.Buffer = window.Buffer || Buffer;
-}
+const globalWithBuffer = globalThis as typeof globalThis & { Buffer?: typeof Buffer };
+//@ts-ignore Buffer exists
+globalWithBuffer.Buffer ??= Buffer;
 
 export const BufferReaderError = {
     1000: { message: 'InvalidLength' },

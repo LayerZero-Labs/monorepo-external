@@ -5,7 +5,7 @@
         "outDir": "./dist",
         "noUncheckedIndexedAccess": true,
         "jsx": "react-jsx",
-        "module": "ES2022"
+        "module": "ESNext"
     },
     "exclude": [
         "node_modules",

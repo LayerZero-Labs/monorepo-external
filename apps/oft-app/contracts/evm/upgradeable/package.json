@@ -7,9 +7,9 @@
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron",
         "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
-        "compile:evm": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js",
-        "compile:tron": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network tron-mainnet",
-        "compile:zksync": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network zksync-mainnet",
+        "compile:evm": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config /hardhat/hardhat.default.config.js",
+        "compile:tron": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config /hardhat/hardhat.default.config.js --network tron-mainnet",
+        "compile:zksync": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config /hardhat/hardhat.default.config.js --network zksync-mainnet",
         "generated:clean": "rm -rf ./artifacts ./artifacts-tron ./artifacts-zk ./hh-cache ./hh-cache-tron ./hh-cache-zk",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
         "test": "pnpm lz-tool forge test"

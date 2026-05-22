@@ -1,5 +1,5 @@
 {
-    "extends": "@layerzerolabs/typescript-configuration/tsconfig.bundler.json",
+    "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
     "compilerOptions": {
         "rootDir": "./src",
         "outDir": "./dist",
