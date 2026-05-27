@@ -3,7 +3,11 @@ import os from 'os';
 import path from 'path';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { addMissingDependencies, processDependencies } from '../src/deps';
+import {
+    addMissingDependencies,
+    processDependencies,
+    validateNoLegacyOrgDependencies,
+} from '../src/deps';
 import type { PackageJson, PnpmPackageObject } from '../src/types';
 import * as utils from '../src/utils';
 
@@ -298,6 +302,51 @@ describe('processDependencies - error handling', () => {
         expect(result['valid-dep']).toBeDefined();
         expect(result['valid-dep'].has('^1.0.0')).toBe(true);
         expect(result['missing-version-dep']).toBeUndefined();
+    });
+
+    test('should throw when @layerzerolabs package depends on legacy org package', async () => {
+        const dir = await createTempPackageJson({
+            name: '@layerzerolabs/test-package',
+            dependencies: {
+                '@offchain-monorepo/example': 'catalog:',
+            },
+            devDependencies: {
+                '@offchain-monorepo/dev-example': 'catalog:',
+            },
+        });
+
+        const mockPnpmLsObject: { [key: string]: PnpmPackageObject } = {
+            '@layerzerolabs/test-package': {
+                name: '@layerzerolabs/test-package',
+                path: dir,
+            },
+        };
+
+        await expect(
+            validateNoLegacyOrgDependencies(['@layerzerolabs/test-package'], mockPnpmLsObject),
+        ).rejects.toThrow(
+            '@layerzerolabs packages cannot depend on legacy package orgs (@offchain-monorepo)',
+        );
+    });
+
+    test('should ignore legacy org package deps outside @layerzerolabs packages', async () => {
+        const dir = await createTempPackageJson({
+            name: '@other/test-package',
+            dependencies: {
+                '@offchain-monorepo/example': 'catalog:',
+            },
+        });
+
+        const mockPnpmLsObject: { [key: string]: PnpmPackageObject } = {
+            '@other/test-package': {
+                name: '@other/test-package',
+                path: dir,
+            },
+        };
+
+        await expect(
+            validateNoLegacyOrgDependencies(['@other/test-package'], mockPnpmLsObject),
+        ).resolves.toBeUndefined();
     });
 });
 

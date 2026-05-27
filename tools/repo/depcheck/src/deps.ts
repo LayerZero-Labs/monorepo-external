@@ -9,6 +9,17 @@ import type { Catalog, PackageJson, PnpmPackageObject } from './types';
 import { execPromise, getCachedCatalog, getCatalog, getPnpmLs } from './utils';
 
 const CONCURRENCY_LIMIT = 20;
+const LAYERZERO_PACKAGE_PREFIX = '@layerzerolabs/';
+export const LEGACY_PACKAGE_ORGS = ['@offchain-monorepo'];
+const DEPENDENCY_SECTIONS = [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'optionalDependencies',
+    'implicitDependencies',
+] as const;
+const isLegacyPackage = (packageName: string) =>
+    LEGACY_PACKAGE_ORGS.some((org) => packageName.startsWith(`${org}/`));
 
 /**
  * Default pattern for dependencies that should be moved to devDependencies
@@ -150,6 +161,59 @@ export const processDependencies = async (
     );
 
     return allDeps;
+};
+
+export const validateNoLegacyOrgDependencies = async (
+    packages: string[],
+    pnpmLsObject: { [key: string]: PnpmPackageObject },
+): Promise<void> => {
+    const violations: string[] = [];
+    const limit = pLimit(CONCURRENCY_LIMIT * 3);
+
+    await Promise.all(
+        packages
+            .filter((packageName) => packageName.startsWith(LAYERZERO_PACKAGE_PREFIX))
+            .map((packageName) =>
+                limit(async () => {
+                    const packageInfo = pnpmLsObject[packageName];
+                    if (!packageInfo) {
+                        throw new Error(`Package ${packageName} not found in pnpmLsObject`);
+                    }
+
+                    const packageJsonPath = path.join(packageInfo.path, 'package.json');
+                    let packageJson: PackageJson;
+                    try {
+                        const fileContent = await fs.readFile(packageJsonPath, 'utf-8');
+                        packageJson = JSON.parse(fileContent) as PackageJson;
+                    } catch (error) {
+                        throw new Error(
+                            `Failed to read package.json for ${packageName} at ${packageJsonPath}: ${
+                                error instanceof Error ? error.message : String(error)
+                            }`,
+                        );
+                    }
+
+                    for (const section of DEPENDENCY_SECTIONS) {
+                        for (const dep of Object.keys(packageJson[section] || {})) {
+                            if (isLegacyPackage(dep)) {
+                                violations.push(`${packageName} -> ${dep} (${section})`);
+                            }
+                        }
+                    }
+                }),
+            ),
+    );
+
+    if (violations.length > 0) {
+        throw new Error(
+            [
+                `@layerzerolabs packages cannot depend on legacy package orgs (${LEGACY_PACKAGE_ORGS.join(
+                    ', ',
+                )}):`,
+                ...violations.sort().map((violation) => `- ${violation}`),
+            ].join('\n'),
+        );
+    }
 };
 
 export const moveToDev = async (params: {

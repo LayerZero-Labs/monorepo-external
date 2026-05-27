@@ -6,6 +6,7 @@ import {
     removeDuplicates,
     updateDeps,
     validateCatalog,
+    validateNoLegacyOrgDependencies,
 } from '../deps';
 import { safeRegexMatch } from '../safeRegex';
 import type { ValidateDependenciesParams } from '../types';
@@ -25,6 +26,8 @@ const validateMissingDependencies = async (options: {
         : allPackages;
 
     console.log(`Matched ${targets.length} package(s)`);
+
+    await validateNoLegacyOrgDependencies(targets, pnpmLsObject);
 
     // Run the same logic as deps command but in read-only mode
     const packageResult = await updateDeps({

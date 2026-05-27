@@ -183,7 +183,7 @@ catalogs:
       version: 16.4.5
     es-toolkit:
       specifier: ^1.39.10
-      version: 1.42.0
+      version: 1.46.1
     eslint:
       specifier: 9.39.1
       version: 9.39.1
@@ -1488,7 +1488,7 @@ importers:
         version: 13.1.0
       es-toolkit:
         specifier: 'catalog:'
-        version: 1.42.0
+        version: 1.46.1
       semver:
         specifier: 'catalog:'
         version: 7.7.3
@@ -4717,8 +4717,8 @@ packages:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.42.0:
-    resolution: {integrity: sha512-SLHIyY7VfDJBM8clz4+T2oquwTQxEzu263AyhVK4jREOAwJ+8eebaa4wM3nlvnAqhDrMm2EsA6hWHaQsMPQ1nA==}
+  es-toolkit@1.46.1:
+    resolution: {integrity: sha512-5eNtXOs3tbfxXOj04tjjseeWkRWaoCjdEI+96DgwzZoe6c9juL49pXlzAFTI72aWC9Y8p7168g6XIKjh7k6pyQ==}
 
   es6-promise@4.2.8:
     resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
@@ -11133,7 +11133,7 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  es-toolkit@1.42.0: {}
+  es-toolkit@1.46.1: {}
 
   es6-promise@4.2.8: {}
 
