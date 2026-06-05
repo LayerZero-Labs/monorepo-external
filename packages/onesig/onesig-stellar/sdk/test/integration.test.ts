@@ -3,7 +3,6 @@ import {
     Asset,
     BASE_FEE,
     contract,
-    hash,
     Horizon,
     Keypair,
     nativeToScVal,
@@ -21,14 +20,8 @@ import { beforeAll, beforeEach, describe, expect, test } from 'vitest';
 import { compareAddresses, encodeLeaf } from '@layerzerolabs/onesig-core';
 
 import type { InvokerContractAuthEntry } from '../src/generated/index';
-import {
-    Client,
-    createSetSeedCall,
-    createSetThresholdCall,
-    StellarCall,
-    stellarLeafGenerator,
-} from '../src/index';
-import { signSignerProof } from './signerProof';
+import { createSetSeedCall, createSetThresholdCall, StellarCall, stellarLeafGenerator } from '../src/index';
+import { authEntryToRootCall, type ExecuteCallOptions,executeOnesigTx } from './onesigExecution';
 import {
     arrayify,
     buildSingleTxMerkleData,
@@ -41,7 +34,6 @@ import {
     HORIZON_URL,
     IntegrationTestContext,
     NETWORK_PASSPHRASE,
-    OneSigMerkleData,
     RPC_URL,
     uploadWasm,
     waitForNetworkReady,
@@ -80,110 +72,6 @@ function expectEventEmitted(sentTx: contract.SentTransaction<unknown>, eventName
         return topics && topics.length > 0 && topics[0].sym().toString() === eventName;
     });
     expect(matchingEvents.length).toBeGreaterThan(0);
-}
-
-type ClientWithSpec = Client & { spec: contract.Spec };
-
-const transactionAuthTypeCache = new WeakMap<contract.Spec, xdr.ScSpecTypeDef>();
-
-function getTransactionAuthType(spec: contract.Spec): xdr.ScSpecTypeDef {
-    const cached = transactionAuthTypeCache.get(spec);
-    if (cached) {
-        return cached;
-    }
-
-    for (const entry of spec.entries) {
-        if (entry.switch().value === xdr.ScSpecEntryKind.scSpecEntryUdtStructV0().value) {
-            const udt = entry.udtStructV0();
-            if (udt.name().toString() === 'TransactionAuthData') {
-                const type = xdr.ScSpecTypeDef.scSpecTypeUdt(
-                    new xdr.ScSpecTypeUdt({ name: udt.name() }),
-                );
-                transactionAuthTypeCache.set(spec, type);
-                return type;
-            }
-        }
-    }
-
-    throw new Error('TransactionAuthData type not found in contract spec');
-}
-
-function buildAuthorizationPreimage(
-    addressCred: xdr.SorobanAddressCredentials,
-    rootInvocation: xdr.SorobanAuthorizedInvocation,
-    validUntilLedgerSeq: number,
-    networkPassphrase: string,
-): xdr.HashIdPreimage {
-    const networkId = hash(Buffer.from(networkPassphrase));
-    return xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(
-        new xdr.HashIdPreimageSorobanAuthorization({
-            networkId,
-            nonce: addressCred.nonce(),
-            signatureExpirationLedger: validUntilLedgerSeq,
-            invocation: rootInvocation,
-        }),
-    );
-}
-
-function hashAuthorizationPreimage(preimage: xdr.HashIdPreimage): Buffer {
-    return hash(preimage.toXDR());
-}
-
-type MerklePackage = {
-    merkleData: OneSigMerkleData;
-    proof: Buffer[];
-};
-
-type MerkleOverride = {
-    merkleData?: Partial<OneSigMerkleData>;
-    proof?: Buffer[];
-};
-
-type TransactionAuthOptions = {
-    senderType?: 'executor' | 'permissionless' | 'signer';
-    signerWallet?: Wallet;
-    /**
-     * For `senderType: 'signer'` — the ed25519 keypair acting as `delegate` in
-     * the signer-as-executor spec. Defaults to the context's deployer keypair,
-     * which is the Stellar account actually submitting the transaction.
-     */
-    delegateKeypair?: Keypair;
-    /**
-     * Override the `signer_proof_expiry` (seconds since epoch) the signer signs
-     * over. Defaults to `now + 600s`. Use to exercise expired-proof rejection.
-     */
-    signerProofExpiryOverride?: bigint;
-};
-
-type ExecuteCallOptions = TransactionAuthOptions & {
-    signerCount?: number;
-    executorKeypair?: Keypair;
-    nonce?: bigint;
-    customMerkleData?: MerklePackage;
-    merkleDataOverride?: (
-        data: MerklePackage,
-    ) => MerkleOverride | void | Promise<MerkleOverride | void>;
-    skipResimulate?: boolean;
-};
-
-type SenderConfig = TransactionAuthOptions & {
-    executorKeypair?: Keypair;
-};
-
-function authEntryToRootCall(entry: xdr.SorobanAuthorizationEntry): StellarCall {
-    const fn = entry.rootInvocation().function();
-    if (
-        fn.switch() !==
-        xdr.SorobanAuthorizedFunctionType.sorobanAuthorizedFunctionTypeContractFn()
-    ) {
-        throw new Error('Root invocation is not a contract function');
-    }
-    const contractFn = fn.contractFn();
-    return {
-        contractAddress: Address.fromScAddress(contractFn.contractAddress()).toString(),
-        functionName: contractFn.functionName().toString(),
-        args: contractFn.args(),
-    };
 }
 
 /**
@@ -369,224 +257,6 @@ async function simulateSubInvocations(
     }
 
     return [];
-}
-
-async function signAndSendOnesigTx<T>(
-    context: IntegrationTestContext,
-    packageData: MerklePackage,
-    assembledTx: contract.AssembledTransaction<T>,
-    senderConfig: SenderConfig,
-    skipResimulate = false,
-): Promise<contract.SentTransaction<T>> {
-    if (!assembledTx.built) {
-        await assembledTx.simulate();
-    }
-
-    const oneSigAddress = Address.fromString(context.oneSigContractId);
-    const remaining = assembledTx.needsNonInvokerSigningBy({ includeAlreadySigned: false });
-    if (remaining.length !== 1 || remaining[0] !== oneSigAddress.toString()) {
-        throw new Error('Invalid signer for transaction');
-    }
-
-    const senderType =
-        senderConfig.senderType ??
-        (senderConfig.executorKeypair ? ('executor' as const) : ('permissionless' as const));
-
-    const oneSigSpec = (context.oneSigClient as ClientWithSpec).spec;
-    const transactionAuthType = getTransactionAuthType(oneSigSpec);
-
-    const customAuthorizeEntry = async (
-        entry: xdr.SorobanAuthorizationEntry,
-        _signer: Keypair | ((preimage: xdr.HashIdPreimage) => Promise<unknown>),
-        validUntilLedgerSeq: number,
-        networkPassphrase?: string,
-    ) => {
-        const credentials = entry.credentials();
-        if (credentials.switch() !== xdr.SorobanCredentialsType.sorobanCredentialsAddress()) {
-            throw new Error('Expected address credentials for Account Abstraction');
-        }
-
-        const addressCred = credentials.address();
-        const credentialAddress = Address.fromScAddress(addressCred.address());
-        if (credentialAddress.toString() !== oneSigAddress.toString()) {
-            throw new Error('Credential address does not match oneSig address');
-        }
-
-        const payloadHash = hashAuthorizationPreimage(
-            buildAuthorizationPreimage(
-                addressCred,
-                entry.rootInvocation(),
-                validUntilLedgerSeq,
-                networkPassphrase || context.networkPassphrase,
-            ),
-        );
-
-        const senderValue = await (async () => {
-            switch (senderType) {
-                case 'executor': {
-                    const keypair = senderConfig.executorKeypair;
-                    if (!keypair) {
-                        throw new Error('executorKeypair is required when senderType is executor');
-                    }
-                    const senderSignature = keypair.sign(Buffer.from(payloadHash));
-                    const senderPublicKey = Buffer.from(keypair.rawPublicKey());
-                    return {
-                        tag: 'Executor' as const,
-                        values: [senderPublicKey, senderSignature],
-                    };
-                }
-                case 'signer': {
-                    const signerWallet = senderConfig.signerWallet;
-                    if (!signerWallet) {
-                        throw new Error(
-                            'signerWallet is required when senderType is set to signer',
-                        );
-                    }
-                    // `delegate` is the ed25519 account actually submitting this
-                    // Stellar transaction. Defaults to the deployer keypair,
-                    // which is who signs the outer Stellar envelope in these tests.
-                    const delegateKeypair =
-                        senderConfig.delegateKeypair ?? context.deployerKeypair;
-                    const delegate = Buffer.from(delegateKeypair.rawPublicKey());
-                    const delegateProof = delegateKeypair.sign(Buffer.from(payloadHash));
-
-                    const signerProofExpiry =
-                        senderConfig.signerProofExpiryOverride ??
-                        BigInt(Math.floor(Date.now() / 1000) + 600);
-
-                    const signerProof = await signSignerProof(
-                        signerWallet,
-                        packageData.merkleData.leafHash,
-                        packageData.merkleData.merkleRoot,
-                        delegate,
-                        signerProofExpiry,
-                    );
-
-                    return {
-                        tag: 'Signer' as const,
-                        values: [
-                            {
-                                signer_proof: signerProof,
-                                signer_proof_expiry: signerProofExpiry,
-                                delegate,
-                                delegate_proof: delegateProof,
-                            },
-                        ],
-                    };
-                }
-                case 'permissionless':
-                    return {
-                        tag: 'Permissionless' as const,
-                        values: [],
-                    };
-                default:
-                    throw new Error(`Unsupported sender type: ${senderType satisfies never}`);
-            }
-        })();
-
-        const transactionAuthData = {
-            merkle_root: packageData.merkleData.merkleRoot,
-            expiry: packageData.merkleData.expiry,
-            proof: packageData.proof,
-            signatures: packageData.merkleData.signatures,
-            sender: senderValue,
-        };
-
-        const authDataScVal = oneSigSpec.nativeToScVal(transactionAuthData, transactionAuthType);
-
-        const newAddressCred = new xdr.SorobanAddressCredentials({
-            address: addressCred.address(),
-            nonce: addressCred.nonce(),
-            signatureExpirationLedger: validUntilLedgerSeq,
-            signature: authDataScVal,
-        });
-
-        return new xdr.SorobanAuthorizationEntry({
-            credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(newAddressCred),
-            rootInvocation: entry.rootInvocation(),
-        });
-    };
-
-    await assembledTx.signAuthEntries({
-        address: oneSigAddress.toString(),
-        authorizeEntry: customAuthorizeEntry,
-    });
-
-    if (skipResimulate) {
-        try {
-            await assembledTx.simulate({ restore: true });
-        } catch {
-            // allow negative-path tests to skip simulation errors
-        }
-    } else {
-        await assembledTx.simulate({ restore: true });
-    }
-
-    return assembledTx.signAndSend({ force: true });
-}
-
-async function executeOnesigTx<T>(
-    context: IntegrationTestContext,
-    assembledTx: contract.AssembledTransaction<T>,
-    options: ExecuteCallOptions = {},
-): Promise<contract.SentTransaction<T>> {
-    if (!assembledTx.simulation) {
-        await assembledTx.simulate();
-    }
-
-    const simulation = assembledTx.simulation;
-    const simulationResult =
-        (simulation as { result?: { auth?: xdr.SorobanAuthorizationEntry[] } } | undefined)
-            ?.result ?? assembledTx.simulationData?.result;
-    if (!simulationResult) {
-        throw new Error('Simulation failed');
-    }
-
-    const authEntries = simulationResult.auth ?? [];
-    if (authEntries.length === 0) {
-        throw new Error('No auth entries returned from simulation');
-    }
-
-    const rootCall = authEntryToRootCall(authEntries[0]);
-    const signerCount = options.signerCount ?? context.threshold;
-
-    const defaultPackage =
-        options.customMerkleData ??
-        (await buildSingleTxMerkleData(context, signerCount, [rootCall], options.nonce));
-
-    let mergedPackage: MerklePackage = {
-        merkleData: { ...defaultPackage.merkleData },
-        proof: [...defaultPackage.proof],
-    };
-
-    if (options.merkleDataOverride) {
-        const override = await options.merkleDataOverride(mergedPackage);
-        if (override) {
-            mergedPackage = {
-                merkleData: {
-                    ...mergedPackage.merkleData,
-                    ...(override.merkleData ?? {}),
-                },
-                proof: override.proof ?? mergedPackage.proof,
-            };
-        }
-    }
-
-    const senderConfig: SenderConfig = {
-        senderType: options.senderType,
-        signerWallet: options.signerWallet,
-        executorKeypair: options.executorKeypair,
-        delegateKeypair: options.delegateKeypair,
-        signerProofExpiryOverride: options.signerProofExpiryOverride,
-    };
-
-    return signAndSendOnesigTx(
-        context,
-        mergedPackage,
-        assembledTx,
-        senderConfig,
-        options.skipResimulate ?? false,
-    );
 }
 
 async function expectTxToFail<T>(
@@ -872,13 +542,11 @@ describe('Stellar Onesig Integration Tests', () => {
             const nonceTx = await context.oneSigClient.nonce();
             const currentNonce = BigInt(nonceTx.result);
 
-            const calls: StellarCall[] = [
-                createSetSeedCall(Buffer.from(randomBytes(32)), context.oneSigContractId),
-            ];
+            const call = createSetSeedCall(Buffer.from(randomBytes(32)), context.oneSigContractId);
             const { merkleData } = await buildSingleTxMerkleData(
                 context,
                 context.threshold,
-                calls,
+                call,
                 currentNonce,
             );
 
@@ -1061,7 +729,7 @@ describe('Stellar Onesig Integration Tests', () => {
             const { merkleData } = await buildSingleTxMerkleData(
                 context,
                 customThreshold,
-                [call],
+                call,
                 currentNonce,
             );
             const { signatures, digest } = merkleData;
@@ -1369,7 +1037,7 @@ describe('Stellar Onesig Integration Tests', () => {
             const customPackage = await buildSingleTxMerkleData(
                 context,
                 context.threshold,
-                [call],
+                call,
                 currentNonce,
             );
 
@@ -1397,7 +1065,7 @@ describe('Stellar Onesig Integration Tests', () => {
             const originalMerkleData = await buildSingleTxMerkleData(
                 context,
                 context.threshold,
-                [call],
+                call,
                 currentNonce,
             );
 
@@ -1607,7 +1275,7 @@ describe('Stellar Onesig Integration Tests', () => {
             const merklePackage = await buildSingleTxMerkleData(
                 context,
                 context.threshold,
-                [call],
+                call,
                 currentNonce,
             );
 

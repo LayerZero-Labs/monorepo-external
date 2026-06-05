@@ -412,7 +412,7 @@ export interface OneSigMerkleData {
 export async function buildSingleTxMerkleData(
     context: IntegrationTestContext,
     threshold: number,
-    calls: StellarCall[],
+    stellarCall: StellarCall,
     nonce?: bigint,
     expiryOffset = 1000,
     seed?: Uint8Array,
@@ -435,7 +435,9 @@ export async function buildSingleTxMerkleData(
         nonce: actualNonce,
         oneSigId: context.oneSigId,
         targetOneSigAddress: context.oneSigContractId,
-        calls,
+        // A OneSig leaf authorizes exactly one self-call. Multicall is expressed as a
+        // single execute_transaction self-call (see createExecuteTransactionCall).
+        calls: [stellarCall],
     };
 
     const leafGenerator = stellarLeafGenerator([leafData]);

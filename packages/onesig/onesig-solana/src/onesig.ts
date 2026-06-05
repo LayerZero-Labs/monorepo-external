@@ -154,13 +154,13 @@ export class OneSig {
             {
                 programs: this.programRepo,
                 payer,
-                eddsa: EDDSA,
             },
             {
                 ...params,
                 state: this.state,
                 payer: payer,
                 program: this.programId,
+                eventAuthority: this.eventPda.eventAuthority(),
             },
         ).items[0];
     }

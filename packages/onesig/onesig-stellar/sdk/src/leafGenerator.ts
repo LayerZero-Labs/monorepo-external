@@ -23,6 +23,17 @@ const CALL_TYPE = callInput.type();
  *
  * Arguments are provided as pre-encoded ScVal[] matching the contract function's parameter types.
  * The entire Call struct (to, func, args) is encoded using nativeToScVal for XDR encoding.
+ *
+ * A OneSig merkle leaf authorizes exactly ONE self-call on the OneSig contract
+ * (see `encodeCalls`, which rejects more than one). This is not a multicall type:
+ * each `StellarCall` is a single `(contract, function, args)` invocation.
+ *
+ * To execute multiple calls under one leaf, you do NOT pass several `StellarCall`s.
+ * Instead you make a single `execute_transaction` self-call and put the batch of
+ * calls *inside* its `args`: the `calls: Vec<Call>` parameter carries them, and the
+ * OneSig contract dispatches each in turn. Use `createExecuteTransactionCall` to
+ * build that wrapper. So multicall lives one level down — in the `args` of a single
+ * `execute_transaction` call — not in the number of `StellarCall`s per leaf.
  */
 export interface StellarCall {
     contractAddress: string; // Soroban contract address (C...)

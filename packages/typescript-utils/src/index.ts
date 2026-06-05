@@ -4,6 +4,7 @@ export * from './branded';
 export * from './constructor';
 export * from './deep';
 export * from './disallowedAny';
+export * from './functionalUtils';
 export * from './identity';
 export * from './lastOf';
 export * from './maybeUndefined';

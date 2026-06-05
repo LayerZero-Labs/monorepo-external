@@ -1,5 +1,3 @@
-node_modules/
-cdk.out
 dist
 *.tsbuildinfo
 .turbo
@@ -22,8 +20,6 @@ docker-target
 !.vscode/settings.json
 !.vscode/extensions.json
 .idea
-
-.DS_Store
 
 # Ignore generated factory files
 **/src/lz_di_implGetter.ts
@@ -73,3 +69,12 @@ visualized-reports/
 
 # certora
 .certora_internal/
+
+.DS_Store
+**/node_modules/**
+
+snowflake.log
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform

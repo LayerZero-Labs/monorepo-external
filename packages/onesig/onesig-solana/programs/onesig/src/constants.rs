@@ -1,5 +1,5 @@
-use anchor_lang::solana_program::keccak::HASH_BYTES;
 use hex_literal::hex;
+use solana_keccak_hasher::HASH_BYTES;
 
 /// Current program version
 pub const VERSION: &str = "0.0.1";
@@ -13,7 +13,8 @@ pub const MERKLE_ROOT_SEED: &[u8] = b"MerkleRoot";
 /// EIP-191 prefix for EIP-712 style digests
 pub const EIP191_PREFIX_FOR_EIP712: [u8; 2] = [0x19, 0x01];
 
-/// keccak256("SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)")
+/// keccak256("SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64
+/// signerProofExpiry)")
 pub const SIGNER_PROOF_TYPE_HASH: [u8; HASH_BYTES] =
     hex!("1653872b01126b12144c16507269121468ed6089bb6b4b6790947bd37f540efc");
 

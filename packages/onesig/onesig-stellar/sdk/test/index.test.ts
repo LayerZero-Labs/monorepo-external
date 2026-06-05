@@ -5,7 +5,11 @@
 import { Keypair, xdr } from '@stellar/stellar-sdk';
 import { describe, expect, test } from 'vitest';
 
-import { StellarLeafData, stellarLeafGenerator } from '../src/index';
+import {
+    createExecuteTransactionCall,
+    StellarLeafData,
+    stellarLeafGenerator,
+} from '../src/index';
 import { createTestCall, generateTestContractAddress } from './helpers';
 
 describe('onesig-stellar', () => {
@@ -136,6 +140,48 @@ describe('onesig-stellar', () => {
             expect(() => generator.encodeCalls([call1, call2])).toThrow(
                 'Stellar leaf must have exactly one self-call',
             );
+        });
+    });
+
+    describe('Multicall wrapping (execute_transaction)', () => {
+        test('should wrap multiple external calls into a single execute_transaction self-call', () => {
+            const tokenA = generateTestContractAddress();
+            const tokenB = generateTestContractAddress();
+            const inner1 = {
+                to: tokenA,
+                func: 'transfer',
+                args: [xdr.ScVal.scvU32(1)],
+                sub_invocations: [],
+            };
+            const inner2 = {
+                to: tokenB,
+                func: 'transfer',
+                args: [xdr.ScVal.scvU32(2)],
+                sub_invocations: [],
+            };
+
+            const wrapper = createExecuteTransactionCall(oneSigAddress, [inner1, inner2]);
+
+            // The wrapper is a single self-call targeting the OneSig contract.
+            expect(wrapper.contractAddress).toBe(oneSigAddress);
+            expect(wrapper.functionName).toBe('execute_transaction');
+            expect(wrapper.args).toHaveLength(1);
+
+            // It encodes through the normal single-call path without throwing.
+            const generator = stellarLeafGenerator([]);
+            const encoded = generator.encodeCalls([wrapper]);
+            expect(Buffer.isBuffer(encoded)).toBe(true);
+
+            // The encoded leaf is a Call map whose func is execute_transaction and
+            // whose single arg is the Vec<Call> of the two inner calls.
+            const decoded = xdr.ScVal.fromXDR(encoded);
+            const callStruct = decoded.map();
+            const funcEntry = callStruct?.find((e) => e.key().sym()?.toString() === 'func');
+            expect(funcEntry?.val().sym()?.toString()).toBe('execute_transaction');
+
+            const argsEntry = callStruct?.find((e) => e.key().sym()?.toString() === 'args');
+            const innerCallsVec = argsEntry?.val().vec()?.[0].vec();
+            expect(innerCallsVec).toHaveLength(2);
         });
     });
 

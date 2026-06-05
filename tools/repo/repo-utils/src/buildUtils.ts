@@ -166,3 +166,22 @@ export const runBuild = async (packagePath: string): Promise<void> => {
         });
     });
 };
+
+export const generateContractsSnapshot = async (repoDirectory: string): Promise<void> => {
+    console.log(`\n🔧 Generating contracts snapshot...`);
+    try {
+        await execFilePromise('pnpm', ['turbo:run', 'test:snapshot:update', '--continue'], {
+            cwd: repoDirectory,
+        });
+        console.log(`✅ Contracts snapshot generated successfully`);
+    } catch (error) {
+        console.error(
+            `❌ Failed to generate contracts snapshot:`,
+            error instanceof Error ? error.message : error,
+        );
+        console.log(
+            `💡 You can manually run 'pnpm turbo:run test:snapshot:update --continue' in the repository directory`,
+        );
+        throw error;
+    }
+};

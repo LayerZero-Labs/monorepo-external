@@ -6,11 +6,11 @@
     "license": "MIT",
     "exports": {
         "types": "./dist/index.d.ts",
-        "require": "./dist/index.js",
         "import": "./dist/index.mjs",
-        "default": "./dist/index.js"
+        "require": "./dist/index.mjs",
+        "default": "./dist/index.mjs"
     },
-    "main": "./dist/index.js",
+    "main": "./dist/index.mjs",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "files": [
@@ -21,8 +21,9 @@
         "compile:sdk": "cd .. && pnpm compile:sdk",
         "build": "pnpm build:contract && pnpm compile:sdk && tsup",
         "clean": "rm -rf dist .turbo",
-        "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts",
-        "test:integration": "cd .. && pnpm build:mocks && pnpm start:stellar && cd sdk && vitest run test/integration.test.ts; cd .. && pnpm stop:stellar"
+        "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts --exclude test/offchainWorkflow.test.ts",
+        "test:integration": "cd .. && pnpm build:mocks && pnpm start:stellar && cd sdk && vitest run --no-file-parallelism test/integration.test.ts test/offchainWorkflow.test.ts; cd .. && pnpm stop:stellar",
+        "test:offchain:workflow": "cd .. && pnpm build:contract && pnpm start:stellar && cd sdk && vitest run test/offchainWorkflow.test.ts; cd .. && pnpm stop:stellar"
     },
     "dependencies": {
         "@layerzerolabs/onesig-core": "workspace:*",

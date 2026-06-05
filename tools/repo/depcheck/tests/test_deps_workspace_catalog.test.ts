@@ -149,7 +149,7 @@ describe('addMissingDependencies - workspace/catalog detection', () => {
         const allDeps: { [key: string]: Set<string> } = {};
         const missingDeps = ['test-package'];
 
-        const log = await addMissingDependencies({
+        await addMissingDependencies({
             packageJson: mockPackageJson,
             missingDeps,
             workspacePackages: new Set(),
@@ -157,7 +157,6 @@ describe('addMissingDependencies - workspace/catalog detection', () => {
             allDeps,
         });
 
-        expect(log).toContain('appears to depend on itself');
         expect(allDeps['test-package']).toBeUndefined();
         expect(mockPackageJson.dependencies!['test-package']).toBeUndefined();
     });

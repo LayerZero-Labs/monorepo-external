@@ -1,7 +1,5 @@
-use anchor_lang::{
-    prelude::{borsh::BorshSerialize, *},
-    solana_program::keccak,
-};
+use anchor_lang::prelude::{borsh::BorshSerialize, *};
+use solana_keccak_hasher as keccak;
 
 use super::signature::SignatureValidator;
 use crate::{

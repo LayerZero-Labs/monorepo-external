@@ -57,9 +57,45 @@
                 "build/**",
 
                 // sui
-                "dependencies/**"
+                "dependencies/**",
+
+                "src/typechain/**"
             ],
             "dependsOn": ["^build"],
+            "outputLogs": "new-only"
+        },
+        "typecheck": {
+            "cache": false,
+            "outputs": [],
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
+        "test:integration": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["build"],
+            "outputLogs": "new-only",
+            "env": [
+                "TON_MAINNET_API_URL",
+                "TON_MAINNET_API_KEY",
+                "SOLANA_MAINNET_RPC_URL",
+                "AORI_API_KEY",
+                "MATCHA_API_KEY",
+                "TRON_WEB_MAINNET_RPC_URL",
+                "AORI_API_URL",
+                "STARGATE_API_KEY"
+            ]
+        },
+        "dev": {
+            "cache": false
+        },
+        "test:snapshot:check": {
+            "cache": false,
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
+        "test:snapshot:update": {
+            "cache": false,
+            "dependsOn": ["build"],
             "outputLogs": "new-only"
         }
     }

@@ -6,9 +6,8 @@ members = ["programs/*"]
 version = "0.0.1"
 
 [workspace.dependencies]
-anchor-lang = "=0.31.1"
-anchor-spl = "=0.31.1"
-solana-program = "=2.1.0"
+anchor-lang = "=1.0.2"
+anchor-spl = "=1.0.2"
 
 [profile.release]
 overflow-checks = true

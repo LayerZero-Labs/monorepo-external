@@ -416,9 +416,6 @@ export const addMissingDependencies = async (params: {
     let log = '';
     for (const dep of missingDeps) {
         if (dep === packageName) {
-            log =
-                `Warning: package ${packageName} appears to depend on itself - skipping self-dependency\n` +
-                log;
             continue;
         }
         const catalog = customCatalog || (await getCachedCatalog());

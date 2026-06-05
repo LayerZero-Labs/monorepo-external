@@ -1,15 +1,10 @@
 use anchor_lang::{
-    prelude::{
-        borsh::{BorshDeserialize, BorshSerialize},
-        *,
-    },
-    solana_program::{
-        instruction::{AccountMeta, Instruction},
-        keccak::{Hash as SolanaHash, HASH_BYTES},
-        secp256k1_recover::{
-            Secp256k1Pubkey as SolanaSecp256k1Pubkey, SECP256K1_PUBLIC_KEY_LENGTH,
-        },
-    },
+    prelude::*,
+    solana_program::instruction::{AccountMeta, Instruction},
+};
+use solana_keccak_hasher::{self as keccak, Hash as SolanaHash, HASH_BYTES};
+use solana_secp256k1_recover::{
+    Secp256k1Pubkey as SolanaSecp256k1Pubkey, SECP256K1_PUBLIC_KEY_LENGTH,
 };
 
 use crate::constants::SIGNATURE_BYTES_LEN;
@@ -40,7 +35,7 @@ impl Address {
 impl From<Secp256k1Pubkey> for Address {
     fn from(pubkey: Secp256k1Pubkey) -> Self {
         let pubkey_bytes = pubkey.to_bytes();
-        let hash = anchor_lang::solana_program::keccak::hash(&pubkey_bytes);
+        let hash = keccak::hash(&pubkey_bytes);
         let mut address_bytes = [0u8; ADDRESS_LEN];
         address_bytes.copy_from_slice(&hash.to_bytes()[12..]);
         Self(address_bytes)
@@ -140,7 +135,7 @@ impl AsRef<[u8]> for Hash {
 
 impl From<SolanaHash> for Hash {
     fn from(hash: SolanaHash) -> Self {
-        Self(hash.0)
+        Self(hash.to_bytes())
     }
 }
 
@@ -216,7 +211,7 @@ pub struct OneSigTransaction {
     pub proof: Vec<Hash>,
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Clone)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct OneSigAccountMeta {
     pub pubkey: Pubkey,
     pub is_signer: bool,
@@ -233,7 +228,7 @@ impl From<OneSigAccountMeta> for AccountMeta {
     }
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Clone)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct OneSigInstruction {
     pub program_id: Pubkey,
     pub accounts: Vec<OneSigAccountMeta>,

@@ -15,7 +15,8 @@
 // ```
 #[cfg(test)]
 mod tests {
-    use anchor_lang::solana_program::{keccak, secp256k1_recover::SECP256K1_PUBLIC_KEY_LENGTH};
+    use solana_keccak_hasher as keccak;
+    use solana_secp256k1_recover::SECP256K1_PUBLIC_KEY_LENGTH;
 
     use crate::{
         constants::{
@@ -214,7 +215,7 @@ mod tests {
         let computed = keccak::hash(
             b"SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)",
         );
-        assert_eq!(computed.0, SIGNER_PROOF_TYPE_HASH);
+        assert_eq!(computed.to_bytes(), SIGNER_PROOF_TYPE_HASH);
     }
 
     #[test]
@@ -227,7 +228,7 @@ mod tests {
         encoded[32..64].copy_from_slice(name_hash.as_ref());
         encoded[64..96].copy_from_slice(version_hash.as_ref());
         let computed = keccak::hash(&encoded);
-        assert_eq!(computed.0, SIGNER_PROOF_DOMAIN_SEPARATOR);
+        assert_eq!(computed.to_bytes(), SIGNER_PROOF_DOMAIN_SEPARATOR);
     }
 
     #[test]
@@ -260,6 +261,6 @@ mod tests {
 
         let computed =
             build_signer_proof_digest(&leaf_hash, &merkle_root, &delegate, signer_proof_expiry);
-        assert_eq!(computed.0, expected.0);
+        assert_eq!(computed.0, expected.to_bytes());
     }
 }
