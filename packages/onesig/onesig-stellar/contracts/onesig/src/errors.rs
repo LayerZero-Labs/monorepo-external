@@ -10,5 +10,5 @@ pub enum OneSigError {
     MerkleRootExpired,
     NonContractInvoke,
     OnlyExecutorOrSigner,
-    SignerProofExpired,
+    SignerExecutionProofExpired,
 }

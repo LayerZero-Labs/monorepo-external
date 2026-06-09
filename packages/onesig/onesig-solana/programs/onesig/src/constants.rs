@@ -13,15 +13,10 @@ pub const MERKLE_ROOT_SEED: &[u8] = b"MerkleRoot";
 /// EIP-191 prefix for EIP-712 style digests
 pub const EIP191_PREFIX_FOR_EIP712: [u8; 2] = [0x19, 0x01];
 
-/// keccak256("SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64
-/// signerProofExpiry)")
-pub const SIGNER_PROOF_TYPE_HASH: [u8; HASH_BYTES] =
-    hex!("1653872b01126b12144c16507269121468ed6089bb6b4b6790947bd37f540efc");
-
-/// keccak256(domainTypeHash || keccak256("OneSig") || keccak256("1"))
-/// where domainTypeHash = keccak256("EIP712Domain(string name,string version)")
-pub const SIGNER_PROOF_DOMAIN_SEPARATOR: [u8; HASH_BYTES] =
-    hex!("95c6b272a76a2697aae0ebbeba823df9fa6272c9cc0ecaf3f314e5b1ea89f40b");
+/// keccak256("SignerExecutionAuthorization(bytes32 leafHash,bytes32 merkleRoot,bytes
+/// delegate,uint256 expiry)")
+pub const SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH: [u8; HASH_BYTES] =
+    hex!("2ed09255a17ecc5d8fd5128a11480e0f01d23b22eaeb02f4f4acae355e5c428a");
 
 /// Maximum number of signers (20) for a OneSig account.
 /// Solana limits account size to 10KB, which could theoretically support up to 159 signers,

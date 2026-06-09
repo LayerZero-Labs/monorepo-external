@@ -14,23 +14,24 @@ pub struct SignatureValidator;
 
 impl SignatureValidator {
     /// Verifies that a registered signer authorized `delegate` to execute `leaf`
-    /// within `signer_proof_expiry`, **as part of the operator-approved batch
-    /// identified by `merkle_root`**.
-    pub fn verify_signer_proof(
+    /// within `expiry`, **as part of the operator-approved batch identified by
+    /// `merkle_root`**.
+    pub fn verify_signer_execution_proof(
         leaf: &Hash,
         merkle_root: &Hash,
         delegate: Pubkey,
-        signer_proof_expiry: u64,
+        expiry: u64,
         signers: &[Address],
         signature: &Signature,
     ) -> Result<()> {
         let now = Clock::get()?.unix_timestamp;
-        require!((now as u64) <= signer_proof_expiry, OneSigError::ExpiredSignerProof);
+        require!((now as u64) <= expiry, OneSigError::ExpiredSignerExecutionProof);
 
-        let digest = build_signer_proof_digest(leaf, merkle_root, &delegate, signer_proof_expiry);
+        let authorization_digest =
+            build_signer_execution_authorization_digest(leaf, merkle_root, &delegate, expiry);
 
-        let recovered: Address = Self::recover_signer(&digest, signature)?.into();
-        require!(signers.contains(&recovered), OneSigError::SignerProofUnauthorized);
+        let recovered: Address = Self::recover_signer(&authorization_digest, signature)?.into();
+        require!(signers.contains(&recovered), OneSigError::SignerExecutionProofUnauthorized);
         Ok(())
     }
 
@@ -89,35 +90,34 @@ impl SignatureValidator {
     }
 }
 
-// EIP-712 signer proof digest:
-//   structHash = keccak256(
-//       SIGNER_PROOF_TYPE_HASH || leafHash || merkleRoot ||
+// EIP-712 signer-as-executor authorization digest:
+//   structHash            = keccak256(
+//       SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH || leafHash || merkleRoot ||
 //       keccak256(delegate) || expiry_padded
 //   )
-//   digest     = keccak256(0x1901 || SIGNER_PROOF_DOMAIN_SEPARATOR || structHash)
+//   authorization_digest  = keccak256(0x1901 || DOMAIN_SEPARATOR || structHash)
 //
-// `merkleRoot` pins the proof to one operator-approved batch so the delegate
-// cannot pick a different root that happens to contain the same leaf.
-pub(crate) fn build_signer_proof_digest(
+// Uses the canonical OneSig domain (the same `DOMAIN_SEPARATOR` as merkle-root
+// signatures);
+//
+// `merkleRoot` pins the authorization to one operator-approved batch so the delegate
+// cannot pick a different root that happens to contain the same leaf. `expiry` is
+// ABI-encoded as uint256 (32 bytes, left zero-padded).
+pub(crate) fn build_signer_execution_authorization_digest(
     leaf: &Hash,
     merkle_root: &Hash,
     delegate: &Pubkey,
-    signer_proof_expiry: u64,
+    expiry: u64,
 ) -> Hash {
     let delegate_hash = keccak::hash(delegate.as_ref());
     let mut expiry_padded = [0u8; 32];
-    expiry_padded[24..].copy_from_slice(&signer_proof_expiry.to_be_bytes());
+    expiry_padded[24..].copy_from_slice(&expiry.to_be_bytes());
     let struct_hash = keccak::hashv(&[
-        &SIGNER_PROOF_TYPE_HASH,
+        &SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH,
         leaf.as_ref(),
         merkle_root.as_ref(),
         delegate_hash.as_ref(),
         &expiry_padded,
     ]);
-    keccak::hashv(&[
-        &EIP191_PREFIX_FOR_EIP712,
-        &SIGNER_PROOF_DOMAIN_SEPARATOR,
-        struct_hash.as_ref(),
-    ])
-    .into()
+    keccak::hashv(&[&EIP191_PREFIX_FOR_EIP712, &DOMAIN_SEPARATOR, struct_hash.as_ref()]).into()
 }

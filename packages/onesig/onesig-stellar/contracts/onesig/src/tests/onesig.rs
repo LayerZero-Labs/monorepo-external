@@ -4,9 +4,9 @@ use super::helpers::{
     new_executor_key, secp256k1_sign, secp256k1_signer_address,
 };
 use crate::{
-    eip712::{build_eip712_digest, build_signer_proof_digest},
+    eip712::{build_sign_merkle_root_digest, build_signer_execution_authorization_digest},
     errors::OneSigError,
-    interfaces::{Call, Sender, SenderKey, SignerAsExecutor, Transaction, TransactionAuthData},
+    interfaces::{Call, Sender, SenderKey, SignerExecutionProof, Transaction, TransactionAuthData},
     onesig::OneSigClient,
 };
 use ed25519_dalek::{Signer as _, SigningKey as Ed25519SigningKey};
@@ -368,7 +368,7 @@ fn test_verify_merkle_root_not_expired_but_invalid_signatures() {
     // Set ledger timestamp to current time
     env.ledger().set_timestamp(1000);
 
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let invalid_signature = secp256k1_sign(&env, &unregistered_signer_key, &digest);
     let signatures = vec![&env, invalid_signature];
 
@@ -602,7 +602,7 @@ fn test_check_auth_empty_contexts() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     let auth_data = TransactionAuthData {
@@ -681,7 +681,7 @@ fn test_check_auth_non_executor_rejected_when_executor_required() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // Create auth context
@@ -768,7 +768,7 @@ fn test_check_auth_executor_accepted_when_executor_required() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // Create auth context
@@ -810,7 +810,7 @@ fn test_check_auth_executor_accepted_when_executor_required() {
 
 /// Fixture building a fully valid signer-as-executor auth payload.
 /// Individual tests mutate specific fields to exercise failure modes.
-struct SignerAsExecutorFixture<'a> {
+struct SignerExecutionProofFixture<'a> {
     env: Env,
     contract_id: Address,
     client: OneSigClient<'a>,
@@ -821,13 +821,13 @@ struct SignerAsExecutorFixture<'a> {
     call: Call,
     leaf: BytesN<32>,
     expiry: u64,
-    signer_proof_expiry: u64,
+    proof_expiry: u64,
     payload: BytesN<32>,
     auth_contexts: Vec<Context>,
     new_seed: BytesN<32>,
 }
 
-fn setup_signer_as_executor<'a>(executor_required: bool) -> SignerAsExecutorFixture<'a> {
+fn setup_signer_execution_proof<'a>(executor_required: bool) -> SignerExecutionProofFixture<'a> {
     let env = Env::default();
 
     let signing_key = generate_secp256k1_keypair();
@@ -875,7 +875,7 @@ fn setup_signer_as_executor<'a>(executor_required: bool) -> SignerAsExecutorFixt
 
     let payload = BytesN::from_array(&env, &[0u8; 32]);
 
-    SignerAsExecutorFixture {
+    SignerExecutionProofFixture {
         env,
         contract_id,
         client,
@@ -886,7 +886,7 @@ fn setup_signer_as_executor<'a>(executor_required: bool) -> SignerAsExecutorFixt
         call,
         leaf,
         expiry: 9999u64,
-        signer_proof_expiry: 2000u64, // ledger timestamp is 1000 — comfortably in future
+        proof_expiry: 2000u64, // ledger timestamp is 1000 — comfortably in future
         payload,
         auth_contexts,
         new_seed,
@@ -900,8 +900,8 @@ fn setup_signer_as_executor<'a>(executor_required: bool) -> SignerAsExecutorFixt
 /// than what ends up in the struct". `override_signed_merkle_root` overrides the
 /// root the signer commits to (the auth payload still carries `f.leaf` as the
 /// executing root), exercising the cross-root binding check.
-fn build_signer_as_executor_auth_data(
-    f: &SignerAsExecutorFixture,
+fn build_signer_execution_proof_auth_data(
+    f: &SignerExecutionProofFixture,
     override_signed_expiry: Option<u64>,
     override_signed_delegate: Option<BytesN<32>>,
     override_delegate_proof_payload: Option<BytesN<32>>,
@@ -909,20 +909,20 @@ fn build_signer_as_executor_auth_data(
 ) -> TransactionAuthData {
     let env = &f.env;
     let merkle_root = f.leaf.clone();
-    let digest = build_eip712_digest(env, &f.seed, &merkle_root, f.expiry);
+    let digest = build_sign_merkle_root_digest(env, &f.seed, &merkle_root, f.expiry);
     let merkle_signature = secp256k1_sign(env, &f.signing_key, &digest);
 
     let signed_delegate = override_signed_delegate.unwrap_or_else(|| f.delegate.clone());
-    let signed_expiry = override_signed_expiry.unwrap_or(f.signer_proof_expiry);
+    let signed_expiry = override_signed_expiry.unwrap_or(f.proof_expiry);
     let signed_merkle_root = override_signed_merkle_root.unwrap_or_else(|| merkle_root.clone());
-    let signer_digest = build_signer_proof_digest(
+    let authorization_digest = build_signer_execution_authorization_digest(
         env,
         &f.leaf,
         &signed_merkle_root,
         &signed_delegate,
         signed_expiry,
     );
-    let signer_proof = secp256k1_sign(env, &f.signing_key, &signer_digest);
+    let signature = secp256k1_sign(env, &f.signing_key, &authorization_digest);
 
     let delegate_proof_payload =
         override_delegate_proof_payload.unwrap_or_else(|| f.payload.clone());
@@ -934,9 +934,9 @@ fn build_signer_as_executor_auth_data(
         expiry: f.expiry,
         proof: vec![env],
         signatures: vec![env, merkle_signature],
-        sender: Sender::Signer(SignerAsExecutor {
-            signer_proof,
-            signer_proof_expiry: f.signer_proof_expiry,
+        sender: Sender::Signer(SignerExecutionProof {
+            signature,
+            expiry: f.proof_expiry,
             delegate: f.delegate.clone(),
             delegate_proof,
         }),
@@ -945,8 +945,8 @@ fn build_signer_as_executor_auth_data(
 
 #[test]
 fn test_signer_as_executor_valid() {
-    let f = setup_signer_as_executor(true);
-    let auth_data = build_signer_as_executor_auth_data(&f, None, None, None, None);
+    let f = setup_signer_execution_proof(true);
+    let auth_data = build_signer_execution_proof_auth_data(&f, None, None, None, None);
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -969,10 +969,10 @@ fn test_signer_as_executor_valid() {
 fn test_signer_as_executor_bypasses_when_executor_required_false() {
     // With executor_required=false, __check_auth short-circuits before touching
     // the sender payload — even obviously invalid proofs must be accepted.
-    let f = setup_signer_as_executor(false);
+    let f = setup_signer_execution_proof(false);
 
     let merkle_root = f.leaf.clone();
-    let digest = build_eip712_digest(&f.env, &f.seed, &merkle_root, f.expiry);
+    let digest = build_sign_merkle_root_digest(&f.env, &f.seed, &merkle_root, f.expiry);
     let merkle_signature = secp256k1_sign(&f.env, &f.signing_key, &digest);
 
     let garbage_proof: BytesN<65> = BytesN::from_array(&f.env, &[0u8; 65]);
@@ -983,9 +983,9 @@ fn test_signer_as_executor_bypasses_when_executor_required_false() {
         expiry: f.expiry,
         proof: vec![&f.env],
         signatures: vec![&f.env, merkle_signature],
-        sender: Sender::Signer(SignerAsExecutor {
-            signer_proof: garbage_proof,
-            signer_proof_expiry: 0, // already expired — would fail if checked
+        sender: Sender::Signer(SignerExecutionProof {
+            signature: garbage_proof,
+            expiry: 0, // already expired — would fail if checked
             delegate: f.delegate.clone(),
             delegate_proof: garbage_delegate_proof,
         }),
@@ -1003,10 +1003,10 @@ fn test_signer_as_executor_bypasses_when_executor_required_false() {
 
 #[test]
 fn test_signer_as_executor_expired_proof() {
-    let mut f = setup_signer_as_executor(true);
-    // signer_proof_expiry in the past vs. ledger timestamp 1000.
-    f.signer_proof_expiry = 500;
-    let auth_data = build_signer_as_executor_auth_data(&f, None, None, None, None);
+    let mut f = setup_signer_execution_proof(true);
+    // proof expiry in the past vs. ledger timestamp 1000.
+    f.proof_expiry = 500;
+    let auth_data = build_signer_execution_proof_auth_data(&f, None, None, None, None);
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -1015,28 +1015,31 @@ fn test_signer_as_executor_expired_proof() {
         &f.auth_contexts,
     );
 
-    assert_eq!(result.unwrap_err(), Ok(OneSigError::SignerProofExpired));
+    assert_eq!(
+        result.unwrap_err(),
+        Ok(OneSigError::SignerExecutionProofExpired)
+    );
     assert_eq!(f.client.nonce(), 0);
 }
 
 #[test]
 fn test_signer_as_executor_unknown_signer() {
-    let f = setup_signer_as_executor(true);
+    let f = setup_signer_execution_proof(true);
 
-    // Re-sign signer_proof with a fresh (unregistered) secp256k1 key.
+    // Re-sign the authorization with a fresh (unregistered) secp256k1 key.
     let rogue_key = generate_secp256k1_keypair();
     let merkle_root_for_digest = f.leaf.clone();
-    let signer_digest = build_signer_proof_digest(
+    let authorization_digest = build_signer_execution_authorization_digest(
         &f.env,
         &f.leaf,
         &merkle_root_for_digest,
         &f.delegate,
-        f.signer_proof_expiry,
+        f.proof_expiry,
     );
-    let rogue_proof = secp256k1_sign(&f.env, &rogue_key, &signer_digest);
+    let rogue_proof = secp256k1_sign(&f.env, &rogue_key, &authorization_digest);
 
     let merkle_root = f.leaf.clone();
-    let digest = build_eip712_digest(&f.env, &f.seed, &merkle_root, f.expiry);
+    let digest = build_sign_merkle_root_digest(&f.env, &f.seed, &merkle_root, f.expiry);
     let merkle_signature = secp256k1_sign(&f.env, &f.signing_key, &digest);
     let executor_sig_bytes = f.executor_keypair.sign(&f.payload.to_array());
     let delegate_proof: BytesN<64> = BytesN::from_array(&f.env, &executor_sig_bytes.to_bytes());
@@ -1046,9 +1049,9 @@ fn test_signer_as_executor_unknown_signer() {
         expiry: f.expiry,
         proof: vec![&f.env],
         signatures: vec![&f.env, merkle_signature],
-        sender: Sender::Signer(SignerAsExecutor {
-            signer_proof: rogue_proof,
-            signer_proof_expiry: f.signer_proof_expiry,
+        sender: Sender::Signer(SignerExecutionProof {
+            signature: rogue_proof,
+            expiry: f.proof_expiry,
             delegate: f.delegate.clone(),
             delegate_proof,
         }),
@@ -1069,9 +1072,9 @@ fn test_signer_as_executor_unknown_signer() {
 fn test_signer_as_executor_tampered_delegate() {
     // Signer commits to executor A, but payload says executor B → ecrecover yields
     // an address that isn't in the signer set.
-    let f = setup_signer_as_executor(true);
+    let f = setup_signer_execution_proof(true);
     let decoy = ed25519_public_key(&f.env, &generate_ed25519_keypair());
-    let auth_data = build_signer_as_executor_auth_data(&f, None, Some(decoy), None, None);
+    let auth_data = build_signer_execution_proof_auth_data(&f, None, Some(decoy), None, None);
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -1088,9 +1091,9 @@ fn test_signer_as_executor_tampered_delegate() {
 fn test_signer_as_executor_tampered_expiry() {
     // Signer signs for expiry=X, but payload declares a different expiry → ecrecover
     // yields a different address → registered-signer check fails.
-    let f = setup_signer_as_executor(true);
+    let f = setup_signer_execution_proof(true);
     let auth_data =
-        build_signer_as_executor_auth_data(&f, Some(f.signer_proof_expiry + 1), None, None, None);
+        build_signer_execution_proof_auth_data(&f, Some(f.proof_expiry + 1), None, None, None);
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -1105,14 +1108,14 @@ fn test_signer_as_executor_tampered_expiry() {
 
 #[test]
 fn test_signer_as_executor_tampered_merkle_root() {
-    // Cross-root binding check: signer commits to root R1 in `signer_proof`, but
+    // Cross-root binding check: signer commits to root R1 in the authorization, but
     // the executing auth payload carries R2. The contract reconstructs the digest
     // with R2 → ecrecover yields a different (unregistered) address → registered
     // -signer check fails. Regression for the auditor's request to bind merkle_root
     // into the signed message (signer-as-executor.md §"Binding to merkle_root").
-    let f = setup_signer_as_executor(true);
+    let f = setup_signer_execution_proof(true);
     let other_root = BytesN::from_array(&f.env, &[0xEEu8; 32]);
-    let auth_data = build_signer_as_executor_auth_data(&f, None, None, None, Some(other_root));
+    let auth_data = build_signer_execution_proof_auth_data(&f, None, None, None, Some(other_root));
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -1129,9 +1132,10 @@ fn test_signer_as_executor_tampered_merkle_root() {
 fn test_signer_as_executor_invalid_delegate_proof() {
     // delegate_proof was produced over a different payload — ed25519_verify fails
     // and raises a host-level crypto error (same treatment as executor path today).
-    let f = setup_signer_as_executor(true);
+    let f = setup_signer_execution_proof(true);
     let wrong_payload = BytesN::from_array(&f.env, &[0xFFu8; 32]);
-    let auth_data = build_signer_as_executor_auth_data(&f, None, None, Some(wrong_payload), None);
+    let auth_data =
+        build_signer_execution_proof_auth_data(&f, None, None, Some(wrong_payload), None);
 
     let result = f.env.try_invoke_contract_check_auth::<OneSigError>(
         &f.contract_id,
@@ -1186,7 +1190,7 @@ fn test_check_auth_rejects_non_contract_context() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     let invalid_context = Context::CreateContractHostFn(CreateContractHostFnContext {
@@ -1266,7 +1270,7 @@ fn test_check_auth_invalid_executor_signature() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // Create auth context
@@ -1361,7 +1365,7 @@ fn test_check_auth_executor_required_but_no_sender() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // Create auth context
@@ -1440,7 +1444,7 @@ fn test_check_auth_mismatched_calls_rejected() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // But provide auth context for call B (different seed value)
@@ -1516,7 +1520,7 @@ fn test_check_auth_multiple_calls() {
     let proof: Vec<BytesN<32>> = vec![&env];
 
     let expiry = 9999u64;
-    let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+    let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
     let signature = secp256k1_sign(&env, &signing_key, &digest);
 
     // Create matching auth contexts
@@ -1619,7 +1623,7 @@ fn test_check_auth_nonce_increment() {
         let expiry = 9999u64 + expected_nonce;
 
         // Build the EIP712 digest and sign it
-        let digest = build_eip712_digest(&env, &seed, &merkle_root, expiry);
+        let digest = build_sign_merkle_root_digest(&env, &seed, &merkle_root, expiry);
         let signature = secp256k1_sign(&env, &signing_key, &digest);
 
         // Create the auth context matching the call

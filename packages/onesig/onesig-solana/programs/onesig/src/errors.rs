@@ -28,6 +28,6 @@ pub enum OneSigError {
     EmptyExecutorSet,
     InvalidSigner,
     InvalidExecutor,
-    ExpiredSignerProof,
-    SignerProofUnauthorized,
+    ExpiredSignerExecutionProof,
+    SignerExecutionProofUnauthorized,
 }

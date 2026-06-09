@@ -12,13 +12,14 @@ import {
     Umi,
     WrappedInstruction,
 } from '@metaplex-foundation/umi';
-import { ethers, Wallet } from 'ethers';
+import { Wallet } from 'ethers';
 import { expect } from 'vitest';
 
 import {
     encodeLeaf,
     makeOneSigTree,
     signOneSigTree,
+    signSignerExecutionAuthorization,
     type TypedDataSigner,
 } from '@layerzerolabs/onesig-core';
 
@@ -353,46 +354,32 @@ export async function executeWithVerifiedMerkleRoot(
 // signer-as-executor helpers
 // ============================================================================
 
-const SIGNER_PROOF_DOMAIN = { name: 'OneSig', version: '1' } as const;
-const SIGNER_PROOF_TYPES = {
-    SignerProof: [
-        { name: 'leafHash', type: 'bytes32' },
-        { name: 'merkleRoot', type: 'bytes32' },
-        { name: 'delegate', type: 'bytes' },
-        { name: 'signerProofExpiry', type: 'uint64' },
-    ],
-};
-
 /**
- * Signs an EIP-712 `SignerProof` struct, matching the on-chain digest in
- * `SignatureValidator::verify_signer_proof`.
- *
- * Domain: { name: "OneSig", version: "1" }
- * Type:   SignerProof(bytes32 leafHash, bytes32 merkleRoot, bytes delegate, uint64 signerProofExpiry)
- *
- * `merkleRoot` is bound so the proof is valid only against the operator-approved
- * batch the signer intended (see signer-as-executor.md §"Binding to merkle_root").
+ * Signs the EIP-712 `SignerExecutionAuthorization` (via onesig-core, the shared
+ * implementation) that the program recovers in
+ * `SignatureValidator::verify_signer_execution_proof`. `delegate` is the submitter's
+ * Solana (ed25519) pubkey, encoded as EIP-712 `bytes`.
  */
-export async function signSignerProof(
+export async function signSignerExecutionAuthorizationForDelegate(
     wallet: Wallet,
     leafHash: Uint8Array,
     merkleRoot: Uint8Array,
     delegate: PublicKey,
-    signerProofExpiry: bigint,
+    expiry: bigint,
 ): Promise<Uint8Array> {
-    const value = {
-        leafHash: ethers.utils.hexlify(leafHash),
-        merkleRoot: ethers.utils.hexlify(merkleRoot),
-        delegate: ethers.utils.hexlify(publicKeyBytes(delegate)),
-        signerProofExpiry,
-    };
-    return arrayify(await wallet._signTypedData(SIGNER_PROOF_DOMAIN, SIGNER_PROOF_TYPES, value));
+    const signature = await signSignerExecutionAuthorization(wallet, {
+        leafHash,
+        merkleRoot,
+        delegate: publicKeyBytes(delegate),
+        expiry,
+    });
+    return signature.get();
 }
 
 /**
  * Builds merkle data and computes the leaf hash deterministically for a single-call
  * batch. The leaf is identical to what `MerkleValidator::encode_leaf` produces
- * on-chain, which is what `signer_proof` must bind to.
+ * on-chain, which is what `signer execution authorization` must bind to.
  */
 export async function buildOneSigMerkleDataWithLeaf(
     umi: Umi,
@@ -432,7 +419,7 @@ export async function buildOneSigMerkleDataWithLeaf(
 
 /**
  * Performs a signer-as-executor execution end-to-end: builds the merkle batch,
- * collects threshold signatures on the root, constructs the signer_proof bound to
+ * collects threshold signatures on the root, constructs the signer execution authorization bound to
  * `delegate.publicKey`, and submits `signer_execute_transaction`.
  *
  * `proofSigner` is the secp256k1 wallet that authorizes the delegate. It does NOT
@@ -441,11 +428,11 @@ export async function buildOneSigMerkleDataWithLeaf(
  *
  * `overrideDelegateForSigning` decouples the pubkey bound into the digest from the
  * actual delegate — used to exercise the delegate-binding violation path which must
- * fail with `SignerProofUnauthorized` (recovered address is garbage).
+ * fail with `SignerExecutionProofUnauthorized` (recovered address is garbage).
  *
  * `overrideMerkleRootForSigning` decouples the merkle root the signer commits to
  * from the root carried in the executing transaction — used to exercise the
- * cross-root binding check (signer-as-executor.md §"Binding to merkle_root").
+ * cross-root binding check (signer-as-executor.md §"Merkle Root Binding").
  */
 export async function performSignerExecution(
     ctx: TransactionContext,
@@ -455,18 +442,18 @@ export async function performSignerExecution(
     call: SolanaCallData,
     options: {
         expiryOffsetSec?: number;
-        signerProofExpiryOffsetSec?: number;
-        overrideSignerProof?: Uint8Array;
-        overrideSignerProofExpiry?: bigint;
+        proofExpiryOffsetSec?: number;
+        overrideSignature?: Uint8Array;
+        overrideProofExpiry?: bigint;
         overrideDelegateForSigning?: PublicKey;
         overrideMerkleRootForSigning?: Uint8Array;
     } = {},
 ): Promise<{ merkleRoot: Uint8Array; expiry: number; leaf: Uint8Array }> {
     const {
         expiryOffsetSec = DEFAULT_CONFIG.expiryOffset,
-        signerProofExpiryOffsetSec = 600,
-        overrideSignerProof,
-        overrideSignerProofExpiry,
+        proofExpiryOffsetSec = 600,
+        overrideSignature,
+        overrideProofExpiry,
         overrideDelegateForSigning,
         overrideMerkleRootForSigning,
     } = options;
@@ -485,20 +472,19 @@ export async function performSignerExecution(
         multisig: { threshold },
     } = await ctx.oneSig.getState(ctx.umi.rpc);
 
-    const signerProofExpiry =
-        overrideSignerProofExpiry ??
-        BigInt(Math.floor(Date.now() / 1000) + signerProofExpiryOffsetSec);
+    const proofExpiry =
+        overrideProofExpiry ?? BigInt(Math.floor(Date.now() / 1000) + proofExpiryOffsetSec);
 
-    let signerProof: Uint8Array;
-    if (overrideSignerProof) {
-        signerProof = overrideSignerProof;
+    let signature: Uint8Array;
+    if (overrideSignature) {
+        signature = overrideSignature;
     } else {
-        signerProof = await signSignerProof(
+        signature = await signSignerExecutionAuthorizationForDelegate(
             proofSigner,
             leaf,
             overrideMerkleRootForSigning ?? merkleRoot,
             overrideDelegateForSigning ?? delegate.publicKey,
-            signerProofExpiry,
+            proofExpiry,
         );
     }
 
@@ -522,8 +508,8 @@ export async function performSignerExecution(
                     ? arrayify(signatures).slice(0, threshold * 65)
                     : arrayify(signatures),
         }),
-        signerProof: [signerProof],
-        signerProofExpiry,
+        signature: [signature],
+        expiry: proofExpiry,
     });
     instructions.push(executeIx);
 
@@ -542,10 +528,10 @@ export async function performSignerExecutionTwoStep(
     proofSigner: Wallet,
     call: SolanaCallData,
     options: {
-        signerProofExpiryOffsetSec?: number;
+        proofExpiryOffsetSec?: number;
     } = {},
 ): Promise<{ merkleRoot: Uint8Array; leaf: Uint8Array }> {
-    const { signerProofExpiryOffsetSec = 600 } = options;
+    const { proofExpiryOffsetSec = 600 } = options;
 
     const { nonce } = await ctx.oneSig.getState(ctx.umi.rpc);
 
@@ -553,7 +539,7 @@ export async function performSignerExecutionTwoStep(
     // and submits verify_merkle_root with threshold secp256k1 signatures).
     const { merkleRoot, proof } = await prepareAndVerifyMerkleRoot(ctx, call);
 
-    // Recompute the leaf so the signer_proof binds to the same bytes the program
+    // Recompute the leaf so the authorization binds to the same bytes the program
     // will recompute during execution.
     const solanaGen = solanaLeafGenerator(ctx.oneSig.programId, [
         {
@@ -565,13 +551,13 @@ export async function performSignerExecutionTwoStep(
     ]);
     const leaf = arrayify(encodeLeaf(solanaGen, 0));
 
-    const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + signerProofExpiryOffsetSec);
-    const signerProof = await signSignerProof(
+    const proofExpiry = BigInt(Math.floor(Date.now() / 1000) + proofExpiryOffsetSec);
+    const signature = await signSignerExecutionAuthorizationForDelegate(
         proofSigner,
         leaf,
         merkleRoot,
         delegate.publicKey,
-        signerProofExpiry,
+        proofExpiry,
     );
 
     const instructions: WrappedInstruction[] = [];
@@ -587,8 +573,8 @@ export async function performSignerExecutionTwoStep(
         call,
         proof,
         merkleRootVerification: null,
-        signerProof: [signerProof],
-        signerProofExpiry,
+        signature: [signature],
+        expiry: proofExpiry,
     });
     instructions.push(executeIx);
 

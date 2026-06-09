@@ -45,6 +45,10 @@ export const tools: readonly [Tool, ...Tool[]] = [
         privileged: true,
         defaultVolumes: defaultVolumes,
     },
+    {
+        // surfpool runtime engine; builds nothing, so no privileged mode / socket / cache volumes.
+        name: 'surfpool',
+    },
 ];
 
 export const images = {
@@ -173,6 +177,22 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    // Standalone surfpool runtime image, built from `docker/surfpool/Dockerfile`.
+    ['surfpool:surfpool-1.3.1']: {
+        name: 'surfpool',
+        versions: {
+            // What `surfpool --version` reports (asserted by the Tool-versions test), not the rev.
+            surfpool: '1.3.1',
+        },
+        dependencies: {
+            // No surfpool release tag carries #686 (finalized-slot) + #687 (snapshot-program-CPI);
+            // build from this commit.
+            'surfpool-rev': 'c83f9b7104bb205ce0cb6ab1a1eed96183589433',
+            // surfpool's rust-toolchain.toml pins 1.89.0.
+            rust: '1.89.0',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
 } satisfies Record<string, Image>;
 
 export type ImageId = keyof typeof images;
@@ -225,5 +245,12 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
             },
             description: 'Stable and well-tested',
             stable: true,
+        },
+        {
+            // Not index 0 (the anchor/solana default); selected via `--surfpool-version`.
+            images: {
+                surfpool: 'surfpool:surfpool-1.3.1',
+            },
+            description: 'Surfpool runtime engine (solana-test-validator replacement)',
         },
     ];

@@ -1,5 +1,5 @@
 import type { TypedDataSigner } from '@ethersproject/abstract-signer';
-import type { BigNumber, TypedDataDomain, TypedDataField } from 'ethers';
+import type { BigNumber, BytesLike, TypedDataDomain, TypedDataField } from 'ethers';
 import { ethers } from 'ethers';
 import { MerkleTree } from 'merkletreejs';
 
@@ -348,4 +348,70 @@ export async function signOneSigTree(
     } else {
         throw new Error('Invalid encoding');
     }
+}
+
+// ============================================================================
+// Signer-as-executor
+//
+// EIP-712 typed data a registered signer signs to authorize a delegate to submit
+// one of their leaves on a non-EVM chain. Reuses the canonical OneSig domain above —
+// separation from SignMerkleRoot is provided by the distinct primary type.
+// See packages/onesig/docs/signer-as-executor.md.
+// ============================================================================
+
+const ONE_SIG_SIGNER_EXECUTION_AUTHORIZATION_TYPES: Record<string, TypedDataField[]> = {
+    SignerExecutionAuthorization: [
+        { name: 'leafHash', type: 'bytes32' },
+        { name: 'merkleRoot', type: 'bytes32' },
+        { name: 'delegate', type: 'bytes' },
+        { name: 'expiry', type: 'uint256' },
+    ],
+};
+
+export const getSignerExecutionAuthorizationTypes = (): Record<string, TypedDataField[]> => {
+    return ONE_SIG_SIGNER_EXECUTION_AUTHORIZATION_TYPES;
+};
+
+export interface SignerExecutionAuthorizationData {
+    /** Canonical OneSig merkle leaf hash for the transaction being executed. */
+    leafHash: BytesLike;
+    /** Signer-approved batch the leaf must execute under (binds the authorization to one root). */
+    merkleRoot: BytesLike;
+    /** Native-chain address the signer authorizes as submitter (EIP-712 `bytes`). */
+    delegate: BytesLike;
+    /** Submission-window cutoff (Unix seconds) for this attempt. */
+    expiry: bigint | number | string;
+}
+
+export const getSignerExecutionAuthorizationSigningData = ({
+    leafHash,
+    merkleRoot,
+    delegate,
+    expiry,
+}: SignerExecutionAuthorizationData): Parameters<TypedDataSigner['_signTypedData']> => {
+    return [
+        getOneSigTypedDataDomain(),
+        getSignerExecutionAuthorizationTypes(),
+        {
+            leafHash: ethers.utils.hexlify(leafHash),
+            merkleRoot: ethers.utils.hexlify(merkleRoot),
+            delegate: ethers.utils.hexlify(delegate),
+            expiry,
+        },
+    ];
+};
+
+/**
+ * Produces the 65-byte (r‖s‖v) secp256k1 signature a signer provides to act as executor,
+ * by signing the EIP-712 `SignerExecutionAuthorization` struct. Chain contracts recover the
+ * signer address from the same digest.
+ */
+export async function signSignerExecutionAuthorization(
+    signer: TypedDataSigner,
+    data: SignerExecutionAuthorizationData,
+): Promise<Signature> {
+    const signatureHex = await signer._signTypedData(
+        ...getSignerExecutionAuthorizationSigningData(data),
+    );
+    return new Signature(signatureHex);
 }

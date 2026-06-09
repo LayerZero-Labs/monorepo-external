@@ -17,8 +17,9 @@
 import { Address, contract, hash, Keypair, xdr } from '@stellar/stellar-sdk';
 import { Wallet } from 'ethers';
 
+import { signSignerExecutionAuthorization } from '@layerzerolabs/onesig-core';
+
 import { Client, StellarCall } from '../src/index';
-import { signSignerProof } from './signerProof';
 import { buildSingleTxMerkleData, IntegrationTestContext, OneSigMerkleData, RPC_URL } from './utils';
 
 export type ClientWithSpec = Client & { spec: contract.Spec };
@@ -111,10 +112,10 @@ export type TransactionAuthOptions = {
      */
     delegateKeypair?: Keypair;
     /**
-     * Override the `signer_proof_expiry` (seconds since epoch) the signer signs
-     * over. Defaults to `now + 600s`. Use to exercise expired-proof rejection.
+     * Override the proof `expiry` (seconds since epoch) the signer signs over.
+     * Defaults to `now + 600s`. Use to exercise expired-proof rejection.
      */
-    signerProofExpiryOverride?: bigint;
+    expiryOverride?: bigint;
 };
 
 export type ExecuteCallOptions = TransactionAuthOptions & {
@@ -188,21 +189,22 @@ async function buildSender(
             const delegateKeypair = senderConfig.delegateKeypair ?? context.deployerKeypair;
             const delegate = Buffer.from(delegateKeypair.rawPublicKey());
             const delegateProof = delegateKeypair.sign(Buffer.from(payloadHash));
-            const signerProofExpiry =
-                senderConfig.signerProofExpiryOverride ?? BigInt(Math.floor(Date.now() / 1000) + 600);
-            const signerProof = await signSignerProof(
-                signerWallet,
-                packageData.merkleData.leafHash,
-                packageData.merkleData.merkleRoot,
-                delegate,
-                signerProofExpiry,
-            );
+            const expiry =
+                senderConfig.expiryOverride ?? BigInt(Math.floor(Date.now() / 1000) + 600);
+            const signature = (
+                await signSignerExecutionAuthorization(signerWallet, {
+                    leafHash: packageData.merkleData.leafHash,
+                    merkleRoot: packageData.merkleData.merkleRoot,
+                    delegate,
+                    expiry,
+                })
+            ).get();
             return {
                 tag: 'Signer' as const,
                 values: [
                     {
-                        signer_proof: signerProof,
-                        signer_proof_expiry: signerProofExpiry,
+                        signature,
+                        expiry,
                         delegate,
                         delegate_proof: delegateProof,
                     },
@@ -394,7 +396,7 @@ export async function executeOnesigTx<T>(
         signerWallet: options.signerWallet,
         executorKeypair: options.executorKeypair,
         delegateKeypair: options.delegateKeypair,
-        signerProofExpiryOverride: options.signerProofExpiryOverride,
+        expiryOverride: options.expiryOverride,
     };
 
     return signAndSendOnesigTx(

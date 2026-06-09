@@ -868,7 +868,7 @@ describe('Stellar Onesig Integration Tests', () => {
             }
         });
 
-        test('expired signer_proof is rejected', async () => {
+        test('expired signer execution proof is rejected', async () => {
             await ensureExecutorRequired(context, false);
             await removeAllExecutors(context);
 
@@ -878,15 +878,15 @@ describe('Stellar Onesig Integration Tests', () => {
                 await executeOnesigTx(context, reqTx, { senderType: 'signer', signerWallet });
 
                 // Signer produces a proof with an expiry already in the past — the
-                // contract must reject it via SignerProofExpired before recovering
-                // the signer key. Confirms signer_proof_expiry flows end-to-end.
+                // contract must reject it via SignerExecutionProofExpired before recovering
+                // the signer key. Confirms the proof `expiry` flows end-to-end.
                 const seedTx = await context.oneSigClient.set_seed({
                     seed: Buffer.from(randomBytes(32)),
                 });
                 await expectTxToFail(context, seedTx, {
                     senderType: 'signer',
                     signerWallet,
-                    signerProofExpiryOverride: BigInt(Math.floor(Date.now() / 1000) - 1),
+                    expiryOverride: BigInt(Math.floor(Date.now() / 1000) - 1),
                 });
             } finally {
                 await restoreDefaultExecutorState(context, signerWallet);

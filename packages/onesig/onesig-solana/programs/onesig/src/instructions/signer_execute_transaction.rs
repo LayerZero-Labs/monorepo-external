@@ -14,7 +14,9 @@ use crate::{
 #[derive(Accounts)]
 pub struct SignerExecuteTransaction<'info> {
     /// The `delegate` from the signer-as-executor spec: the native account
-    /// the off-chain signer bound as the intended submitter via `signer_proof`.
+    /// the off-chain signer bound as the intended submitter in the
+    /// `SignerExecutionAuthorization`. The `Signer` constraint enforces
+    /// `submitter == delegate`.
     pub delegate: Signer<'info>,
     /// CHECK: This is the same PDA used in invoke_signed when executing transactions.
     /// It signs on behalf of the program in signer_execute_transaction.
@@ -33,13 +35,13 @@ pub struct SignerExecuteTransaction<'info> {
 
 impl SignerExecuteTransaction<'_> {
     /// "Signer-as-executor" path: a registered secp256k1 signer off-chain authorizes the
-    /// submitter (`delegate`) to land a specific leaf via `signer_proof`.
+    /// submitter (`delegate`) to land a specific leaf via a `SignerExecutionAuthorization`.
     ///
     /// Flow:
     /// 1. Resolve merkle root (direct or pre-verified).
     /// 2. Encode the leaf and verify the merkle proof.
-    /// 3. If `executor_required`: run `verify_signer_proof` with digest bound to `delegate.key()`.
-    ///    Skipped in permissionless mode.
+    /// 3. If `executor_required`: run `verify_signer_execution_proof` with digest bound to
+    ///    `delegate.key()`. Skipped in permissionless mode.
     /// 4. Execute, increment nonce, emit event.
     pub fn apply(
         ctx: &mut Context<SignerExecuteTransaction>,
@@ -48,8 +50,8 @@ impl SignerExecuteTransaction<'_> {
         let SignerExecuteTransactionParams {
             transaction,
             merkle_root_verification,
-            signer_proof,
-            signer_proof_expiry,
+            signature,
+            expiry,
         } = params;
 
         // Verify merkle root and get the root hash
@@ -75,16 +77,16 @@ impl SignerExecuteTransaction<'_> {
         )?;
         MerkleValidator::verify_merkle_proof(&merkle_root, &transaction.proof, &leaf)?;
 
-        // Signer-proof gate: only when executor_required. In permissionless mode both the
-        // signer_proof and signer_proof_expiry fields are accepted but not verified.
+        // Signer-execution-proof gate: only when executor_required. In permissionless mode
+        // both the signature and expiry fields are accepted but not verified.
         if ctx.accounts.one_sig_state.executors.executor_required {
-            SignatureValidator::verify_signer_proof(
+            SignatureValidator::verify_signer_execution_proof(
                 &leaf,
                 &merkle_root,
                 ctx.accounts.delegate.key(),
-                *signer_proof_expiry,
+                *expiry,
                 &ctx.accounts.one_sig_state.multisig.signers,
-                signer_proof,
+                signature,
             )?;
         }
 

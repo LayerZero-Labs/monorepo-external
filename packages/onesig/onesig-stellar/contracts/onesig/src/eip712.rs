@@ -1,8 +1,8 @@
 use soroban_sdk::{BytesN, Env, U256};
 use utils::buffer_writer::BufferWriter;
 
-/// Both merkle-root signatures and signer proofs use EIP-712 typed structured
-/// data. The 0x1901 prefix is the EIP-712 magic bytes that prevent signed
+/// Both merkle-root signatures and signer execution authorizations use EIP-712 typed
+/// structured data. The 0x1901 prefix is the EIP-712 magic bytes that prevent signed
 /// messages from being confused with raw Ethereum transactions.
 const EIP191_PREFIX_FOR_EIP712: [u8; 2] = [0x19, 0x01];
 
@@ -12,17 +12,10 @@ const SIGN_MERKLE_ROOT_TYPE_HASH: [u8; 32] = [
     0x82, 0x31, 0x22, 0x8d, 0xa4, 0x22, 0x2a, 0x9f, 0x88, 0xa8, 0x0c, 0x15, 0x54, 0x50, 0x74, 0xed,
 ];
 
-/// keccak256("SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)")
-const SIGNER_PROOF_TYPE_HASH: [u8; 32] = [
-    0x16, 0x53, 0x87, 0x2b, 0x01, 0x12, 0x6b, 0x12, 0x14, 0x4c, 0x16, 0x50, 0x72, 0x69, 0x12, 0x14,
-    0x68, 0xed, 0x60, 0x89, 0xbb, 0x6b, 0x4b, 0x67, 0x90, 0x94, 0x7b, 0xd3, 0x7f, 0x54, 0x0e, 0xfc,
-];
-
-/// keccak256(domainTypeHash || keccak256("OneSig") || keccak256("1"))
-/// where domainTypeHash = keccak256("EIP712Domain(string name,string version)")
-const SIGNER_PROOF_DOMAIN_SEPARATOR: [u8; 32] = [
-    0x95, 0xc6, 0xb2, 0x72, 0xa7, 0x6a, 0x26, 0x97, 0xaa, 0xe0, 0xeb, 0xbe, 0xba, 0x82, 0x3d, 0xf9,
-    0xfa, 0x62, 0x72, 0xc9, 0xcc, 0x0e, 0xca, 0xf3, 0xf3, 0x14, 0xe5, 0xb1, 0xea, 0x89, 0xf4, 0x0b,
+/// keccak256("SignerExecutionAuthorization(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint256 expiry)")
+const SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH: [u8; 32] = [
+    0x2e, 0xd0, 0x92, 0x55, 0xa1, 0x7e, 0xcc, 0x5d, 0x8f, 0xd5, 0x12, 0x8a, 0x11, 0x48, 0x0e, 0x0f,
+    0x01, 0xd2, 0x3b, 0x22, 0xea, 0xeb, 0x02, 0xf4, 0xf4, 0xac, 0xae, 0x35, 0x5e, 0x5c, 0x42, 0x8a,
 ];
 
 /// Pre-computed EIP-712 domain separator for merkle-root signing
@@ -42,7 +35,7 @@ const EIP712_DOMAIN_SEPARATOR: [u8; 32] = [
 ///
 /// # Returns
 /// The 32-byte digest hash to be signed
-pub fn build_eip712_digest(
+pub fn build_sign_merkle_root_digest(
     env: &Env,
     seed: &BytesN<32>,
     merkle_root: &BytesN<32>,
@@ -73,50 +66,52 @@ pub fn build_eip712_digest(
     env.crypto().keccak256(&digest_data).into()
 }
 
-/// Computes the EIP-712 digest for the signer-as-executor proof.
+/// Computes the EIP-712 `authorization_digest` the signer signs for a signer-as-executor
+/// submission (the spec's `SignerExecutionAuthorization`).
 ///
-/// Domain: { name: "OneSig", version: "1" }
-/// Type:   SignerProof(bytes32 leafHash, bytes32 merkleRoot, bytes delegate, uint64 signerProofExpiry)
+/// Domain: the canonical OneSig EIP-712 domain (the same one used for merkle-root
+///         signatures, `EIP712_DOMAIN_SEPARATOR`).
+/// Type:   SignerExecutionAuthorization(bytes32 leafHash, bytes32 merkleRoot, bytes delegate, uint256 expiry)
 ///
-/// digest = keccak256(0x1901 || SIGNER_PROOF_DOMAIN_SEPARATOR || structHash)
+/// authorization_digest = keccak256(0x1901 || EIP712_DOMAIN_SEPARATOR || structHash)
 /// where:
 ///   structHash = keccak256(
-///       SIGNER_PROOF_TYPE_HASH || leafHash || merkleRoot ||
-///       keccak256(delegate) || signerProofExpiry
+///       SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH || leafHash || merkleRoot ||
+///       keccak256(delegate) || expiry
 ///   )
 ///
-/// `merkleRoot` pins the proof to one operator-approved batch — required because the
-/// same leaf can appear in multiple active roots, and without binding the delegate
+/// `merkleRoot` pins the authorization to one operator-approved batch — required because
+/// the same leaf can appear in multiple active roots, and without binding the delegate
 /// (not the signer) would choose which root carries the execution.
 ///
 /// `delegate` is encoded as `keccak256(delegate)` because it is a dynamic `bytes` type
-/// in EIP-712. `signerProofExpiry` is ABI-encoded as uint64 (32 bytes, left zero-padded).
-pub fn build_signer_proof_digest(
+/// in EIP-712. `expiry` is ABI-encoded as uint256 (32 bytes, left zero-padded).
+pub fn build_signer_execution_authorization_digest(
     env: &Env,
     leaf_hash: &BytesN<32>,
     merkle_root: &BytesN<32>,
     delegate: &BytesN<32>,
-    signer_proof_expiry: u64,
+    expiry: u64,
 ) -> BytesN<32> {
-    // structHash = keccak256(typeHash || leafHash || merkleRoot || keccak256(delegate) || signerProofExpiry)
+    // structHash = keccak256(typeHash || leafHash || merkleRoot || keccak256(delegate) || expiry)
     // `delegate` is a dynamic `bytes` type in EIP-712, so it is encoded as keccak256(delegate).
     let delegate_hash = env.crypto().keccak256(&delegate.clone().into());
     let struct_hash = env.crypto().keccak256(
         &BufferWriter::new(env)
-            .write_array(&SIGNER_PROOF_TYPE_HASH)
+            .write_array(&SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH)
             .write_bytes_n(leaf_hash)
             .write_bytes_n(merkle_root)
             .write_array(&delegate_hash.to_array())
-            .write_u256(U256::from_u128(env, signer_proof_expiry as u128))
+            .write_u256(U256::from_u128(env, expiry as u128))
             .to_bytes(),
     );
 
-    // digest = keccak256(0x1901 || domainSeparator || structHash)
+    // authorization_digest = keccak256(0x1901 || domainSeparator || structHash)
     env.crypto()
         .keccak256(
             &BufferWriter::new(env)
                 .write_array(&EIP191_PREFIX_FOR_EIP712)
-                .write_array(&SIGNER_PROOF_DOMAIN_SEPARATOR)
+                .write_array(&EIP712_DOMAIN_SEPARATOR)
                 .write_array(&struct_hash.to_array())
                 .to_bytes(),
         )
@@ -126,8 +121,8 @@ pub fn build_signer_proof_digest(
 #[cfg(test)]
 mod tests {
     use super::{
-        build_signer_proof_digest, BufferWriter, EIP712_DOMAIN_SEPARATOR,
-        SIGNER_PROOF_DOMAIN_SEPARATOR, SIGNER_PROOF_TYPE_HASH, SIGN_MERKLE_ROOT_TYPE_HASH,
+        build_signer_execution_authorization_digest, BufferWriter, EIP712_DOMAIN_SEPARATOR,
+        SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH, SIGN_MERKLE_ROOT_TYPE_HASH,
     };
     use soroban_sdk::{Bytes, BytesN, Env, U256};
 
@@ -178,56 +173,57 @@ mod tests {
     }
 
     #[test]
-    fn test_signer_proof_type_hash_matches_source_string() {
+    fn test_signer_execution_authorization_type_hash_matches_source_string() {
         let env = Env::default();
         let computed = keccak(
             &env,
-            b"SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)",
+            b"SignerExecutionAuthorization(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint256 expiry)",
         );
-        assert_eq!(computed, SIGNER_PROOF_TYPE_HASH);
+        assert_eq!(computed, SIGNER_EXECUTION_AUTHORIZATION_TYPE_HASH);
     }
 
     #[test]
-    fn test_signer_proof_domain_separator_matches_formula() {
-        let env = Env::default();
-        let domain_type_hash = keccak(&env, b"EIP712Domain(string name,string version)");
-        let name_hash = keccak(&env, b"OneSig");
-        let version_hash = keccak(&env, b"1");
-        let mut encoded = [0u8; 96];
-        encoded[0..32].copy_from_slice(&domain_type_hash);
-        encoded[32..64].copy_from_slice(&name_hash);
-        encoded[64..96].copy_from_slice(&version_hash);
-        let computed = keccak(&env, &encoded);
-        assert_eq!(computed, SIGNER_PROOF_DOMAIN_SEPARATOR);
-    }
-
-    #[test]
-    fn test_build_signer_proof_digest_matches_manual_eip712_computation() {
+    fn test_build_signer_execution_authorization_digest_matches_manual_eip712_computation() {
         let env = Env::default();
 
         let leaf_hash = BytesN::from_array(&env, &[0xAAu8; 32]);
         let merkle_root = BytesN::from_array(&env, &[0xCCu8; 32]);
         let delegate = BytesN::from_array(&env, &[0xBBu8; 32]);
-        let signer_proof_expiry: u64 = 0x0123_4567_89AB_CDEF;
+        let expiry: u64 = 0x0123_4567_89AB_CDEF;
 
-        // domainSeparator
-        let domain_type_hash = keccak(&env, b"EIP712Domain(string name,string version)");
+        // domainSeparator — the canonical OneSig domain (same as merkle-root signing):
+        // EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)
+        // with name "OneSig", version "0.0.1", chainId 1, verifyingContract 0x…dEaD.
+        let domain_type_hash = keccak(
+            &env,
+            b"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)",
+        );
         let name_hash = keccak(&env, b"OneSig");
-        let version_hash = keccak(&env, b"1");
-        let mut domain_encoded = [0u8; 96];
-        domain_encoded[0..32].copy_from_slice(&domain_type_hash);
-        domain_encoded[32..64].copy_from_slice(&name_hash);
-        domain_encoded[64..96].copy_from_slice(&version_hash);
-        let domain_separator = keccak(&env, &domain_encoded);
+        let version_hash = keccak(&env, b"0.0.1");
+        let mut verifying_contract = [0u8; 32];
+        verifying_contract[30] = 0xde;
+        verifying_contract[31] = 0xad;
+        let domain_separator = env
+            .crypto()
+            .keccak256(
+                &BufferWriter::new(&env)
+                    .write_array(&domain_type_hash)
+                    .write_array(&name_hash)
+                    .write_array(&version_hash)
+                    .write_u256(U256::from_u128(&env, 1u128))
+                    .write_array(&verifying_contract)
+                    .to_bytes(),
+            )
+            .to_array();
 
-        // structHash: keccak256(typeHash || leafHash || merkleRoot || keccak256(delegate) || expiry as uint64)
+        // structHash: keccak256(typeHash || leafHash || merkleRoot || keccak256(delegate) || expiry as uint256)
         let type_hash = keccak(
             &env,
-            b"SignerProof(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint64 signerProofExpiry)",
+            b"SignerExecutionAuthorization(bytes32 leafHash,bytes32 merkleRoot,bytes delegate,uint256 expiry)",
         );
         let delegate_hash = keccak(&env, &delegate.to_array());
         let mut expiry_padded = [0u8; 32];
-        expiry_padded[24..32].copy_from_slice(&signer_proof_expiry.to_be_bytes());
+        expiry_padded[24..32].copy_from_slice(&expiry.to_be_bytes());
         let mut struct_data = [0u8; 32 * 5];
         struct_data[0..32].copy_from_slice(&type_hash);
         struct_data[32..64].copy_from_slice(&leaf_hash.to_array());
@@ -244,12 +240,12 @@ mod tests {
         digest_data[34..66].copy_from_slice(&struct_hash);
         let expected = keccak(&env, &digest_data);
 
-        let computed = build_signer_proof_digest(
+        let computed = build_signer_execution_authorization_digest(
             &env,
             &leaf_hash,
             &merkle_root,
             &delegate,
-            signer_proof_expiry,
+            expiry,
         );
         assert_eq!(computed.to_array(), expected);
     }

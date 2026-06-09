@@ -1,6 +1,6 @@
 use crate::{
-    eip712::build_eip712_digest, events::SeedSet, interfaces::IExecutor, storage::OneSigStorage,
-    Call, IOneSig, OneSigError, SenderKey, Transaction,
+    eip712::build_sign_merkle_root_digest, events::SeedSet, interfaces::IExecutor,
+    storage::OneSigStorage, Call, IOneSig, OneSigError, SenderKey, Transaction,
 };
 use common_macros::{contract_impl, lz_contract, only_auth};
 use soroban_sdk::{assert_with_error, xdr::ToXdr, BytesN, Env, String, Val, Vec};
@@ -80,7 +80,7 @@ impl IOneSig for OneSig {
         );
 
         // Verify signatures using EIP-712 digest
-        let digest = build_eip712_digest(env, &Self::seed(env), merkle_root, expiry);
+        let digest = build_sign_merkle_root_digest(env, &Self::seed(env), merkle_root, expiry);
         Self::verify_signatures(env, &digest, signatures);
     }
 

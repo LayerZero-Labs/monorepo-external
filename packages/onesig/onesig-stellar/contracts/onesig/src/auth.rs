@@ -1,8 +1,8 @@
 use super::{OneSig, OneSigArgs, OneSigClient};
 use crate::{
-    eip712::build_signer_proof_digest, events::TransactionExecuted, interfaces::IExecutor,
-    storage::OneSigStorage, Call, IOneSig, OneSigError, Sender, SignerAsExecutor,
-    TransactionAuthData,
+    eip712::build_signer_execution_authorization_digest, events::TransactionExecuted,
+    interfaces::IExecutor, storage::OneSigStorage, Call, IOneSig, OneSigError, Sender,
+    SignerExecutionProof, TransactionAuthData,
 };
 use common_macros::contract_impl;
 use soroban_sdk::{
@@ -109,7 +109,7 @@ impl OneSig {
                 Self::verify_executor_permissions(env, pubkey, signature, signature_payload);
             }
             Sender::Signer(proof) => {
-                Self::verify_signer_as_executor_permissions(
+                Self::verify_signer_execution_proof(
                     env,
                     signature_payload,
                     leaf_hash,
@@ -142,21 +142,22 @@ impl OneSig {
     }
 
     /// Verifies the signer-as-executor flow per the spec.
-    fn verify_signer_as_executor_permissions(
+    fn verify_signer_execution_proof(
         env: &Env,
         signature_payload: &BytesN<32>,
         leaf_hash: &BytesN<32>,
         merkle_root: &BytesN<32>,
-        proof: &SignerAsExecutor,
+        proof: &SignerExecutionProof,
     ) {
-        // 1. `signer_proof_expiry` has not passed.
+        // 1. The submission window (`expiry`) has not passed.
         assert_with_error!(
             env,
-            env.ledger().timestamp() <= proof.signer_proof_expiry,
-            OneSigError::SignerProofExpired
+            env.ledger().timestamp() <= proof.expiry,
+            OneSigError::SignerExecutionProofExpired
         );
 
-        // 2. proving `delegate` actually signed the Soroban runtime payload.
+        // 2. Enforce `submitter == delegate`: prove `delegate` actually signed the
+        //    Soroban runtime payload (Soroban has no native `msg.sender` here).
         env.crypto().ed25519_verify(
             &proof.delegate,
             &signature_payload.clone().into(),
@@ -164,14 +165,14 @@ impl OneSig {
         );
 
         // 3. The recovered secp256k1 address is a registered signer.
-        let digest = build_signer_proof_digest(
+        let authorization_digest = build_signer_execution_authorization_digest(
             env,
             leaf_hash,
             merkle_root,
             &proof.delegate,
-            proof.signer_proof_expiry,
+            proof.expiry,
         );
-        let signer = multisig::recover_signer(env, &digest, &proof.signer_proof);
+        let signer = multisig::recover_signer(env, &authorization_digest, &proof.signature);
         assert_with_error!(
             env,
             Self::is_signer(env, &signer),

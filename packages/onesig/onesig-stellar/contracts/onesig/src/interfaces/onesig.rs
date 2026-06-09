@@ -51,9 +51,9 @@ pub struct TransactionAuthData {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Sender {
     /// A registered multisig signer acting as its own executor. Binds a secp256k1
-    /// signer proof to the ed25519 submitter (`delegate`), per the
-    /// signer-as-executor spec for Account Abstraction chains.
-    Signer(SignerAsExecutor),
+    /// authorization signature to the ed25519 submitter (`delegate`), per the
+    /// signer-as-executor spec.
+    Signer(SignerExecutionProof),
     /// A registered executor (ed25519) submitting the transaction.
     /// The tuple is `(public_key, signature)` where the signature covers the Soroban payload.
     Executor(BytesN<32>, BytesN<64>),
@@ -64,16 +64,18 @@ pub enum Sender {
 /// Payload bound to a signer-as-executor submission.
 ///
 /// Enforces the spec's "signer acting as executor" guarantee on Stellar:
-/// a secp256k1 signer commits to the ed25519 submitter via `signer_proof`,
-/// and the submitter proves control of `delegate` via `delegate_proof`.
+/// a secp256k1 signer commits to the ed25519 submitter via `signature`, and the
+/// submitter proves control of `delegate` via `delegate_proof`. `delegate_proof` is a
+/// Soroban-specific field: `__check_auth` has no native `msg.sender`, so it is how this
+/// implementation enforces the spec's `submitter == delegate` check.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SignerAsExecutor {
+pub struct SignerExecutionProof {
     /// secp256k1 signature (r‖s‖v, 65 bytes) over the EIP-712 digest of
-    /// `SignerProof { leafHash, merkleRoot, delegate, signerProofExpiry }` (domain: `OneSig v1`).
-    pub signer_proof: BytesN<65>,
-    /// Unix timestamp (seconds) after which `signer_proof` can no longer be used.
-    pub signer_proof_expiry: u64,
+    /// `SignerExecutionAuthorization { leafHash, merkleRoot, delegate, expiry }`.
+    pub signature: BytesN<65>,
+    /// Unix timestamp (seconds) after which `signature` can no longer be used.
+    pub expiry: u64,
     /// ed25519 public key (32 bytes) the signer binds as the submitter.
     pub delegate: BytesN<32>,
     /// ed25519 signature (64 bytes) by `delegate` over the Soroban runtime

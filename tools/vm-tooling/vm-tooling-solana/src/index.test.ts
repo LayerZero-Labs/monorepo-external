@@ -8,4 +8,5 @@ testTools(vitest, images, versionCombinations, {
     anchor: ['anchor', '--version'],
     solana: ['solana', '--version'],
     'solana-verify': ['solana-verify', '--version'],
+    surfpool: ['surfpool', '--version'],
 });

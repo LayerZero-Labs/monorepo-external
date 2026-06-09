@@ -6,13 +6,13 @@ import { Wallet } from 'ethers';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import {
-    ExpiredSignerProofError,
+    ExpiredSignerExecutionProofError,
     FailedSignatureRecoveryError,
     InvalidProofError,
     OneSig,
     ONESIG_PROGRAM_ID,
     ReentrancyError,
-    SignerProofUnauthorizedError,
+    SignerExecutionProofUnauthorizedError,
     SolanaCallData,
 } from '../../src';
 import {
@@ -22,7 +22,7 @@ import {
     LOCAL_RPC_URL,
     performSignerExecution,
     performSignerExecutionTwoStep,
-    signSignerProof,
+    signSignerExecutionAuthorizationForDelegate,
     TransactionContext,
     verifyBalanceChange,
 } from '../helpers';
@@ -50,7 +50,7 @@ export function signerAsExecutorTests() {
         .sort((a, b) => a.address.localeCompare(b.address));
 
     // `delegate` is the Ed25519 account that lands the tx; it's not a registered executor,
-    // so under executor_required=true the only way it can submit is via signer_proof.
+    // so under executor_required=true the only way it can submit is via signer execution authorization.
     const delegate = generateSigner(umi);
     // Placeholder executor needed to flip executor_required=true (cannot be empty).
     const placeholderExecutor = generateSigner(umi);
@@ -74,7 +74,7 @@ export function signerAsExecutorTests() {
         ]);
 
         // Initialize with executor_required=true + a placeholder executor so the
-        // executor-gate actually fires (otherwise signer_proof is ignored).
+        // executor-gate actually fires (otherwise signer execution authorization is ignored).
         const initIx = oneSig.initialize(payer, {
             seed: [oneSigSeed],
             threshold: DEFAULT_CONFIG.threshold,
@@ -92,7 +92,7 @@ export function signerAsExecutorTests() {
     // --------------------------------------------------------------------------
     // Happy path: one-step
     // --------------------------------------------------------------------------
-    it('executes a transaction via signer_proof (one-step, executor_required=true)', async () => {
+    it('executes a transaction via signer execution authorization (one-step, executor_required=true)', async () => {
         const { nonce: nonceBefore } = await oneSig.getState(umi.rpc);
         const call = transfer(100n);
         const proofSigner = sortedSigners[0]; // A real signer authorizes the delegate.
@@ -113,7 +113,7 @@ export function signerAsExecutorTests() {
     // --------------------------------------------------------------------------
     // Happy path: two-step (pre-verified merkle root)
     // --------------------------------------------------------------------------
-    it('executes via signer_proof using a pre-verified merkle root (two-step)', async () => {
+    it('executes via signer execution authorization using a pre-verified merkle root (two-step)', async () => {
         const call = transfer(150n);
         const proofSigner = sortedSigners[1];
         const { nonce: nonceBefore } = await oneSig.getState(umi.rpc);
@@ -132,9 +132,9 @@ export function signerAsExecutorTests() {
     });
 
     // --------------------------------------------------------------------------
-    // Negative: expired signer_proof
+    // Negative: expired signer execution authorization
     // --------------------------------------------------------------------------
-    it('rejects an expired signer_proof with ExpiredSignerProof', async () => {
+    it('rejects an expired signer execution proof with ExpiredSignerExecutionProof', async () => {
         const { nonce } = await oneSig.getState(umi.rpc);
         const call = transfer(10n);
         const proofSigner = sortedSigners[0];
@@ -142,23 +142,23 @@ export function signerAsExecutorTests() {
         await shouldBeRejected(
             performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
                 // Sign with an expiry already in the past.
-                signerProofExpiryOffsetSec: -60,
+                proofExpiryOffsetSec: -60,
             }),
-            new ExpiredSignerProofError(oneSig.getProgram()),
+            new ExpiredSignerExecutionProofError(oneSig.getProgram()),
         );
     });
 
     // --------------------------------------------------------------------------
     // Negative: proof signed by a wallet that is NOT a registered signer
     // --------------------------------------------------------------------------
-    it('rejects signer_proof by a non-signer with SignerProofUnauthorized', async () => {
+    it('rejects a signer execution proof by a non-signer with SignerExecutionProofUnauthorized', async () => {
         const { nonce } = await oneSig.getState(umi.rpc);
         const call = transfer(10n);
         const outsider = Wallet.createRandom();
 
         await shouldBeRejected(
             performSignerExecution(ctx, delegate, outsider, nonce, call),
-            new SignerProofUnauthorizedError(oneSig.getProgram()),
+            new SignerExecutionProofUnauthorizedError(oneSig.getProgram()),
         );
     });
 
@@ -179,14 +179,14 @@ export function signerAsExecutorTests() {
             performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
                 overrideDelegateForSigning: wrongDelegate.publicKey,
             }),
-            new SignerProofUnauthorizedError(oneSig.getProgram()),
+            new SignerExecutionProofUnauthorizedError(oneSig.getProgram()),
         );
     });
 
     // --------------------------------------------------------------------------
     // Negative: tampered expiry
     // --------------------------------------------------------------------------
-    it('rejects when the params.signer_proof_expiry diverges from what was signed', async () => {
+    it('rejects when the params.expiry diverges from what was signed', async () => {
         const { nonce } = await oneSig.getState(umi.rpc);
         const call = transfer(10n);
         const proofSigner = sortedSigners[0];
@@ -203,7 +203,7 @@ export function signerAsExecutorTests() {
 
         // Sign inner with expiry X, but send params with expiry X+60.
         const signedExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const signerProof = await signSignerProof(
+        const signature = await signSignerExecutionAuthorizationForDelegate(
             proofSigner,
             leaf,
             merkleRoot,
@@ -225,13 +225,13 @@ export function signerAsExecutorTests() {
                         ? arrayify(signatures).slice(0, threshold * 65)
                         : arrayify(signatures),
             }),
-            signerProof: [signerProof],
-            signerProofExpiry: signedExpiry + 60n, // tampered
+            signature: [signature],
+            expiry: signedExpiry + 60n, // tampered
         });
 
         await shouldBeRejected(
             sendAndConfirm(umi, [ix], [delegate]),
-            new SignerProofUnauthorizedError(oneSig.getProgram()),
+            new SignerExecutionProofUnauthorizedError(oneSig.getProgram()),
         );
     });
 
@@ -239,10 +239,10 @@ export function signerAsExecutorTests() {
     // Negative: tampered merkle_root (cross-root binding)
     // --------------------------------------------------------------------------
     it('rejects when signer commits proof to a different merkle_root than the executing one', async () => {
-        // Cross-root binding check: signer commits to root R1 in `signer_proof`, but
+        // Cross-root binding check: signer commits to root R1 in `signer execution authorization`, but
         // the executing transaction carries the actual root R2. The on-chain digest
         // is reconstructed from R2 → ecrecover yields a different (unregistered)
-        // address → SignerProofUnauthorized. Regression for the auditor's request
+        // address → SignerExecutionProofUnauthorized. Regression for the auditor's request
         // to bind merkle_root into the signed message
         // (signer-as-executor.md §"Binding to merkle_root").
         const { nonce } = await oneSig.getState(umi.rpc);
@@ -254,14 +254,14 @@ export function signerAsExecutorTests() {
             performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
                 overrideMerkleRootForSigning: otherRoot,
             }),
-            new SignerProofUnauthorizedError(oneSig.getProgram()),
+            new SignerExecutionProofUnauthorizedError(oneSig.getProgram()),
         );
     });
 
     // --------------------------------------------------------------------------
-    // Negative: malformed signer_proof (bad recovery id)
+    // Negative: malformed signer execution authorization (bad recovery id)
     // --------------------------------------------------------------------------
-    it('rejects a malformed signer_proof with FailedSignatureRecovery', async () => {
+    it('rejects a malformed signer execution authorization with FailedSignatureRecovery', async () => {
         const { nonce } = await oneSig.getState(umi.rpc);
         const call = transfer(10n);
         const proofSigner = sortedSigners[0];
@@ -275,21 +275,21 @@ export function signerAsExecutorTests() {
             nonce,
             call,
         );
-        const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const rawSig = await signSignerProof(
+        const proofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
+        const rawSig = await signSignerExecutionAuthorizationForDelegate(
             proofSigner,
             leaf,
             merkleRoot,
             delegate.publicKey,
-            signerProofExpiry,
+            proofExpiry,
         );
         const bogusSig = new Uint8Array(rawSig);
         bogusSig[64] = 99; // secp256k1_recover requires v ∈ {0,1} (or 27,28 after normalize)
 
         await shouldBeRejected(
             performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
-                overrideSignerProof: bogusSig,
-                overrideSignerProofExpiry: signerProofExpiry,
+                overrideSignature: bogusSig,
+                overrideProofExpiry: proofExpiry,
             }),
             new FailedSignatureRecoveryError(oneSig.getProgram()),
         );
@@ -298,7 +298,7 @@ export function signerAsExecutorTests() {
     // --------------------------------------------------------------------------
     // Negative: replay
     // --------------------------------------------------------------------------
-    it('prevents replay of a signer_proof after execution (nonce advances)', async () => {
+    it('prevents replay of a signer execution authorization after execution (nonce advances)', async () => {
         const { nonce } = await oneSig.getState(umi.rpc);
         const call = transfer(20n);
         const proofSigner = sortedSigners[0];
@@ -317,13 +317,13 @@ export function signerAsExecutorTests() {
             nonce,
             call,
         );
-        const signerProofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
-        const signerProof = await signSignerProof(
+        const proofExpiry = BigInt(Math.floor(Date.now() / 1000) + 600);
+        const signature = await signSignerExecutionAuthorizationForDelegate(
             proofSigner,
             leaf,
             merkleRoot,
             delegate.publicKey,
-            signerProofExpiry,
+            proofExpiry,
         );
 
         const {
@@ -339,8 +339,8 @@ export function signerAsExecutorTests() {
                         ? arrayify(signatures).slice(0, threshold * 65)
                         : arrayify(signatures),
             }),
-            signerProof: [signerProof],
-            signerProofExpiry,
+            signature: [signature],
+            expiry: proofExpiry,
         });
 
         await shouldBeRejected(
@@ -384,7 +384,8 @@ export function signerAsExecutorTests() {
     });
 
     // --------------------------------------------------------------------------
-    // executor_required = false: signer_proof is skipped; expiry still enforced.
+    // executor_required = false: the signer execution authorization gate is skipped
+    // entirely — neither the signature nor the expiry is enforced.
     // --------------------------------------------------------------------------
     describe('when executor_required = false', () => {
         beforeAll(async () => {
@@ -402,7 +403,7 @@ export function signerAsExecutorTests() {
             expect(state.executors.executorRequired).toBe(false);
         });
 
-        it('executes with arbitrary signer_proof bytes (gate skipped)', async () => {
+        it('executes with arbitrary signer execution authorization bytes (gate skipped)', async () => {
             const { nonce } = await oneSig.getState(umi.rpc);
             const call = transfer(42n);
             // Use an outsider signer + garbage-ish proof. Neither the proof nor its
@@ -419,7 +420,7 @@ export function signerAsExecutorTests() {
             );
         });
 
-        it('accepts an expired signer_proof (expiry is not enforced in permissionless mode)', async () => {
+        it('accepts an expired signer execution authorization (expiry is not enforced in permissionless mode)', async () => {
             const { nonce } = await oneSig.getState(umi.rpc);
             const call = transfer(5n);
             const proofSigner = sortedSigners[0];
@@ -429,7 +430,7 @@ export function signerAsExecutorTests() {
                 recipient.publicKey,
                 async () => {
                     await performSignerExecution(ctx, delegate, proofSigner, nonce, call, {
-                        signerProofExpiryOffsetSec: -30,
+                        proofExpiryOffsetSec: -30,
                     });
                 },
                 call.value,
