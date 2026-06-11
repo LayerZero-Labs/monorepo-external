@@ -20,6 +20,7 @@ interface GlobalOptions {
     script?: string;
     customEntrypoint?: string;
     defaultVolumes: boolean;
+    local?: boolean;
 }
 
 type RegisterExtraCommands = (
@@ -168,7 +169,8 @@ const createCli = <TImageId extends string>(
             (value: string, previous: string[]) => [...previous, value],
             [],
         )
-        .option('--no-default-volumes', 'Disable default volumes for the tool');
+        .option('--no-default-volumes', 'Disable default volumes for the tool')
+        .option('--local', 'Run the tool from the host installation instead of Docker');
 
     // Add version options for each tool dynamically
     for (const tool of tools) {

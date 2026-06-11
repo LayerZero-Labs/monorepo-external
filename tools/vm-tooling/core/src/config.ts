@@ -75,6 +75,8 @@ export interface Tool {
     // Optional version parsing and validation functions
     getSecondaryVersion?: (args: { cwd: string }) => Promise<string>;
 
+    getLocalVersion?: (args: { cwd: string }) => Promise<string>;
+
     // Optional hook called before every tool command execution (e.g., toolchain sync)
     preExecute?: (
         context: ChainContext<string>,

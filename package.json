@@ -9,6 +9,8 @@
     },
     "devDependencies": {
         "@layerzerolabs/eslint-configuration": "workspace:*",
+        "@types/jest": "catalog:",
+        "@types/lodash-es": "catalog:",
         "@types/node": "catalog:",
         "eslint": "catalog:",
         "prettier": "catalog:",
@@ -31,6 +33,8 @@
             "@electron/notarize": "2.3.2",
             "@solana/web3.js": "1.95.8",
             "@ton/core": "0.59.1",
+            "@types/react": "19.2.6",
+            "@types/react-dom": "19.2.3",
             "axios@^0": "^0.31.0",
             "axios@^1": "^1.15.0",
             "elliptic": "^6.6.1",

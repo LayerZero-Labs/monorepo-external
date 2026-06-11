@@ -11,6 +11,7 @@ import { findWorkspaceRoot } from '../utils';
 import { getImageUriForTool, qualifyVolumeName } from '../utils/docker';
 import { stringifyError } from '../utils/error';
 import { findToolByName } from '../utils/finder';
+import { executeLocally } from './local-executor';
 import { lockMany } from './lock';
 import { resolveTypeVersions } from './version-resolver';
 
@@ -113,6 +114,7 @@ export interface ToolCommandExecutionOptions {
     publish?: string[];
     versions?: Record<string, string>;
     defaultVolumesEnabled?: boolean;
+    local?: boolean;
 }
 
 /**
@@ -131,11 +133,13 @@ export async function executeToolCommand<TImageId extends string>(
         publish,
         versions = {},
         defaultVolumesEnabled = true,
+        local,
     }: ToolCommandExecutionOptions,
 ): Promise<ProcessOutput> {
     const tool = findToolByName(context, toolName);
 
     // Run pre-execution hook if defined (e.g., toolchain sync)
+    // TODO Support a local tool execution.
     if (tool.preExecute) {
         await tool.preExecute(context, {
             cwd,
@@ -147,25 +151,6 @@ export async function executeToolCommand<TImageId extends string>(
             versions,
             defaultVolumesEnabled,
         });
-    }
-
-    const workspaceRoot = await findWorkspaceRoot(cwd);
-
-    const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
-    const volumes = mergeVolumes(defaultVolumes, userVolumes)
-        .map((volume) => resolveVolumePath(volume, workspaceRoot))
-        .map(qualifyVolumeName);
-
-    if (defaultVolumes.length > 0) {
-        console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
-        if (userVolumes.length > 0) {
-            const overrides = userVolumes.filter((uv) =>
-                defaultVolumes.some((dv) => dv.containerPath === uv.containerPath),
-            );
-            if (overrides.length > 0) {
-                console.info(`🔧 User volumes override ${overrides.length} default volume(s)`);
-            }
-        }
     }
 
     // Get the resolved version for the current tool.
@@ -190,6 +175,38 @@ export async function executeToolCommand<TImageId extends string>(
         } catch (error) {
             // Secondary version check failed, but continue with resolved version
             console.warn('Could not validate secondary version:', stringifyError(error));
+        }
+    }
+
+    if (local) {
+        return executeLocally(tool, resolvedVersion, {
+            cwd,
+            args,
+            env: customEnvVars,
+            script,
+        });
+    }
+
+    const workspaceRoot = await findWorkspaceRoot(cwd);
+
+    const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
+    const volumes = mergeVolumes(defaultVolumes, userVolumes)
+        .map((volume) => resolveVolumePath(volume, workspaceRoot))
+        .map(qualifyVolumeName);
+
+    if (defaultVolumes.length > 0) {
+        console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
+
+        if (userVolumes.length > 0) {
+            const overrides = userVolumes.filter((userVolume) =>
+                defaultVolumes.some(
+                    (defaultVolume) => defaultVolume.containerPath === userVolume.containerPath,
+                ),
+            );
+
+            if (overrides.length > 0) {
+                console.info(`🔧 User volumes override ${overrides.length} default volume(s)`);
+            }
         }
     }
 

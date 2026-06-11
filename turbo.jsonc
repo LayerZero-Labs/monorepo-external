@@ -91,7 +91,8 @@
         "test:snapshot:check": {
             "cache": false,
             "dependsOn": ["build"],
-            "outputLogs": "new-only"
+            "outputLogs": "new-only",
+            "passThroughEnv": ["TURBO_SNAPSHOT_FAILURE_REPORT_DIR"]
         },
         "test:snapshot:update": {
             "cache": false,

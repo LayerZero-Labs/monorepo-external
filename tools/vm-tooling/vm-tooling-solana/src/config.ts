@@ -3,6 +3,14 @@ import { DockerRegistryMirror } from '@layerzerolabs/vm-tooling';
 
 import { parseAnchorTomlVersion } from './utility';
 
+/**
+ * surfpool runtime version the Solana test harnesses run against (passed to
+ * `lz-tool --surfpool-version`), and the surfpool image's `versions.surfpool` below. Single source
+ * so a bump lands in one place. (The image-id key still embeds the version literally; keep it in
+ * step on a bump.)
+ */
+export const SURFPOOL_VERSION = '1.3.1';
+
 const defaultVolumes: readonly VolumeMapping[] = [
     {
         type: 'isolate',
@@ -182,7 +190,7 @@ export const images = {
         name: 'surfpool',
         versions: {
             // What `surfpool --version` reports (asserted by the Tool-versions test), not the rev.
-            surfpool: '1.3.1',
+            surfpool: SURFPOOL_VERSION,
         },
         dependencies: {
             // No surfpool release tag carries #686 (finalized-slot) + #687 (snapshot-program-CPI);
