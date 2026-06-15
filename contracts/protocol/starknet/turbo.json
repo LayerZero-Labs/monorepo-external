@@ -1,0 +1,14 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "outputs": [
+                "dist/**",
+                "src/generated/**",
+                "target/**",
+                "!target/release/incremental/**",
+                "!target/**/*.sierra.json"
+            ]
+        }
+    }
+}

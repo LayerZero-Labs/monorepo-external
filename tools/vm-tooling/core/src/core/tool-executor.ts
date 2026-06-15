@@ -5,10 +5,19 @@ import process from 'node:process';
 import * as semver from 'semver';
 import { $, type ProcessOutput } from 'zx';
 
-import type { EnvironmentVariable, VolumeMapping } from '../config';
+import type { DockerPlatformOverride, EnvironmentVariable, VolumeMapping } from '../config';
+import { CARGO_TARGET_CACHE_PATH } from '../config';
 import type { ChainContext } from '../context';
 import { findWorkspaceRoot } from '../utils';
-import { getImageUriForTool, qualifyVolumeName } from '../utils/docker';
+import {
+    type DockerPlatform,
+    type DockerPlatformExecution,
+    findImageForTool,
+    getImageTag,
+    getImageUri,
+    qualifyVolumeName,
+    resolveDockerPlatformExecution,
+} from '../utils/docker';
 import { stringifyError } from '../utils/error';
 import { findToolByName } from '../utils/finder';
 import { executeLocally } from './local-executor';
@@ -44,6 +53,47 @@ const mergeVolumes = (
 ): VolumeMapping[] => uniqBy([...userVolumes, ...defaultVolumes], (volume) => volume.containerPath);
 
 /**
+ * Merge env layers, highest precedence first. On a name collision the earlier layer wins — so the
+ * cache redirect (passed last) can never clobber a user --env or a tool default for the same var.
+ */
+export const mergeToolEnv = (
+    ...layers: readonly (readonly EnvironmentVariable[])[]
+): EnvironmentVariable[] => uniqBy(layers.flat(), ({ name }) => name);
+
+// test/nextest/check/clippy, the `t`/`c` aliases, and `cargo test-*`, with an optional +toolchain.
+const CACHE_SAFE_CARGO_RE =
+    /\bcargo\s+(?:\+\S+\s+)?(?:test|nextest|check|clippy|t|c)(?:\s|$)|\bcargo\s+(?:\+\S+\s+)?test-\S+/;
+// Anything that emits host artifacts: cargo build/b, rustc, sbf/bpf (incl. the dashed `cargo-*-sbf`
+// binaries the space-anchored branch would miss), and anchor build / idl build / test (anchor test
+// compiles the program + IDL before running). `(?![\w-])` ends on a non-word boundary so a
+// separator-glued build (`cargo build;`) still trips it.
+const CARGO_BUILD_RE =
+    /\banchor\s+(?:idl\s+build|build|test)\b|\bcargo-(?:build|test)-(?:sbf|bpf)\b|\bcargo\s+(?:\+\S+\s+)?(?:build(?:-sbf|-bpf)?|b|rustc|test-(?:sbf|bpf))(?![\w-])/;
+
+/**
+ * Redirect a cache-safe cargo `--script` to the shared `/cargo-target` mount via CARGO_TARGET_DIR.
+ * Skips scripts containing a build (CARGO_BUILD_RE): a build's .so/IDL must reach the host-mounted
+ * target/, not the cache. No-ops for tools that don't mount the cache.
+ */
+export const resolveCargoCacheEnv = (
+    script: string | undefined,
+    volumes: readonly VolumeMapping[],
+): EnvironmentVariable[] => {
+    if (!script || !CACHE_SAFE_CARGO_RE.test(script) || CARGO_BUILD_RE.test(script)) {
+        return [];
+    }
+
+    const cacheVolume = volumes.find(
+        (volume) => volume.type === 'isolate' && volume.containerPath === CARGO_TARGET_CACHE_PATH,
+    );
+    if (!cacheVolume) {
+        return [];
+    }
+
+    return [{ name: 'CARGO_TARGET_DIR', value: cacheVolume.containerPath }];
+};
+
+/**
  * Resolve a host path in a volume to an absolute path.
  * - Paths starting with ~ are resolved to home directory
  * - Relative paths (starting with . or no prefix) are resolved to workspace root
@@ -57,31 +107,94 @@ const resolveVolumePath = (volume: VolumeMapping, workspaceRoot: string): Volume
           }
         : volume;
 
-const ensureDockerImage = async (imageUri: string): Promise<void> => {
-    let output: ProcessOutput;
+const ensureDockerImage = async (
+    imageUri: string,
+    dockerPlatform: DockerPlatformExecution,
+): Promise<void> => {
+    const platform = dockerPlatform.platform;
+    const expectedArchitecture = platform?.arch;
+    const docker$ = dockerPlatform.processEnv ? $({ env: dockerPlatform.processEnv }) : $;
 
-    try {
-        // Check local images first.
-        //
-        // NOTE: `docker image ls <ref>` prints repository/tag in separate columns, so
-        // `stdout.includes(<full-ref>)` is not reliable. Use `inspect` instead: exitCode=0
-        // means the image exists locally.
-        // Keep output minimal to avoid dumping full inspect JSON into CI logs.
-        //
-        // NOTE: Using `.quiet()` to avoid stderr being captured in the CI logs. If the image
-        // is not in the cache, the process prints "Error response from daemon: No such image: ..."
-        // which can confuse the uninitiated. It's just a cache miss, not an error.
-        output = await $`docker image inspect --format {{.Id}} ${imageUri}`.nothrow().quiet();
-        if (!output.exitCode) {
-            console.info(`✅ Using cached Docker image: ${imageUri}`);
+    // Probe Docker's runnable platform by creating a container with the requested
+    // platform. Docker uses this same platform resolution path for `docker run`.
+    //
+    // Do not inspect `.ImageManifestDescriptor.platform` here: Docker only added
+    // that field in API v1.48 and may still omit it when the daemon does not use a
+    // multi-platform image store. `docker image inspect` is also tag/cache-level
+    // metadata, not the run-path decision. A successful `container create` is the
+    // portable verification signal available without executing the tool command.
+    const probeDockerPlatformContainerCreation = async (
+        expectedPlatform: DockerPlatform,
+    ): Promise<void> => {
+        const container =
+            await docker$`docker container create --platform ${expectedPlatform.value} ${imageUri} true`
+                .nothrow()
+                .quiet();
+
+        if (container.exitCode) {
+            throw new Error(
+                [
+                    'Failed to create Docker platform probe container:',
+                    `  - Image: ${imageUri}`,
+                    `  - Platform: ${expectedPlatform.value}`,
+                ].join('\n'),
+            );
+        }
+
+        const containerId = container.stdout.trim();
+        if (!containerId) {
+            throw new Error(
+                [
+                    'Docker platform probe did not return a container id:',
+                    `  - Image: ${imageUri}`,
+                    `  - Platform: ${expectedPlatform.value}`,
+                ].join('\n'),
+            );
+        }
+
+        await docker$`docker container rm ${containerId}`.nothrow().quiet();
+    };
+
+    // NOTE: `docker image ls <ref>` prints repository/tag in separate columns, so
+    // `stdout.includes(<full-ref>)` is not reliable. Use `inspect` instead: exitCode=0
+    // means the image exists locally.
+    // Keep output minimal to avoid dumping full inspect JSON into CI logs.
+    //
+    // NOTE: Using `.quiet()` to avoid stderr being captured in the CI logs. If the image
+    // is not in the cache, the process prints "Error response from daemon: No such image: ..."
+    // which can confuse the uninitiated. It's just a cache miss, not an error.
+    const localImage = await docker$`docker image inspect --format {{.Architecture}} ${imageUri}`
+        .nothrow()
+        .quiet();
+    if (!localImage.exitCode) {
+        const cachedArch = localImage.stdout.trim();
+        if (!platform) {
+            // No platform was requested, so any locally cached image is acceptable.
+            console.info(
+                `✅ Using cached Docker image: ${imageUri}${cachedArch ? ` (${cachedArch})` : ''}`,
+            );
             return;
         }
 
-        console.info('📥 Pulling Docker image from:', imageUri);
-        output = await $`docker pull ${imageUri}`.nothrow();
-    } catch (error: unknown) {
-        throw new Error(`Failed to pull Docker image ${imageUri}: ${stringifyError(error)}`);
+        if (cachedArch === expectedArchitecture) {
+            // A pinned platform still needs the container probe because tag-level
+            // Architecture can disagree with Docker's actual --platform resolution.
+            await probeDockerPlatformContainerCreation(platform);
+            console.info(`✅ Using cached Docker image: ${imageUri} (${platform.value})`);
+            return;
+        }
+
+        console.info(
+            `🔄 Cached Docker image does not include the requested platform (${platform.value}); re-pulling.`,
+        );
     }
+
+    console.info(
+        platform
+            ? `📥 Pulling Docker image from: ${imageUri} (platform: ${platform.value})`
+            : `📥 Pulling Docker image from: ${imageUri}`,
+    );
+    const output = await docker$`docker pull ${dockerPlatform.args} ${imageUri}`.nothrow();
 
     if (output.exitCode) {
         const stderr = output.stderr ?? '';
@@ -101,6 +214,11 @@ const ensureDockerImage = async (imageUri: string): Promise<void> => {
         );
     }
 
+    // After pulling, verify the same platform resolution path used by `docker run`.
+    if (platform) {
+        await probeDockerPlatformContainerCreation(platform);
+    }
+
     console.info(`✅ Successfully pulled: ${imageUri}`);
 };
 
@@ -115,6 +233,7 @@ export interface ToolCommandExecutionOptions {
     versions?: Record<string, string>;
     defaultVolumesEnabled?: boolean;
     local?: boolean;
+    dockerPlatform?: DockerPlatformOverride;
 }
 
 /**
@@ -134,9 +253,14 @@ export async function executeToolCommand<TImageId extends string>(
         versions = {},
         defaultVolumesEnabled = true,
         local,
+        dockerPlatform: dockerPlatformOverride,
     }: ToolCommandExecutionOptions,
 ): Promise<ProcessOutput> {
     const tool = findToolByName(context, toolName);
+    const dockerPlatform = resolveDockerPlatformExecution({
+        dockerPlatform: dockerPlatformOverride,
+        toolDockerPlatform: tool.dockerPlatform,
+    });
 
     // Run pre-execution hook if defined (e.g., toolchain sync)
     // TODO Support a local tool execution.
@@ -150,6 +274,7 @@ export async function executeToolCommand<TImageId extends string>(
             publish,
             versions,
             defaultVolumesEnabled,
+            dockerPlatform: dockerPlatformOverride,
         });
     }
 
@@ -190,9 +315,10 @@ export async function executeToolCommand<TImageId extends string>(
     const workspaceRoot = await findWorkspaceRoot(cwd);
 
     const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
-    const volumes = mergeVolumes(defaultVolumes, userVolumes)
-        .map((volume) => resolveVolumePath(volume, workspaceRoot))
-        .map(qualifyVolumeName);
+    // Names are qualified below, once imageUri (the toolchain key) resolves.
+    const resolvedVolumes = mergeVolumes(defaultVolumes, userVolumes).map((volume) =>
+        resolveVolumePath(volume, workspaceRoot),
+    );
 
     if (defaultVolumes.length > 0) {
         console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
@@ -211,10 +337,18 @@ export async function executeToolCommand<TImageId extends string>(
     }
 
     // Use Docker image with merged volumes
-    const imageUri = await getImageUriForTool(context, tool.name, resolvedVersion);
+    const image = findImageForTool(context, tool.name, resolvedVersion);
+    const imageUri = await getImageUri(image);
     const relativePath = path.relative(workspaceRoot, cwd);
 
-    await ensureDockerImage(imageUri);
+    // The image tag keys toolchain-shared caches — it's the registry identity of the pulled image,
+    // so artifacts compiled inside it can't bleed across toolchains. See qualifyVolumeName.
+    const cacheKey = getImageTag(image);
+    const qualifiedVolumes = resolvedVolumes.map((volume) =>
+        qualifyVolumeName(volume, { ...dockerPlatform.volumeNameOptions, cacheKey }),
+    );
+
+    await ensureDockerImage(imageUri, dockerPlatform);
 
     if (entrypoint?.trim()) {
         console.info(`🔧 Using custom entrypoint: ${entrypoint}`);
@@ -225,7 +359,7 @@ export async function executeToolCommand<TImageId extends string>(
 
     // Check if Docker socket is mounted (for tools that spawn Docker containers like anchor --verifiable)
     // If so, inject HOST_CWD and HOST_WORKSPACE_ROOT so the inner container knows the host paths
-    const hasDockerSocketMount = volumes.some(
+    const hasDockerSocketMount = resolvedVolumes.some(
         (volume) => volume.type === 'host' && volume.containerPath === '/var/run/docker.sock',
     );
     const dockerSocketEnv: EnvironmentVariable[] = hasDockerSocketMount
@@ -235,10 +369,16 @@ export async function executeToolCommand<TImageId extends string>(
           ]
         : [];
 
-    const envArgs = uniqBy(
-        [...customEnvVars, ...dockerSocketEnv, ...defaultEnv],
-        ({ name }) => name,
-    ).flatMap(({ name, value }) => ['-e', `${name}=${value}`]);
+    // Lowest precedence (passed last) so a user --env or tool default for CARGO_TARGET_DIR wins.
+    const cargoCacheEnv = resolveCargoCacheEnv(script, resolvedVolumes);
+
+    const envArgs = mergeToolEnv(customEnvVars, dockerSocketEnv, defaultEnv, cargoCacheEnv).flatMap(
+        ({ name, value }) => ['-e', `${name}=${value}`],
+    );
+
+    if (cargoCacheEnv.length > 0) {
+        console.info(`🗃️  Sharing cargo target cache at ${CARGO_TARGET_CACHE_PATH}`);
+    }
 
     // Add host user UID/GID for permission matching on Linux/macOS
     // This prevents artifacts created in containers from having root ownership
@@ -271,6 +411,7 @@ export async function executeToolCommand<TImageId extends string>(
     // Build the Docker command with proper argument separation
     const dockerArgs = [
         'run',
+        ...dockerPlatform.args,
         ...(tool.privileged ? ['--privileged'] : []),
         '--rm',
         '--add-host=host.docker.internal:host-gateway',
@@ -281,7 +422,7 @@ export async function executeToolCommand<TImageId extends string>(
         '-w',
         `/workspace/${relativePath}`,
         ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
-        ...volumes.flatMap((volume) => [
+        ...qualifiedVolumes.flatMap((volume) => [
             '-v',
             `${volume.type === 'host' ? volume.hostPath : volume.name}:${volume.containerPath}`,
         ]),
@@ -291,13 +432,14 @@ export async function executeToolCommand<TImageId extends string>(
     ];
 
     const output = await lockMany(
-        volumes.flatMap((volume) =>
+        qualifiedVolumes.flatMap((volume) =>
             volume.type === 'isolate' && volume.locked ? [volume.name] : [],
         ),
         async () => {
             const label = `⏳ ${finalArgs.join(' ')}`;
             console.time(label);
-            const result = await $`docker ${dockerArgs}`.nothrow();
+            const docker$ = dockerPlatform.processEnv ? $({ env: dockerPlatform.processEnv }) : $;
+            const result = await docker$`docker ${dockerArgs}`.nothrow();
             console.timeEnd(label);
 
             return result;

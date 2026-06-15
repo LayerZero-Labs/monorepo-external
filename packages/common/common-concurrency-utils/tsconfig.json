@@ -6,7 +6,6 @@
         "strictPropertyInitialization": false,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "lib": ["es2024"],
         "jsx": "react-jsx"
     },
     "exclude": [

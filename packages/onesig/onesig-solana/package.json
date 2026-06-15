@@ -40,23 +40,24 @@
     },
     "dependencies": {
         "@ethersproject/bytes": "catalog:",
+        "@layerzerolabs/common-concurrency-utils": "workspace:*",
+        "@layerzerolabs/onesig-core": "workspace:*",
         "@metaplex-foundation/umi": "catalog:onesig-solana",
         "@metaplex-foundation/umi-eddsa-web3js": "catalog:onesig-solana",
         "@metaplex-foundation/umi-program-repository": "catalog:onesig-solana",
-        "@metaplex-foundation/umi-web3js-adapters": "catalog:onesig-solana"
+        "@metaplex-foundation/umi-web3js-adapters": "catalog:onesig-solana",
+        "@solana/web3.js": "catalog:"
     },
     "devDependencies": {
         "@codama/nodes-from-anchor": "catalog:",
         "@codama/renderers-js-umi": "catalog:",
         "@layerzerolabs/common-node-utils": "workspace:*",
         "@layerzerolabs/eslint-configuration": "workspace:*",
-        "@layerzerolabs/onesig-core": "workspace:*",
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vm-tooling-solana": "workspace:*",
         "@metaplex-foundation/mpl-toolbox": "catalog:onesig-solana",
         "@metaplex-foundation/umi-bundle-defaults": "catalog:onesig-solana",
-        "@solana/web3.js": "catalog:",
         "@types/node": "catalog:",
         "codama": "catalog:",
         "ethers": "catalog:",

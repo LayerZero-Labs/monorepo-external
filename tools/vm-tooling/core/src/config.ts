@@ -5,6 +5,7 @@ import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils'
 
 import type { ChainContext } from './context';
 import type { ToolCommandExecutionOptions } from './core/tool-executor';
+import * as environment from './environment';
 
 interface RegistryConfig {
     registry: string;
@@ -15,11 +16,11 @@ let registryConfigCache: RegistryConfig | undefined;
 
 const getRegistryConfig = async (): Promise<RegistryConfig> => {
     if (!registryConfigCache) {
-        const envRegistry = process.env.VM_TOOLING_REGISTRY;
-        const envImageDirectory = process.env.VM_TOOLING_IMAGE_DIRECTORY;
-
-        if (envRegistry && envImageDirectory) {
-            registryConfigCache = { registry: envRegistry, imageDirectory: envImageDirectory };
+        if (environment.registry && environment.imageDirectory) {
+            registryConfigCache = {
+                registry: environment.registry,
+                imageDirectory: environment.imageDirectory,
+            };
         } else {
             const workspaceRoot = await getFullyQualifiedRepoRootPath();
             const configPath = join(
@@ -37,6 +38,11 @@ const getRegistryConfig = async (): Promise<RegistryConfig> => {
     return registryConfigCache!;
 };
 
+// Container path for the shared cargo build-artifact cache. A VM mounts its toolchain `target/`
+// cache at this path; resolveCargoCacheEnv keys on it to inject CARGO_TARGET_DIR. Single source so
+// the helper's lookup and each VM config's containerPath can't drift apart.
+export const CARGO_TARGET_CACHE_PATH = '/cargo-target';
+
 const volumeMappingBaseSchema = z.object({
     containerPath: z.string(),
 });
@@ -51,6 +57,12 @@ const isolateVolumeMappingSchema = volumeMappingBaseSchema.extend({
     name: z.string(),
     shared: z.optional(z.boolean()),
     locked: z.optional(z.boolean()),
+    // Share this cache across packages on the same toolchain instead of per-package. See
+    // qualifyVolumeName. Opt-in — omit to keep it package-private.
+    toolchainKeyed: z.optional(z.boolean()),
+    // Opt out of arch-namespacing for volumes holding no compiled artifacts (config/state).
+    // Suffixing is the safe default: under-splitting an arch-sensitive cache poisons it.
+    architectureIndependent: z.optional(z.boolean()),
 });
 
 export const volumeMappingSchema = z.union([hostVolumeMappingSchema, isolateVolumeMappingSchema]);
@@ -62,9 +74,32 @@ export interface EnvironmentVariable {
     value: string;
 }
 
+// Explicit platform pins currently supported by tool config and the CLI.
+// `native` is a CLI-only escape hatch that runs Docker without `--platform`
+// and clears DOCKER_DEFAULT_PLATFORM for that invocation.
+export const DOCKER_PLATFORM_VALUES = ['linux/amd64', 'linux/arm64'] as const;
+export const DOCKER_PLATFORM_NATIVE = 'native';
+export const DOCKER_PLATFORM_OVERRIDE_VALUES = [
+    DOCKER_PLATFORM_NATIVE,
+    ...DOCKER_PLATFORM_VALUES,
+] as const;
+export const DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION =
+    DOCKER_PLATFORM_OVERRIDE_VALUES.join(', ');
+
+const dockerPlatformOverrideValueSet = new Set<string>(DOCKER_PLATFORM_OVERRIDE_VALUES);
+
+export type DockerPlatformValue = (typeof DOCKER_PLATFORM_VALUES)[number];
+export type DockerPlatformOverride = (typeof DOCKER_PLATFORM_OVERRIDE_VALUES)[number];
+
+export const isDockerPlatformOverride = (input: unknown): input is DockerPlatformOverride =>
+    typeof input === 'string' && dockerPlatformOverrideValueSet.has(input);
+
 export interface Tool {
     name: string;
     privileged?: boolean;
+
+    // Docker platform to use when running this tool's image
+    dockerPlatform?: DockerPlatformValue;
 
     // Default isolate volumes for caching (user volumes can override these)
     defaultVolumes?: readonly VolumeMapping[];
@@ -84,7 +119,7 @@ export interface Tool {
     ) => Promise<void>;
 }
 
-export enum DockerRegistryMirror {
+export const enum DockerRegistryMirror {
     PUBLIC_GAR = 'public-gar',
 }
 

@@ -4,12 +4,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-import type { EnvironmentVariable, VolumeMapping } from './config';
-import { volumeMappingSchema } from './config';
+import type { DockerPlatformOverride, EnvironmentVariable, VolumeMapping } from './config';
+import {
+    DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION,
+    isDockerPlatformOverride,
+    volumeMappingSchema,
+} from './config';
 import type { ChainContext } from './context';
 import type { ToolCommandExecutionOptions } from './core';
 import { executeToolCommand } from './core';
 import { displayToolVersionInfo, displayVersionCombinations } from './display';
+import * as environment from './environment';
 import { getToolDefaultVersion, getToolSupportedVersions } from './utils/finder';
 
 interface GlobalOptions {
@@ -21,12 +26,23 @@ interface GlobalOptions {
     customEntrypoint?: string;
     defaultVolumes: boolean;
     local?: boolean;
+    dockerPlatform?: DockerPlatformOverride;
 }
 
 type RegisterExtraCommands = (
     program: Command,
     parseGlobalOptions: (command: Command) => Promise<ToolCommandExecutionOptions>,
 ) => void;
+
+const parseDockerPlatformOverride = (input: unknown): DockerPlatformOverride => {
+    if (isDockerPlatformOverride(input)) {
+        return input;
+    }
+
+    throw new Error(
+        `Invalid docker platform: ${String(input)}. Expected ${DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION}.`,
+    );
+};
 
 const createCli = <TImageId extends string>(
     context: ChainContext<TImageId>,
@@ -58,6 +74,7 @@ const createCli = <TImageId extends string>(
             volumes: volume,
             versions,
             defaultVolumesEnabled: defaultVolumes,
+            local: options.local || environment.local,
         };
     };
 
@@ -170,6 +187,11 @@ const createCli = <TImageId extends string>(
             [],
         )
         .option('--no-default-volumes', 'Disable default volumes for the tool')
+        .option(
+            '--docker-platform <platform>',
+            `Override the Docker platform for this run (${DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION})`,
+            parseDockerPlatformOverride,
+        )
         .option('--local', 'Run the tool from the host installation instead of Docker');
 
     // Add version options for each tool dynamically

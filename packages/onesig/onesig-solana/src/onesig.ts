@@ -38,8 +38,7 @@ import type {
     SignatureArgs,
     SignerExecuteTransactionInstructionDataArgs,
     VerifyMerkleRootParamsArgs,
-} from './index';
-import type { SolanaCallData } from './index';
+} from './generated';
 import {
     closeMerkleRoot,
     executeTransaction,
@@ -52,7 +51,8 @@ import {
     setConfigParams,
     signerExecuteTransaction,
     verifyMerkleRoot as verifyMerkleRootInstruction,
-} from './index';
+} from './generated';
+import type { SolanaCallData } from './index';
 
 export const EDDSA = createWeb3JsEddsa();
 

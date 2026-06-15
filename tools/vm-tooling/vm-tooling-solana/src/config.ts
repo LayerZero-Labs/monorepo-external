@@ -1,5 +1,11 @@
-import type { Image, Tool, VersionCombination, VolumeMapping } from '@layerzerolabs/vm-tooling';
-import { DockerRegistryMirror } from '@layerzerolabs/vm-tooling';
+import type {
+    EnvironmentVariable,
+    Image,
+    Tool,
+    VersionCombination,
+    VolumeMapping,
+} from '@layerzerolabs/vm-tooling';
+import { CARGO_TARGET_CACHE_PATH, DockerRegistryMirror } from '@layerzerolabs/vm-tooling';
 
 import { parseAnchorTomlVersion } from './utility';
 
@@ -17,11 +23,28 @@ const defaultVolumes: readonly VolumeMapping[] = [
         containerPath: '/usr/local/cargo',
         name: 'solana-cargo',
         locked: true,
+        toolchainKeyed: true,
     },
     {
         type: 'isolate',
         containerPath: '/usr/local/rustup',
         name: 'solana-rustup',
+        toolchainKeyed: true,
+        // Locked like solana-target: each shared cache guards its own concurrency rather than
+        // relying on solana-cargo's lock, which a user --volume override of /usr/local/cargo drops.
+        locked: true,
+    },
+    // Compiled-artifact cache. lz-tool points CARGO_TARGET_DIR here for cache-safe cargo commands
+    // (test/check/clippy) but not builds, so build .so still land in the host target/.
+    {
+        type: 'isolate',
+        containerPath: CARGO_TARGET_CACHE_PATH,
+        name: 'solana-target',
+        toolchainKeyed: true,
+        // Locked in its own right: same-toolchain runs already serialize on solana-cargo, but a
+        // user `--volume` override of /usr/local/cargo could drop that lock, so don't make this
+        // shared target's concurrency safety depend on another volume's lock surviving.
+        locked: true,
     },
     // Mount host Docker socket instead of using DinD (Docker-in-Docker)
     // This removes ~50% overhead from verifiable builds
@@ -32,12 +55,19 @@ const defaultVolumes: readonly VolumeMapping[] = [
     },
 ];
 
+// cargo defaults `--jobs` to core count, but turbo already builds crates in
+// parallel — uncapped rustc stacks up and OOMs into flaky `E0463: can't find
+// crate`. Cap jobs to bound memory; see PRO-3664.
+const defaultEnv: readonly EnvironmentVariable[] = [{ name: 'CARGO_BUILD_JOBS', value: '4' }];
+
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'anchor',
         // Keep privileged mode for backward compatibility with older images that use DinD
         privileged: true,
+        dockerPlatform: 'linux/amd64',
         defaultVolumes: defaultVolumes,
+        defaultEnv,
         // HOST_CWD and HOST_WORKSPACE_ROOT are injected dynamically by tool-executor
         // when Docker socket is mounted (detected by /var/run/docker.sock volume)
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'anchor'),
@@ -45,12 +75,18 @@ export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'solana',
         privileged: true,
+        // No platform pin: the Solana CLI does not produce build artifacts.
         defaultVolumes: defaultVolumes,
+        defaultEnv,
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'solana'),
     },
     {
+        // solana-verify compiles in a nested `docker run`; the path-rewriting wrapper in
+        // docker/solana/Dockerfile does not forward CARGO_BUILD_JOBS into it, so unlike anchor
+        // and solana the cap cannot reach rustc here. See PRO-3664.
         name: 'solana-verify',
         privileged: true,
+        // No platform pin: solana-verify delegates artifact builds to its own verifiable-build image.
         defaultVolumes: defaultVolumes,
     },
     {
@@ -137,40 +173,6 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
-    ['solana:anchor-1.0.0-solana-3.1.10']: {
-        name: 'solana',
-        versions: {
-            anchor: '1.0.0',
-            solana: '3.1.10',
-        },
-        dependencies: {
-            // Agave v3.1.10 pins Rust 1.86.0 upstream, but Anchor 1.0.0's locked dependency
-            // graph currently requires rustc >= 1.88. Use 1.89.0 so both toolchains build.
-            rust: '1.89.0',
-            // Solana 3.1.10's platform-tools installer pins v1.52 and links Rust 1.89.0.
-            'platform-tools': '1.52',
-            'platform-tools-rust': '1.89.0',
-            // Keep the existing nightly rustfmt toolchain used by our Solana package scripts.
-            'rust-nightly': 'nightly-2025-06-01',
-        },
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['solana:anchor-1.0.1-solana-3.1.10']: {
-        name: 'solana',
-        versions: {
-            anchor: '1.0.1',
-            solana: '3.1.10',
-        },
-        dependencies: {
-            // Anchor 1.0.1 is a patch release on the same Agave 3.1.10 toolchain.
-            // Keep the same Rust/platform-tools stack as 1.0.0 unless upstream proves otherwise.
-            rust: '1.89.0',
-            'platform-tools': '1.52',
-            'platform-tools-rust': '1.89.0',
-            'rust-nightly': 'nightly-2025-06-01',
-        },
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
     ['solana:anchor-1.0.2-solana-3.1.10']: {
         name: 'solana',
         versions: {
@@ -224,20 +226,6 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
             description:
                 'Console OFT + Token-2022 (Anchor 0.32.1 with pausable support, nightly-2025-06-01 rustfmt)',
             stable: true,
-        },
-        {
-            images: {
-                anchor: 'solana:anchor-1.0.0-solana-3.1.10',
-                solana: 'solana:anchor-1.0.0-solana-3.1.10',
-            },
-            description: 'Anchor 1.0.0 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
-        },
-        {
-            images: {
-                anchor: 'solana:anchor-1.0.1-solana-3.1.10',
-                solana: 'solana:anchor-1.0.1-solana-3.1.10',
-            },
-            description: 'Anchor 1.0.1 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
         },
         {
             images: {

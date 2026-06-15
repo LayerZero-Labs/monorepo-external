@@ -13,6 +13,7 @@
         "ACTIONS_RUNTIME_TOKEN",
         "VM_TOOLING_REGISTRY",
         "VM_TOOLING_IMAGE_DIRECTORY",
+        "DOCKER_DEFAULT_PLATFORM",
         "VITEST",
         "VERCEL",
         "VERCEL_*"
@@ -52,6 +53,8 @@
 
                 // solana, stellar, starknet
                 "target/**",
+                "!target/incremental/**",
+                "!target/*/incremental/**",
 
                 // sui, iota, ton, aptos
                 "build/**",

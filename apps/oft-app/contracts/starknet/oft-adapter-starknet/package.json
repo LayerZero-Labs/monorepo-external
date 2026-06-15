@@ -27,7 +27,7 @@
         "build": "lz-tool scarb --release build && pnpm build:abi && pnpm build:verification && tsup",
         "build:abi": "lz-tool extra starknet build-typescript-sdk oft_adapter target src/generated",
         "build:verification": "generate-starknet-verification --package oft_adapter --path src/generated/verification",
-        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "clean": "rm -rf .turbo ./dist ./target ./node_modules && pnpm generated:clean",
         "format": "lz-tool scarb fmt",
         "format:check": "node --run format --check",
         "generated:clean": "rm -rf ./target ./src/generated",

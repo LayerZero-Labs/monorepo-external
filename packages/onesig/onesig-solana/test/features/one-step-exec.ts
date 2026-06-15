@@ -1,9 +1,12 @@
 import { arrayify } from '@ethersproject/bytes';
-import { some } from '@metaplex-foundation/umi';
+import { transferSol } from '@metaplex-foundation/mpl-toolbox';
+import { createNoopSigner, lamports, sol, some } from '@metaplex-foundation/umi';
+import { Connection } from '@solana/web3.js';
 import { Wallet } from 'ethers';
 import { expect, it } from 'vitest';
 
 import {
+    buildOneSigSolanaLeaves,
     DuplicateSignersError,
     ExpiredMerkleRootError,
     FailedSignatureRecoveryError,
@@ -15,6 +18,7 @@ import {
     buildOneSigMerkleData,
     createOneSigTransaction,
     createTransferInstruction,
+    LOCAL_RPC_URL,
     performOneStepExecution,
     TransactionContext,
     verifyBalanceChange,
@@ -44,6 +48,54 @@ export function oneStepExecutionTests(ctx: TransactionContext) {
                 );
             },
             transferInstruction.value,
+        );
+    });
+
+    it('should build executable leaves with simulated lamport allowance', async () => {
+        const amount = 100n;
+        const [oneSigSigner] = ctx.oneSig.pda.oneSigSigner();
+        await ctx.umi.rpc.airdrop(oneSigSigner, sol(1), { commitment: 'confirmed' });
+
+        const [instruction] = transferSol(ctx.umi, {
+            source: createNoopSigner(oneSigSigner),
+            destination: ctx.recipient.publicKey,
+            amount: lamports(amount),
+        }).getInstructions();
+        const { nonce } = await ctx.oneSig.getState(ctx.umi.rpc);
+
+        const built = await buildOneSigSolanaLeaves({
+            connection: new Connection(LOCAL_RPC_URL, 'confirmed'),
+            dummyFeePayer: ctx.payer.publicKey,
+            oneSigState: ctx.oneSig.state.publicKey,
+            instructions: [instruction],
+        });
+        const [leaf] = built.leaves;
+
+        expect(leaf.call.value).toEqual(amount);
+        const { merkleRoot, expiry, signatures, proof } = await buildOneSigMerkleData(
+            ctx.oneSig,
+            ctx.oneSigSeed,
+            ctx.sortedSigners,
+            nonce,
+            leaf.call,
+        );
+        expect(Array.from(built.merkleRoot)).toEqual(Array.from(merkleRoot));
+        expect(leaf.proof).toEqual(proof);
+
+        const ix = ctx.oneSig.executeTransaction(ctx.umi.payer, built.merkleRoot, {
+            call: leaf.call,
+            proof: leaf.proof,
+            merkleRootVerification: some({
+                expiry,
+                signatures: arrayify(signatures),
+            }),
+        });
+
+        await verifyBalanceChange(
+            ctx.umi,
+            ctx.recipient.publicKey,
+            () => sendAndConfirm(ctx.umi, [ix], [ctx.payer]),
+            amount,
         );
     });
 
@@ -164,7 +216,6 @@ export function oneStepExecutionTests(ctx: TransactionContext) {
     it('should fail with FailedSignatureRecovery when signatures are corrupted', async () => {
         const { nonce } = await ctx.oneSig.getState(ctx.umi.rpc);
         const { merkleRoot, expiry, signatures, proof } = await buildOneSigMerkleData(
-            ctx.umi,
             ctx.oneSig,
             ctx.oneSigSeed,
             ctx.sortedSigners,

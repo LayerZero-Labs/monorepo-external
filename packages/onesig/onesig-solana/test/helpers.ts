@@ -126,7 +126,6 @@ export async function setupOneSig(
  * from multiple functions
  */
 export async function buildOneSigMerkleData(
-    umi: Umi,
     oneSig: OneSig,
     seed: Uint8Array,
     signers: TypedDataSigner[],
@@ -183,7 +182,6 @@ export async function createOneSigTransaction(
 ) {
     // Use shared function to build merkle data
     const { merkleRoot, expiry, signatures, proof } = await buildOneSigMerkleData(
-        umi,
         oneSig,
         seed,
         signers,
@@ -291,7 +289,6 @@ export async function prepareAndVerifyMerkleRoot(
 
     // Use shared function to build merkle data
     const { merkleRoot, expiry, signatures, proof } = await buildOneSigMerkleData(
-        ctx.umi,
         ctx.oneSig,
         ctx.oneSigSeed,
         ctx.sortedSigners,

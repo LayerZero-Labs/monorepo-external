@@ -963,6 +963,21 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
+  packages/common/common-concurrency-utils:
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
   packages/common/common-node-utils:
     devDependencies:
       '@layerzerolabs/tsup-configuration':
@@ -974,12 +989,15 @@ importers:
       '@layerzerolabs/vitest-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.1
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.8.2)(yaml@2.8.1)
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/onesig/onesig-core:
     dependencies:
@@ -1129,6 +1147,12 @@ importers:
       '@ethersproject/bytes':
         specifier: 'catalog:'
         version: 5.8.0
+      '@layerzerolabs/common-concurrency-utils':
+        specifier: workspace:*
+        version: link:../../common/common-concurrency-utils
+      '@layerzerolabs/onesig-core':
+        specifier: workspace:*
+        version: link:../onesig-core
       '@metaplex-foundation/umi':
         specifier: catalog:onesig-solana
         version: 1.1.1
@@ -1141,6 +1165,9 @@ importers:
       '@metaplex-foundation/umi-web3js-adapters':
         specifier: catalog:onesig-solana
         version: 1.1.1(@metaplex-foundation/umi@1.1.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10))
+      '@solana/web3.js':
+        specifier: 1.95.8
+        version: 1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10)
     devDependencies:
       '@codama/nodes-from-anchor':
         specifier: 'catalog:'
@@ -1154,9 +1181,6 @@ importers:
       '@layerzerolabs/eslint-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/eslint
-      '@layerzerolabs/onesig-core':
-        specifier: workspace:*
-        version: link:../onesig-core
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/tsup
@@ -1172,9 +1196,6 @@ importers:
       '@metaplex-foundation/umi-bundle-defaults':
         specifier: catalog:onesig-solana
         version: 1.1.1(@metaplex-foundation/umi@1.1.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10))(encoding@0.1.13)
-      '@solana/web3.js':
-        specifier: 1.95.8
-        version: 1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10)
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
