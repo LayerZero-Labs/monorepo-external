@@ -17,7 +17,7 @@ pub struct ExecuteTransaction<'info> {
     /// CHECK: This is the same PDA used in invoke_signed when executing transactions.
     /// It signs on behalf of the program in execute_transaction.
     #[account(seeds = [ONE_SIG_SEED, one_sig_state.key().as_ref()], bump = one_sig_state.bump)]
-    pub one_sig_signer: AccountInfo<'info>,
+    pub one_sig_signer: UncheckedAccount<'info>,
     #[account(mut)]
     pub one_sig_state: Account<'info, OneSigState>,
     #[account(
@@ -30,14 +30,11 @@ pub struct ExecuteTransaction<'info> {
 }
 
 impl ExecuteTransaction<'_> {
-    /// Executes a transaction with a pre-verified merkle root permissionlessly
+    /// Executes a transaction whose leaf is proven against a signed merkle root.
     ///
-    /// Process:
-    /// 1. Verify signatures on Merkle root (or check pre-verified merkle root state)
-    /// 2. Build and verify the transaction against Merkle proof
-    /// 3. Execute the instruction with proper authorization
-    /// 4. Increment nonce for replay protection
-    /// 5. Emit successful transaction event
+    /// The root is resolved one of two ways: inline (signatures verified in this call) or from a
+    /// pre-verified `MerkleRootState` PDA. Execution is permissionless unless `executor_required`
+    /// is set, in which case `executor` must be an approved executor.
     pub fn apply(
         ctx: &mut Context<ExecuteTransaction>,
         params: &ExecuteTransactionParams,
@@ -72,7 +69,7 @@ impl ExecuteTransaction<'_> {
 
         // Build the OneSigInstruction from the transaction
         let instruction =
-            build_instruction(&ctx.accounts.one_sig_signer, transaction, ctx.remaining_accounts);
+            build_instruction(&ctx.accounts.one_sig_signer, transaction, ctx.remaining_accounts)?;
 
         // Encode the transaction leaf and verify against the Merkle proof
         let leaf = MerkleValidator::encode_leaf(
@@ -91,11 +88,13 @@ impl ExecuteTransaction<'_> {
             instruction,
         )?;
 
-        // Reload the state account to ensure it's updated after execution
+        // Bump the nonce for replay protection: reload to see any state the executed instruction
+        // mutated, reject a mutated nonce, then increment.
         ctx.accounts.one_sig_state.reload()?;
-
-        // Increment nonce for replay protection. Since the re-entry is limited by a simple
-        // self-recursion on Solana, the nonce can be incremented after the execution
+        require!(
+            ctx.accounts.one_sig_state.nonce == nonce,
+            OneSigError::NonceMutatedDuringExecution
+        );
         ctx.accounts.one_sig_state.nonce = nonce + 1;
 
         // Emit successful transaction event

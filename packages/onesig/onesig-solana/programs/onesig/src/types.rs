@@ -14,6 +14,7 @@ pub const ADDRESS_LEN: usize = 20;
 #[derive(
     Clone,
     Copy,
+    Debug,
     Eq,
     PartialEq,
     Ord,

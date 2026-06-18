@@ -56,6 +56,12 @@ impl Multisig {
         self.threshold = threshold;
         Ok(())
     }
+
+    pub fn verify_proved_signers(&self, proved: &[Address]) -> Result<()> {
+        let still_active = proved.iter().filter(|signer| self.signers.contains(signer)).count();
+        require!(still_active >= self.threshold as usize, OneSigError::InsufficientSignatures);
+        Ok(())
+    }
 }
 
 #[account]
@@ -70,8 +76,11 @@ pub struct MerkleRootState {
     pub seed: Hash,
     // The same type as UnixTimestamp
     pub expiry: i64,
-    // Rent payer, used to close the account
+    // Rent is refunded to this account when the account is closed.
     pub rent_payer: Pubkey,
+    // The signers that signed this root at verification time.
+    #[max_len(SIGNERS_MAX_LEN)]
+    pub signed_by: Vec<Address>,
     pub bump: u8,
 }
 
@@ -99,19 +108,10 @@ impl Executors {
             .position(|executor_to_remove| *executor_to_remove == executor)
             .ok_or(OneSigError::ExecutorNotFound)?;
         self.executors.remove(index);
-
-        // Ensure that if executor_required is true, at least one executor remains
-        require!(
-            !self.executor_required || !self.executors.is_empty(),
-            OneSigError::EmptyExecutorSet
-        );
         Ok(())
     }
 
     pub fn set_executor_required(&mut self, required: bool) -> Result<()> {
-        // If executor required is false, the executor set can be empty
-        // If executor required is true, the executor set must be non-empty
-        require!(!required || !self.executors.is_empty(), OneSigError::EmptyExecutorSet);
         self.executor_required = required;
         Ok(())
     }

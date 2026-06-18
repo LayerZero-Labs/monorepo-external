@@ -38,7 +38,9 @@ pub fn resolve_merkle_root(
     } else {
         // Case 2: Two-step verification, using pre-verified merkle root state
         require!(merkle_root_state.is_some(), OneSigError::MissingMerkleRootState);
-        merkle_root_state.unwrap().merkle_root
+        let merkle_root_state = merkle_root_state.unwrap();
+        one_sig_state.multisig.verify_proved_signers(&merkle_root_state.signed_by)?;
+        merkle_root_state.merkle_root
     };
     Ok(root)
 }
@@ -50,11 +52,13 @@ pub fn resolve_merkle_root(
 /// 4. Adds the remaining accounts as instruction accounts
 /// 5. Returns the OneSigInstruction
 pub fn build_instruction(
-    one_sig_signer: &AccountInfo,
+    one_sig_signer: &UncheckedAccount,
     transaction: &OneSigTransaction,
     remaining_accounts: &[AccountInfo],
-) -> OneSigInstruction {
-    OneSigInstruction {
+) -> Result<OneSigInstruction> {
+    require!(!remaining_accounts.is_empty(), OneSigError::MissingProgramId);
+
+    Ok(OneSigInstruction {
         program_id: remaining_accounts[0].key(), // The first account is always the program_id
         accounts: remaining_accounts
             .iter()
@@ -70,7 +74,7 @@ pub fn build_instruction(
             .collect(),
         data: transaction.ix_data.clone(),
         value: transaction.value,
-    }
+    })
 }
 
 /// Executes the instruction with PDA authorization and balance checks:
@@ -79,7 +83,7 @@ pub fn build_instruction(
 /// 3. Verifies the balance change is within allowed limits
 /// 4. Ensures the one_sig_signer account isn't initialized
 pub fn execute_instruction(
-    one_sig_signer: &AccountInfo,
+    one_sig_signer: &UncheckedAccount,
     one_sig_state: &Account<OneSigState>,
     remaining_accounts: &[AccountInfo],
     instruction: OneSigInstruction,
@@ -88,7 +92,8 @@ pub fn execute_instruction(
 
     let (solana_ix, value) = instruction.into();
 
-    // Block re-entry into either execute path.
+    // Re-entrancy guard: an executed instruction must not call back into the nonce-advancing
+    // execute paths, or it could replay itself and defeat replay protection.
     if solana_ix.program_id == ID {
         let exec_disc = crate::instruction::ExecuteTransaction::DISCRIMINATOR;
         let signer_exec_disc = crate::instruction::SignerExecuteTransaction::DISCRIMINATOR;

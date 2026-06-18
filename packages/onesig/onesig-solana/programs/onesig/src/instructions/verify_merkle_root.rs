@@ -7,6 +7,7 @@ use crate::{
     validation::merkle::MerkleValidator,
 };
 
+/// Verifies a merkle root once and persists it for later execution.
 #[derive(Accounts)]
 #[instruction(params: VerifyMerkleRootParams)]
 pub struct VerifyMerkleRoot<'info> {
@@ -31,8 +32,8 @@ impl VerifyMerkleRoot<'_> {
     ) -> Result<()> {
         let VerifyMerkleRootParams { merkle_root, expiry, signatures } = params;
 
-        // Verify Merkle root and signatures
-        MerkleValidator::verify_merkle_root(
+        // Verify Merkle root and signatures, capturing the signers that signed.
+        let signed_by = MerkleValidator::verify_merkle_root(
             &ctx.accounts.one_sig_state,
             merkle_root,
             *expiry,
@@ -48,6 +49,7 @@ impl VerifyMerkleRoot<'_> {
 
         ctx.accounts.merkle_root_state.merkle_root = *merkle_root;
         ctx.accounts.merkle_root_state.rent_payer = ctx.accounts.payer.key();
+        ctx.accounts.merkle_root_state.signed_by = signed_by;
         ctx.accounts.merkle_root_state.bump = ctx.bumps.merkle_root_state;
 
         Ok(())

@@ -6,20 +6,20 @@ use crate::{
     constants::*,
     errors::OneSigError,
     state::OneSigState,
-    types::{Hash, OneSigInstruction},
+    types::{Address, Hash, OneSigInstruction},
 };
 
 pub struct MerkleValidator;
 
 impl MerkleValidator {
-    /// Verifies Merkle root expiry and signatures
+    /// Verifies Merkle root expiry and signatures, returning the recovered signers.
     pub fn verify_merkle_root(
         one_sig_state: &OneSigState,
         merkle_root: &Hash,
         expiry: i64,
         signatures: &[u8],
         current_timestamp: i64,
-    ) -> Result<()> {
+    ) -> Result<Vec<Address>> {
         require!(expiry >= current_timestamp, OneSigError::ExpiredMerkleRoot);
 
         let expiry_u128: u128 = expiry.try_into().unwrap();

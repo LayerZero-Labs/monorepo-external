@@ -35,13 +35,14 @@ impl SignatureValidator {
         Ok(())
     }
 
-    // Verifies multiple signatures against signer list and threshold
+    // Verifies multiple signatures against the signer list and threshold, returning the recovered
+    // signer addresses (deduplicated, one per valid signature).
     pub fn verify_signatures(
         threshold: u8,
         signers: &[Address],
         digest: &Hash,
         signatures: &[u8],
-    ) -> Result<()> {
+    ) -> Result<Vec<Address>> {
         require!(threshold > 0, OneSigError::InvalidThreshold);
 
         require!(
@@ -71,14 +72,16 @@ impl SignatureValidator {
             let is_new = seen_signers.insert(recovered_address);
             require!(is_new, OneSigError::DuplicateSigners);
         }
-        Ok(())
+        Ok(seen_signers.into_iter().collect())
     }
 
     // Recovers the signer public key from a signature
     fn recover_signer(digest: &Hash, signature: &Signature) -> Result<Secp256k1Pubkey> {
         let (recovery_id, signature_r_s) = signature.split_recovery_id();
+        // Ethereum's `ecrecover` encodes the recovery id as v = recovery_id + 27, so accept v in
+        // 27..=30 and normalize back to the secp256k1 recovery id 0..=3.
         let recovery_id =
-            if (27..=28).contains(recovery_id) { recovery_id - 27 } else { *recovery_id };
+            if (27..=30).contains(recovery_id) { recovery_id - 27 } else { *recovery_id };
 
         // Recover public key
         let signer: Secp256k1Pubkey =

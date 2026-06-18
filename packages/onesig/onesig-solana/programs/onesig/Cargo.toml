@@ -21,7 +21,7 @@ anchor-debug = []
 
 
 [dependencies]
-anchor-lang = { workspace = true, features = ["init-if-needed", "event-cpi"] }
+anchor-lang = { workspace = true, features = ["event-cpi"] }
 hex-literal = "0.4.1"
 proc-macro2 = "=1.0.106"
 solana-keccak-hasher = "3.1.0"

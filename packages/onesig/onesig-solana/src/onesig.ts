@@ -314,14 +314,20 @@ export class OneSig {
         ).items[0];
     }
 
-    closeMerkleRootState(recipient: Signer, merkleRoot: Uint8Array): WrappedInstruction {
+    /**
+     * Close a (dead) MerkleRootState. The close is permissionless — only the transaction fee payer
+     * needs to sign. Rent is always refunded to `rentPayer`, which must equal the recorded
+     * `rent_payer` of the account.
+     */
+    closeMerkleRootState(merkleRoot: Uint8Array, rentPayer: PublicKey): WrappedInstruction {
         return closeMerkleRoot(
             {
                 programs: this.programRepo,
             },
             {
-                signer: recipient,
+                rentPayer,
                 merkleRootState: this.pda.merkleRootState(merkleRoot),
+                oneSigState: this.state.publicKey,
             },
         ).items[0];
     }

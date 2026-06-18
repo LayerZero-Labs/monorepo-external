@@ -21,7 +21,7 @@ pub struct SignerExecuteTransaction<'info> {
     /// CHECK: This is the same PDA used in invoke_signed when executing transactions.
     /// It signs on behalf of the program in signer_execute_transaction.
     #[account(seeds = [ONE_SIG_SEED, one_sig_state.key().as_ref()], bump = one_sig_state.bump)]
-    pub one_sig_signer: AccountInfo<'info>,
+    pub one_sig_signer: UncheckedAccount<'info>,
     #[account(mut)]
     pub one_sig_state: Account<'info, OneSigState>,
     #[account(
@@ -66,7 +66,7 @@ impl SignerExecuteTransaction<'_> {
 
         // Build the OneSigInstruction from the transaction
         let instruction =
-            build_instruction(&ctx.accounts.one_sig_signer, transaction, ctx.remaining_accounts);
+            build_instruction(&ctx.accounts.one_sig_signer, transaction, ctx.remaining_accounts)?;
 
         // Encode the transaction leaf and verify against the Merkle proof
         let leaf = MerkleValidator::encode_leaf(
@@ -98,10 +98,13 @@ impl SignerExecuteTransaction<'_> {
             instruction,
         )?;
 
-        // Reload the state account to ensure it's updated after execution
+        // Bump the nonce for replay protection: reload to see any state the executed instruction
+        // mutated, reject a mutated nonce, then increment.
         ctx.accounts.one_sig_state.reload()?;
-
-        // Increment nonce for replay protection.
+        require!(
+            ctx.accounts.one_sig_state.nonce == nonce,
+            OneSigError::NonceMutatedDuringExecution
+        );
         ctx.accounts.one_sig_state.nonce = nonce + 1;
 
         // Emit successful transaction event (shared with execute_transaction; observers

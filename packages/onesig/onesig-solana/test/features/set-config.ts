@@ -17,7 +17,6 @@ import { expect, it } from 'vitest';
 import {
     DuplicateExecutorError,
     DuplicateSignersError,
-    EmptyExecutorSetError,
     ExecutorNotFoundError,
     ExecutorRequiredError,
     InvalidSignersLenError,
@@ -32,6 +31,7 @@ import {
     MAX_SIGNERS,
     MAX_THRESHOLD,
     performOneStepExecution,
+    performSignerExecution,
     prepareAndVerifyMerkleRoot,
     TransactionContext,
     verifyBalanceChange,
@@ -222,36 +222,56 @@ export function setConfigTests(ctx: TransactionContext) {
         ctx.umi.payer = ctx.payer;
     });
 
-    it('should fail to remove the last executor when executor_required is true', async () => {
+    it('should allow removing the last executor when executor_required is true (EVM/Stellar parity)', async () => {
+        // Enable executor_required while the single executor is still present.
         let state = await ctx.oneSig.getState(ctx.umi.rpc);
         await performOneStepExecution(ctx, state.nonce, {
             ...ctx.oneSig.setExecutorRequired(true),
             value: 0n,
         });
 
-        // Verify executor_required is true
         state = await ctx.oneSig.getState(ctx.umi.rpc);
         expect(state.executors.executorRequired).toBe(true);
         expect(state.executors.executors.length).toBe(1);
 
-        // Try to remove the only executor - should fail
+        // Removing the only executor now SUCCEEDS: executor_required=true with an empty executor
+        // set is a valid state, matching onesig-evm and onesig-stellar. The executor authorizes
+        // its own removal (the check uses the still-populated set at the start of the tx).
         ctx.umi.payer = newExecutor;
-        await shouldBeRejected(
-            performOneStepExecution(ctx, state.nonce, {
-                ...ctx.oneSig.removeExecutor(newExecutor.publicKey),
-                value: 0n,
-            }),
-            new EmptyExecutorSetError(ctx.oneSig.getProgram()),
-        );
-
-        // Set it back to the initial state for other tests
         state = await ctx.oneSig.getState(ctx.umi.rpc);
         await performOneStepExecution(ctx, state.nonce, {
+            ...ctx.oneSig.removeExecutor(newExecutor.publicKey),
+            value: 0n,
+        });
+
+        state = await ctx.oneSig.getState(ctx.umi.rpc);
+        expect(state.executors.executorRequired).toBe(true);
+        expect(state.executors.executors.length).toBe(0);
+
+        // With an empty executor set + executor_required, execute_transaction is now unusable
+        // (the executor check can never pass). Recover via the signer-as-executor path, which a
+        // registered signer can always authorize, to set executor_required back to false.
+        ctx.umi.payer = ctx.payer;
+        state = await ctx.oneSig.getState(ctx.umi.rpc);
+        await performSignerExecution(ctx, ctx.payer, ctx.sortedSigners[0], state.nonce, {
             ...ctx.oneSig.setExecutorRequired(false),
             value: 0n,
         });
-        // Reset the payer to the original payer
-        ctx.umi.payer = ctx.payer;
+
+        state = await ctx.oneSig.getState(ctx.umi.rpc);
+        expect(state.executors.executorRequired).toBe(false);
+
+        // Restore the executor so downstream tests observe the original state.
+        await performOneStepExecution(ctx, state.nonce, {
+            ...ctx.oneSig.addExecutor(newExecutor.publicKey),
+            value: 0n,
+        });
+        state = await ctx.oneSig.getState(ctx.umi.rpc);
+        expect(
+            state.executors.executors.some(
+                (e) => e.toString() === newExecutor.publicKey.toString(),
+            ),
+        ).toBe(true);
     });
 
     it('should remove an executor', async () => {
