@@ -7,7 +7,10 @@
     "scripts": {
         "build": "pnpm build:contract && pnpm compile:sdk",
         "build:contract": "pnpm exec lz-tool stellar contract build --package onesig",
+        "build:contract:native": "pnpm exec lz-tool --docker-platform native stellar contract build --package onesig",
         "build:mocks": "pnpm exec lz-tool --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
+        "build:mocks:native": "pnpm exec lz-tool --docker-platform native --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
+        "build:native": "pnpm build:contract:native && pnpm compile:sdk",
         "clean": "pnpm clean:contract && pnpm clean:sdk",
         "clean:contract": "pnpm exec lz-tool --script \"cd contracts/onesig && cargo clean\" stellar",
         "clean:sdk": "rm -rf sdk/src/generated",

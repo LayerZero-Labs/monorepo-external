@@ -1,5 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
+import type { Contract } from 'ethers';
 import { BigNumber, Signer, Wallet } from 'ethers';
 import { ethers } from 'hardhat';
 
@@ -12,7 +13,6 @@ import type {
 } from '@layerzerolabs/onesig-core';
 
 import { evmLeafGenerator } from '../../src';
-import { OneSig } from '../../typechain-types';
 import {
     callNonExistentFunctionCall,
     createSingleTxMerkleTree,
@@ -46,7 +46,7 @@ describe('OneSig', () => {
     const threshold = 2;
     const SEED = ethers.utils.keccak256(ethers.utils.randomBytes(32));
 
-    async function setupOneSig(oneSigId = OneSigIdETH): Promise<OneSig> {
+    async function setupOneSig(oneSigId = OneSigIdETH): Promise<Contract> {
         const OneSigFactory = await ethers.getContractFactory('OneSig');
         const oneSig = await OneSigFactory.deploy(
             oneSigId,

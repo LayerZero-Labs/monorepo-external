@@ -47,8 +47,19 @@ export const runCodeFormatters = async (
 
     try {
         if (!skipFormatting) {
-            const { stderr } = await execFilePromise('pnpm', ['prettier', '--write', filepath], {
-                cwd: packagePath,
+            const stderr = await new Promise<string>((resolve, reject) => {
+                const child = spawn('pnpm', ['prettier', '--write', filepath], {
+                    cwd: packagePath,
+                    stdio: ['ignore', 'ignore', 'pipe'],
+                });
+                let stderr = '';
+                child.stderr.on('data', (chunk) => (stderr += chunk));
+                child.on('error', reject);
+                child.on('close', (code) =>
+                    code === 0
+                        ? resolve(stderr)
+                        : reject(new Error(`prettier exited with code ${code}`)),
+                );
             });
             if (stderr && verbose) {
                 console.error('Error running prettier:', stderr);

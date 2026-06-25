@@ -8,6 +8,13 @@ import {
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'hardhat',
+        // Pin amd64 so compiled artifacts (incl. solc build-info) are byte-identical
+        // across host architectures. build-info embeds the compiler AST, whose integer
+        // serialization differs between arm64 and amd64 (negative `referencedDeclaration`
+        // ids for built-in globals print as signed int32 on amd64 vs unsigned uint32 on
+        // arm64), which otherwise breaks the bytecode-integrity snapshot on Apple Silicon.
+        // CI runs amd64, so this aligns local builds with CI. See PRO-3759.
+        dockerPlatform: 'linux/amd64',
     },
     {
         name: 'forge',

@@ -11,6 +11,7 @@ export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'stellar',
         preExecute: syncToolchain,
+        dockerPlatform: 'linux/amd64',
         defaultVolumes: [
             // NOTE: for configuration commands, you should never put it in your package.json#build or #test, since the config is locked for parallel builds
             // while common commands like contract build and binding generation are allowed since they are not writing to the config files

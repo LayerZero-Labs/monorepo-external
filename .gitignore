@@ -6,6 +6,17 @@ dependencies
 hh-cache*
 artifacts*/
 !tools/artifacts-copier
+# Checked-in "artifacts" dirs that are actually source code. `artifacts*/` would
+# otherwise drop these, and the docker-build strip (deleteAllIgnoredFileSync in
+# turborepo-utils) honors these rules, so they must be re-included here.
+!legacy/offchain-monorepo/packages/contracts/safe-contracts/src/artifacts-zk/
+!legacy/offchain-monorepo/packages/contracts/safe-contracts/src/artifacts-zk/**
+!legacy/offchain-monorepo/packages/transfer-api/ui-bridge-oft/src/ton/artifacts/
+!legacy/offchain-monorepo/packages/transfer-api/ui-bridge-oft/src/ton/artifacts/**
+!legacy/offchain-monorepo/packages/contracts/lz-ton-contracts/deprecated-contracts/artifacts/
+!legacy/offchain-monorepo/packages/contracts/lz-ton-contracts/deprecated-contracts/artifacts/**
+!packages/protocol/lz-v2-protocol-ton/deprecated-contracts/artifacts/
+!packages/protocol/lz-v2-protocol-ton/deprecated-contracts/artifacts/**
 target
 out/
 cache_foundry/

@@ -21,7 +21,7 @@ const commonRules = {
             groups: [
                 ['^\\u0000'],
                 ['^@?\\w'],
-                ['^@(layerzerolabs|ui-internal|web3-ui-internal)/'],
+                ['^@(layerzerolabs|offchain-monorepo|ui-internal|web3-ui-internal)/'],
                 ['^@/'],
                 ['^\\.'],
             ],

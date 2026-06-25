@@ -1,5 +1,6 @@
 import { Block } from '@ethersproject/abstract-provider';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import type { Contract } from 'ethers';
 import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 
@@ -11,7 +12,6 @@ import type {
 } from '@layerzerolabs/onesig-core';
 
 import { ETHLeafData, evmLeafGenerator } from '../../src';
-import { MockOApp__factory, OneSig, OneSig__factory } from '../../typechain-types';
 
 export type TransactionCall = {
     to: string;
@@ -44,7 +44,7 @@ export async function createSingleTxMerkleTree(
 }
 
 export async function signAndExecuteSingleTx(
-    oneSig: OneSig,
+    oneSig: Contract,
     tree: MerkleTree,
     generator: GenerateLeafsResult<ETHLeafData>,
     signers: TypedDataSigner[],
@@ -82,10 +82,10 @@ export function setBytesCall(
     return {
         to: oAppAddress,
         value: BigNumber.from(0),
-        data: MockOApp__factory.createInterface().encodeFunctionData('setBytes', [
-            dstEid,
-            bytesString,
-        ]),
+        data: new ethers.utils.Interface(['function setBytes(uint32,bytes)']).encodeFunctionData(
+            'setBytes',
+            [dstEid, bytesString],
+        ),
     };
 }
 
@@ -93,7 +93,10 @@ export function setSeedCall(oneSigAddress: string, seed: Uint8Array | string): T
     return {
         to: oneSigAddress,
         value: BigNumber.from(0),
-        data: OneSig__factory.createInterface().encodeFunctionData('setSeed', [seed]),
+        data: new ethers.utils.Interface(['function setSeed(bytes32)']).encodeFunctionData(
+            'setSeed',
+            [seed],
+        ),
     };
 }
 

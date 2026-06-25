@@ -4,6 +4,7 @@ import path from 'path';
 import { runCatalogizeAll } from './catalog';
 import {
     filterPackages,
+    isLegacyPackage,
     MOVE_TO_DEV_DEFAULT_PATTERN,
     moveToDev,
     removeDuplicates,
@@ -119,8 +120,11 @@ async function _fixDeps(options: FixDependenciesParams) {
     }
 
     if (catalogize && write) {
+        // Mirror the validation side (validateCatalog), which excludes legacy packages. Legacy
+        // packages (e.g. the security-hardened docker-env-npm-lock) intentionally pin exact
+        // versions instead of referencing the default catalog, so catalogizing them would conflict.
         await runCatalogizeAll({
-            packages,
+            packages: packages.filter((p) => !isLegacyPackage(p)),
             pnpmLsObject,
             dependenciesFilter: [],
             customCatalog,

@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 
 import {
+    isLegacyPackage,
     MOVE_TO_DEV_DEFAULT_PATTERN,
     moveToDev,
     removeDuplicates,
@@ -20,7 +21,9 @@ const validateMissingDependencies = async (options: {
     const { only, ignorePatterns, dups } = options;
     const shouldCheckDups = dups === false;
     const { pnpmLs, pnpmLsObject } = await getPnpmLs();
-    const allPackages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root');
+    const allPackages = pnpmLs
+        .map((p) => p.name)
+        .filter((x) => x !== 'root' && !isLegacyPackage(x));
     const targets = only
         ? allPackages.filter((n) => n === only || safeRegexMatch({ str: n, pattern: only }))
         : allPackages;

@@ -38,12 +38,12 @@ describe('safeRegexMatch', () => {
             expect(safeRegexMatch({ str: '', pattern: '.+' })).toBe(false);
         });
 
-        test('should support generator pattern like @projectName/appName-.+', () => {
-            // Tests the pattern used by generator: @projectName/appName-.+
+        test('should support generator pattern like @packageScope/appName-.+', () => {
+            // Tests the pattern used by generator: @packageScope/appName-.+
             // This matches packages like @myproject/my-example-oft-app-activity-factory
-            const projectName = 'myproject';
+            const packageScope = 'myproject';
             const appName = 'my-example-oft-app';
-            const pattern = `@${projectName}/${appName}-.+`;
+            const pattern = `@${packageScope}/${appName}-.+`;
 
             expect(
                 safeRegexMatch({
@@ -74,7 +74,7 @@ describe('safeRegexMatch', () => {
                     str: '@otherproject/my-example-oft-app-activity-factory',
                     pattern,
                 }),
-            ).toBe(false); // Different project name
+            ).toBe(false); // Different package scope
             expect(
                 safeRegexMatch({
                     str: '@myproject/different-oft-app-activity-factory',

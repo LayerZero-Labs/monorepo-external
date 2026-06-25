@@ -18,7 +18,7 @@ const DEPENDENCY_SECTIONS = [
     'optionalDependencies',
     'implicitDependencies',
 ] as const;
-const isLegacyPackage = (packageName: string) =>
+export const isLegacyPackage = (packageName: string) =>
     LEGACY_PACKAGE_ORGS.some((org) => packageName.startsWith(`${org}/`));
 
 /**
@@ -43,7 +43,7 @@ const versionLimit = pLimit(5);
 
 export const validateCatalog = async (only?: string) => {
     const { pnpmLs, pnpmLsObject } = await getPnpmLs();
-    const packages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root');
+    const packages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root' && !isLegacyPackage(x));
     const targets = only
         ? packages.filter((n) => n === only || safeRegexMatch({ str: n, pattern: only }))
         : packages;
@@ -470,6 +470,12 @@ export const removeUnusedDependencies = (
             return;
         }
         if (packageJson.implicitDependencies && packageJson.implicitDependencies[dep]) {
+            return;
+        }
+        // Preserve self-referential workspace aliases (e.g. "@": "link:.") that legacy
+        // packages rely on for `import ... from '@'`. depcheck cannot detect this usage,
+        // so it reports them as unused; removing them breaks module resolution.
+        if (packageJson.dependencies[dep].startsWith('link:')) {
             return;
         }
         log += `Removing ${dep} from ${packageName} package.json\n`;

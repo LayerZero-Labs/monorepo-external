@@ -6,6 +6,8 @@
     "scripts": {
         "build": "pnpm build:contracts && pnpm generate:sdk",
         "build:contracts": "pnpm exec lz-tool stellar contract build",
+        "build:contracts:native": "pnpm exec lz-tool --docker-platform native stellar contract build",
+        "build:native": "pnpm build:contracts:native && pnpm generate:sdk",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
         "generate:sdk": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
         "lint": "pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",

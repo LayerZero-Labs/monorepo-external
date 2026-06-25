@@ -2,7 +2,14 @@
     "extends": ["//"],
     "tasks": {
         "build": {
-            "dependsOn": ["^build"]
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!test/**",
+                "!tsconfig.test.json",
+                "!vitest.config.ts"
+            ]
         }
     }
 }

@@ -6,7 +6,6 @@ import 'hardhat-deploy';
 import 'hardhat-contract-sizer';
 import '@nomiclabs/hardhat-ethers';
 import 'solidity-coverage';
-import '@typechain/hardhat';
 import '@layerzerolabs/hardhat-tron';
 import '@matterlabs/hardhat-zksync-solc';
 
