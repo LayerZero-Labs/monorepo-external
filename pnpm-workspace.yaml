@@ -118,7 +118,7 @@ catalogs:
     tsx: ^4.21.0
     turbo: 2.6.1
     typescript: ^5.8.2
-    vitest: ^3.2.4
+    vitest: ^3.2.6
     zod: 4.3.5
     zx: ^8.8.5
   ethena-oft:
@@ -193,6 +193,7 @@ catalogs:
     '@types/react': 19.2.6
     '@types/react-dom': 19.2.3
   ui-monorepo-default:
+    '@ethersproject/abstract-provider': ^5.7.0
     '@solana/web3.js': 1.95.8
     '@types/jest': 29.5.14
     '@types/node': 18.0.0
@@ -206,7 +207,7 @@ catalogs:
     eslint-plugin-simple-import-sort: 12.1.1
     ethers: ^5.7.0
     ts-jest: 29.4.7
-    vitest: ^3.2.4
+    vitest: ^3.2.6
     zod: ^3.24.2
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true

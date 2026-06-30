@@ -35,7 +35,10 @@ export async function pathExists(path: string): Promise<boolean> {
     try {
         await stat(path);
         return true;
-    } catch (err: any) {
-        return err.code !== 'ENOENT' ? true : false;
+    } catch (err) {
+        if ((err as { code?: string }).code === 'ENOENT') {
+            return false;
+        }
+        throw err;
     }
 }

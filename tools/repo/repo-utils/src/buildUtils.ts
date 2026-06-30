@@ -1,14 +1,37 @@
-import { execFile, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { relative, sep } from 'path';
-import { promisify } from 'util';
 
-const execFilePromise = promisify(execFile);
+const runPnpm = (args: string[], cwd: string, verbose: boolean): Promise<void> =>
+    new Promise((resolve, reject) => {
+        // Use `spawn` instead of `execFile` so stdout is never buffered into memory: a repo-wide
+        // lint pass prints a line per file and would exceed execFile's default 1 MiB `maxBuffer`.
+        const child = spawn('pnpm', args, {
+            cwd,
+            // When `verbose`, stream everything live (`inherit`). Otherwise, discard stdout but
+            // capture and append stderr to the error message.
+            stdio: verbose ? 'inherit' : ['ignore', 'ignore', 'pipe'],
+        });
+        let stderr = '';
+        child.stderr?.on('data', (chunk) => (stderr += chunk));
+        child.on('error', reject);
+        child.on('close', (code) => {
+            if (code === 0) {
+                resolve();
+                return;
+            }
+            const detail = stderr.trim();
+            reject(
+                new Error(
+                    `pnpm ${args.join(' ')} exited with code ${code}${detail ? `\n${detail}` : ''}`,
+                ),
+            );
+        });
+    });
 
 export type RunCodeFormattersOptions = {
     directoriesToLint?: string[];
     skipFormatting?: boolean;
     skipLint?: boolean;
-    verbose?: boolean;
 };
 
 const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
@@ -28,82 +51,50 @@ const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
  *   located under these directories. When omitted, lint runs only against the package at `packagePath`.
  * @param options.skipFormatting - Skip prettier when true.
  * @param options.skipLint - Skip package lint commands when true.
- * @param options.verbose - When true, echo formatter stderr and log errors before rethrowing.
- *   Failures always throw regardless of this flag.
  */
 export const runCodeFormatters = async (
     filepath: string,
     packagePath: string,
-    {
-        directoriesToLint,
-        skipFormatting = false,
-        skipLint = false,
-        verbose = false,
-    }: RunCodeFormattersOptions = {},
+    { directoriesToLint, skipFormatting = false, skipLint = false }: RunCodeFormattersOptions = {},
 ): Promise<void> => {
     if (skipFormatting && skipLint) {
         return;
     }
 
-    try {
-        if (!skipFormatting) {
-            const stderr = await new Promise<string>((resolve, reject) => {
-                const child = spawn('pnpm', ['prettier', '--write', filepath], {
-                    cwd: packagePath,
-                    stdio: ['ignore', 'ignore', 'pipe'],
-                });
-                let stderr = '';
-                child.stderr.on('data', (chunk) => (stderr += chunk));
-                child.on('error', reject);
-                child.on('close', (code) =>
-                    code === 0
-                        ? resolve(stderr)
-                        : reject(new Error(`prettier exited with code ${code}`)),
-                );
-            });
-            if (stderr && verbose) {
-                console.error('Error running prettier:', stderr);
-            }
-        }
+    if (!skipFormatting) {
+        await runPnpm(['prettier', '--write', filepath], packagePath, false);
+    }
 
-        if (!skipLint) {
-            const filters =
-                directoriesToLint?.flatMap((directory) => [
-                    '--filter',
-                    toPnpmFilterPath(directory, packagePath),
-                ]) ?? [];
-            const isMultiPackage = filters.length > 0;
+    if (!skipLint) {
+        const filters =
+            directoriesToLint?.flatMap((directory) => [
+                '--filter',
+                toPnpmFilterPath(directory, packagePath),
+            ]) ?? [];
+        const isMultiPackage = filters.length > 0;
 
-            try {
-                // --no-bail is a recursive-only flag: in multi-package mode it lets every
-                // matched package take its auto-fix pass instead of bailing at the first
-                // failure. Passing it to a single-package run triggers a pnpm bug that
-                // swallows the script's exit code (pnpm/pnpm#8013)
-                await execFilePromise(
-                    'pnpm',
-                    [
-                        ...filters,
-                        'run',
-                        ...(isMultiPackage ? ['--no-bail'] : []),
-                        '--if-present',
-                        'lint',
-                    ],
-                    { cwd: packagePath },
-                );
-            } catch {
-                // Lint scripts conventionally exit non-zero after applying auto-fixes; the
-                // retry verifies whether the file is actually clean now or a real failure
-                // remains.
-                await execFilePromise('pnpm', [...filters, 'run', '--if-present', 'lint'], {
-                    cwd: packagePath,
-                });
-            }
+        try {
+            // --no-bail is a recursive-only flag: in multi-package mode it lets every
+            // matched package take its auto-fix pass instead of bailing at the first
+            // failure. Passing it to a single-package run triggers a pnpm bug that
+            // swallows the script's exit code (pnpm/pnpm#8013)
+            await runPnpm(
+                [
+                    ...filters,
+                    'run',
+                    ...(isMultiPackage ? ['--no-bail'] : []),
+                    '--if-present',
+                    'lint',
+                ],
+                packagePath,
+                false,
+            );
+        } catch {
+            // Lint scripts conventionally exit non-zero after applying auto-fixes; the
+            // retry verifies whether the file is actually clean now or a real failure
+            // remains.
+            await runPnpm([...filters, 'run', '--if-present', 'lint'], packagePath, false);
         }
-    } catch (error) {
-        if (verbose) {
-            console.error('Error formatting file:', error);
-        }
-        throw error;
     }
 };
 
@@ -114,9 +105,9 @@ export const runCodeFormatters = async (
 export const installDependencies = async (packagePath: string): Promise<void> => {
     try {
         console.log(`\n🔧 Deduping dependencies...`);
-        await execFilePromise('pnpm', ['dedupe'], { cwd: packagePath });
+        await runPnpm(['dedupe'], packagePath, false);
         console.log(`\n🔧 Installing dependencies...`);
-        await execFilePromise('pnpm', ['install'], { cwd: packagePath });
+        await runPnpm(['install'], packagePath, false);
         console.log(`✅ Dependencies installed successfully`);
     } catch (error) {
         console.error(
@@ -134,7 +125,7 @@ export const runConfigChecker = async (packagePath: string): Promise<void> => {
     console.log(`\n🔧 Running config checker...`);
     try {
         // Run config checker from the workspace root hence we are using the -w flag
-        await execFilePromise('pnpm', ['-w', 'config:check', '--fix'], { cwd: packagePath });
+        await runPnpm(['-w', 'config:check', '--fix'], packagePath, false);
         console.log(`✅ Config checker completed successfully`);
     } catch (error) {
         console.error(
@@ -152,38 +143,21 @@ export const runConfigChecker = async (packagePath: string): Promise<void> => {
  */
 export const runBuild = async (packagePath: string): Promise<void> => {
     console.log(`\n🔧 Running build...`);
-
-    return new Promise((resolve, reject) => {
-        const buildProcess = spawn('pnpm', ['build'], {
-            cwd: packagePath,
-            stdio: 'inherit', // Stream output directly
-        });
-
-        buildProcess.on('close', (code) => {
-            if (code === 0) {
-                console.log(`✅ Build completed successfully`);
-                resolve();
-            } else {
-                console.error(`❌ Build failed with exit code ${code}`);
-                console.log(`💡 You can manually run 'pnpm build' in the package directory`);
-                reject(new Error(`Build failed with exit code ${code}`));
-            }
-        });
-
-        buildProcess.on('error', (error) => {
-            console.error(`❌ Failed to run build:`, error.message);
-            console.log(`💡 You can manually run 'pnpm build' in the package directory`);
-            reject(error);
-        });
-    });
+    try {
+        // Verbosely log stdout so that we can inspect cache misses.
+        await runPnpm(['build'], packagePath, true);
+        console.log(`✅ Build completed successfully`);
+    } catch (error) {
+        console.error(`❌ Build failed:`, error instanceof Error ? error.message : error);
+        console.log(`💡 You can manually run 'pnpm build' in the package directory`);
+        throw error;
+    }
 };
 
 export const generateContractsSnapshot = async (repoDirectory: string): Promise<void> => {
     console.log(`\n🔧 Generating contracts snapshot...`);
     try {
-        await execFilePromise('pnpm', ['turbo:run', 'test:snapshot:update', '--continue'], {
-            cwd: repoDirectory,
-        });
+        await runPnpm(['turbo:run', 'test:snapshot:update', '--continue'], repoDirectory, false);
         console.log(`✅ Contracts snapshot generated successfully`);
     } catch (error) {
         console.error(
