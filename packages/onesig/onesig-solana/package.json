@@ -45,6 +45,7 @@
         "@ethersproject/bytes": "catalog:",
         "@layerzerolabs/common-concurrency-utils": "workspace:*",
         "@layerzerolabs/onesig-core": "workspace:*",
+        "@layerzerolabs/onesig-model": "workspace:*",
         "@metaplex-foundation/umi": "catalog:onesig-solana",
         "@metaplex-foundation/umi-eddsa-web3js": "catalog:onesig-solana",
         "@metaplex-foundation/umi-program-repository": "catalog:onesig-solana",

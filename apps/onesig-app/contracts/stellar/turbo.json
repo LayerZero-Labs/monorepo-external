@@ -1,0 +1,9 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!mocks/**", "!src/tests/**"],
+            "outputs": ["target/wasm32v1-none/release/*.wasm", "target/wasm32v1-none/release/*.d"]
+        }
+    }
+}

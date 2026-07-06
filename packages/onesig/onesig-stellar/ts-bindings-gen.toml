@@ -1,3 +1,0 @@
-[[contracts]]
-wasm_name = "onesig"
-output_name = "index.ts"

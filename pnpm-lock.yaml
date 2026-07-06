@@ -394,6 +394,8 @@ overrides:
   ws@^7: ^7.5.11
   ws@^8: ^8.21.0
 
+packageExtensionsChecksum: sha256-TyKREPPirmulSgKkLgUeX1jC6mLzynWQletkdP0hZLs=
+
 importers:
 
   .:
@@ -698,6 +700,61 @@ importers:
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
+
+  apps/onesig-app/contracts/stellar:
+    devDependencies:
+      '@layerzerolabs/protocol-stellar-v2':
+        specifier: workspace:*
+        version: link:../../../../contracts/protocol/stellar
+      '@layerzerolabs/vm-tooling-stellar':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-stellar
+
+  apps/onesig-app/packages/onesig-stellar-sdk:
+    dependencies:
+      '@layerzerolabs/onesig-core':
+        specifier: workspace:*
+        version: link:../../../../packages/onesig/onesig-core
+      '@layerzerolabs/onesig-model':
+        specifier: workspace:*
+        version: link:../../../../packages/onesig/onesig-model
+      '@stellar/stellar-sdk':
+        specifier: 'catalog:'
+        version: 14.4.3
+    devDependencies:
+      '@layerzerolabs/onesig-stellar-contracts':
+        specifier: workspace:*
+        version: link:../../contracts/stellar
+      '@layerzerolabs/stellar-ts-bindings-gen':
+        specifier: workspace:*
+        version: link:../../../../packages/vms/stellar/ts-bindings-gen
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/vm-tooling-stellar':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-stellar
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.1
+      ethers:
+        specifier: 'catalog:'
+        version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.21.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   apps/project-types/console-oft-app/contracts/evm:
     devDependencies:
@@ -1083,13 +1140,6 @@ importers:
         version: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/onesig/onesig-evm:
-    dependencies:
-      '@layerzerolabs/onesig-core':
-        specifier: workspace:*
-        version: link:../onesig-core
-      ethers:
-        specifier: 'catalog:'
-        version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     devDependencies:
       '@ethersproject/abstract-provider':
         specifier: 'catalog:'
@@ -1100,12 +1150,15 @@ importers:
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
         version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
+      '@layerzerolabs/onesig-core':
+        specifier: workspace:*
+        version: link:../onesig-core
+      '@layerzerolabs/onesig-evm-sdk':
+        specifier: workspace:*
+        version: link:../onesig-evm-sdk
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../tooling-configs/tsup
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/typescript
@@ -1139,6 +1192,9 @@ importers:
       dotenv:
         specifier: 'catalog:'
         version: 16.4.7
+      ethers:
+        specifier: 'catalog:'
+        version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       hardhat:
         specifier: 2.27.0
         version: 2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)
@@ -1160,9 +1216,6 @@ importers:
       solidity-coverage:
         specifier: 'catalog:'
         version: 0.8.17(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -1172,6 +1225,62 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/onesig/onesig-evm-sdk:
+    dependencies:
+      '@layerzerolabs/onesig-core':
+        specifier: workspace:*
+        version: link:../onesig-core
+      '@layerzerolabs/onesig-model':
+        specifier: workspace:*
+        version: link:../onesig-model
+      ethers:
+        specifier: 'catalog:'
+        version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.1
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.5.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/onesig/onesig-model:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.5.0)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/onesig/onesig-solana:
     dependencies:
@@ -1184,6 +1293,9 @@ importers:
       '@layerzerolabs/onesig-core':
         specifier: workspace:*
         version: link:../onesig-core
+      '@layerzerolabs/onesig-model':
+        specifier: workspace:*
+        version: link:../onesig-model
       '@metaplex-foundation/umi':
         specifier: catalog:onesig-solana
         version: 1.1.1
@@ -1242,58 +1354,6 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.2
-      vitest:
-        specifier: 'catalog:'
-        version: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
-
-  packages/onesig/onesig-stellar:
-    devDependencies:
-      '@layerzerolabs/protocol-stellar-v2':
-        specifier: workspace:*
-        version: link:../../../contracts/protocol/stellar
-      '@layerzerolabs/stellar-ts-bindings-gen':
-        specifier: workspace:*
-        version: link:../../vms/stellar/ts-bindings-gen
-      '@layerzerolabs/vm-tooling-stellar':
-        specifier: workspace:*
-        version: link:../../../tools/vm-tooling/vm-tooling-stellar
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
-
-  packages/onesig/onesig-stellar/sdk:
-    dependencies:
-      '@layerzerolabs/onesig-core':
-        specifier: workspace:*
-        version: link:../../onesig-core
-      '@stellar/stellar-sdk':
-        specifier: 'catalog:'
-        version: 14.4.3
-    devDependencies:
-      '@layerzerolabs/onesig-stellar':
-        specifier: workspace:*
-        version: link:..
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/typescript
-      '@layerzerolabs/vm-tooling-stellar':
-        specifier: workspace:*
-        version: link:../../../../tools/vm-tooling/vm-tooling-stellar
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.1
-      ethers:
-        specifier: 'catalog:'
-        version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -10880,7 +10940,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/debug@4.1.12)(@types/node@25.5.0)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 3.2.6(@types/debug@4.1.12)(@types/node@22.19.1)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
     optional: true
 
   '@vitest/utils@3.2.6':

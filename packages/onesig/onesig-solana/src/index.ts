@@ -24,6 +24,7 @@ export interface GenerateLeafsResult<Leaf extends BaseLeafData = BaseLeafData<an
     leafs: Leaf[];
 }
 
+export * from './configChangeCalls';
 export * from './generated';
 export * from './onesig';
 

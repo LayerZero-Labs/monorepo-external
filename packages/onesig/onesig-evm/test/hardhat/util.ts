@@ -10,8 +10,7 @@ import type {
     SigningOptions,
     TypedDataSigner,
 } from '@layerzerolabs/onesig-core';
-
-import { ETHLeafData, evmLeafGenerator } from '../../src';
+import type { ETHLeafData } from '@layerzerolabs/onesig-evm-sdk';
 
 export type TransactionCall = {
     to: string;
@@ -27,6 +26,7 @@ export async function createSingleTxMerkleTree(
     nonce = 0n,
 ) {
     const { makeOneSigTree } = await import('@layerzerolabs/onesig-core');
+    const { evmLeafGenerator } = await import('@layerzerolabs/onesig-evm-sdk');
     const gen = evmLeafGenerator([
         {
             nonce,

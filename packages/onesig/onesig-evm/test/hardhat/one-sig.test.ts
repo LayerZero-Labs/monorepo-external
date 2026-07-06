@@ -11,8 +11,8 @@ import type {
     Signature as _Signature,
     signOneSigTree as _signOneSigTree,
 } from '@layerzerolabs/onesig-core';
+import type { evmLeafGenerator as _evmLeafGenerator } from '@layerzerolabs/onesig-evm-sdk';
 
-import { evmLeafGenerator } from '../../src';
 import {
     callNonExistentFunctionCall,
     createSingleTxMerkleTree,
@@ -30,6 +30,7 @@ let encodeLeaf: typeof _encodeLeaf;
 let makeOneSigTree: typeof _makeOneSigTree;
 let Signature: typeof _Signature;
 let signOneSigTree: typeof _signOneSigTree;
+let evmLeafGenerator: typeof _evmLeafGenerator;
 
 describe('OneSig', () => {
     let signers: SignerWithAddress[];
@@ -69,6 +70,7 @@ describe('OneSig', () => {
         ({ compareAddresses, encodeLeaf, makeOneSigTree, Signature, signOneSigTree } = await import(
             '@layerzerolabs/onesig-core'
         ));
+        ({ evmLeafGenerator } = await import('@layerzerolabs/onesig-evm-sdk'));
 
         signers = (await ethers.getSigners()) as unknown as SignerWithAddress[];
         signer1 = signers[0];

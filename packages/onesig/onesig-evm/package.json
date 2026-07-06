@@ -3,29 +3,15 @@
     "version": "0.0.0",
     "private": false,
     "license": "GPL-3.0-only",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "require": "./dist/index.js",
-            "import": "./dist/index.mjs",
-            "default": "./dist/index.js"
-        },
-        "./package.json": "./package.json"
-    },
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
     "files": [
         "contracts/**/*.sol",
         "artifacts/contracts/**/!(*.dbg).json",
         "artifacts-zk/contracts/**/!(*.dbg).json",
-        "artifacts-tron/contracts/**/!(*.dbg).json",
-        "dist/**/*"
+        "artifacts-tron/contracts/**/!(*.dbg).json"
     ],
     "scripts": {
-        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm forge:build && pnpm build:js",
-        "build:js": "tsup",
-        "clean": "rm -rf ./node_modules .turbo ./dist hh-cache cache out artifacts artifacts-zk artifacts-tron",
+        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm forge:build",
+        "clean": "rm -rf ./node_modules .turbo hh-cache cache out artifacts artifacts-zk artifacts-tron",
         "compile:evm": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config ./hardhat.config.ts",
         "compile:tron": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config ./hardhat.config.ts --network tron",
         "compile:zksync": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}' hardhat compile --config ./hardhat.config.ts --network zksync",
@@ -36,16 +22,13 @@
         "lint:sol": "solhint 'contracts/**/*.sol'",
         "test": "pnpm forge:test && pnpm hardhat:test"
     },
-    "dependencies": {
-        "@layerzerolabs/onesig-core": "workspace:*",
-        "ethers": "catalog:"
-    },
     "devDependencies": {
         "@ethersproject/abstract-provider": "catalog:",
         "@layerzerolabs/eslint-configuration": "workspace:*",
         "@layerzerolabs/hardhat-tron": "catalog:",
+        "@layerzerolabs/onesig-core": "workspace:*",
+        "@layerzerolabs/onesig-evm-sdk": "workspace:*",
         "@layerzerolabs/toolbox-foundry": "catalog:",
-        "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
         "@matterlabs/hardhat-zksync-solc": "catalog:onesig-evm",
@@ -57,6 +40,7 @@
         "@types/node": "catalog:",
         "chai": "catalog:",
         "dotenv": "catalog:",
+        "ethers": "catalog:",
         "hardhat": "catalog:",
         "hardhat-contract-sizer": "catalog:",
         "hardhat-deploy": "catalog:",
@@ -64,7 +48,6 @@
         "solhint": "catalog:",
         "solidity-bytes-utils": "catalog:",
         "solidity-coverage": "catalog:",
-        "tsup": "catalog:",
         "tsx": "catalog:",
         "typescript": "catalog:",
         "vitest": "catalog:"

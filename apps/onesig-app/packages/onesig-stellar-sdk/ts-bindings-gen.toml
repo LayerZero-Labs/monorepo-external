@@ -1,0 +1,8 @@
+# Reads the wasm built by the contract package (@layerzerolabs/onesig-stellar-contracts,
+# at apps/onesig-app/contracts/stellar) and writes the generated TypeScript bindings into this SDK package.
+wasm_dir = "../../contracts/stellar/target/wasm32v1-none/release"
+output_dir = "src/generated"
+
+[[contracts]]
+wasm_name = "onesig"
+output_name = "index.ts"

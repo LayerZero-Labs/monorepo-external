@@ -10,5 +10,5 @@
         "noUnusedParameters": false
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["src", "test", "scripts", "hardhat.config.ts"]
+    "include": ["test", "hardhat.config.ts"]
 }

@@ -1,0 +1,51 @@
+{
+    "name": "@layerzerolabs/onesig-stellar-sdk",
+    "version": "0.0.0",
+    "private": false,
+    "description": "TypeScript SDK for OneSig Stellar contract",
+    "license": "MIT",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.mjs",
+        "default": "./dist/index.mjs"
+    },
+    "main": "./dist/index.mjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "pnpm gen:bindings && tsup",
+        "clean": "rm -rf dist .turbo src/generated",
+        "gen:bindings": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
+        "start:stellar": "tsx scripts/start-validator.ts",
+        "stop:stellar": "docker stop onesig-stellar-service && docker rm onesig-stellar-service",
+        "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts --exclude test/offchainWorkflow.test.ts",
+        "test:integration": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build:mocks && pnpm start:stellar && vitest run --no-file-parallelism test/integration.test.ts test/offchainWorkflow.test.ts; pnpm stop:stellar",
+        "test:offchain:workflow": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build:contract && pnpm start:stellar && vitest run test/offchainWorkflow.test.ts; pnpm stop:stellar"
+    },
+    "dependencies": {
+        "@layerzerolabs/onesig-core": "workspace:*",
+        "@layerzerolabs/onesig-model": "workspace:*",
+        "@stellar/stellar-sdk": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/onesig-stellar-contracts": "workspace:*",
+        "@layerzerolabs/stellar-ts-bindings-gen": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
+        "@types/node": "catalog:",
+        "ethers": "catalog:",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

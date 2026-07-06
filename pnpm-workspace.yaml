@@ -224,3 +224,7 @@ onlyBuiltDependencies:
   - keccak
   - protobufjs
   - utf-8-validate
+packageExtensions:
+  '@ronomon/crypto-async':
+    dependencies:
+      node-gyp: ^12.2.0
