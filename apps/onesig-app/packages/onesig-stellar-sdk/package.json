@@ -27,6 +27,7 @@
         "test:offchain:workflow": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build:contract && pnpm start:stellar && vitest run test/offchainWorkflow.test.ts; pnpm stop:stellar"
     },
     "dependencies": {
+        "@layerzerolabs/common-encoding-utils": "workspace:*",
         "@layerzerolabs/onesig-core": "workspace:*",
         "@layerzerolabs/onesig-model": "workspace:*",
         "@stellar/stellar-sdk": "catalog:"

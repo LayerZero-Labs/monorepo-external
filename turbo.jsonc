@@ -2,6 +2,13 @@
     "$schema": "https://turborepo.org/schema.json",
     "daemon": false,
     "globalPassThroughEnv": [
+        // COREPACK_HOME is required to enable corepack in stargate, otherwise
+        // vercel CLI is unable to parse turbo version from package.json, then
+        // decides not to enable corepack, in the fallback decides to use pnpm 9
+        // based on the Vercel project age, and ultimately fails with
+        // `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`.
+        "COREPACK_HOME",
+
         "NPM_TOKEN",
         "VSCODE_INSPECTOR_OPTIONS",
         "CONFIG_PATH",

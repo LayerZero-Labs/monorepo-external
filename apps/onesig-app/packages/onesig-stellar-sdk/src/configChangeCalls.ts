@@ -1,3 +1,4 @@
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
 import type { ConfigChangeOperation, OneSigConfigChangeCall } from '@layerzerolabs/onesig-model';
 
 import {
@@ -50,7 +51,7 @@ export function generateStellarConfigChangeCall(
             return toConfigChangeCall(
                 chainName,
                 createSetSignerCall(
-                    Buffer.from((params.address as string).replace(/^0x/, ''), 'hex'),
+                    Buffer.from(hexToBytes(params.address as string)),
                     true,
                     contractAddress,
                 ),
@@ -59,7 +60,7 @@ export function generateStellarConfigChangeCall(
             return toConfigChangeCall(
                 chainName,
                 createSetSignerCall(
-                    Buffer.from((params.address as string).replace(/^0x/, ''), 'hex'),
+                    Buffer.from(hexToBytes(params.address as string)),
                     false,
                     contractAddress,
                 ),
@@ -72,16 +73,13 @@ export function generateStellarConfigChangeCall(
         case 'setSeed':
             return toConfigChangeCall(
                 chainName,
-                createSetSeedCall(
-                    Buffer.from((params.seed as string).replace(/^0x/, ''), 'hex'),
-                    contractAddress,
-                ),
+                createSetSeedCall(Buffer.from(hexToBytes(params.seed as string)), contractAddress),
             );
         case 'setExecutor':
             return toConfigChangeCall(
                 chainName,
                 createSetExecutorCall(
-                    Buffer.from((params.address as string).replace(/^0x/, ''), 'hex'),
+                    Buffer.from(hexToBytes(params.address as string)),
                     true,
                     contractAddress,
                 ),
@@ -90,7 +88,7 @@ export function generateStellarConfigChangeCall(
             return toConfigChangeCall(
                 chainName,
                 createSetExecutorCall(
-                    Buffer.from((params.address as string).replace(/^0x/, ''), 'hex'),
+                    Buffer.from(hexToBytes(params.address as string)),
                     false,
                     contractAddress,
                 ),

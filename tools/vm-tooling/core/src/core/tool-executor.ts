@@ -1,4 +1,5 @@
 import { uniqBy } from 'es-toolkit';
+import { realpath } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
@@ -8,7 +9,7 @@ import { $, type ProcessOutput } from 'zx';
 import type { DockerPlatformOverride, EnvironmentVariable, VolumeMapping } from '../config';
 import { CARGO_TARGET_CACHE_PATH } from '../config';
 import type { ChainContext } from '../context';
-import { findWorkspaceRoot } from '../utils';
+import { createMiniWorkspace } from '../mini-workspace';
 import {
     type DockerPlatform,
     type DockerPlatformExecution,
@@ -20,6 +21,7 @@ import {
 } from '../utils/docker';
 import { stringifyError } from '../utils/error';
 import { findToolByName } from '../utils/finder';
+import { safeRemove } from '../utils/fs';
 import { executeLocally } from './local-executor';
 import { lockMany } from './lock';
 import { resolveTypeVersions } from './version-resolver';
@@ -106,6 +108,35 @@ const resolveVolumePath = (volume: VolumeMapping, workspaceRoot: string): Volume
               hostPath: path.resolve(workspaceRoot, volume.hostPath.replace(/^~/, os.homedir())),
           }
         : volume;
+
+const toDockerVolumeArgs = (volume: VolumeMapping): string[] => {
+    const mode = volume.readOnly ? ':ro' : '';
+
+    if (volume.type === 'host') {
+        return ['-v', `${volume.hostPath}:${volume.containerPath}${mode}`];
+    }
+
+    return ['-v', `${volume.name}:${volume.containerPath}${mode}`];
+};
+
+const formatDockerArgForDisplay = (arg: string): string =>
+    /\s|"/.test(arg) ? `"${arg.replace(/(["\\])/g, '\\$1')}"` : arg;
+
+const formatDockerVolumeArgs = (volumeArgs: readonly (readonly string[])[]): string[] =>
+    volumeArgs.map((args) => args.map(formatDockerArgForDisplay).join(' '));
+
+const resolveWorkspaceContainerCwd = async ({
+    cwd,
+    workspaceRoot,
+}: {
+    cwd: string;
+    workspaceRoot: string;
+}): Promise<string> => {
+    const cwdReal = await realpath(cwd);
+    const relativePath = path.relative(workspaceRoot, cwdReal).split(path.sep).join(path.posix.sep);
+
+    return relativePath ? path.posix.join('/workspace', relativePath) : '/workspace';
+};
 
 const ensureDockerImage = async (
     imageUri: string,
@@ -312,146 +343,200 @@ export async function executeToolCommand<TImageId extends string>(
         });
     }
 
-    const workspaceRoot = await findWorkspaceRoot(cwd);
+    const miniWorkspace = await createMiniWorkspace({
+        cwd,
+        pruner: tool.miniWorkspacePruner,
+    });
+    try {
+        const workspaceRoot = miniWorkspace.repoRoot;
 
-    const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
-    // Names are qualified below, once imageUri (the toolchain key) resolves.
-    const resolvedVolumes = mergeVolumes(defaultVolumes, userVolumes).map((volume) =>
-        resolveVolumePath(volume, workspaceRoot),
-    );
+        const workspaceVolumes: VolumeMapping[] = [
+            {
+                type: 'host',
+                hostPath: miniWorkspace.miniRoot,
+                containerPath: '/workspace',
+            },
+            {
+                type: 'host',
+                hostPath: miniWorkspace.packageRoot,
+                containerPath: `/workspace/${miniWorkspace.packageRelativePath}`,
+            },
+            {
+                type: 'host',
+                hostPath: miniWorkspace.pnpmVirtualStoreMount.hostPath,
+                containerPath: miniWorkspace.pnpmVirtualStoreMount.containerPath,
+                readOnly: miniWorkspace.pnpmVirtualStoreMount.readOnly,
+            },
+        ];
 
-    if (defaultVolumes.length > 0) {
-        console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
+        const defaultVolumes = defaultVolumesEnabled ? (tool.defaultVolumes ?? []) : [];
+        // Names are qualified below, once imageUri (the toolchain key) resolves.
+        const resolvedVolumes = mergeVolumes(defaultVolumes, userVolumes).map((volume) =>
+            resolveVolumePath(volume, workspaceRoot),
+        );
 
-        if (userVolumes.length > 0) {
-            const overrides = userVolumes.filter((userVolume) =>
-                defaultVolumes.some(
-                    (defaultVolume) => defaultVolume.containerPath === userVolume.containerPath,
-                ),
-            );
+        console.info(`📦 Using mini workspace: ${miniWorkspace.miniRoot}`);
+        console.info(
+            `📦 Copied ${miniWorkspace.copiedWorkspacePackageCount} workspace package source(s)`,
+        );
+        if (miniWorkspace.prunerName) {
+            console.info(`📦 Mini workspace pruner: ${miniWorkspace.prunerName}`);
+        }
+        for (const diagnostic of miniWorkspace.diagnostics) {
+            console.info(`📦 ${diagnostic}`);
+        }
 
-            if (overrides.length > 0) {
-                console.info(`🔧 User volumes override ${overrides.length} default volume(s)`);
+        if (defaultVolumes.length > 0) {
+            console.info(`📦 Using ${defaultVolumes.length} default volume(s) for ${tool.name}`);
+
+            if (userVolumes.length > 0) {
+                const overrides = userVolumes.filter((userVolume) =>
+                    defaultVolumes.some(
+                        (defaultVolume) => defaultVolume.containerPath === userVolume.containerPath,
+                    ),
+                );
+
+                if (overrides.length > 0) {
+                    console.info(`🔧 User volumes override ${overrides.length} default volume(s)`);
+                }
             }
         }
-    }
 
-    // Use Docker image with merged volumes
-    const image = findImageForTool(context, tool.name, resolvedVersion);
-    const imageUri = await getImageUri(image);
-    const relativePath = path.relative(workspaceRoot, cwd);
+        // Use Docker image with merged volumes
+        const image = findImageForTool(context, tool.name, resolvedVersion);
+        const imageUri = await getImageUri(image);
+        const containerCwd = await resolveWorkspaceContainerCwd({ cwd, workspaceRoot });
 
-    // The image tag keys toolchain-shared caches — it's the registry identity of the pulled image,
-    // so artifacts compiled inside it can't bleed across toolchains. See qualifyVolumeName.
-    const cacheKey = getImageTag(image);
-    const qualifiedVolumes = resolvedVolumes.map((volume) =>
-        qualifyVolumeName(volume, { ...dockerPlatform.volumeNameOptions, cacheKey }),
-    );
-
-    await ensureDockerImage(imageUri, dockerPlatform);
-
-    if (entrypoint?.trim()) {
-        console.info(`🔧 Using custom entrypoint: ${entrypoint}`);
-    }
-
-    // Merge default env vars with custom env vars (custom takes precedence)
-    const defaultEnv = tool.defaultEnv ?? [];
-
-    // Check if Docker socket is mounted (for tools that spawn Docker containers like anchor --verifiable)
-    // If so, inject HOST_CWD and HOST_WORKSPACE_ROOT so the inner container knows the host paths
-    const hasDockerSocketMount = resolvedVolumes.some(
-        (volume) => volume.type === 'host' && volume.containerPath === '/var/run/docker.sock',
-    );
-    const dockerSocketEnv: EnvironmentVariable[] = hasDockerSocketMount
-        ? [
-              { name: 'HOST_CWD', value: cwd },
-              { name: 'HOST_WORKSPACE_ROOT', value: workspaceRoot },
-          ]
-        : [];
-
-    // Lowest precedence (passed last) so a user --env or tool default for CARGO_TARGET_DIR wins.
-    const cargoCacheEnv = resolveCargoCacheEnv(script, resolvedVolumes);
-
-    const envArgs = mergeToolEnv(customEnvVars, dockerSocketEnv, defaultEnv, cargoCacheEnv).flatMap(
-        ({ name, value }) => ['-e', `${name}=${value}`],
-    );
-
-    if (cargoCacheEnv.length > 0) {
-        console.info(`🗃️  Sharing cargo target cache at ${CARGO_TARGET_CACHE_PATH}`);
-    }
-
-    // Add host user UID/GID for permission matching on Linux/macOS
-    // This prevents artifacts created in containers from having root ownership
-    // Used by stellar, sui, and iota images which have an entrypoint that handles UID/GID
-    const hostUserIds = getHostUserIds();
-    const userIdEnvArgs = hostUserIds
-        ? ['-e', `LOCAL_UID=${hostUserIds.uid}`, '-e', `LOCAL_GID=${hostUserIds.gid}`]
-        : [];
-
-    console.info(`👤 Running container as UID:GID ${hostUserIds?.uid}:${hostUserIds?.gid}`);
-
-    if (defaultEnv.length > 0) {
-        console.info(
-            `🌍 Using ${defaultEnv.length} default environment variable(s) for ${tool.name}`,
+        // The image tag keys toolchain-shared caches — it's the registry identity of the pulled image,
+        // so artifacts compiled inside it can't bleed across toolchains. See qualifyVolumeName.
+        const cacheKey = getImageTag(image);
+        const qualifiedVolumes = resolvedVolumes.map((volume) =>
+            qualifyVolumeName(volume, { ...dockerPlatform.volumeNameOptions, cacheKey }),
         );
-    }
-    if (customEnvVars.length > 0) {
-        console.info(`🌍 Using ${customEnvVars.length} custom environment variable(s)`);
-    }
+        const volumeArgs = [
+            ...workspaceVolumes.map(toDockerVolumeArgs),
+            ...qualifiedVolumes.map(toDockerVolumeArgs),
+        ];
 
-    // Handle custom script execution
-    let finalArgs: string[];
-    if (script && script.trim() !== '') {
-        console.info(`📜 Executing custom script: ${script}`);
-        finalArgs = ['bash', '-c', script];
-    } else {
-        finalArgs = entrypoint === undefined ? [tool.name, ...args] : args;
-    }
+        console.info('📦 Docker volumes:');
+        for (const volumeArg of formatDockerVolumeArgs(volumeArgs)) {
+            console.info(`  ${volumeArg}`);
+        }
 
-    // Build the Docker command with proper argument separation
-    const dockerArgs = [
-        'run',
-        ...dockerPlatform.args,
-        ...(tool.privileged ? ['--privileged'] : []),
-        '--rm',
-        '--add-host=host.docker.internal:host-gateway',
-        ...envArgs,
-        ...userIdEnvArgs,
-        '-v',
-        `${workspaceRoot}:/workspace`,
-        '-w',
-        `/workspace/${relativePath}`,
-        ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
-        ...qualifiedVolumes.flatMap((volume) => [
-            '-v',
-            `${volume.type === 'host' ? volume.hostPath : volume.name}:${volume.containerPath}`,
-        ]),
-        ...(entrypoint ? ['--entrypoint', entrypoint] : []),
-        imageUri,
-        ...finalArgs,
-    ];
+        await ensureDockerImage(imageUri, dockerPlatform);
 
-    const output = await lockMany(
-        qualifiedVolumes.flatMap((volume) =>
-            volume.type === 'isolate' && volume.locked ? [volume.name] : [],
-        ),
-        async () => {
-            const label = `⏳ ${finalArgs.join(' ')}`;
-            console.time(label);
-            const docker$ = dockerPlatform.processEnv ? $({ env: dockerPlatform.processEnv }) : $;
-            const result = await docker$`docker ${dockerArgs}`.nothrow();
-            console.timeEnd(label);
+        if (entrypoint?.trim()) {
+            console.info(`🔧 Using custom entrypoint: ${entrypoint}`);
+        }
 
-            return result;
-        },
-    );
+        // Merge default env vars with custom env vars (custom takes precedence)
+        const defaultEnv = tool.defaultEnv ?? [];
 
-    if (output.exitCode) {
-        const stdout = output.stdout.trim();
-        throw new Error(
-            `Failed to run Docker container (exit code: ${output.exitCode})${stdout ? `\n${stdout}` : ''}`,
+        // Check if Docker socket is mounted (for tools that spawn Docker containers like anchor --verifiable)
+        // If so, inject HOST_CWD and HOST_WORKSPACE_ROOT so the inner container knows the host paths
+        const hasDockerSocketMount = resolvedVolumes.some(
+            (volume) => volume.type === 'host' && volume.containerPath === '/var/run/docker.sock',
         );
-    }
+        const dockerSocketEnv: EnvironmentVariable[] = hasDockerSocketMount
+            ? [
+                  { name: 'HOST_CWD', value: cwd },
+                  { name: 'HOST_WORKSPACE_ROOT', value: workspaceRoot },
+              ]
+            : [];
 
-    return output;
+        // Lowest precedence (passed last) so a user --env or tool default for CARGO_TARGET_DIR wins.
+        const cargoCacheEnv = resolveCargoCacheEnv(script, resolvedVolumes);
+
+        const envArgs = mergeToolEnv(
+            customEnvVars,
+            dockerSocketEnv,
+            defaultEnv,
+            cargoCacheEnv,
+        ).flatMap(({ name, value }) => ['-e', `${name}=${value}`]);
+
+        if (cargoCacheEnv.length > 0) {
+            console.info(`🗃️  Sharing cargo target cache at ${CARGO_TARGET_CACHE_PATH}`);
+        }
+
+        // Add host user UID/GID for permission matching on Linux/macOS
+        // This prevents artifacts created in containers from having root ownership
+        // Used by stellar, sui, and iota images which have an entrypoint that handles UID/GID
+        const hostUserIds = getHostUserIds();
+        const userIdEnvArgs = hostUserIds
+            ? ['-e', `LOCAL_UID=${hostUserIds.uid}`, '-e', `LOCAL_GID=${hostUserIds.gid}`]
+            : [];
+
+        console.info(`👤 Running container as UID:GID ${hostUserIds?.uid}:${hostUserIds?.gid}`);
+
+        if (defaultEnv.length > 0) {
+            console.info(
+                `🌍 Using ${defaultEnv.length} default environment variable(s) for ${tool.name}`,
+            );
+        }
+        if (customEnvVars.length > 0) {
+            console.info(`🌍 Using ${customEnvVars.length} custom environment variable(s)`);
+        }
+
+        // Handle custom script execution
+        let finalArgs: string[];
+        if (script && script.trim() !== '') {
+            console.info(`📜 Executing custom script: ${script}`);
+            finalArgs = ['bash', '-c', script];
+        } else {
+            finalArgs = entrypoint === undefined ? [tool.name, ...args] : args;
+        }
+
+        // Build the Docker command with proper argument separation
+        const dockerArgs = [
+            'run',
+            ...dockerPlatform.args,
+            ...(tool.privileged ? ['--privileged'] : []),
+            '--rm',
+            '--add-host=host.docker.internal:host-gateway',
+            ...envArgs,
+            ...userIdEnvArgs,
+            ...volumeArgs.flat(),
+            '-w',
+            containerCwd,
+            ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
+            ...(entrypoint ? ['--entrypoint', entrypoint] : []),
+            imageUri,
+            ...finalArgs,
+        ];
+
+        const output = await lockMany(
+            qualifiedVolumes.flatMap((volume) =>
+                volume.type === 'isolate' && volume.locked ? [volume.name] : [],
+            ),
+            async () => {
+                const label = `⏳ ${finalArgs.join(' ')}`;
+                console.time(label);
+                const docker$ = dockerPlatform.processEnv
+                    ? $({ env: dockerPlatform.processEnv })
+                    : $;
+                const result = await docker$`docker ${dockerArgs}`.nothrow();
+                console.timeEnd(label);
+
+                return result;
+            },
+        );
+
+        if (output.exitCode) {
+            const stdout = output.stdout.trim();
+            throw new Error(
+                `Failed to run Docker container (exit code: ${output.exitCode})${stdout ? `\n${stdout}` : ''}`,
+            );
+        }
+
+        return output;
+    } finally {
+        // Docker can release bind mounts slightly after the command exits; cleanup failures should
+        // not fail a completed tool run.
+        const removeResult = await safeRemove(miniWorkspace.miniRoot);
+        if (!removeResult.removed) {
+            console.warn(
+                `⚠️  Failed to clean up mini workspace ${miniWorkspace.miniRoot}: ${stringifyError(removeResult.error)}`,
+            );
+        }
+    }
 }

@@ -1,6 +1,7 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
 
+import { hexToBytes, hexZeroPad } from '@layerzerolabs/common-encoding-utils';
 import type { GenerateLeafsResult } from '@layerzerolabs/onesig-core';
 import { type BaseLeafData } from '@layerzerolabs/onesig-core';
 
@@ -15,7 +16,7 @@ export function evmLeafGenerator(leafs: ETHLeafData[]): GenerateLeafsResult<ETHL
     return {
         leafs,
         encodeAddress(address) {
-            return Buffer.from(address.substring(2).padStart(64, '0'), 'hex');
+            return Buffer.from(hexToBytes(hexZeroPad(address, 32)));
         },
         encodeCalls(calls: ETHTransactionCallData[]) {
             const hexString = ethers.utils.defaultAbiCoder.encode(
@@ -23,7 +24,7 @@ export function evmLeafGenerator(leafs: ETHLeafData[]): GenerateLeafsResult<ETHL
                 [calls],
             );
 
-            return Buffer.from(hexString.substring(2), 'hex');
+            return Buffer.from(hexToBytes(hexString));
         },
     };
 }

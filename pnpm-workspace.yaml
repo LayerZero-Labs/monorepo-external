@@ -6,7 +6,7 @@ packages:
   - configs/**
   - contracts/**
   - infrastructure/**
-  - legacy/**
+  - migrated/**
   - onboarding/**
   - packages/**
   - scripts/**
@@ -70,6 +70,7 @@ catalogs:
     '@types/string-format': ^2.0.0
     '@typescript-eslint/eslint-plugin': ^8.31.1
     '@typescript-eslint/parser': ^8.31.1
+    bs58: ^5.0.0
     buffer: ^6.0.3
     chai: ^4.4.1
     chalk: 5.6.2
@@ -119,6 +120,7 @@ catalogs:
     turbo: 2.6.1
     typescript: ^5.8.2
     vitest: ^3.2.6
+    yaml: ^2.2.2
     zod: 4.3.5
     zx: ^8.8.5
   ethena-oft:
@@ -199,6 +201,7 @@ catalogs:
     '@types/node': 18.0.0
     '@typescript-eslint/eslint-plugin': 7.1.0
     '@typescript-eslint/parser': 7.1.0
+    bs58: ^5.0.0
     buffer: 6.0.3
     dotenv: ^16.0.3
     eslint-config-prettier: 9.1.0

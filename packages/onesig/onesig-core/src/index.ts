@@ -3,6 +3,11 @@ import type { BigNumber, BytesLike, TypedDataDomain, TypedDataField } from 'ethe
 import { ethers } from 'ethers';
 import { MerkleTree } from 'merkletreejs';
 
+import {
+    bigIntToBytes,
+    bytesToHexPrefixed,
+    hexToBytes,
+} from '@layerzerolabs/common-encoding-utils';
 import type { HexString } from '@layerzerolabs/typescript-utils';
 
 import { OneSigCoreError } from './error';
@@ -30,12 +35,6 @@ export interface GenerateLeafsResult<Leaf extends BaseLeafData = BaseLeafData<an
     leafs: Leaf[];
 }
 
-function readByteFromHex(input: string, byteOffset: number) {
-    const charOffset = byteOffset * 2;
-    const sub = input.substring(charOffset, charOffset + 2);
-    return parseInt(sub, 16);
-}
-
 export function encodeLeafHeader({
     targetOneSigAddress,
     oneSigId,
@@ -47,18 +46,10 @@ export function encodeLeafHeader({
 
     const storage = Buffer.alloc(49);
     storage[0] = 1;
-
-    const idStr = oneSigId.toString(16).padStart(16, '0');
-    const nonceStr = nonce.toString(16).padStart(16, '0');
-
-    for (let i = 0; i < 32; i++) {
-        if (i < 8) {
-            storage[i + 1] = readByteFromHex(idStr, i); // oneSigId
-            storage[i + 41] = readByteFromHex(nonceStr, i); // nonce
-        }
-
-        storage[i + 9] = targetOneSigAddress[i]; // target address
-    }
+    // bigIntToBytes throws if id/nonce exceed 8 bytes.
+    storage.set(bigIntToBytes(oneSigId, 8), 1); // oneSigId (8-byte big-endian)
+    storage.set(targetOneSigAddress, 9); // target address (32 bytes)
+    storage.set(bigIntToBytes(nonce, 8), 41); // nonce (8-byte big-endian)
 
     return storage;
 }
@@ -145,7 +136,7 @@ export class Signature {
                 );
             }
 
-            value = Buffer.from(value.substring(2), 'hex');
+            value = Buffer.from(hexToBytes(value));
         }
 
         if (value.length % 65 !== 0) {
@@ -163,7 +154,7 @@ export class Signature {
     }
 
     toHexString(): HexString {
-        return `0x${this.get().toString('hex')}`;
+        return bytesToHexPrefixed(this.get());
     }
 
     get signatureCount() {

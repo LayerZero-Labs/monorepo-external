@@ -6,6 +6,7 @@ import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils'
 import type { ChainContext } from './context';
 import type { ToolCommandExecutionOptions } from './core/tool-executor';
 import * as environment from './environment';
+import type { MiniWorkspacePruner } from './mini-workspace';
 
 interface RegistryConfig {
     registry: string;
@@ -45,6 +46,7 @@ export const CARGO_TARGET_CACHE_PATH = '/cargo-target';
 
 const volumeMappingBaseSchema = z.object({
     containerPath: z.string(),
+    readOnly: z.optional(z.boolean()),
 });
 
 const hostVolumeMappingSchema = volumeMappingBaseSchema.extend({
@@ -106,6 +108,9 @@ export interface Tool {
 
     // Default environment variables (user env vars can override these)
     defaultEnv?: readonly EnvironmentVariable[];
+
+    // Optional VM-specific mini-workspace pruning/validation hook.
+    miniWorkspacePruner?: MiniWorkspacePruner;
 
     // Optional version parsing and validation functions
     getSecondaryVersion?: (args: { cwd: string }) => Promise<string>;

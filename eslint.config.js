@@ -8,7 +8,7 @@ export default [
             'tools/truesight/src/**/*.{ts,tsx}',
             // The legacy truesight is a Create React App tool whose components are
             // authored as JSX inside plain .js files; enable JSX parsing for them.
-            'legacy/offchain-monorepo/tools/truesight/src/**/*.{ts,tsx,js,jsx}',
+            'migrated/offchain-monorepo/tools/truesight/src/**/*.{ts,tsx,js,jsx}',
         ],
         languageOptions: {
             parserOptions: {

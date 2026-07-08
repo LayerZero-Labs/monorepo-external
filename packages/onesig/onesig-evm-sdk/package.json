@@ -22,6 +22,7 @@
         "test": "vitest --run --pass-with-no-tests --typecheck"
     },
     "dependencies": {
+        "@layerzerolabs/common-encoding-utils": "workspace:*",
         "@layerzerolabs/onesig-core": "workspace:*",
         "@layerzerolabs/onesig-model": "workspace:*",
         "ethers": "catalog:"

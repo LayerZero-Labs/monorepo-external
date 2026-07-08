@@ -24,7 +24,10 @@
         "@layerzerolabs/common-node-utils": "workspace:*",
         "commander": "catalog:",
         "es-toolkit": "catalog:",
+        "glob": "catalog:",
+        "p-limit": "catalog:",
         "semver": "catalog:",
+        "yaml": "catalog:",
         "zod": "catalog:",
         "zx": "catalog:"
     },
