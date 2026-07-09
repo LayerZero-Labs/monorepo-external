@@ -79,6 +79,22 @@ export function hexToAscii(hex: string): string {
     return Array.from(hexToBytes(hex), (b) => String.fromCharCode(b)).join('');
 }
 
+/** Encode a UTF-8 string to its hex representation (no `0x` prefix). */
+export function utf8ToHex(value: string): string {
+    return Buffer.from(value, 'utf-8').toString('hex');
+}
+
+/** Decode hex (with or without `0x`) back into a UTF-8 string. */
+export function hexToUtf8(hex: string): string {
+    return Buffer.from(trim0x(hex), 'hex').toString('utf-8');
+}
+
+export function stringToUint8Array(str: string): Uint8Array {
+    const value = str.replace(/^0x/i, '');
+    const len = value.length + 1 - ((value.length + 1) % 2);
+    return Uint8Array.from(Buffer.from(value.padStart(len, '0'), 'hex'));
+}
+
 /**
  * Bytes from a `0x`-prefixed (or bare) hex string. The single canonical hex decoder.
  * Throws on non-hex and on odd-length input: a dangling half-byte is always a caller bug,

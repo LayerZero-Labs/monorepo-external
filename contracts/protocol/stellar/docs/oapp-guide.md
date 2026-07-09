@@ -277,6 +277,113 @@ pub struct MyCustomOApp;
 // Implement each trait manually...
 ```
 
+## Debugging and recovering messages
+
+An inbound path is tracked by `(receiver, src_eid, sender)` and guarded by an Endpoint nonce.
+A message can only be delivered — via `lz_receive` (on the OApp) or `clear` (on the Endpoint) — once its nonce is at or below
+`inbound_nonce`, and `inbound_nonce` only advances across the gapless prefix of verified, skipped,
+or nilified nonces. Two very different situations are worth separating:
+
+- **A verification gap truly stalls the channel.** If a lower nonce is never verified, `inbound_nonce`
+  stops before it, so every nonce at or above the gap becomes undeliverable until the gap is resolved
+  (for example, verified or skipped).
+- **A reverting `lz_receive` does not, by itself, block later nonces.** The payload hash stays stored,
+  so that nonce can be retried or cleared. Whether a stuck nonce holds up higher ones depends on
+  whether the OApp enforces ordered delivery via `next_nonce` (the default returns `0`, i.e. unordered).
+
+The Endpoint exposes four channel-management operations for an OApp to recover from these situations.
+They are the on-chain equivalents of the skip / clear / nilify / burn flow described for other VMs.
+
+### Authorization
+
+All four operations are gated by `require_oapp_auth`: the `caller` must be **the OApp contract
+itself or its registered delegate**, and `caller.require_auth()` is enforced. The `receiver`
+argument is always the OApp address. Two calling patterns are available:
+
+- **Delegate calls the endpoint directly** — the delegate set via `set_delegate` (typically the
+  owner or an admin) invokes the endpoint, passing itself as `caller` and the OApp as `receiver`.
+- **OApp wraps the call** — add an admin-gated method on the OApp that reaches the endpoint through
+  the shared client and passes the OApp as both `caller` and `receiver`:
+
+    ```rust
+    use oapp::oapp_core::endpoint_client;
+
+    #[contract_impl]
+    impl MyOApp {
+        #[only_role(operator, MESSAGE_ADMIN_ROLE)]
+        pub fn skip_message(env: &Env, src_eid: u32, sender: &BytesN<32>, nonce: u64, operator: &Address) {
+            let oapp = env.current_contract_address();
+            endpoint_client::<Self>(env).skip(&oapp, &oapp, &src_eid, sender, &nonce);
+        }
+    }
+    ```
+
+`endpoint_client::<Self>(env)` returns the endpoint client, which exposes `skip`, `clear`, `nilify`,
+and `burn` alongside a read-only `inbound_payload_hash` for inspecting stored payloads.
+
+### Skip
+
+Skips the next expected inbound nonce **before it is verified**. Use this to bypass a message you
+never want delivered (e.g. flagged by a precrime alert) so the channel keeps advancing.
+
+```rust
+endpoint.skip(&caller, &receiver, src_eid, &sender, nonce);
+```
+
+- `nonce` **must** be the next expected nonce (`inbound_nonce + 1`), otherwise the call fails with
+  `EndpointError::InvalidNonce`.
+- The skipped nonce counts as "verified" for ordering purposes, so subsequent nonces can proceed.
+- Emits `InboundNonceSkipped`.
+
+### Clear
+
+Clears a **verified** message from the channel without running your `__lz_receive` logic. This is the
+PULL-mode counterpart to `lz_receive`: use it to accept-and-drop a payload that can never execute
+successfully but that you want to move past.
+
+```rust
+endpoint.clear(&caller, &origin, &receiver, &guid, &message);
+```
+
+- Requires the reconstructed payload (`guid` + `message`) to match the stored payload hash for the
+  nonce carried in `origin`; a missing or mismatched hash fails with
+  `EndpointError::PayloadHashNotFound`.
+- The nonce must be at or below `inbound_nonce`, otherwise the call fails with
+  `EndpointError::InvalidNonce`.
+- Removes the stored payload hash and emits `PacketDelivered`, but does **not** advance
+  `inbound_nonce`; nonce advancement happens during `verify`, `skip`, or `nilify`.
+
+### Nilify
+
+Marks a message as nil so it **cannot execute until it is re-verified**. Unlike `burn`, the message
+can be verified again later, making this the recoverable option for temporarily blocking a nonce.
+
+```rust
+endpoint.nilify(&caller, &receiver, src_eid, &sender, nonce, &payload_hash);
+```
+
+- `payload_hash` must match the currently stored hash; a mismatch fails with
+  `EndpointError::PayloadHashNotFound`.
+- Pass `None` only when no hash is stored yet, and only for a future nonce inside the pending window
+  (`inbound_nonce < nonce <= inbound_nonce + 256`).
+- Sets the stored hash to the NIL sentinel; a fresh `verify` can restore it.
+- Emits `PacketNilified`.
+
+### Burn
+
+Permanently marks a nonce as **unexecutable and un-verifiable** — it can never be re-verified or
+executed. Use this as the terminal action for a message you have decided to discard for good.
+
+```rust
+endpoint.burn(&caller, &receiver, src_eid, &sender, nonce, &payload_hash);
+```
+
+- There must be a matching stored payload hash — possibly the NIL sentinel left by `nilify` — at the
+  target nonce. A missing or mismatched hash fails with `EndpointError::PayloadHashNotFound`.
+- `nonce` must be at or below `inbound_nonce`; otherwise the call fails with
+  `EndpointError::InvalidNonce`.
+- Removes the payload hash from storage and emits `PacketBurnt`.
+
 ## Example: Counter OApp
 
 See `contracts/oapps/counter/` for a complete example demonstrating:

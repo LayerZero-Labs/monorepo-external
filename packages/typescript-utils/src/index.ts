@@ -10,6 +10,7 @@ export * from './lastOf';
 export * from './maybeUndefined';
 export * from './merge';
 export * from './methodOf';
+export * from './promise';
 export * from './removeNever';
 export * from './strings';
 export * from './tuples';
