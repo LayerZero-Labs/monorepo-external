@@ -5,7 +5,7 @@
     "description": "LayerZero Labs reference EVM upgradeable utility implementations",
     "license": "MIT",
     "scripts": {
-        "clean-artifacts": "rm -rf artifacts* cache hh-cache*",
+        "clean-artifacts": "rm -rf artifacts* cache hh-cache* out",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
         "test": "pnpm lz-tool forge test"
     },

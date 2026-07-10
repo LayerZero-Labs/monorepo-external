@@ -5,7 +5,7 @@
     "description": "LayerZero Labs reference EVM OApp implementation",
     "license": "MIT",
     "scripts": {
-        "clean-artifacts": "rm -rf artifacts* cache hh-cache*",
+        "clean-artifacts": "rm -rf artifacts* cache hh-cache* out",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt"
     },
     "devDependencies": {
