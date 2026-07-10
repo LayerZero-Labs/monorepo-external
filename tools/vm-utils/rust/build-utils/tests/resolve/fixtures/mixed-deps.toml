@@ -1,0 +1,4 @@
+[dependencies]
+anchor-lang = { version = "0.32.1" }
+rbac = { path = "../../dependencies/utils-solana-rbac" }
+num_enum = { version = "0.7" }

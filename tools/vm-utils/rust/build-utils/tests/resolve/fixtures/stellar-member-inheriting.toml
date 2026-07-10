@@ -1,0 +1,10 @@
+[package]
+name = "oft-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+soroban-sdk = { workspace = true }
+utils = { workspace = true }
+common-macros = { workspace = true }

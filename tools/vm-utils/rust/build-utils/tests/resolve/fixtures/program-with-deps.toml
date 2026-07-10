@@ -1,0 +1,5 @@
+[package]
+name = "my-program"
+
+[dependencies]
+rbac = { path = "dependencies/utils-solana-rbac" }

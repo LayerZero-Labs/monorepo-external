@@ -1,0 +1,8 @@
+[workspace]
+resolver = "2"
+members = ["contracts/*", "tests/mock"]
+default-members = ["contracts/main", "tests/mock"]
+
+[workspace.package]
+edition = "2021"
+version = "0.0.1"

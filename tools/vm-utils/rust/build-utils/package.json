@@ -1,0 +1,41 @@
+{
+    "name": "@layerzerolabs/build-utils-rust",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "bin": {
+        "build-utils-rust": "./src/cli.ts"
+    },
+    "scripts": {
+        "build": "tsup",
+        "clean": "rm -rf ./.turbo ./dist ./node_modules",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "@layerzerolabs/logger-node": "workspace:*",
+        "commander": "catalog:",
+        "smol-toml": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@types/node": "catalog:",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

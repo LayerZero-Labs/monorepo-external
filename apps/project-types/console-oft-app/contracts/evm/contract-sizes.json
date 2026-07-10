@@ -1,0 +1,114 @@
+{
+    "ERC20Plus": {
+        "evm": {
+            "runtimeSize": 22531,
+            "initcodeSize": 22852
+        },
+        "tron": {
+            "runtimeSize": 15719,
+            "initcodeSize": 16005
+        },
+        "zksync": {
+            "runtimeSize": 48928,
+            "initcodeSize": 48928
+        }
+    },
+    "OFTBurnMint": {
+        "evm": {
+            "runtimeSize": 23150,
+            "initcodeSize": 24098
+        },
+        "tron": {
+            "runtimeSize": 22647,
+            "initcodeSize": 23609
+        },
+        "zksync": {
+            "runtimeSize": 84896,
+            "initcodeSize": 84896
+        }
+    },
+    "OFTBurnMintAlt": {
+        "evm": {
+            "runtimeSize": 23253,
+            "initcodeSize": 24368
+        },
+        "tron": {
+            "runtimeSize": 22778,
+            "initcodeSize": 23927
+        },
+        "zksync": {
+            "runtimeSize": 86176,
+            "initcodeSize": 86176
+        }
+    },
+    "OFTBurnSelfMint": {
+        "evm": {
+            "runtimeSize": 23236,
+            "initcodeSize": 24178
+        },
+        "tron": {
+            "runtimeSize": 22771,
+            "initcodeSize": 23726
+        },
+        "zksync": {
+            "runtimeSize": 85024,
+            "initcodeSize": 85024
+        }
+    },
+    "OFTBurnSelfMintAlt": {
+        "evm": {
+            "runtimeSize": 23339,
+            "initcodeSize": 24448
+        },
+        "tron": {
+            "runtimeSize": 22867,
+            "initcodeSize": 24009
+        },
+        "zksync": {
+            "runtimeSize": 85984,
+            "initcodeSize": 85984
+        }
+    },
+    "OFTLockUnlock": {
+        "evm": {
+            "runtimeSize": 22835,
+            "initcodeSize": 23677
+        },
+        "tron": {
+            "runtimeSize": 22395,
+            "initcodeSize": 23246
+        },
+        "zksync": {
+            "runtimeSize": 83360,
+            "initcodeSize": 83360
+        }
+    },
+    "OFTLockUnlockAlt": {
+        "evm": {
+            "runtimeSize": 22938,
+            "initcodeSize": 23947
+        },
+        "tron": {
+            "runtimeSize": 22491,
+            "initcodeSize": 23526
+        },
+        "zksync": {
+            "runtimeSize": 84384,
+            "initcodeSize": 84384
+        }
+    },
+    "OFTNative": {
+        "evm": {
+            "runtimeSize": 22865,
+            "initcodeSize": 23541
+        },
+        "tron": {
+            "runtimeSize": 22365,
+            "initcodeSize": 23028
+        },
+        "zksync": {
+            "runtimeSize": 82336,
+            "initcodeSize": 82336
+        }
+    }
+}

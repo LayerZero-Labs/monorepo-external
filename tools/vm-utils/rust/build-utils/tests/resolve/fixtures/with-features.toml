@@ -1,0 +1,2 @@
+[dependencies]
+rbac = { path = "dependencies/utils-solana-rbac", features = ["idl-build"] }

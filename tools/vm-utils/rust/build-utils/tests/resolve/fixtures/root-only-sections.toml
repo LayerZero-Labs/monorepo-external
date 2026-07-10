@@ -1,0 +1,13 @@
+[package]
+name = "my-lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { version = "0.32.1" }
+
+[patch.crates-io]
+anchor-lang = { git = "https://github.com/example/anchor.git", rev = "deadbeef" }
+
+[profile.release]
+overflow-checks = true

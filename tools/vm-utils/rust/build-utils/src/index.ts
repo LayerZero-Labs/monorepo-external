@@ -1,0 +1,1 @@
+export { resolveDependencies } from './resolve';

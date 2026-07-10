@@ -1,0 +1,6 @@
+[package]
+name = "my-lib"
+
+[workspace]
+members = ["macros"]
+resolver = "2"

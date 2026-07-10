@@ -1,0 +1,9 @@
+[package]
+name = "my-crate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pkg-a = { path = "dependencies/pkg-a" }
+pkg-b = { path = "dependencies/pkg-b" }
+pkg-c = { path = "dependencies/pkg-c" }

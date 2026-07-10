@@ -1,0 +1,13 @@
+[package]
+name = "my-crate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { version = "0.32.1" }
+
+[dev-dependencies]
+test-utils = { path = "dependencies/test-utils" }
+
+[build-dependencies]
+codegen = { path = "dependencies/codegen-utils" }

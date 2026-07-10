@@ -1,0 +1,17 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!audits/**",
+                "!test/**",
+                "!vitest.config.ts",
+                "!scripts/start-validator.ts"
+            ],
+            "outputs": ["target/deploy/*.so", "build/**", "src/generated/**", "dist/**"]
+        }
+    }
+}

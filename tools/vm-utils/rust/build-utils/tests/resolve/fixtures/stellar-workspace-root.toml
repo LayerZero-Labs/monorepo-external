@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["contracts/*", "contracts/oapps/*"]
+
+[workspace.package]
+edition = "2021"
+version = "0.0.1"
+license = "MIT"
+
+[workspace.dependencies]
+soroban-sdk = { version = "25.1.1" }
+utils = { path = "contracts/utils" }
+common-macros = { path = "contracts/common-macros" }
+oapp = { path = "contracts/oapps/oapp" }
+
+[profile.release]
+opt-level = "z"

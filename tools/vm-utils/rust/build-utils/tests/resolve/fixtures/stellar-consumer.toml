@@ -1,0 +1,8 @@
+[package]
+name = "console-oft"
+
+# Like the Solana consumers, the manifest points straight at dependencies/ —
+# the resolve tool only vendors crates there, it does not rewrite this file.
+[dependencies]
+utils = { path = "dependencies/protocol-stellar/contracts/utils" }
+oft-core = { path = "dependencies/protocol-stellar/contracts/oapps/oft-core" }
