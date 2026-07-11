@@ -1,6 +1,6 @@
 {
     "name": "@layerzerolabs/protocol-stellar-v2",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "private": false,
     "license": "LZBL-1.3",
     "scripts": {

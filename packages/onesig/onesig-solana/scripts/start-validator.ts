@@ -48,9 +48,11 @@ const exec = (cmd: string) => {
 };
 
 const startValidator = async () => {
-    // TODO-SOLANA: invoke surfpool via lz-tool like the test-utils/lz-v2 harnesses, instead of the
-    // raw `docker run` + hand-rolled getImageUri below, this was copied from an external repo and
-    // never regularized to the standard pattern.
+    // TODO-SOLANA: migrate to the standard surfpool harness
+    // (packages/test-utils/solana/src/helpers/validator.ts): lz-tool spawn, allocatePorts(basePort)
+    // from vm-tooling-solana, and killContainerByPort — no fixed container name or host ports.
+    // This raw docker run + hand-rolled getImageUri was copied from an external repo and never
+    // regularized; onesig-solana-staged duplicated it (#5813), forcing manual port isolation (#5865).
     const image = await getImageUri();
 
     // Remove existing container if present

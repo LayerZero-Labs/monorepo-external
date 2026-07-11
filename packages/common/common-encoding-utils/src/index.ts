@@ -266,3 +266,32 @@ export function padAlignHex(str: string, byteSize = 8, padding = '0') {
     const trimmed = trim0x(str);
     return padLeft(trimmed, calcByteLength(trimmed, byteSize), padding);
 }
+
+/**
+ * Repeat a hex `label` until it fills `hexLen` hex characters in the body, then truncate.
+ * Useful for human-readable sentinel addresses (e.g. 'c1da' → 0xc1dac1dac1da…).
+ * `label` must be valid hex (optional `0x` prefix); body after stripping must be non-empty and even-length.
+ * `hexLen` must be a positive even integer (not zero — use `NORMALIZED_HEX_ZERO` for canonical zero).
+ */
+export function tileHex(label: string, hexLen: number): HexString {
+    if (!Number.isSafeInteger(hexLen) || hexLen < 0) {
+        throw new Error('hexLen must be a non-negative safe integer');
+    }
+    if (hexLen === 0) {
+        throw new Error('hexLen must be greater than zero');
+    }
+    if (hexLen % 2 !== 0) {
+        throw new Error('hexLen must be even');
+    }
+
+    if (!isHexString(label)) {
+        throw new Error(`invalid hex label (length ${label.length})`);
+    }
+
+    const body = trim0x(label);
+    if (body.length === 0 || body.length % 2 !== 0) {
+        throw new Error(`invalid hex label (body length ${body.length})`);
+    }
+
+    return ensure0xPrefixed(body.repeat(Math.ceil(hexLen / body.length)).slice(0, hexLen));
+}

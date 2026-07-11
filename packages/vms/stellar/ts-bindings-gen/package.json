@@ -1,6 +1,6 @@
 {
     "name": "@layerzerolabs/stellar-ts-bindings-gen",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "private": false,
     "description": "Generates TypeScript bindings from Stellar Soroban contract WASM files",
     "license": "MIT",

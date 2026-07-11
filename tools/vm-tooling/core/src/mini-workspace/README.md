@@ -28,7 +28,7 @@ as `target`, `build`, and `src/generated` are written back to the real package.
 
 By default, dependency packages are copied with `DEFAULT_SOURCE_COPY_PATTERNS`, currently `['**/*']`.
 The copy always also applies `DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS`, which skips generated outputs
-and caches such as `.turbo`, `artifacts*`, `cache`, `out`, `target`, and `typechain-types`.
+and caches such as `.turbo`, `artifacts*`, `build`, `cache`, `out`, `target`, and `typechain-types`.
 
 Symlinks are preserved as links. Files under package-local `node_modules` are not copied; dependency
 contents come from the mounted root pnpm virtual store.

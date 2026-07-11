@@ -23,6 +23,7 @@ export const DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS = [
     '!**/.pnpm/**',
     '!**/.turbo/**',
     '!**/artifacts*/**',
+    '!**/build/**',
     '!**/cache/**',
     '!**/debug_info/**',
     '!**/hh-cache/**',

@@ -1,6 +1,6 @@
 {
     "name": "@layerzerolabs/lz-v2-stellar-sdk",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "private": false,
     "description": "TypeScript SDK for endpoint-v2 Stellar contract",
     "repository": {

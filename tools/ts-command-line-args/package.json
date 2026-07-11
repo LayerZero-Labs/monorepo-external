@@ -1,6 +1,6 @@
 {
     "name": "@layerzerolabs/ts-command-line-args",
-    "version": "2.5.1",
+    "version": "0.0.0",
     "private": false,
     "description": "A Typescript wrapper around command-line-args with additional support for markdown usage guide generation",
     "license": "MIT",
