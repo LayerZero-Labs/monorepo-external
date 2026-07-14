@@ -1,4 +1,6 @@
 import { execFile, spawn } from 'node:child_process';
+import { stat } from 'node:fs/promises';
+import path from 'node:path';
 import { promisify } from 'node:util';
 
 import type { ToolCommandExecutionOptions } from '@layerzerolabs/vm-tooling';
@@ -65,6 +67,7 @@ const resolveAmd64Digest = async (imageTagRef: string): Promise<string> => {
     try {
         const { stdout } = await execFileAsync('docker', ['manifest', 'inspect', imageTagRef], {
             maxBuffer: 16 * 1024 * 1024,
+            timeout: 30_000,
         });
         return parseAmd64Digest(stdout);
     } catch (cause) {
@@ -75,13 +78,70 @@ const resolveAmd64Digest = async (imageTagRef: string): Promise<string> => {
     }
 };
 
+const META_FLAG = '--meta';
+
+/** The `key` of a `key=value` meta entry (the whole string when there is no `=`). */
+const metaKey = (entry: string): string => {
+    const eq = entry.indexOf('=');
+    return eq === -1 ? entry : entry.slice(0, eq);
+};
+
+/**
+ * Canonicalize `stellar contract build` args so the embedded metadata order is stable.
+ *
+ * Soroban stores contract metadata as an ORDERED sequence, so the order of `--meta key=value`
+ * flags changes the WASM bytes (verified: swapping two `--meta` flags yields a different WASM
+ * hash). To keep the build reproducible regardless of the order the caller passed `--meta`, every
+ * meta entry — the caller's plus the tool-injected ones — is pulled out, merged, and re-emitted in
+ * sorted order. Non-meta args keep their original relative order and precede the sorted metas.
+ *
+ * Injected keys (e.g. `bldimg`) are tool-controlled and RESERVED: any caller `--meta` reusing an
+ * injected key is dropped, so a caller can never override the recorded build image by key
+ * collision (before sorting, the injected entry was always appended last and won on its own).
+ *
+ * Both `--meta k=v` and `--meta=k=v` forms are recognized; a dangling `--meta` with no value (or
+ * one followed by another flag) is dropped.
+ */
+export const canonicalizeMetaArgs = (buildArgs: string[], injectedMeta: string[]): string[] => {
+    const reservedKeys = new Set(injectedMeta.map(metaKey));
+    const metas = [...injectedMeta];
+    const passthrough: string[] = [];
+
+    // Keep a caller meta unless it collides with a reserved (injected) key.
+    const addCallerMeta = (value: string): void => {
+        if (!reservedKeys.has(metaKey(value))) metas.push(value);
+    };
+
+    for (let i = 0; i < buildArgs.length; i++) {
+        const arg = buildArgs[i];
+        if (arg === undefined) continue;
+        if (arg === META_FLAG) {
+            const value = buildArgs[i + 1];
+            // A meta value is `key=value`; anything starting with `--` is the next flag, so treat
+            // this `--meta` as dangling and drop it.
+            if (value !== undefined && !value.startsWith('--')) {
+                addCallerMeta(value);
+                i += 1;
+            }
+        } else if (arg.startsWith(`${META_FLAG}=`)) {
+            addCallerMeta(arg.slice(META_FLAG.length + 1));
+        } else {
+            passthrough.push(arg);
+        }
+    }
+
+    metas.sort();
+    return [...passthrough, ...metas.flatMap((meta) => [META_FLAG, meta])];
+};
+
 /**
  * Assemble the `docker run` argv for a verifiable build. Kept pure and synchronous so the mount /
  * workdir layout and the tool-injected `--meta bldimg=…` are unit-testable without Docker.
  *
  * The official image's ENTRYPOINT is `stellar`, so the trailing `contract build …` runs under it.
  * The source directory is assumed self-contained, so it is mounted at /source and built in place —
- * no surrounding workspace is required.
+ * no surrounding workspace is required. All `--meta` flags (the caller's plus the injected
+ * `bldimg`) are sorted into a canonical order so the WASM hash is independent of `--meta` ordering.
  */
 export const buildVerifiableBuildDockerArgs = ({
     imageRef,
@@ -105,11 +165,21 @@ export const buildVerifiableBuildDockerArgs = ({
     imageRef,
     'contract',
     'build',
-    ...buildArgs,
-    // Embedded by us (not the user): the exact build image, so the WASM records what produced it.
-    '--meta',
-    `bldimg=${bldimg}`,
+    // `bldimg` is injected by us (not the caller): the exact build image, so the WASM records what
+    // produced it. It joins the caller's --meta flags in the canonical sorted order.
+    ...canonicalizeMetaArgs(buildArgs, [`bldimg=${bldimg}`]),
 ];
+
+/**
+ * Resolve the directory to build. An explicit `sourceDir` that is relative resolves against the
+ * cwd; an absolute one is used as-is; omitting it falls back to the cwd. Kept pure/synchronous so
+ * the cwd-vs-explicit-folder precedence is unit-testable without Docker.
+ *
+ * This is what lets the pipeline decompress a packaged source archive into a scratch directory and
+ * build that, instead of always building the process cwd.
+ */
+export const resolveBuildDir = (cwd: string, sourceDir?: string): string =>
+    path.resolve(cwd, sourceDir ?? '.');
 
 const runDocker = (dockerArgs: string[]): Promise<void> =>
     new Promise((resolve, reject) => {
@@ -160,7 +230,20 @@ export class VerifiableBuildWrapper {
         args: string[],
         { stellarVersion, rustVersion }: VerifiableBuildVersions,
         options: ToolCommandExecutionOptions,
+        sourceDir?: string,
     ): Promise<void> {
+        const buildDir = resolveBuildDir(options.cwd, sourceDir);
+        try {
+            if (!(await stat(buildDir)).isDirectory()) {
+                throw new Error('not a directory');
+            }
+        } catch (cause) {
+            throw new Error(
+                `Verifiable build source directory is not an existing directory: ${buildDir}`,
+                { cause },
+            );
+        }
+
         const tagRef = officialImageTagRef(stellarVersion, rustVersion);
         const digest = await resolveAmd64Digest(tagRef);
         const imageRef = `${OFFICIAL_IMAGE_REPO}@${digest}`;
@@ -168,12 +251,13 @@ export class VerifiableBuildWrapper {
 
         const dockerArgs = buildVerifiableBuildDockerArgs({
             imageRef,
-            sourceDir: options.cwd,
+            sourceDir: buildDir,
             buildArgs: args,
             bldimg,
         });
 
         console.info('🔒 Verifiable build (official stellar/stellar-cli image, run from host)');
+        console.info(`   source: ${buildDir}`);
         console.info(`   image:  ${imageRef} (${VERIFIABLE_BUILD_PLATFORM}, from tag ${tagRef})`);
         console.info(`   bldimg: ${bldimg}`);
         console.info(`   docker ${dockerArgs.join(' ')}`);

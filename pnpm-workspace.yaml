@@ -90,6 +90,7 @@ catalogs:
     eslint-plugin-simple-import-sort: 12.1.1
     espree: ^10.3.0
     ethers: ^5.8.0
+    fflate: ^0.8.3
     glob: ^10.3.10
     globals: ^16.4.0
     handlebars: 4.7.9

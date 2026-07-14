@@ -1,5 +1,6 @@
 {
-    "name": "@layerzerolabs/vm-tooling-stellar",
+    "name": "@layerzerolabs/deterministic-zip",
+    "version": "0.0.0",
     "private": false,
     "license": "MIT",
     "type": "module",
@@ -11,32 +12,21 @@
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "bin": {
-        "lz-tool": "./bin/lz-tool.js"
-    },
     "files": [
-        "dist/**/*",
-        "bin/**/*"
+        "dist/**/*"
     ],
     "scripts": {
         "build": "tsup",
-        "generate-github-matrix": "tsx src/scripts/generate-github-matrix.ts",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
-        "test": "vitest"
+        "test": "vitest --run --pass-with-no-tests --typecheck"
     },
     "dependencies": {
-        "@layerzerolabs/deterministic-zip": "workspace:*",
-        "@layerzerolabs/vm-tooling": "workspace:*",
-        "toml": "catalog:"
+        "fflate": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
-        "@layerzerolabs/vitest-configuration": "workspace:*",
-        "fflate": "catalog:",
         "tsup": "catalog:",
-        "tsx": "catalog:",
-        "typescript": "catalog:",
         "vitest": "catalog:"
     },
     "publishConfig": {

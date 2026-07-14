@@ -205,6 +205,9 @@ catalogs:
     ethers:
       specifier: ^5.8.0
       version: 5.8.0
+    fflate:
+      specifier: ^0.8.3
+      version: 0.8.3
     glob:
       specifier: ^10.3.10
       version: 10.5.0
@@ -406,9 +409,9 @@ overrides:
   tar: ^7.5.11
   tmp@<0.2.6: ^0.2.6
   underscore: ^1.13.8
-  undici@^5: ^6.24.1
-  undici@^6: ^6.24.1
-  undici@^7: ^7.24.0
+  undici@^5: ^6.27.0
+  undici@^6: ^6.27.0
+  undici@^7: ^7.28.0
   validator: ^13.15.22
   vite@^6: ^6.4.3
   wrap-ansi: 7.0.0
@@ -2087,6 +2090,9 @@ importers:
 
   tools/vm-tooling/vm-tooling-stellar:
     dependencies:
+      '@layerzerolabs/deterministic-zip':
+        specifier: workspace:*
+        version: link:../../vm-utils/common/deterministic-zip
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
         version: link:../core
@@ -2103,6 +2109,9 @@ importers:
       '@layerzerolabs/vitest-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/vitest
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
@@ -2112,6 +2121,25 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.5.0)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  tools/vm-utils/common/deterministic-zip:
+    dependencies:
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
         version: 3.2.6(@types/debug@4.1.12)(@types/node@25.5.0)(@vitest/ui@3.2.6)(jiti@2.6.1)(jsdom@25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
@@ -7985,8 +8013,8 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
-  undici@6.24.1:
-    resolution: {integrity: sha512-sC+b0tB1whOCzbtlx20fx3WgCXwkW627p4EA9uM+/tNNPkSS+eSEld6pAs9nDv7WbY1UUljBMYPtu9BCOrCWKA==}
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
   universalify@0.1.2:
@@ -9647,7 +9675,7 @@ snapshots:
       semver: 7.8.1
       solc: 0.8.26(debug@4.4.3)
       tronweb: 5.3.4(bufferutil@4.0.9)(debug@4.4.3)(utf-8-validate@5.0.10)
-      undici: 6.24.1
+      undici: 6.27.0
       zksync-ethers: 5.8.0-beta.5(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
     transitivePeerDependencies:
       - bufferutil
@@ -9682,7 +9710,7 @@ snapshots:
       semver: 7.8.1
       solc: 0.8.26(debug@4.4.3)
       tronweb: 5.3.4(bufferutil@4.0.9)(debug@4.4.3)(utf-8-validate@5.0.10)
-      undici: 6.24.1
+      undici: 6.27.0
       zksync-ethers: 5.8.0-beta.5(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
     transitivePeerDependencies:
       - bufferutil
@@ -9915,7 +9943,7 @@ snapshots:
       semver: 7.8.1
       sinon: 18.0.1
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@18.0.1)
-      undici: 6.24.1
+      undici: 6.27.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -9934,7 +9962,7 @@ snapshots:
       semver: 7.8.1
       sinon: 18.0.1
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@18.0.1)
-      undici: 6.24.1
+      undici: 6.27.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -12625,8 +12653,7 @@ snapshots:
     dependencies:
       is-retry-allowed: 3.0.0
 
-  fflate@0.8.3:
-    optional: true
+  fflate@0.8.3: {}
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -13002,7 +13029,7 @@ snapshots:
       stacktrace-parser: 0.1.11
       tinyglobby: 0.2.16
       tsort: 0.0.1
-      undici: 6.24.1
+      undici: 6.27.0
       uuid: 8.3.2
       ws: 7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
@@ -13051,7 +13078,7 @@ snapshots:
       stacktrace-parser: 0.1.11
       tinyglobby: 0.2.16
       tsort: 0.0.1
-      undici: 6.24.1
+      undici: 6.27.0
       uuid: 8.3.2
       ws: 7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
@@ -15321,7 +15348,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici@6.24.1: {}
+  undici@6.27.0: {}
 
   universalify@0.1.2: {}
 
