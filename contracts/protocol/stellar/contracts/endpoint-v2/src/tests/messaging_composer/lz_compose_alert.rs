@@ -40,6 +40,7 @@ fn default_fixture(env: &Env) -> LzComposeAlertFixture {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn invoke_lz_compose_alert_with_auth<'a>(
     context: &TestSetup,
     endpoint_client: &EndpointV2Client<'a>,

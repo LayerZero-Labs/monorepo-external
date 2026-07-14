@@ -6,7 +6,7 @@ use crate::{
 use ed25519_dalek::{Signer, SigningKey};
 use rand::thread_rng;
 use soroban_sdk::{
-    auth::{ContractContext, Context},
+    auth::{Context, ContractContext},
     testutils::Address as _,
     vec, Address, BytesN, Env, IntoVal, Symbol, Val, Vec,
 };
@@ -35,10 +35,7 @@ impl Ed25519KeyPair {
 }
 
 /// Creates a single self-call auth context and matching Call for testing.
-fn make_self_call_context(
-    env: &Env,
-    contract_id: &soroban_sdk::Address,
-) -> (Vec<Context>, Vec<Call>) {
+fn make_self_call_context(env: &Env, contract_id: &soroban_sdk::Address) -> (Vec<Context>, Vec<Call>) {
     let fn_name = Symbol::new(env, "set_paused");
     let args: Vec<Val> = vec![env, true.into_val(env)];
 
@@ -67,12 +64,7 @@ fn make_upgrade_contexts(
     let upgrader_ctx = Context::Contract(ContractContext {
         contract: upgrader_id.clone(),
         fn_name: Symbol::new(env, "upgrade_and_migrate"),
-        args: vec![
-            env,
-            contract_id.clone().into_val(env),
-            wasm_hash_val.clone(),
-            migration_data_val.clone(),
-        ],
+        args: vec![env, contract_id.clone().into_val(env), wasm_hash_val, migration_data_val],
     });
     // [1]: upgrade self-call
     let upgrade_ctx = Context::Contract(ContractContext {
@@ -374,12 +366,7 @@ fn test_check_auth_sender_none_fails_when_admin_required() {
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
     // Use Sender::None which should fail when admin is required
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,
@@ -410,26 +397,15 @@ fn test_check_auth_set_admin_bypasses_admin_verification() {
 
     let payload = BytesN::from_array(&env, &[0u8; 32]);
 
-    let calls: Vec<Call> = vec![
-        &env,
-        Call {
-            to: setup.contract_id.clone(),
-            func: Symbol::new(&env, "set_admin"),
-            args: Vec::new(&env),
-        },
-    ];
+    let calls: Vec<Call> =
+        vec![&env, Call { to: setup.contract_id.clone(), func: Symbol::new(&env, "set_admin"), args: Vec::new(&env) }];
 
     let dvn_client = LzDVNClient::new(&env, &setup.contract_id);
     let hash = dvn_client.hash_call_data(&VID, &expiration, &calls);
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
     // Use Sender::None - should succeed for set_admin since it bypasses admin verification
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,
@@ -599,23 +575,14 @@ fn test_set_upgrader_requires_admin() {
 
     let calls: Vec<Call> = vec![
         &env,
-        Call {
-            to: setup.contract_id.clone(),
-            func: Symbol::new(&env, "set_upgrader"),
-            args: Vec::new(&env),
-        },
+        Call { to: setup.contract_id.clone(), func: Symbol::new(&env, "set_upgrader"), args: Vec::new(&env) },
     ];
 
     let dvn_client = LzDVNClient::new(&env, &setup.contract_id);
     let hash = dvn_client.hash_call_data(&VID, &expiration, &calls);
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,
@@ -692,12 +659,7 @@ fn test_check_auth_upgrade_no_upgrader_set() {
     let hash = dvn_client.hash_call_data(&VID, &expiration, &calls);
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,
@@ -733,12 +695,7 @@ fn test_check_auth_upgrade_wrong_upgrader() {
     let hash = dvn_client.hash_call_data(&VID, &expiration, &calls);
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,
@@ -784,12 +741,7 @@ fn test_check_auth_upgrade_missing_migrate() {
     let hash = dvn_client.hash_call_data(&VID, &expiration, &dummy_calls);
     let sig = setup.key_pairs[0].sign_bytes(&env, &hash);
 
-    let tx_auth = TransactionAuthData {
-        vid: VID,
-        expiration,
-        signatures: vec![&env, sig],
-        sender: Sender::None,
-    };
+    let tx_auth = TransactionAuthData { vid: VID, expiration, signatures: vec![&env, sig], sender: Sender::None };
 
     let res = env.try_invoke_contract_check_auth::<DvnError>(
         &setup.contract_id,

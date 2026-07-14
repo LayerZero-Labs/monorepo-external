@@ -712,8 +712,8 @@ fn recover_signer_invalid_r_zero_fails() {
     let mut sig_bytes = [0u8; 65];
     // r = 0 (bytes 0-31 already 0)
     // s = some non-zero value (bytes 32-63)
-    for i in 32..64 {
-        sig_bytes[i] = 1;
+    for value in sig_bytes.iter_mut().take(64).skip(32) {
+        *value = 1;
     }
     sig_bytes[64] = 27; // v
     let signature = BytesN::from_array(&env, &sig_bytes);
@@ -732,8 +732,8 @@ fn recover_signer_invalid_s_zero_fails() {
     // Signature with s=0 (invalid for secp256k1)
     let mut sig_bytes = [0u8; 65];
     // r = some non-zero value (bytes 0-31)
-    for i in 0..32 {
-        sig_bytes[i] = 1;
+    for value in sig_bytes.iter_mut().take(32) {
+        *value = 1;
     }
     // s = 0 (bytes 32-63 already 0)
     sig_bytes[64] = 27; // v

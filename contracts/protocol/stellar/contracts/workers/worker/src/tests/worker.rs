@@ -27,12 +27,12 @@ fn test_set_paused_toggles_state() {
     setup.mock_owner_auth("set_paused", (true,));
     setup.client.set_paused(&true);
     assert_eq_event(&setup.env, &setup.contract_id, Paused { pauser: setup.owner.clone() });
-    assert_eq!(setup.client.paused(), true);
+    assert!(setup.client.paused());
 
     setup.mock_owner_auth("set_paused", (false,));
     setup.client.set_paused(&false);
     assert_eq_event(&setup.env, &setup.contract_id, Unpaused { unpauser: setup.owner.clone() });
-    assert_eq!(setup.client.paused(), false);
+    assert!(!setup.client.paused());
 }
 
 // allowlist
@@ -68,22 +68,22 @@ fn test_allowlist_remove_decrements_size_and_restores_default_acl() {
     let oapp_b = Address::generate(&setup.env);
 
     // Add allowlist entry => allowlist becomes non-empty; non-allowlisted is denied
-    assert_eq!(setup.client.is_on_allowlist(&oapp_a), false);
+    assert!(!setup.client.is_on_allowlist(&oapp_a));
     setup.mock_owner_auth("set_allowlist", (&oapp_a, true));
     setup.client.set_allowlist(&oapp_a, &true);
     assert_eq_event(&setup.env, &setup.contract_id, SetAllowlist { oapp: oapp_a.clone(), allowed: true });
-    assert_eq!(setup.client.is_on_allowlist(&oapp_a), true);
+    assert!(setup.client.is_on_allowlist(&oapp_a));
     assert_eq!(setup.client.allowlist_size(), 1);
-    assert_eq!(setup.client.has_acl(&oapp_a), true);
-    assert_eq!(setup.client.has_acl(&oapp_b), false);
+    assert!(setup.client.has_acl(&oapp_a));
+    assert!(!setup.client.has_acl(&oapp_b));
 
     // Remove last allowlist entry => allowlist empty; default allows all (unless denylisted)
     setup.mock_owner_auth("set_allowlist", (&oapp_a, false));
     setup.client.set_allowlist(&oapp_a, &false);
     assert_eq_event(&setup.env, &setup.contract_id, SetAllowlist { oapp: oapp_a.clone(), allowed: false });
-    assert_eq!(setup.client.is_on_allowlist(&oapp_a), false);
+    assert!(!setup.client.is_on_allowlist(&oapp_a));
     assert_eq!(setup.client.allowlist_size(), 0);
-    assert_eq!(setup.client.has_acl(&oapp_b), true);
+    assert!(setup.client.has_acl(&oapp_b));
 }
 
 // denylist
@@ -129,7 +129,7 @@ fn test_message_lib_add_remove_and_errors() {
         &setup.contract_id,
         SetSupportedMessageLib { message_lib: new_lib.clone(), supported: true },
     );
-    assert_eq!(setup.client.is_supported_message_lib(&new_lib), true);
+    assert!(setup.client.is_supported_message_lib(&new_lib));
 
     // Remove it
     setup.mock_owner_auth("set_supported_message_lib", (&new_lib, false));
@@ -139,10 +139,10 @@ fn test_message_lib_add_remove_and_errors() {
         &setup.contract_id,
         SetSupportedMessageLib { message_lib: new_lib.clone(), supported: false },
     );
-    assert_eq!(setup.client.is_supported_message_lib(&new_lib), false);
+    assert!(!setup.client.is_supported_message_lib(&new_lib));
 
     // Existing is still supported
-    assert_eq!(setup.client.is_supported_message_lib(&existing), true);
+    assert!(setup.client.is_supported_message_lib(&existing));
 }
 
 #[test]
@@ -245,41 +245,41 @@ fn test_acl_allowlist_denylist_precedence() {
     let oapp_b = Address::generate(&setup.env);
 
     // Empty allowlist => allowed unless denylisted
-    assert_eq!(setup.client.has_acl(&oapp_a), true);
+    assert!(setup.client.has_acl(&oapp_a));
 
     // Denylist overrides everything
-    assert_eq!(setup.client.is_on_denylist(&oapp_a), false);
+    assert!(!setup.client.is_on_denylist(&oapp_a));
     setup.mock_owner_auth("set_denylist", (&oapp_a, true));
     setup.client.set_denylist(&oapp_a, &true);
     assert_eq_event(&setup.env, &setup.contract_id, SetDenylist { oapp: oapp_a.clone(), denied: true });
-    assert_eq!(setup.client.is_on_denylist(&oapp_a), true);
-    assert_eq!(setup.client.has_acl(&oapp_a), false);
+    assert!(setup.client.is_on_denylist(&oapp_a));
+    assert!(!setup.client.has_acl(&oapp_a));
 
     // Remove from denylist => allowed again (since allowlist is empty)
     setup.mock_owner_auth("set_denylist", (&oapp_a, false));
     setup.client.set_denylist(&oapp_a, &false);
     assert_eq_event(&setup.env, &setup.contract_id, SetDenylist { oapp: oapp_a.clone(), denied: false });
-    assert_eq!(setup.client.is_on_denylist(&oapp_a), false);
-    assert_eq!(setup.client.has_acl(&oapp_a), true);
+    assert!(!setup.client.is_on_denylist(&oapp_a));
+    assert!(setup.client.has_acl(&oapp_a));
 
     // Add allowlist entry => allowlist becomes non-empty; non-allowlisted is denied
     setup.mock_owner_auth("set_allowlist", (&oapp_a, true));
     setup.client.set_allowlist(&oapp_a, &true);
     assert_eq!(setup.client.allowlist_size(), 1);
-    assert_eq!(setup.client.has_acl(&oapp_a), true);
-    assert_eq!(setup.client.has_acl(&oapp_b), false);
+    assert!(setup.client.has_acl(&oapp_a));
+    assert!(!setup.client.has_acl(&oapp_b));
 
     // Denylist must override allowlist even for the same OApp.
     setup.mock_owner_auth("set_denylist", (&oapp_a, true));
     setup.client.set_denylist(&oapp_a, &true);
     assert_eq_event(&setup.env, &setup.contract_id, SetDenylist { oapp: oapp_a.clone(), denied: true });
-    assert_eq!(setup.client.has_acl(&oapp_a), false);
+    assert!(!setup.client.has_acl(&oapp_a));
 
     // Removing from denylist should restore allowlist effect.
     setup.mock_owner_auth("set_denylist", (&oapp_a, false));
     setup.client.set_denylist(&oapp_a, &false);
     assert_eq_event(&setup.env, &setup.contract_id, SetDenylist { oapp: oapp_a.clone(), denied: false });
-    assert_eq!(setup.client.has_acl(&oapp_a), true);
+    assert!(setup.client.has_acl(&oapp_a));
 }
 
 // uninitialized getters (BareWorker)
@@ -369,7 +369,7 @@ fn test_init_worker_can_reinitialize() {
 fn test_init_worker_sets_config_and_defaults() {
     let setup = TestSetup::new();
 
-    assert_eq!(setup.client.paused(), false);
+    assert!(!setup.client.paused());
     assert_eq!(setup.client.admins(), setup.admins);
     assert_eq!(setup.client.message_libs(), setup.message_libs);
     assert_eq!(setup.client.price_feed(), Some(setup.price_feed));
@@ -379,7 +379,7 @@ fn test_init_worker_sets_config_and_defaults() {
     assert_eq!(setup.client.allowlist_size(), 0);
 
     let lib = setup.message_libs.get(0).unwrap();
-    assert_eq!(setup.client.is_supported_message_lib(&lib), true);
+    assert!(setup.client.is_supported_message_lib(&lib));
 }
 
 // admin management (admins list)
@@ -392,12 +392,12 @@ fn test_admin_management_by_owner_adds_and_removes_admin() {
     setup.mock_owner_auth("set_admin", (&new_admin, true));
     setup.client.set_admin(&new_admin, &true);
     assert_eq_event(&setup.env, &setup.contract_id, SetAdmin { admin: new_admin.clone(), active: true });
-    assert_eq!(setup.client.is_admin(&new_admin), true);
+    assert!(setup.client.is_admin(&new_admin));
 
     setup.mock_owner_auth("set_admin", (&new_admin, false));
     setup.client.set_admin(&new_admin, &false);
     assert_eq_event(&setup.env, &setup.contract_id, SetAdmin { admin: new_admin.clone(), active: false });
-    assert_eq!(setup.client.is_admin(&new_admin), false);
+    assert!(!setup.client.is_admin(&new_admin));
 }
 
 #[test]
@@ -454,7 +454,7 @@ fn test_admin_management_can_remove_last_admin() {
 
     // Removing the last admin is now allowed
     client.set_admin(&only_admin, &false);
-    assert_eq!(client.is_admin(&only_admin), false);
+    assert!(!client.is_admin(&only_admin));
     assert_eq!(client.admins().len(), 0);
 }
 
@@ -467,7 +467,7 @@ fn test_admin_management_by_admin_can_add_admin() {
     setup.mock_auth(&caller, "set_admin_by_admin_for_test", (&caller, &new_admin, true));
     setup.client.set_admin_by_admin_for_test(&caller, &new_admin, &true);
     assert_eq_event(&setup.env, &setup.contract_id, SetAdmin { admin: new_admin.clone(), active: true });
-    assert_eq!(setup.client.is_admin(&new_admin), true);
+    assert!(setup.client.is_admin(&new_admin));
 }
 
 #[test]

@@ -14,7 +14,10 @@ use soroban_sdk::{
 };
 use utils::testing_utils::assert_eq_event;
 use utils::ttl_configurable::TtlConfigsSet;
-use utils::{errors::{AuthError, TtlConfigurableError}, ttl_configurable::TtlConfig};
+use utils::{
+    errors::{AuthError, TtlConfigurableError},
+    ttl_configurable::TtlConfig,
+};
 
 #[contract]
 #[ttl_configurable]

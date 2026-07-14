@@ -12,8 +12,10 @@
         "build:mocks:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
         "build:native": "pnpm build:contract:native",
         "clean": "rm -rf ./dependencies ./target ./node_modules",
-        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --package onesig -- -D warnings\" stellar",
-        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt --package onesig && cargo clippy --package onesig --fix --allow-dirty --allow-staged\" stellar",
+        "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
+        "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -p onesig -p mock_vault -p mock_chain -p mock_factory -- -D warnings\" stellar",
+        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets -p onesig -p mock_vault -p mock_chain -p mock_factory --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:contract",
         "test:contract": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run --package onesig\" stellar"

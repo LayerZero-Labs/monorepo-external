@@ -10,7 +10,9 @@ fn test_require_supported_eid_with_supported() {
     let endpoint_client = &context.endpoint_client;
 
     let send_lib = context.setup_mock_message_lib(MessageLibType::Send, vec![env, context.eid]);
-    env.as_contract(&endpoint_client.address, || EndpointV2::require_supported_eid_for_test(env, &send_lib, context.eid));
+    env.as_contract(&endpoint_client.address, || {
+        EndpointV2::require_supported_eid_for_test(env, &send_lib, context.eid)
+    });
 }
 
 // The require_supported_eid rejects when the library does not support the EID
@@ -23,7 +25,9 @@ fn test_require_supported_eid_with_unsupported() {
 
     let unsupported_eid = context.eid + 1;
     let send_lib = context.setup_mock_message_lib(MessageLibType::Send, vec![env, context.eid]);
-    env.as_contract(&endpoint_client.address, || EndpointV2::require_supported_eid_for_test(env, &send_lib, unsupported_eid));
+    env.as_contract(&endpoint_client.address, || {
+        EndpointV2::require_supported_eid_for_test(env, &send_lib, unsupported_eid)
+    });
 }
 
 // The require_supported_eid panics if the library address has no deployed contract

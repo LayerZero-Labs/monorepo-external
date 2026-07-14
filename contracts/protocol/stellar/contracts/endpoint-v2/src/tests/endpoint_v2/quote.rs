@@ -304,8 +304,8 @@ fn test_quote_with_large_message() {
 
     // Create a large message (1024 bytes)
     let mut large_message_data = [0u8; 1024];
-    for i in 0..1024 {
-        large_message_data[i] = (i % 256) as u8;
+    for (i, byte) in large_message_data.iter_mut().enumerate() {
+        *byte = (i % 256) as u8;
     }
     let large_message = Bytes::from_array(env, &large_message_data);
 

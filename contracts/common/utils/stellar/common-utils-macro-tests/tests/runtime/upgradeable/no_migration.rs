@@ -53,7 +53,6 @@ fn no_migration_contract_can_migrate_and_clears_flag() {
         .migrate(&migration_data);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
     });
 }
-

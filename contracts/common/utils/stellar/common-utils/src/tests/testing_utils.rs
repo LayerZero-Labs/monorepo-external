@@ -239,16 +239,14 @@ fn test_decode_event_topics_data_roundtrip() {
     assert_eq!(raw.len(), 1);
 
     let event = &raw[0];
-    let v0 = match &event.body {
-        xdr::ContractEventBody::V0(v0) => v0,
-    };
+    let xdr::ContractEventBody::V0(v0) = &event.body;
 
     let (topics, data) = decode_event_topics_data(&env, event).expect("event should decode");
 
     // `Val` doesn't implement `PartialEq` in this SDK version, so compare by converting back to XDR.
     let topics_xdr: std::vec::Vec<xdr::ScVal> =
         topics.iter().map(|t| xdr::ScVal::try_from_val(&env, &t).expect("topic Val must convert to XDR")).collect();
-    assert_eq!(topics_xdr.len(), v0.topics.len() as usize);
+    assert_eq!(topics_xdr.len(), v0.topics.len());
     for (i, t) in v0.topics.iter().enumerate() {
         assert_eq!(topics_xdr[i], *t);
     }

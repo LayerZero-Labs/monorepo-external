@@ -74,7 +74,7 @@ fn migrate_is_guarded_and_noop_migration_works() {
         .migrate(&migration_data);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
     });
 }
 

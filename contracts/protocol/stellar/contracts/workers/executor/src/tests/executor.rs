@@ -16,8 +16,8 @@ fn test_constructor_sets_endpoint_and_worker_config() {
 
     assert_eq!(setup.client.owner(), Some(setup.owner.clone()));
     assert_eq!(setup.client.admins(), setup.admins);
-    assert_eq!(setup.client.is_admin(&setup.admins.get(0).unwrap()), true);
-    assert_eq!(setup.client.is_supported_message_lib(&setup.send_lib), true);
+    assert!(setup.client.is_admin(&setup.admins.get(0).unwrap()));
+    assert!(setup.client.is_supported_message_lib(&setup.send_lib));
     assert_eq!(setup.client.message_libs(), vec![&setup.env, setup.send_lib.clone()]);
 
     assert_eq!(setup.client.endpoint(), setup.endpoint);
@@ -25,7 +25,7 @@ fn test_constructor_sets_endpoint_and_worker_config() {
     assert_eq!(setup.client.price_feed(), Some(setup.price_feed.clone()));
     assert_eq!(setup.client.worker_fee_lib(), Some(setup.worker_fee_lib.clone()));
     assert_eq!(setup.client.default_multiplier_bps(), setup.default_multiplier_bps);
-    assert_eq!(setup.client.paused(), false);
+    assert!(!setup.client.paused());
 }
 
 // =============================================================================
@@ -71,12 +71,12 @@ fn test_set_admin_add_and_remove() {
     // Add new admin
     setup.mock_owner_auth("set_admin", (&new_admin, true));
     setup.client.set_admin(&new_admin, &true);
-    assert_eq!(setup.client.is_admin(&new_admin), true);
+    assert!(setup.client.is_admin(&new_admin));
 
     // Remove that admin
     setup.mock_owner_auth("set_admin", (&new_admin, false));
     setup.client.set_admin(&new_admin, &false);
-    assert_eq!(setup.client.is_admin(&new_admin), false);
+    assert!(!setup.client.is_admin(&new_admin));
 }
 
 #[test]

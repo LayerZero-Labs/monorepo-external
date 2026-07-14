@@ -459,6 +459,7 @@ pub enum OFTType {
 
 /// Token type for test setup
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum TokenType {
     SAC, // Stellar Asset Contract (native, 7 decimals)
     #[default]

@@ -91,7 +91,8 @@ fn test_role_check_inserts_expected_statements_table_driven() {
             args: quote! { caller, "minter" },
             input: quote! { pub fn mint(env: &Env, caller: Address, amount: i128) {} },
             require_auth: false,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
             expected_auth_stmt: None,
             expected_stmt_count: 1,
         },
@@ -100,7 +101,8 @@ fn test_role_check_inserts_expected_statements_table_driven() {
             args: quote! { caller, "minter" },
             input: quote! { pub fn mint(env: Env, caller: Address, amount: i128) {} },
             require_auth: true,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
             expected_auth_stmt: Some("caller.require_auth();"),
             expected_stmt_count: 2,
         },
@@ -109,7 +111,8 @@ fn test_role_check_inserts_expected_statements_table_driven() {
             args: quote! { caller, "minter" },
             input: quote! { pub fn mint(env: &Env, caller: Address, amount: i128) {} },
             require_auth: true,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
             expected_auth_stmt: Some("caller.require_auth();"),
             expected_stmt_count: 2,
         },
@@ -118,7 +121,8 @@ fn test_role_check_inserts_expected_statements_table_driven() {
             args: quote! { account, "admin" },
             input: quote! { pub fn admin_action(env: Env, account: &Address) {} },
             require_auth: false,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"admin\"),account);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"admin\"),account);",
             expected_auth_stmt: None,
             expected_stmt_count: 1,
         },
@@ -151,19 +155,22 @@ fn test_has_role_role_arg_variants_generate_expected_symbol_new_table_driven() {
             name: "role string literal passed to Symbol::new (Env ref)",
             args: quote! { caller, "minter" },
             input: quote! { pub fn mint(env: &Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "role const expr passed to Symbol::new (Env ref)",
             args: quote! { caller, MINTER_ROLE },
             input: quote! { pub fn mint(env: &Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,MINTER_ROLE),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,MINTER_ROLE),&caller);",
         },
         Case {
             name: "role const expr passed to Symbol::new (Env owned)",
             args: quote! { caller, MINTER_ROLE },
             input: quote! { pub fn mint(env: Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,MINTER_ROLE),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,MINTER_ROLE),&caller);",
         },
         Case {
             name: "role path expr passed to Symbol::new",
@@ -316,32 +323,38 @@ fn test_has_role_env_variants_generate_correct_env_ref_in_ensure_role() {
         Case {
             name: "owned Env",
             input: quote! { pub fn mint(env: Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
         },
         Case {
             name: "ref Env",
             input: quote! { pub fn mint(env: &Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "mut ref Env",
             input: quote! { pub fn mint(env: &mut Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "qualified owned Env",
             input: quote! { pub fn mint(env: soroban_sdk::Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
         },
         Case {
             name: "qualified ref Env",
             input: quote! { pub fn mint(env: &soroban_sdk::Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "leading :: qualified owned Env",
             input: quote! { pub fn mint(env: ::soroban_sdk::Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,\"minter\"),&caller);",
         },
     ];
 
@@ -364,27 +377,32 @@ fn test_has_role_address_variants_generate_correct_param_reference() {
         Case {
             name: "Address by value -> &caller",
             input: quote! { pub fn mint(env: &Env, caller: Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "&Address -> caller",
             input: quote! { pub fn mint(env: &Env, caller: &Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
         },
         Case {
             name: "&mut Address -> caller",
             input: quote! { pub fn mint(env: &Env, caller: &mut Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
         },
         Case {
             name: "qualified Address by value",
             input: quote! { pub fn mint(env: &Env, caller: soroban_sdk::Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),&caller);",
         },
         Case {
             name: "qualified &Address",
             input: quote! { pub fn mint(env: &Env, caller: &soroban_sdk::Address) {} },
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,\"minter\"),caller);",
         },
     ];
 
@@ -470,7 +488,8 @@ fn test_authorizer_role_generates_auth_check_instead_of_ensure_role() {
             args: quote! { operator, AUTHORIZER },
             input: quote! { pub fn admin_action(env: &Env, operator: Address) {} },
             require_auth: false,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,AUTHORIZER),&operator);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,AUTHORIZER),&operator);",
             expected_auth_stmt: None,
             expected_stmt_count: 1,
         },
@@ -479,7 +498,8 @@ fn test_authorizer_role_generates_auth_check_instead_of_ensure_role() {
             args: quote! { operator, AUTHORIZER },
             input: quote! { pub fn admin_action(env: Env, operator: Address) {} },
             require_auth: true,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,AUTHORIZER),&operator);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(&env,&soroban_sdk::Symbol::new(&env,AUTHORIZER),&operator);",
             expected_auth_stmt: Some("operator.require_auth();"),
             expected_stmt_count: 2,
         },
@@ -488,7 +508,8 @@ fn test_authorizer_role_generates_auth_check_instead_of_ensure_role() {
             args: quote! { operator, AUTHORIZER },
             input: quote! { pub fn admin_action(env: &Env, operator: &Address) {} },
             require_auth: true,
-            expected_ensure_stmt: "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,AUTHORIZER),operator);",
+            expected_ensure_stmt:
+                "utils::rbac::ensure_role::<Self>(env,&soroban_sdk::Symbol::new(env,AUTHORIZER),operator);",
             expected_auth_stmt: Some("operator.require_auth();"),
             expected_stmt_count: 2,
         },

@@ -59,8 +59,8 @@ fn single_field_keyed_all_storage_types() {
             // Initially absent
             assert_eq!(InstanceKeyed::value(&env, k1), None);
             assert_eq!(InstanceKeyed::value(&env, k2), None);
-            assert_eq!(InstanceKeyed::has_value(&env, k1), false);
-            assert_eq!(InstanceKeyed::has_value(&env, k2), false);
+            assert!(!InstanceKeyed::has_value(&env, k1));
+            assert!(!InstanceKeyed::has_value(&env, k2));
 
             // Set and verify isolation
             InstanceKeyed::set_value(&env, k1, &100);
@@ -68,17 +68,17 @@ fn single_field_keyed_all_storage_types() {
 
             assert_eq!(InstanceKeyed::value(&env, k1), Some(100));
             assert_eq!(InstanceKeyed::value(&env, k2), Some(200));
-            assert_eq!(InstanceKeyed::has_value(&env, k1), true);
-            assert_eq!(InstanceKeyed::has_value(&env, k2), true);
+            assert!(InstanceKeyed::has_value(&env, k1));
+            assert!(InstanceKeyed::has_value(&env, k2));
 
             // set_or_remove for keyed instance storage
             InstanceKeyed::set_or_remove_value(&env, k1, &Some(123));
             assert_eq!(InstanceKeyed::value(&env, k1), Some(123));
-            assert_eq!(InstanceKeyed::has_value(&env, k1), true);
+            assert!(InstanceKeyed::has_value(&env, k1));
 
             InstanceKeyed::set_or_remove_value(&env, k1, &None);
             assert_eq!(InstanceKeyed::value(&env, k1), None);
-            assert_eq!(InstanceKeyed::has_value(&env, k1), false);
+            assert!(!InstanceKeyed::has_value(&env, k1));
 
             // Remove k1, k2 unaffected
             InstanceKeyed::remove_value(&env, k1);
@@ -94,8 +94,8 @@ fn single_field_keyed_all_storage_types() {
             let k2 = BytesN::<32>::from_array(&env, &[2u8; 32]);
 
             // Initially absent
-            assert_eq!(PersistentKeyed::has_balance(&env, &k1), false);
-            assert_eq!(PersistentKeyed::has_balance(&env, &k2), false);
+            assert!(!PersistentKeyed::has_balance(&env, &k1));
+            assert!(!PersistentKeyed::has_balance(&env, &k2));
 
             // Set and verify isolation
             PersistentKeyed::set_balance(&env, &k1, &111);
@@ -107,17 +107,17 @@ fn single_field_keyed_all_storage_types() {
             // set_or_remove for keyed persistent storage
             PersistentKeyed::set_or_remove_balance(&env, &k1, &Some(333));
             assert_eq!(PersistentKeyed::balance(&env, &k1), Some(333));
-            assert_eq!(PersistentKeyed::has_balance(&env, &k1), true);
+            assert!(PersistentKeyed::has_balance(&env, &k1));
 
             PersistentKeyed::set_or_remove_balance(&env, &k1, &None);
             assert_eq!(PersistentKeyed::balance(&env, &k1), None);
-            assert_eq!(PersistentKeyed::has_balance(&env, &k1), false);
+            assert!(!PersistentKeyed::has_balance(&env, &k1));
 
             // Remove k1, k2 unaffected
             PersistentKeyed::remove_balance(&env, &k1);
-            assert_eq!(PersistentKeyed::has_balance(&env, &k1), false);
+            assert!(!PersistentKeyed::has_balance(&env, &k1));
             assert_eq!(PersistentKeyed::balance(&env, &k1), None);
-            assert_eq!(PersistentKeyed::has_balance(&env, &k2), true);
+            assert!(PersistentKeyed::has_balance(&env, &k2));
             assert_eq!(PersistentKeyed::balance(&env, &k2), Some(222));
         }
 
@@ -129,26 +129,26 @@ fn single_field_keyed_all_storage_types() {
 
             // Absent: getter returns default, but has_* is false
             assert_eq!(PersistentKeyed::balance_with_default(&env, &k), 999);
-            assert_eq!(PersistentKeyed::has_balance_with_default(&env, &k), false);
+            assert!(!PersistentKeyed::has_balance_with_default(&env, &k));
 
             // Present: getter returns stored value, has_* is true
             PersistentKeyed::set_balance_with_default(&env, &k, &111);
-            assert_eq!(PersistentKeyed::has_balance_with_default(&env, &k), true);
+            assert!(PersistentKeyed::has_balance_with_default(&env, &k));
             assert_eq!(PersistentKeyed::balance_with_default(&env, &k), 111);
 
             // set_or_remove(Some) updates value
             PersistentKeyed::set_or_remove_balance_with_default(&env, &k, &Some(222));
-            assert_eq!(PersistentKeyed::has_balance_with_default(&env, &k), true);
+            assert!(PersistentKeyed::has_balance_with_default(&env, &k));
             assert_eq!(PersistentKeyed::balance_with_default(&env, &k), 222);
 
             // set_or_remove(None) removes and returns to default
             PersistentKeyed::set_or_remove_balance_with_default(&env, &k, &None);
-            assert_eq!(PersistentKeyed::has_balance_with_default(&env, &k), false);
+            assert!(!PersistentKeyed::has_balance_with_default(&env, &k));
             assert_eq!(PersistentKeyed::balance_with_default(&env, &k), 999);
 
             // Removed: back to default, has_* is false
             PersistentKeyed::remove_balance_with_default(&env, &k);
-            assert_eq!(PersistentKeyed::has_balance_with_default(&env, &k), false);
+            assert!(!PersistentKeyed::has_balance_with_default(&env, &k));
             assert_eq!(PersistentKeyed::balance_with_default(&env, &k), 999);
         }
 
@@ -173,11 +173,11 @@ fn single_field_keyed_all_storage_types() {
             // set_or_remove for keyed temporary storage
             TemporaryKeyed::set_or_remove_flag(&env, &k1, &Some(false));
             assert_eq!(TemporaryKeyed::flag(&env, &k1), Some(false));
-            assert_eq!(TemporaryKeyed::has_flag(&env, &k1), true);
+            assert!(TemporaryKeyed::has_flag(&env, &k1));
 
             TemporaryKeyed::set_or_remove_flag(&env, &k1, &None);
             assert_eq!(TemporaryKeyed::flag(&env, &k1), None);
-            assert_eq!(TemporaryKeyed::has_flag(&env, &k1), false);
+            assert!(!TemporaryKeyed::has_flag(&env, &k1));
 
             // Remove k1, k2 unaffected
             TemporaryKeyed::remove_flag(&env, &k1);
@@ -251,16 +251,16 @@ fn multi_field_keyed_set_or_remove() {
         let token: u64 = 42;
 
         // has returns false when absent
-        assert_eq!(MultiFieldKeyed::has_balance(&env, &user, token), false);
+        assert!(!MultiFieldKeyed::has_balance(&env, &user, token));
 
         // set_or_remove with Some sets value
         MultiFieldKeyed::set_or_remove_balance(&env, &user, token, &Some(500));
-        assert_eq!(MultiFieldKeyed::has_balance(&env, &user, token), true);
+        assert!(MultiFieldKeyed::has_balance(&env, &user, token));
         assert_eq!(MultiFieldKeyed::balance(&env, &user, token), Some(500));
 
         // set_or_remove with None removes value
         MultiFieldKeyed::set_or_remove_balance(&env, &user, token, &None);
-        assert_eq!(MultiFieldKeyed::has_balance(&env, &user, token), false);
+        assert!(!MultiFieldKeyed::has_balance(&env, &user, token));
         assert_eq!(MultiFieldKeyed::balance(&env, &user, token), None);
     });
 }

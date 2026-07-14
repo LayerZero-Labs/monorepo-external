@@ -52,11 +52,11 @@ fn all_storage_types_unkeyed_roundtrip() {
         {
             // Default when not set
             assert_eq!(InstanceKey::counter(&env), 0);
-            assert_eq!(InstanceKey::has_counter(&env), false);
+            assert!(!InstanceKey::has_counter(&env));
 
             // Set value
             InstanceKey::set_counter(&env, &5);
-            assert_eq!(InstanceKey::has_counter(&env), true);
+            assert!(InstanceKey::has_counter(&env));
             assert_eq!(InstanceKey::counter(&env), 5);
 
             // set_or_remove with Some updates value
@@ -65,7 +65,7 @@ fn all_storage_types_unkeyed_roundtrip() {
 
             // set_or_remove with None removes value
             InstanceKey::set_or_remove_counter(&env, &None);
-            assert_eq!(InstanceKey::has_counter(&env), false);
+            assert!(!InstanceKey::has_counter(&env));
             assert_eq!(InstanceKey::counter(&env), 0);
         }
 
@@ -75,11 +75,11 @@ fn all_storage_types_unkeyed_roundtrip() {
         {
             // Initially absent, returns None
             assert_eq!(PersistentKey::counter(&env), None);
-            assert_eq!(PersistentKey::has_counter(&env), false);
+            assert!(!PersistentKey::has_counter(&env));
 
             // set_or_remove with Some sets value
             PersistentKey::set_or_remove_counter(&env, &Some(100));
-            assert_eq!(PersistentKey::has_counter(&env), true);
+            assert!(PersistentKey::has_counter(&env));
             assert_eq!(PersistentKey::counter(&env), Some(100));
 
             // Update value
@@ -88,7 +88,7 @@ fn all_storage_types_unkeyed_roundtrip() {
 
             // set_or_remove with None removes value
             PersistentKey::set_or_remove_counter(&env, &None);
-            assert_eq!(PersistentKey::has_counter(&env), false);
+            assert!(!PersistentKey::has_counter(&env));
             assert_eq!(PersistentKey::counter(&env), None);
         }
 
@@ -98,26 +98,26 @@ fn all_storage_types_unkeyed_roundtrip() {
         {
             // Returns default value when not set
             assert_eq!(PersistentKeyWithDefault::value(&env), 42);
-            assert_eq!(PersistentKeyWithDefault::has_value(&env), false);
+            assert!(!PersistentKeyWithDefault::has_value(&env));
 
             // Set value overrides default
             PersistentKeyWithDefault::set_value(&env, &100);
-            assert_eq!(PersistentKeyWithDefault::has_value(&env), true);
+            assert!(PersistentKeyWithDefault::has_value(&env));
             assert_eq!(PersistentKeyWithDefault::value(&env), 100);
 
             // set_or_remove(Some) updates value
             PersistentKeyWithDefault::set_or_remove_value(&env, &Some(200));
-            assert_eq!(PersistentKeyWithDefault::has_value(&env), true);
+            assert!(PersistentKeyWithDefault::has_value(&env));
             assert_eq!(PersistentKeyWithDefault::value(&env), 200);
 
             // set_or_remove(None) removes and returns to default
             PersistentKeyWithDefault::set_or_remove_value(&env, &None);
-            assert_eq!(PersistentKeyWithDefault::has_value(&env), false);
+            assert!(!PersistentKeyWithDefault::has_value(&env));
             assert_eq!(PersistentKeyWithDefault::value(&env), 42);
 
             // Remove value returns to default
             PersistentKeyWithDefault::remove_value(&env);
-            assert_eq!(PersistentKeyWithDefault::has_value(&env), false);
+            assert!(!PersistentKeyWithDefault::has_value(&env));
             assert_eq!(PersistentKeyWithDefault::value(&env), 42);
         }
 
@@ -127,11 +127,11 @@ fn all_storage_types_unkeyed_roundtrip() {
         {
             // Initially absent, returns None
             assert_eq!(TemporaryKey::flag(&env), None);
-            assert_eq!(TemporaryKey::has_flag(&env), false);
+            assert!(!TemporaryKey::has_flag(&env));
 
             // set_or_remove with Some sets value
             TemporaryKey::set_or_remove_flag(&env, &Some(true));
-            assert_eq!(TemporaryKey::has_flag(&env), true);
+            assert!(TemporaryKey::has_flag(&env));
             assert_eq!(TemporaryKey::flag(&env), Some(true));
 
             // Update value
@@ -140,7 +140,7 @@ fn all_storage_types_unkeyed_roundtrip() {
 
             // set_or_remove with None removes value
             TemporaryKey::set_or_remove_flag(&env, &None);
-            assert_eq!(TemporaryKey::has_flag(&env), false);
+            assert!(!TemporaryKey::has_flag(&env));
             assert_eq!(TemporaryKey::flag(&env), None);
         }
     });

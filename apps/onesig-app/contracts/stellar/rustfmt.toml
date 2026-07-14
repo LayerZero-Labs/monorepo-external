@@ -1,0 +1,10 @@
+# This already-finalized contract intentionally uses only max_width = 100 (rustfmt's
+# default) to avoid reformatting churn. The other Stellar packages share a wider
+# config (max_width = 120, use_small_heuristics = "Max", ...); onesig deliberately
+# diverges to stay close to its finalized formatting.
+max_width = 100
+
+# style_edition is a stable option honored by the docker toolchain. Pin it to
+# 2021 to match every crate's `edition = "2021"` so formatting stays stable
+# across rustfmt versions (setting it to 2024 would reformat the code).
+style_edition = "2021"

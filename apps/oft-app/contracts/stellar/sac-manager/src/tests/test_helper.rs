@@ -102,6 +102,7 @@ pub struct TestSetup<'a> {
 
 impl TestSetup<'_> {
     /// Start building a new test setup.
+    #[allow(clippy::new_ret_no_self)]
     pub fn new() -> TestSetupBuilder {
         TestSetupBuilder::new()
     }

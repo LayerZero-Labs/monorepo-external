@@ -34,8 +34,8 @@ fn test_get_oapp_receive_uln_config() {
     endpoint.set_config(&Address::generate(&env), &oapp, &uln302.address, &params);
 
     let oapp_config = uln302.oapp_receive_uln_config(&oapp, &eid).unwrap();
-    assert_eq!(oapp_config.use_default_confirmations, true);
-    assert_eq!(oapp_config.use_default_required_dvns, false);
+    assert!(oapp_config.use_default_confirmations);
+    assert!(!oapp_config.use_default_required_dvns);
 }
 
 #[test]

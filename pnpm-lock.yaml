@@ -359,7 +359,9 @@ overrides:
   fast-xml-parser@^5: ^5.5.7
   flatted: ^3.4.2
   flatted@^3: ^3.4.2
-  form-data@^4: ^4.0.4
+  form-data@^2: ^2.5.6
+  form-data@^3: ^3.0.5
+  form-data@^4: ^4.0.6
   framer-motion>@types/react: 19.2.6
   glob@^10: ^10.5.0
   h3@^1: ^1.15.6
@@ -5750,8 +5752,8 @@ packages:
     resolution: {integrity: sha512-yDYSgNMraqvnxiEXO4hi88+YZxaHC6QKzb5N84iRCTDeRO7ZALpir/lVmf/uXUhnwUr2O4HU8s/n6x+yNjQkHw==}
     engines: {node: '>= 14.17'}
 
-  form-data@4.0.5:
-    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
+  form-data@4.0.6:
+    resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
     engines: {node: '>= 6'}
 
   forwarded-parse@2.1.2:
@@ -5975,8 +5977,8 @@ packages:
   hash.js@1.1.7:
     resolution: {integrity: sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==}
 
-  hasown@2.0.2:
-    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
+  hasown@2.0.4:
+    resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
 
   he@1.2.0:
@@ -9635,7 +9637,7 @@ snapshots:
       dotenv: 16.6.1
       enquirer: 2.4.1
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      form-data: 4.0.5
+      form-data: 4.0.6
       fs-extra: 11.3.4
       hardhat: 2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)
       hardhat-deploy: 0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -9670,7 +9672,7 @@ snapshots:
       dotenv: 16.6.1
       enquirer: 2.4.1
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      form-data: 4.0.5
+      form-data: 4.0.6
       fs-extra: 11.3.4
       hardhat: 2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)
       hardhat-deploy: 0.12.4(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -11498,7 +11500,7 @@ snapshots:
   axios@0.32.0(debug@4.4.3):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
-      form-data: 4.0.5
+      form-data: 4.0.6
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -11506,7 +11508,7 @@ snapshots:
   axios@1.16.1(debug@4.4.3):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
-      form-data: 4.0.5
+      form-data: 4.0.6
       https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
@@ -12262,7 +12264,7 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   es-toolkit@1.46.1: {}
 
@@ -12689,12 +12691,12 @@ snapshots:
 
   form-data-encoder@2.1.4: {}
 
-  form-data@4.0.5:
+  form-data@4.0.6:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       mime-types: 2.1.35
 
   forwarded-parse@2.1.2: {}
@@ -12752,7 +12754,7 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       math-intrinsics: 1.1.0
 
   get-package-type@0.1.0: {}
@@ -12921,7 +12923,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       enquirer: 2.4.1
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      form-data: 4.0.5
+      form-data: 4.0.6
       fs-extra: 10.1.0
       match-all: 1.2.7
       murmur-128: 0.2.1
@@ -12951,7 +12953,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       enquirer: 2.4.1
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      form-data: 4.0.5
+      form-data: 4.0.6
       fs-extra: 10.1.0
       match-all: 1.2.7
       murmur-128: 0.2.1
@@ -13081,7 +13083,7 @@ snapshots:
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
 
-  hasown@2.0.2:
+  hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
 
@@ -13217,7 +13219,7 @@ snapshots:
 
   is-core-module@2.16.1:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   is-extglob@2.1.1: {}
 
@@ -13723,7 +13725,7 @@ snapshots:
       cssstyle: 4.6.0
       data-urls: 5.0.0
       decimal.js: 10.4.3
-      form-data: 4.0.5
+      form-data: 4.0.6
       html-encoding-sniffer: 4.0.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6

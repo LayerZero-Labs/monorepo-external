@@ -167,8 +167,7 @@ impl<'a> TestSetup<'a> {
 
         // Register executor helper config directly in storage
         let executor_helper = Address::generate(&env);
-        let allowed_functions: Vec<Symbol> =
-            vec![&env, Symbol::new(&env, "execute"), Symbol::new(&env, "compose")];
+        let allowed_functions: Vec<Symbol> = vec![&env, Symbol::new(&env, "execute"), Symbol::new(&env, "compose")];
         env.as_contract(&contract_id, || {
             crate::storage::ExecutorStorage::set_executor_helper(
                 &env,

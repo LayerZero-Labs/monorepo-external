@@ -303,7 +303,7 @@ fn test_write_primitives_roundtrip() {
         .write_u16(0x3456)
         .write_u32(0x789ABCDE)
         .write_u64(0x0102030405060708)
-        .write_u128(0x10111213141516171819_1a1b1c1d1e1f);
+        .write_u128(0x1011_1213_1415_1617_1819_1a1b_1c1d_1e1f);
 
     let bytes = writer.to_bytes();
     // 1 + 2 + 4 + 8 + 16 = 31
@@ -315,7 +315,7 @@ fn test_write_primitives_roundtrip() {
     assert_eq!(reader.read_u16(), 0x3456);
     assert_eq!(reader.read_u32(), 0x789ABCDE);
     assert_eq!(reader.read_u64(), 0x0102030405060708);
-    assert_eq!(reader.read_u128(), 0x10111213141516171819_1a1b1c1d1e1f);
+    assert_eq!(reader.read_u128(), 0x1011_1213_1415_1617_1819_1a1b_1c1d_1e1f);
 }
 
 #[test]

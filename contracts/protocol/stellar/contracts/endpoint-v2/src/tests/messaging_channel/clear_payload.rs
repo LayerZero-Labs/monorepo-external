@@ -239,10 +239,7 @@ fn test_clear_payload_missing_intermediate_nonce() {
 
     // inbound_nonce should be 1 (nonce 2 is missing), and nonce 3 should be pending.
     assert_eq!(endpoint_client.inbound_nonce(&receiver, &src_eid, &sender), 1);
-    assert_eq!(
-        endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender),
-        soroban_sdk::vec![env, 3u64]
-    );
+    assert_eq!(endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender), soroban_sdk::vec![env, 3u64]);
 
     // Clearing nonce 1 succeeds.
     clear_payload(&context, &receiver, src_eid, &sender, 1, &payload1);

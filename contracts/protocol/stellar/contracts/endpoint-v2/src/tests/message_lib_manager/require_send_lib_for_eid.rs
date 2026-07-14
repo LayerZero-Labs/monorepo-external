@@ -38,7 +38,9 @@ fn test_require_send_lib_for_eid_unsupported_eid() {
     let lib = context.setup_mock_message_lib(MessageLibType::Send, vec![env, context.eid]);
     context.register_library_with_auth(&lib);
 
-    env.as_contract(&endpoint_client.address, || EndpointV2::require_send_lib_for_eid_for_test(env, &lib, unsupported_eid));
+    env.as_contract(&endpoint_client.address, || {
+        EndpointV2::require_send_lib_for_eid_for_test(env, &lib, unsupported_eid)
+    });
 }
 
 #[test]
@@ -49,7 +51,9 @@ fn test_require_send_lib_for_eid_success_for_send_and_send_and_receive() {
 
     let send_lib = context.setup_mock_message_lib(MessageLibType::Send, vec![env, context.eid]);
     context.register_library_with_auth(&send_lib);
-    env.as_contract(&endpoint_client.address, || EndpointV2::require_send_lib_for_eid_for_test(env, &send_lib, context.eid));
+    env.as_contract(&endpoint_client.address, || {
+        EndpointV2::require_send_lib_for_eid_for_test(env, &send_lib, context.eid)
+    });
 
     let send_and_receive = context.setup_mock_message_lib(MessageLibType::SendAndReceive, vec![env, context.eid]);
     context.register_library_with_auth(&send_and_receive);

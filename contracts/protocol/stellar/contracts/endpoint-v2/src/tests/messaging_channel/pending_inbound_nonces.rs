@@ -108,4 +108,3 @@ fn test_pending_inbound_nonces_isolated_by_path() {
     assert_eq!(endpoint_client.pending_inbound_nonces(&receiver_a, &src_eid_b, &sender_a), vec![env, 2u64]);
     assert_eq!(endpoint_client.pending_inbound_nonces(&receiver_a, &src_eid_a, &sender_b), vec![env, 2u64]);
 }
-

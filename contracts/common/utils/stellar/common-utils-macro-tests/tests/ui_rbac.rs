@@ -9,4 +9,3 @@ fn ui_rbac() {
     t.pass("tests/ui/rbac/**/pass/*.rs");
     t.compile_fail("tests/ui/rbac/**/fail/*.rs");
 }
-

@@ -347,7 +347,7 @@ fn test_lz_send_native_only() {
     assert_eq!(params.receiver, peer);
     assert_eq!(params.message, message);
     assert_eq!(params.options, options);
-    assert_eq!(params.pay_in_zro, false);
+    assert!(!params.pay_in_zro);
     assert_eq!(refund, refund_address);
 
     assert_eq!(native_token_client.balance(&sender), 0);
@@ -411,7 +411,7 @@ fn test_lz_send_with_zro() {
     assert_eq!(params.receiver, peer);
     assert_eq!(params.message, message);
     assert_eq!(params.options, options);
-    assert_eq!(params.pay_in_zro, true);
+    assert!(params.pay_in_zro);
     assert_eq!(refund, refund_address);
 
     assert_eq!(native_token_client.balance(&sender), 0);

@@ -368,7 +368,7 @@ fn test_upgrade_success() {
 
     env.as_contract(&contract_id, || {
         // Initially, migrating flag should be false (default)
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
     });
 
     // Call the actual upgrade function with valid WASM hash
@@ -377,7 +377,7 @@ fn test_upgrade_success() {
 
     env.as_contract(&contract_id, || {
         // Verify the flag is set by upgrade()
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 }
 
@@ -412,7 +412,7 @@ fn test_migrate_success() {
 
     env.as_contract(&contract_id, || {
         // Verify migration flag was cleared
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
 
         // Verify migration data was stored (proving __migrate was called)
         let stored_value: Option<bool> = env.storage().instance().get(&Symbol::new(&env, "migrated"));
@@ -431,7 +431,7 @@ fn test_migrate_requires_auth() {
     // Set the migrating flag so we know failure is due to auth, not MigrationNotAllowed.
     env.as_contract(&contract_id, || {
         UpgradeableStorage::set_migrating(&env, &true);
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 
     let migration_data = Val::VOID.to_xdr(&env);
@@ -448,7 +448,7 @@ fn test_migrate_rejects_invalid_migration_data_and_does_not_clear_flag() {
     // Allow migrate (so we hit the decode path rather than MigrationNotAllowed).
     env.as_contract(&contract_id, || {
         UpgradeableStorage::set_migrating(&env, &true);
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 
     // Valid XDR, but not a u32 payload => should fail decoding in Upgradeable::migrate.
@@ -458,7 +458,7 @@ fn test_migrate_rejects_invalid_migration_data_and_does_not_clear_flag() {
 
     // Since migration failed before reaching the "clear flag" line, migrating should still be true.
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 }
 
@@ -476,7 +476,7 @@ fn test_can_upgrade_and_migrate_multiple_times() {
     client.upgrade(&wasm_hash);
     client.migrate(&migration_data);
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
         let stored_value: Option<bool> = env.storage().instance().get(&Symbol::new(&env, "migrated"));
         assert_eq!(stored_value, Some(true));
     });
@@ -485,7 +485,7 @@ fn test_can_upgrade_and_migrate_multiple_times() {
     client.upgrade(&wasm_hash);
     client.migrate(&migration_data);
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
         let stored_value: Option<bool> = env.storage().instance().get(&Symbol::new(&env, "migrated"));
         assert_eq!(stored_value, Some(true));
     });

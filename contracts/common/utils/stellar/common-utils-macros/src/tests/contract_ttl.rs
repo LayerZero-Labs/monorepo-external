@@ -213,6 +213,7 @@ fn test_contracttrait_with_ttl_rejects_non_trait_input() {
 // ============================================================================
 
 #[test]
+#[allow(clippy::type_complexity)]
 fn test_contractimpl_with_ttl_adds_contractimpl_attribute_table_driven() {
     // (name, attr, input, expected_substrings, forbidden_substrings)
     let cases: Vec<(&str, TokenStream, TokenStream, Vec<&str>, Vec<&str>)> = vec![
@@ -254,6 +255,7 @@ fn test_contractimpl_with_ttl_adds_contractimpl_attribute_table_driven() {
 }
 
 #[test]
+#[allow(clippy::type_complexity)]
 fn test_contracttrait_with_ttl_adds_contracttrait_attribute_table_driven() {
     // (name, attr, input, expected_substrings, forbidden_substrings)
     let cases: Vec<(&str, TokenStream, TokenStream, Vec<&str>, Vec<&str>)> = vec![

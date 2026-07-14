@@ -193,24 +193,15 @@ fn test_nilify_closes_gap_and_drains_pending_nonces() {
     });
 
     assert_eq!(endpoint_client.inbound_nonce(&receiver, &src_eid, &sender), 1);
-    assert_eq!(
-        endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender),
-        soroban_sdk::vec![env, 3u64]
-    );
+    assert_eq!(endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender), soroban_sdk::vec![env, 3u64]);
 
     // Nilify nonce 2 with None closes the gap and should drain pending to advance inbound nonce to 3.
     nilify_with_auth(&context, &receiver, &receiver, src_eid, &sender, 2u64, &None);
 
     assert_eq!(endpoint_client.inbound_nonce(&receiver, &src_eid, &sender), 3);
     assert!(endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender).is_empty());
-    assert_eq!(
-        endpoint_client.inbound_payload_hash(&receiver, &src_eid, &sender, &2u64),
-        Some(nil_hash(&context))
-    );
-    assert_eq!(
-        endpoint_client.inbound_payload_hash(&receiver, &src_eid, &sender, &3u64),
-        Some(payload_hash_3)
-    );
+    assert_eq!(endpoint_client.inbound_payload_hash(&receiver, &src_eid, &sender, &2u64), Some(nil_hash(&context)));
+    assert_eq!(endpoint_client.inbound_payload_hash(&receiver, &src_eid, &sender, &3u64), Some(payload_hash_3));
 }
 
 // Nilify is allowed when nonce <= inbound_nonce if an `inbound_payload_hash` exists

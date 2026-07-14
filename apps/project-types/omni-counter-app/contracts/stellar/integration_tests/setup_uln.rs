@@ -494,8 +494,7 @@ fn setup_chain_workers<'a>(
     let executor_helper = ExecutorHelperClient::new(env, &executor_helper_address);
 
     // Register the executor helper with the executor (address + allowed function names)
-    let allowed_functions: Vec<Symbol> =
-        vec![env, Symbol::new(env, "execute"), Symbol::new(env, "compose")];
+    let allowed_functions: Vec<Symbol> = vec![env, Symbol::new(env, "execute"), Symbol::new(env, "compose")];
     let lz_executor = LzExecutorClient::new(env, &executor_address);
     env.mock_auths(&[MockAuth {
         address: owner,

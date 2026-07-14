@@ -76,8 +76,16 @@ fn test_send_events_emittance() {
         &setup.env,
         &setup.uln302.address,
         &[
-            &ExecutorFeePaid {  guid: packet.guid.clone(),executor: executor.clone(), fee: native_fee_recipients.get(0).unwrap().clone() },
-            &DVNFeePaid { guid: packet.guid.clone(),dvns: dvns.slice(0..2).clone(), fees: native_fee_recipients.slice(1..3).clone() },
+            &ExecutorFeePaid {
+                guid: packet.guid.clone(),
+                executor: executor.clone(),
+                fee: native_fee_recipients.get(0).unwrap().clone(),
+            },
+            &DVNFeePaid {
+                guid: packet.guid.clone(),
+                dvns: dvns.slice(0..2).clone(),
+                fees: native_fee_recipients.slice(1..3).clone(),
+            },
         ],
     );
 
@@ -164,8 +172,16 @@ fn test_send_events_emittance_with_zro() {
         &setup.env,
         &setup.uln302.address,
         &[
-            &ExecutorFeePaid {  guid: packet.guid.clone(), executor: executor.clone(), fee: native_fee_recipients.get(0).unwrap().clone() },
-            &DVNFeePaid { guid: packet.guid.clone(), dvns: dvns.slice(0..2).clone(), fees: native_fee_recipients.slice(1..3).clone() },
+            &ExecutorFeePaid {
+                guid: packet.guid.clone(),
+                executor: executor.clone(),
+                fee: native_fee_recipients.get(0).unwrap().clone(),
+            },
+            &DVNFeePaid {
+                guid: packet.guid.clone(),
+                dvns: dvns.slice(0..2).clone(),
+                fees: native_fee_recipients.slice(1..3).clone(),
+            },
         ],
     );
 

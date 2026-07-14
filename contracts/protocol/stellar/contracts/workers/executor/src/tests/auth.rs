@@ -252,7 +252,12 @@ fn test_check_auth_rejects_invalid_helper_fn_name() {
     let bad_addr: Vec<Context> = vec![
         &setup.env,
         contract_ctx(&setup.env, wrong_helper, "execute", Vec::new(&setup.env)),
-        contract_ctx(&setup.env, Address::generate(&setup.env), "lz_receive", vec![&setup.env, 0i128.into_val(&setup.env)]),
+        contract_ctx(
+            &setup.env,
+            Address::generate(&setup.env),
+            "lz_receive",
+            vec![&setup.env, 0i128.into_val(&setup.env)],
+        ),
     ];
     assert_eq!(check_auth(&setup, &payload, sig, &bad_addr), Err(Ok(ExecutorError::UnauthorizedContext)));
 }

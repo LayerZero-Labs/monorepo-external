@@ -17,8 +17,7 @@ use utils::errors::AuthError;
 use utils::upgradeable::{UpgradeableInternal, UpgradeableStorage};
 
 // A small, known-good contract WASM used for upgrade() testing.
-const TEST_UPGRADE_WASM: &[u8] =
-    include_bytes!("test_data/test_upgradeable_contract1.wasm");
+const TEST_UPGRADE_WASM: &[u8] = include_bytes!("test_data/test_upgradeable_contract1.wasm");
 
 #[contract]
 #[common_macros::ownable]
@@ -102,7 +101,7 @@ fn upgrade_sets_migrating_flag_with_auth() {
         .upgrade(&wasm_hash);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 }
 
@@ -177,7 +176,7 @@ fn migrate_is_guarded_and_obeys_migrating_flag() {
         .migrate(&migration_data);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
         let migrated: Option<bool> = env.storage().instance().get(&soroban_sdk::Symbol::new(&env, "migrated"));
         assert_eq!(migrated, Some(true));
         let stored: Option<u32> = env.storage().instance().get(&soroban_sdk::Symbol::new(&env, "migration_data"));
@@ -237,6 +236,6 @@ fn migrate_rejects_invalid_migration_data_and_does_not_clear_flag() {
 
     // Since migration failed before reaching the "clear flag" line, migrating should still be true.
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 }

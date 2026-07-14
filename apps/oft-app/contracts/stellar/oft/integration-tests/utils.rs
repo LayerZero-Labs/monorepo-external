@@ -297,9 +297,7 @@ pub fn scan_packet_sent_event(env: &Env, endpoint: &Address) -> Option<(Bytes, B
     let mut packet = None;
     let events = env.events().all().filter_by_contract(endpoint);
     for event in events.events().iter() {
-        let v0 = match &event.body {
-            soroban_sdk::xdr::ContractEventBody::V0(v0) => v0,
-        };
+        let soroban_sdk::xdr::ContractEventBody::V0(v0) = &event.body;
 
         // Check if this is a packet_sent event by looking at topics
         let mut is_packet_sent = false;

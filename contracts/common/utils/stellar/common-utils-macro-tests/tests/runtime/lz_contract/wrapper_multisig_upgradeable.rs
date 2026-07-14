@@ -54,7 +54,7 @@ fn self_auth_can_migrate_when_flag_set() {
     client.migrate(&migration_data);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
         let migrated: Option<bool> = env.storage().instance().get(&soroban_sdk::Symbol::new(&env, "migrated"));
         assert_eq!(migrated, Some(true));
     });

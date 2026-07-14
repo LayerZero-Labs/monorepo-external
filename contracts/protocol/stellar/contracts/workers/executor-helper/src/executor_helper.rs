@@ -120,7 +120,6 @@ impl ExecutorHelper {
     ) {
         ExecutorClient::new(env, executor).native_drop(admin, origin, &dst_eid, oapp, params);
     }
-
 }
 
 #[inline]

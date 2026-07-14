@@ -23,7 +23,7 @@ fn test_parse_executor_options_aggregates_values() {
     assert_eq!(agg.total_gas, 17); // 10 + 7
     assert_eq!(agg.total_value, 10); // 2 + 5 + 3
     assert_eq!(agg.num_lz_compose, 1);
-    assert_eq!(agg.ordered, true);
+    assert!(agg.ordered);
 }
 
 #[test]
@@ -53,7 +53,7 @@ fn test_parse_executor_options_accumulates_multiple_lz_receive_gas_and_value() {
     assert_eq!(agg.total_gas, 30);
     assert_eq!(agg.total_value, 5);
     assert_eq!(agg.num_lz_compose, 0);
-    assert_eq!(agg.ordered, false);
+    assert!(!agg.ordered);
 }
 
 #[test]

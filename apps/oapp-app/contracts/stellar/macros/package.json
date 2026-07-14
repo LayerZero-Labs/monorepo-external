@@ -16,7 +16,9 @@
         "build": "pnpm exec lz-tool --script \"cargo build\" stellar",
         "clean": "rm -rf ./target ./node_modules",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
-        "lint": "pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",
+        "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
+        "lint": "pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -- -D warnings\" stellar",
+        "lint:fix": "pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "test": "pnpm exec lz-tool --script \"cargo nextest run\" stellar"
     },
     "devDependencies": {

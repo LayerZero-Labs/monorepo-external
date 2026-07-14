@@ -237,14 +237,14 @@ fn quote_with_peer_set_works_and_no_peer_errors() {
     assert_eq!(quote_params.receiver, peer);
     assert_eq!(quote_params.message, message);
     assert_eq!(quote_params.options, options);
-    assert_eq!(quote_params.pay_in_zro, false);
+    assert!(!quote_params.pay_in_zro);
 
     let fee_zro = client.quote(&REMOTE_EID, &message, &options, &true);
     assert_eq!(fee_zro.native_fee, 1000);
     assert_eq!(fee_zro.zro_fee, 500);
 
     let (_quote_sender, quote_params) = context.endpoint_client().last_quote();
-    assert_eq!(quote_params.pay_in_zro, true);
+    assert!(quote_params.pay_in_zro);
 
     // No peer configured for UNSET_EID => error
     let no_peer = client.try_quote(&UNSET_EID, &message, &options, &false);
@@ -326,7 +326,7 @@ fn lz_send_pays_native_and_zro_and_calls_endpoint_send() {
     assert_eq!(params.receiver, peer);
     assert_eq!(params.message, message);
     assert_eq!(params.options, options);
-    assert_eq!(params.pay_in_zro, true);
+    assert!(params.pay_in_zro);
     assert_eq!(got_refund, refund);
 
     let native_token_client = context.native_token_client();
@@ -383,7 +383,7 @@ fn lz_send_native_only_does_not_pay_zro() {
     assert_eq!(receipt.fee.zro_fee, 0);
 
     let (_endpoint_sender, params, _refund) = context.endpoint_client().last_send();
-    assert_eq!(params.pay_in_zro, false);
+    assert!(!params.pay_in_zro);
 
     let native_token_client = context.native_token_client();
     let zro_token_client = context.zro_token_client();

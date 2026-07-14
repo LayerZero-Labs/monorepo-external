@@ -1,10 +1,10 @@
 extern crate std;
 
 use crate as oft;
+use crate::extensions::rate_limiter::RATE_LIMITER_MANAGER_ROLE;
 use crate::extensions::rate_limiter::{
     Direction, Mode, RateLimitConfig, RateLimitError, RateLimiter, RateLimiterInternal,
 };
-use crate::extensions::rate_limiter::RATE_LIMITER_MANAGER_ROLE;
 use soroban_sdk::{contract, contractimpl, testutils::Ledger as _, Address, Env, Symbol};
 use utils::auth::Auth;
 use utils::rbac::{grant_role_no_auth, RoleBasedAccessControl};
@@ -35,12 +35,7 @@ impl RateLimiterTestContract {
     /// Test-only: grants RATE_LIMITER_MANAGER_ROLE to the contract.
     pub fn init_roles(env: Env) {
         let contract_id = env.current_contract_address();
-        grant_role_no_auth(
-            &env,
-            &contract_id,
-            &Symbol::new(&env, RATE_LIMITER_MANAGER_ROLE),
-            &contract_id,
-        );
+        grant_role_no_auth(&env, &contract_id, &Symbol::new(&env, RATE_LIMITER_MANAGER_ROLE), &contract_id);
     }
 
     pub fn consume(env: Env, direction: Direction, eid: u32, amount: i128) {

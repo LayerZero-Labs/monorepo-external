@@ -1,7 +1,10 @@
 use crate::{self as oapp, errors::OAppError};
 use common_macros::{contract_trait, only_role, storage};
 use soroban_sdk::{assert_with_error, contractevent, contracttype, panic_with_error, Bytes, Env, Vec};
-use utils::{buffer_reader::BufferReader, rbac::{RoleBasedAccessControl, AUTHORIZER}};
+use utils::{
+    buffer_reader::BufferReader,
+    rbac::{RoleBasedAccessControl, AUTHORIZER},
+};
 
 pub const OPTION_TYPE3: u16 = 3;
 

@@ -546,13 +546,13 @@ fn test_is_v1_eid() {
     let env = Env::default();
 
     // V1: eid < 30000
-    assert_eq!(ExecutorFeeLib::is_v1_eid_for_test(&env, 0), true);
-    assert_eq!(ExecutorFeeLib::is_v1_eid_for_test(&env, 1), true);
-    assert_eq!(ExecutorFeeLib::is_v1_eid_for_test(&env, 29_999), true);
+    assert!(ExecutorFeeLib::is_v1_eid_for_test(&env, 0));
+    assert!(ExecutorFeeLib::is_v1_eid_for_test(&env, 1));
+    assert!(ExecutorFeeLib::is_v1_eid_for_test(&env, 29_999));
 
     // V2: eid >= 30000
-    assert_eq!(ExecutorFeeLib::is_v1_eid_for_test(&env, 30_000), false);
-    assert_eq!(ExecutorFeeLib::is_v1_eid_for_test(&env, 30_001), false);
+    assert!(!ExecutorFeeLib::is_v1_eid_for_test(&env, 30_000));
+    assert!(!ExecutorFeeLib::is_v1_eid_for_test(&env, 30_001));
 }
 
 #[test]

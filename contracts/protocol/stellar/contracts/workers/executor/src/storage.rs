@@ -1,5 +1,5 @@
 use common_macros::storage;
-use soroban_sdk::{contracttype, Address, Vec, Symbol};
+use soroban_sdk::{contracttype, Address, Symbol, Vec};
 
 use crate::DstConfig;
 

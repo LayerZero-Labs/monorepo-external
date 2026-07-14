@@ -258,7 +258,6 @@ pub fn wire_oft(env: &Env, chains: &[&ChainSetup<'_>]) {
 }
 
 pub fn set_peer(env: &Env, owner: &Address, oft: &OFTClient<'_>, dst_eid: u32, peer: &BytesN<32>) {
-
     let peer_option = Some(peer.clone());
     env.mock_auths(&[MockAuth {
         address: owner,

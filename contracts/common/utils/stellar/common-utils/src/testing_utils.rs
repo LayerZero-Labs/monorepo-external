@@ -19,11 +19,9 @@ use soroban_sdk::{testutils::Events, xdr, Address, Env, Event, TryFromVal, Val, 
 /// }
 /// ```
 pub fn decode_event_topics_data(env: &Env, event: &xdr::ContractEvent) -> Option<(Vec<Val>, Val)> {
-    // In the current Soroban SDK version this is always `V0`.
-    // Using a single-variant match avoids "irrefutable let-else" warnings.
-    let v0 = match &event.body {
-        xdr::ContractEventBody::V0(v0) => v0,
-    };
+    // In the current Soroban SDK version this enum has a single variant (`V0`),
+    // so this destructure is infallible.
+    let xdr::ContractEventBody::V0(v0) = &event.body;
 
     let mut topics = Vec::<Val>::new(env);
     for t in v0.topics.iter() {
@@ -120,7 +118,6 @@ pub fn assert_contains_event<E: Event>(env: &Env, contract: &Address, expected: 
 ///     &Event2 { ... },
 /// ]);
 /// ```
-
 pub fn assert_eq_events(env: &Env, contract: &Address, expected_events: &[&dyn Event]) {
     // Note: this module is only compiled for tests / testutils usage, where `std` is available.
     extern crate std;
@@ -143,7 +140,6 @@ pub fn assert_eq_events(env: &Env, contract: &Address, expected_events: &[&dyn E
 ///     &Event2 { ... },
 /// ]);
 /// ```
-
 pub fn assert_contains_events(env: &Env, contract: &Address, expected_events: &[&dyn Event]) {
     // Note: this module is only compiled for tests / testutils usage, where `std` is available.
     extern crate std;

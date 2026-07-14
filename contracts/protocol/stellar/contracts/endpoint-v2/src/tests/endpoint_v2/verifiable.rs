@@ -146,7 +146,6 @@ fn test_verifiable_upper_bound_is_enforced_when_inbound_nonce_nonzero() {
     assert!(!endpoint_client.verifiable(&too_far, &receiver));
 }
 
-
 #[test]
 fn test_verifiable_true_when_payload_hash_exists_even_if_nonce_outside_window() {
     let context = setup();

@@ -191,10 +191,7 @@ fn test_inbound_accepts_upper_bound_when_inbound_nonce_nonzero() {
 
     // Nonce 356 is not consecutive to 100, so it stays pending and inbound_nonce does not advance.
     assert_eq!(endpoint_client.inbound_nonce(&receiver, &src_eid, &sender), 100);
-    assert_eq!(
-        endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender),
-        soroban_sdk::vec![env, 356u64]
-    );
+    assert_eq!(endpoint_client.pending_inbound_nonces(&receiver, &src_eid, &sender), soroban_sdk::vec![env, 356u64]);
     assert_eq!(endpoint_client.inbound_payload_hash(&receiver, &src_eid, &sender, &356u64), Some(hash));
 }
 

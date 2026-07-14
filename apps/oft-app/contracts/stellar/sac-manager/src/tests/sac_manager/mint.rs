@@ -28,13 +28,7 @@ fn test_mint_operator_without_role_fails() {
     let recipient = setup.generate_address();
     let random = setup.generate_address();
 
-    mock_auth(
-        &setup.env,
-        &setup.sac_manager,
-        &random,
-        "mint",
-        (&recipient, 1000_i128, &random),
-    );
+    mock_auth(&setup.env, &setup.sac_manager, &random, "mint", (&recipient, 1000_i128, &random));
     let result = setup.sac_manager_client.try_mint(&recipient, &1000, &random);
     assert!(result.is_err());
 }

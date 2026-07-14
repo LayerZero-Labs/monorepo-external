@@ -141,7 +141,10 @@ fn test_freeze_ttl_configs_already_frozen() {
 
     // Try to freeze again
     context.mock_owner_auth("freeze_ttl_configs", ());
-    assert_eq!(endpoint.try_freeze_ttl_configs().unwrap_err().unwrap(), TtlConfigurableError::TtlConfigAlreadyFrozen.into());
+    assert_eq!(
+        endpoint.try_freeze_ttl_configs().unwrap_err().unwrap(),
+        TtlConfigurableError::TtlConfigAlreadyFrozen.into()
+    );
 }
 
 #[test]

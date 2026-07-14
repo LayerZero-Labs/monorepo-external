@@ -3,8 +3,8 @@ extern crate std;
 use crate::extensions::pausable::{OFTPausable, OFTPausableError, OFTPausableInternal};
 use crate::extensions::pausable::{PAUSER_ROLE, UNPAUSER_ROLE};
 use soroban_sdk::{contract, contractimpl, Address, Env, Symbol};
-use utils::rbac::{grant_role_no_auth, RoleBasedAccessControl};
 use utils::auth::Auth;
+use utils::rbac::{grant_role_no_auth, RoleBasedAccessControl};
 
 // ============================================================================
 // Test Contract

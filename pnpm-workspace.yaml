@@ -221,6 +221,7 @@ ignoredBuiltDependencies:
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
+  - '@temporalio/*'
 onlyBuiltDependencies:
   - '@swc/core'
   - bufferutil

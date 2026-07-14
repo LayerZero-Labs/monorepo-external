@@ -71,11 +71,11 @@ fn is_compose_msg_sender_defaults_to_current_contract() {
 
     // When sender is current contract => true.
     let this = contract_id.clone();
-    assert_eq!(client.is_compose_msg_sender(&origin, &msg, &this), true);
+    assert!(client.is_compose_msg_sender(&origin, &msg, &this));
 
     // Different sender => false.
     let other = Address::generate(&env);
-    assert_eq!(client.is_compose_msg_sender(&origin, &msg, &other), false);
+    assert!(!client.is_compose_msg_sender(&origin, &msg, &other));
 }
 
 #[test]
@@ -93,7 +93,7 @@ fn allow_initialize_path_follows_peer_configuration() {
 
     // No peer set => false.
     let origin = Origin { src_eid: eid, sender: sender.clone(), nonce: 1 };
-    assert_eq!(client.allow_initialize_path(&origin), false);
+    assert!(!client.allow_initialize_path(&origin));
 
     // Set a non-matching peer => still false.
     let other_sender = BytesN::<32>::from_array(&env, &[4u8; 32]);
@@ -108,7 +108,7 @@ fn allow_initialize_path_follows_peer_configuration() {
         },
     }]);
     client.set_peer(&eid, &other_peer, &owner);
-    assert_eq!(client.allow_initialize_path(&origin), false);
+    assert!(!client.allow_initialize_path(&origin));
 
     // Set matching peer => true.
     let matching_peer = Some(sender.clone());
@@ -123,7 +123,7 @@ fn allow_initialize_path_follows_peer_configuration() {
     }]);
     client.set_peer(&eid, &matching_peer, &owner);
 
-    assert_eq!(client.allow_initialize_path(&origin), true);
+    assert!(client.allow_initialize_path(&origin));
 }
 
 #[test]
@@ -156,7 +156,7 @@ fn lz_receive_clears_payload_transfers_value_and_calls_internal_handler() {
     oapp_client.set_peer(&REMOTE_EID, &peer_opt, &owner);
 
     // Before any lz_receive call, internal handler should not have been invoked.
-    assert_eq!(oapp_client.lz_receive_called(), false);
+    assert!(!oapp_client.lz_receive_called());
 
     let executor = Address::generate(&env);
     let origin = Origin { src_eid: REMOTE_EID, sender: peer, nonce: 1 };
@@ -196,7 +196,7 @@ fn lz_receive_clears_payload_transfers_value_and_calls_internal_handler() {
     oapp_client.lz_receive(&executor, &origin, &guid, &message, &extra_data, &value);
 
     // Prove the default `lz_receive` called `Self::__lz_receive`.
-    assert_eq!(oapp_client.lz_receive_called(), true);
+    assert!(oapp_client.lz_receive_called());
 
     // Assert clear() happened.
     let endpoint_client = MockEndpointClient::new(&env, &endpoint);

@@ -338,4 +338,3 @@ fn test_lz_compose_alert_with_empty_reason() {
     assert!(record.is_some());
     assert_eq!(record.unwrap().reason.len(), 0);
 }
-

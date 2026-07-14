@@ -23,7 +23,13 @@ fn pay_messaging_fees(
     let env = &context.env;
     let endpoint_addr = &context.endpoint_client.address;
     env.as_contract(endpoint_addr, || {
-        EndpointV2::pay_messaging_fees_for_test(env, pay_in_zro, native_fee_recipients, zro_fee_recipients, refund_address)
+        EndpointV2::pay_messaging_fees_for_test(
+            env,
+            pay_in_zro,
+            native_fee_recipients,
+            zro_fee_recipients,
+            refund_address,
+        )
     })
 }
 

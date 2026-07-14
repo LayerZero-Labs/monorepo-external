@@ -32,11 +32,11 @@ fn name_override_generates_correct_functions() {
         assert_eq!(v0, 0); // default value
 
         // Verify has uses custom name
-        assert_eq!(StorageKey::has_custom_counter(&env), false);
+        assert!(!StorageKey::has_custom_counter(&env));
 
         // Verify setter uses custom name
         StorageKey::set_custom_counter(&env, &42);
-        assert_eq!(StorageKey::has_custom_counter(&env), true);
+        assert!(StorageKey::has_custom_counter(&env));
         assert_eq!(StorageKey::custom_counter(&env), 42);
 
         // Verify set_or_remove uses custom name
@@ -45,8 +45,7 @@ fn name_override_generates_correct_functions() {
 
         // Verify remover uses custom name
         StorageKey::remove_custom_counter(&env);
-        assert_eq!(StorageKey::has_custom_counter(&env), false);
+        assert!(!StorageKey::has_custom_counter(&env));
         assert_eq!(StorageKey::custom_counter(&env), 0); // back to default
     });
 }
-

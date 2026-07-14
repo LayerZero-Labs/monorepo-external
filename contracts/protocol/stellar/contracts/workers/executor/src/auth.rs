@@ -111,13 +111,10 @@ impl LzExecutor {
         }
 
         // Helper path: first context must be on the registered executor helper
-        let helper_config =
-            ExecutorStorage::executor_helper(env).ok_or(ExecutorError::UnauthorizedContext)?;
+        let helper_config = ExecutorStorage::executor_helper(env).ok_or(ExecutorError::UnauthorizedContext)?;
 
         // Validate first context: must be the helper address with an allowed function name
-        if first_ctx.contract != helper_config.address
-            || !helper_config.allowed_functions.contains(first_fn_name)
-        {
+        if first_ctx.contract != helper_config.address || !helper_config.allowed_functions.contains(first_fn_name) {
             return Err(ExecutorError::UnauthorizedContext);
         }
 
@@ -128,9 +125,7 @@ impl LzExecutor {
         };
 
         let second_fn_name = &second_ctx.fn_name;
-        if *second_fn_name != Symbol::new(env, "lz_receive")
-            && *second_fn_name != Symbol::new(env, "lz_compose")
-        {
+        if *second_fn_name != Symbol::new(env, "lz_receive") && *second_fn_name != Symbol::new(env, "lz_compose") {
             return Err(ExecutorError::UnauthorizedContext);
         }
 

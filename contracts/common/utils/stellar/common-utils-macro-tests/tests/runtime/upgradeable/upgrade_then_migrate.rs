@@ -13,8 +13,7 @@ use soroban_sdk::{
 use utils::upgradeable::{UpgradeableInternal, UpgradeableStorage};
 
 // Upgrade target WASM fixture.
-const TEST_UPGRADE_WASM: &[u8] =
-    include_bytes!("test_data/test_upgradeable_contract1.wasm");
+const TEST_UPGRADE_WASM: &[u8] = include_bytes!("test_data/test_upgradeable_contract1.wasm");
 
 #[contract]
 #[common_macros::ownable]
@@ -63,7 +62,7 @@ fn upgrade_then_migrate_happy_path() {
         .upgrade(&wasm_hash);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), true);
+        assert!(UpgradeableStorage::migrating(&env));
     });
 
     // migrate() should be allowed after upgrade and should clear migrating back to false.
@@ -83,6 +82,6 @@ fn upgrade_then_migrate_happy_path() {
         .migrate(&migration_data);
 
     env.as_contract(&contract_id, || {
-        assert_eq!(UpgradeableStorage::migrating(&env), false);
+        assert!(!UpgradeableStorage::migrating(&env));
     });
 }

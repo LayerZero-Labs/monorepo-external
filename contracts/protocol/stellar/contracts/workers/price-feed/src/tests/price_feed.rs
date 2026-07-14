@@ -13,7 +13,7 @@ fn test_constructor_sets_owner_and_price_updater() {
     let setup = TestSetup::new();
 
     assert_eq!(setup.client.owner(), Some(setup.owner.clone()));
-    assert_eq!(setup.client.is_price_updater(&setup.price_updater), true);
+    assert!(setup.client.is_price_updater(&setup.price_updater));
 }
 
 #[test]
@@ -91,7 +91,7 @@ fn test_estimate_fee_by_eid_default_model() {
     //     = (16_500_000_000_000 * 1e20) / 1e20
     //     = 16_500_000_000_000
 
-    assert_eq!(estimate.total_gas_fee, 16_500_000_000_000 as i128);
+    assert_eq!(estimate.total_gas_fee, 16_500_000_000_000_i128);
     assert_eq!(estimate.price_ratio, price.price_ratio);
     assert_eq!(estimate.price_ratio_denominator, 10u128.pow(20));
     assert_eq!(estimate.native_price_usd, 0);
@@ -214,7 +214,7 @@ fn test_estimate_fee_by_eid_arbitrum_model_hardcoded_eid() {
     //     = 34_306 * 10_000_000
     //     = 343_060_000_000
 
-    assert_eq!(estimate.total_gas_fee, 343_060_000_000 as i128);
+    assert_eq!(estimate.total_gas_fee, 343_060_000_000_i128);
 
     assert_eq!(estimate.price_ratio, arb_price.price_ratio);
 }
@@ -237,7 +237,7 @@ fn test_estimate_fee_by_eid_arbitrum_model_hardcoded_eid_10143() {
     setup.mock_auth(&fee_lib, "estimate_fee_by_eid", (&fee_lib, 10143u32, 1000u32, 500u128));
     let estimate = setup.client.estimate_fee_by_eid(&fee_lib, &10143, &1000, &500);
 
-    assert_eq!(estimate.total_gas_fee, 343_060_000_000 as i128);
+    assert_eq!(estimate.total_gas_fee, 343_060_000_000_i128);
     assert_eq!(estimate.price_ratio, arb_price.price_ratio);
 }
 
@@ -299,7 +299,7 @@ fn test_estimate_fee_by_eid_arbitrum_model_configured_eid() {
     let estimate = setup.client.estimate_fee_by_eid(&fee_lib, &200, &1000, &500);
 
     // Should use Arbitrum model (same expected fee as the hardcoded Arbitrum test)
-    assert_eq!(estimate.total_gas_fee, 343_060_000_000 as i128);
+    assert_eq!(estimate.total_gas_fee, 343_060_000_000_i128);
     assert_eq!(estimate.price_ratio, arb_price.price_ratio);
 }
 
@@ -342,7 +342,7 @@ fn test_estimate_fee_by_eid_optimism_model_hardcoded_eid() {
     //          = 7_235_492_071_308 + 36_813_447_000
     //          = 7_272_305_518_308
 
-    assert_eq!(estimate.total_gas_fee, 7_272_305_518_308 as i128);
+    assert_eq!(estimate.total_gas_fee, 7_272_305_518_308_i128);
     assert_eq!(estimate.price_ratio, op_price.price_ratio);
 }
 
@@ -368,7 +368,7 @@ fn test_estimate_fee_by_eid_optimism_model_goerli() {
 
     // Deterministic expected fee (Optimism model):
     // L1 uses Ethereum Goerli (10121) with +3188 overhead, L2 uses Optimism Goerli (10132).
-    assert_eq!(estimate.total_gas_fee, 7_272_305_518_308 as i128);
+    assert_eq!(estimate.total_gas_fee, 7_272_305_518_308_i128);
     assert_eq!(estimate.price_ratio, op_price.price_ratio);
 }
 #[test]
@@ -402,7 +402,7 @@ fn test_estimate_fee_by_eid_optimism_model_configured_eid() {
     assert_eq!(estimate_300.total_gas_fee, estimate_111.total_gas_fee);
     assert_eq!(estimate_300.price_ratio, estimate_111.price_ratio);
     assert_eq!(estimate_300.price_ratio, op_price.price_ratio);
-    assert_eq!(estimate_300.total_gas_fee, 7_272_305_518_308 as i128);
+    assert_eq!(estimate_300.total_gas_fee, 7_272_305_518_308_i128);
 }
 
 #[test]
@@ -511,12 +511,12 @@ fn test_set_price_updater_add_and_remove() {
     // Add new price updater
     setup.mock_owner_auth("set_price_updater", (&new_updater, true));
     setup.client.set_price_updater(&new_updater, &true);
-    assert_eq!(setup.client.is_price_updater(&new_updater), true);
+    assert!(setup.client.is_price_updater(&new_updater));
 
     // Remove price updater
     setup.mock_owner_auth("set_price_updater", (&new_updater, false));
     setup.client.set_price_updater(&new_updater, &false);
-    assert_eq!(setup.client.is_price_updater(&new_updater), false);
+    assert!(!setup.client.is_price_updater(&new_updater));
 }
 
 #[test]
@@ -806,7 +806,7 @@ fn test_is_price_updater_returns_false_for_unknown_address() {
     let setup = TestSetup::new();
     let unknown = Address::generate(&setup.env);
 
-    assert_eq!(setup.client.is_price_updater(&unknown), false);
+    assert!(!setup.client.is_price_updater(&unknown));
 }
 
 // =============================================================================

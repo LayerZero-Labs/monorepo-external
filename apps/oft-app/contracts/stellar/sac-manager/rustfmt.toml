@@ -1,15 +1,12 @@
-format_macro_bodies = true
+# Only stable rustfmt options are kept here: the Stellar docker toolchain runs
+# rustfmt on the stable channel (rust 1.90.0), which silently drops unstable
+# options (they only apply on nightly). Do not re-add unstable options unless the
+# tooling is switched to a pinned nightly (see the Solana packages for that setup).
 max_width = 120
-format_macro_matchers = true
-format_strings = true
-imports_granularity = "Crate"
-match_arm_blocks = false
-reorder_impl_items = true
-group_imports = "StdExternalCrate"
 use_field_init_shorthand = true
 use_small_heuristics = "Max"
-wrap_comments = true
-format_code_in_doc_comments = true
 
-# most of these are unstable, so we enable them
-unstable_features = true
+# style_edition is a stable option honored by the docker toolchain. Pin it to
+# 2021 to match every crate's `edition = "2021"` so formatting stays stable
+# across rustfmt versions (setting it to 2024 would reformat the code).
+style_edition = "2021"

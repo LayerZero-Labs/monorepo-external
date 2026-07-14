@@ -86,8 +86,8 @@ fn test_to_array_boundary_values() {
     let data: [u8; 10] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let bytes = Bytes::from_array(&env, &data);
     let arr: [u8; 10] = bytes.to_array();
-    for i in 0..10 {
-        assert_eq!(arr[i], i as u8);
+    for (i, value) in arr.iter().enumerate() {
+        assert_eq!(*value, i as u8);
     }
 }
 
@@ -154,7 +154,7 @@ fn test_to_array_preserves_all_values() {
     let bytes = Bytes::from_array(&env, &data);
     let arr: [u8; 256] = bytes.to_array();
 
-    for i in 0..256 {
-        assert_eq!(arr[i], i as u8, "Mismatch at index {}", i);
+    for (i, value) in arr.iter().enumerate() {
+        assert_eq!(*value, i as u8, "Mismatch at index {}", i);
     }
 }

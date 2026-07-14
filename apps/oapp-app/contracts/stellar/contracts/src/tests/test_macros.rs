@@ -429,6 +429,6 @@ mod test_full_manual_all {
 
 #[test]
 fn test_macros_compile() {
-    // This test verifies that all macro combinations compile successfully
-    assert!(true);
+    // This test verifies that all macro combinations compile successfully.
+    // Reaching this point means every macro invocation above compiled.
 }

@@ -25,9 +25,8 @@ fn constructor_initializes_default_ttl_configs() {
     // Registering with `()` will invoke `__constructor`.
     let contract_id = env.register(CtorContract, ());
 
-    let (instance_cfg, persistent_cfg) = env.as_contract(&contract_id, || {
-        (TtlConfigStorage::instance(&env), TtlConfigStorage::persistent(&env))
-    });
+    let (instance_cfg, persistent_cfg) =
+        env.as_contract(&contract_id, || (TtlConfigStorage::instance(&env), TtlConfigStorage::persistent(&env)));
 
     let expected = TtlConfig::new(29 * LEDGERS_PER_DAY, 30 * LEDGERS_PER_DAY);
     assert_eq!(instance_cfg, Some(expected));
@@ -50,12 +49,10 @@ fn constructor_with_owned_env_initializes_default_ttl_configs() {
     let env = Env::default();
     let contract_id = env.register(CtorOwnedEnvContract, ());
 
-    let (instance_cfg, persistent_cfg) = env.as_contract(&contract_id, || {
-        (TtlConfigStorage::instance(&env), TtlConfigStorage::persistent(&env))
-    });
+    let (instance_cfg, persistent_cfg) =
+        env.as_contract(&contract_id, || (TtlConfigStorage::instance(&env), TtlConfigStorage::persistent(&env)));
 
     let expected = TtlConfig::new(29 * LEDGERS_PER_DAY, 30 * LEDGERS_PER_DAY);
     assert_eq!(instance_cfg, Some(expected));
     assert_eq!(persistent_cfg, Some(expected));
 }
-

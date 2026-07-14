@@ -146,11 +146,11 @@ fn test_is_compose_msg_sender() {
 
     // Test with same contract address (should return true)
     let result = oapp_client.is_compose_msg_sender(&origin, &message, &oapp_client.address);
-    assert_eq!(result, true);
+    assert!(result);
     let different_sender = Address::generate(&env);
 
     // Test with different sender address (should return false)
-    assert_eq!(oapp_client.is_compose_msg_sender(&origin, &message, &different_sender), false);
+    assert!(!oapp_client.is_compose_msg_sender(&origin, &message, &different_sender));
 }
 
 #[test]
@@ -159,7 +159,7 @@ fn test_allow_initialize_path_cases() {
 
     // no peer set -> false
     let origin_no_peer = Origin { src_eid: UNSET_EID, sender: BytesN::from_array(&env, &[5; 32]), nonce: 1 };
-    assert_eq!(oapp_client.allow_initialize_path(&origin_no_peer), false);
+    assert!(!oapp_client.allow_initialize_path(&origin_no_peer));
 
     // set peer for REMOTE_EID
     let peer_bytes: BytesN<32> = BytesN::from_array(&env, &[5; 32]);
@@ -167,11 +167,11 @@ fn test_allow_initialize_path_cases() {
 
     // matching -> true
     let origin_match = Origin { src_eid: REMOTE_EID, sender: peer_bytes.clone(), nonce: 1 };
-    assert_eq!(oapp_client.allow_initialize_path(&origin_match), true);
+    assert!(oapp_client.allow_initialize_path(&origin_match));
 
     // non-matching -> false
     let origin_non_match = Origin { src_eid: REMOTE_EID, sender: BytesN::from_array(&env, &[6; 32]), nonce: 1 };
-    assert_eq!(oapp_client.allow_initialize_path(&origin_non_match), false);
+    assert!(!oapp_client.allow_initialize_path(&origin_non_match));
 }
 
 #[test]

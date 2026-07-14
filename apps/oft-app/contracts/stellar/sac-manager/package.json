@@ -15,8 +15,9 @@
         "build:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build --package sac-manager",
         "clean": "rm -rf ./dependencies ./target ./node_modules",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
-        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",
-        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
+        "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -- -D warnings\" stellar",
+        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run\" stellar"
     },

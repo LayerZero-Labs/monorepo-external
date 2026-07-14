@@ -26,7 +26,11 @@ pub fn peer_bytes32_to_address(env: &Env, bytes32: &BytesN<32>) -> Address {
     AddressPayload::ContractIdHash(bytes32.clone()).to_address(env)
 }
 
-pub fn quote_oft(chain: &ChainSetup<'_>, from: &Address, send_param: &SendParam) -> (OFTLimit, Vec<OFTFeeDetail>, OFTReceipt) {
+pub fn quote_oft(
+    chain: &ChainSetup<'_>,
+    from: &Address,
+    send_param: &SendParam,
+) -> (OFTLimit, Vec<OFTFeeDetail>, OFTReceipt) {
     chain.oft.quote_oft(from, send_param)
 }
 
@@ -149,7 +153,7 @@ pub fn lz_compose(
         compose_from: compose.from,
         compose_msg: compose.msg,
     }
-    .encode(&env);
+    .encode(env);
 
     chain.composer.lz_compose(executor, &chain.oft.address, &packet.guid, &index, &oft_compose_msg, extra_data, &value);
 }
@@ -161,9 +165,7 @@ pub fn scan_packet_sent_event(env: &Env, endpoint: &Address) -> Option<(Bytes, B
     let mut packet = None;
     let events = env.events().all().filter_by_contract(endpoint);
     for event in events.events().iter() {
-        let v0 = match &event.body {
-            soroban_sdk::xdr::ContractEventBody::V0(v0) => v0,
-        };
+        let soroban_sdk::xdr::ContractEventBody::V0(v0) = &event.body;
 
         // Check if this is a packet_sent event by looking at topics
         let mut is_packet_sent = false;
