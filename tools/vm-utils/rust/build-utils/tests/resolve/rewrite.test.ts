@@ -73,6 +73,90 @@ describe('rewriteCargoToml', () => {
         );
     });
 
+    it('rewrites arbitrary-depth paths below a discovered package stem', async () => {
+        const depsDir = join(TMP, 'dependencies');
+        const crateDir = join(TMP, 'programs', 'oft-core');
+        const cargoToml = join(crateDir, 'Cargo.toml');
+
+        writeToml(cargoToml, fixture('oft-core-with-stale-deep-deps.toml'));
+
+        const protocolRoot = join(depsDir, 'protocol-stellar-v2');
+        const ctx: RewriteContext = {
+            pathMap: new Map([
+                ['/real/protocol', protocolRoot],
+                ['/real/protocol/endpoint-v2', join(protocolRoot, 'endpoint-v2')],
+                [
+                    '/real/protocol/message-libs/simple-message-lib',
+                    join(protocolRoot, 'message-libs', 'simple-message-lib'),
+                ],
+                [
+                    '/real/protocol/message-libs/message-lib-common',
+                    join(protocolRoot, 'message-libs', 'message-lib-common'),
+                ],
+            ]),
+            discovered: new Map([['protocol-stellar-v2', '/real/protocol']]),
+        };
+
+        await rewriteCargoToml(crateDir, cargoToml, ctx);
+        const manifest = readParsed(cargoToml);
+
+        expect(depPath(manifest, 'dependencies', 'endpoint-v2')).toBe(
+            join('..', '..', 'dependencies', 'protocol-stellar-v2', 'endpoint-v2'),
+        );
+        expect(depPath(manifest, 'dev-dependencies', 'simple-message-lib')).toBe(
+            join(
+                '..',
+                '..',
+                'dependencies',
+                'protocol-stellar-v2',
+                'message-libs',
+                'simple-message-lib',
+            ),
+        );
+        expect(depPath(manifest, 'dev-dependencies', 'message-lib-common')).toBe(
+            join(
+                '..',
+                '..',
+                'dependencies',
+                'protocol-stellar-v2',
+                'message-libs',
+                'message-lib-common',
+            ),
+        );
+    });
+
+    it('prefers the deepest discovered package stem over Map insertion order', async () => {
+        // Path contains both a shallow parent package name and a nested child package
+        // name. Insertion order lists the parent first — first-match would wrongly
+        // rewrite under the parent; most-specific must use the child stem.
+        const depsDir = join(TMP, 'dependencies');
+        const crateDir = join(TMP, 'programs', 'consumer');
+        const cargoToml = join(crateDir, 'Cargo.toml');
+
+        writeToml(
+            cargoToml,
+            '[dependencies]\nmacros = { path = "../../node_modules/parent-pkg/child-pkg/macros" }\n',
+        );
+
+        const ctx: RewriteContext = {
+            pathMap: new Map([
+                ['/real/parent', join(depsDir, 'parent-pkg')],
+                ['/real/child', join(depsDir, 'child-pkg')],
+            ]),
+            // Parent inserted first — old first-match behavior would select it.
+            discovered: new Map([
+                ['parent-pkg', '/real/parent'],
+                ['child-pkg', '/real/child'],
+            ]),
+        };
+
+        await rewriteCargoToml(crateDir, cargoToml, ctx);
+
+        expect(depPath(readParsed(cargoToml), 'dependencies', 'macros')).toBe(
+            join('..', '..', 'dependencies', 'child-pkg', 'macros'),
+        );
+    });
+
     it('preserves features and other inline attrs', async () => {
         const depsDir = join(TMP, 'dependencies');
         const cargoToml = join(TMP, 'Cargo.toml');

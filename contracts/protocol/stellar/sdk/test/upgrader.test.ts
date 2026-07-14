@@ -33,6 +33,7 @@ describe('Upgrader Contract Testing', async () => {
         'contracts',
         'protocol',
         'stellar',
+        'contracts',
         'target',
         'wasm32v1-none',
         'release',

@@ -86,7 +86,21 @@ const copySourceDirectory = async (
 
                 if (stats.isSymbolicLink()) {
                     await mkdir(dirname(destPath), { recursive: true });
-                    await symlink(await readlink(sourcePath), destPath);
+                    try {
+                        await symlink(await readlink(sourcePath), destPath);
+                    } catch (error) {
+                        // A workspace package nested under another package root can be copied
+                        // twice (once via the parent tree, once as its own importer). Treat an
+                        // identical existing symlink as success.
+                        const code =
+                            typeof error === 'object' && error !== null
+                                ? (error as { code?: string }).code
+                                : undefined;
+                        if (code !== 'EEXIST') throw error;
+                        const existing = await readlink(destPath).catch(() => undefined);
+                        const intended = await readlink(sourcePath);
+                        if (existing !== intended) throw error;
+                    }
                     return;
                 }
 

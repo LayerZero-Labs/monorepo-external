@@ -1,0 +1,29 @@
+{
+    "name": "@layerzerolabs/common-utils-macros-stellar-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Stellar common-utils procedural macros",
+    "license": "MIT",
+    "files": [
+        "LICENSE",
+        "src",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml",
+        "clippy.toml"
+    ],
+    "scripts": {
+        "build": "pnpm exec lz-tool --script \"cargo build\" stellar",
+        "clean": "rm -rf ./target ./node_modules",
+        "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
+        "lint": "pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",
+        "test": "pnpm exec lz-tool --script \"cargo nextest run\" stellar"
+    },
+    "devDependencies": {
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

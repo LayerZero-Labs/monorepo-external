@@ -1,0 +1,18 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!src/tests/**",
+                "!integration-tests/**"
+            ],
+            "outputs": ["dependencies/**", "target/release/*.rlib"]
+        },
+        "test": {
+            "dependsOn": ["build", "lint"]
+        }
+    }
+}

@@ -437,6 +437,70 @@ describe(copyWorkspaceSources, () => {
         expect(existsSync(join(miniRoot, 'packages', 'dep', 'target'))).toBe(false);
     });
 
+    it('tolerates identical package-local symlinks copied twice (nested workspace package layout)', async () => {
+        const repo = createRepo('workspace-source-duplicate-symlink');
+        const current = join(repo, 'apps', 'current');
+        const parent = join(repo, 'apps', 'parent');
+        const nested = join(parent, 'nested-pkg');
+        createPackage(current, '@layerzerolabs/current');
+        createPackage(parent, '@layerzerolabs/parent', {
+            'src/index.ts': 'export const parent = true',
+        });
+        createPackage(nested, '@layerzerolabs/nested', {
+            'src/index.ts': 'export const nested = true',
+        });
+        mkdirSync(join(nested, 'node_modules', '@layerzerolabs'), { recursive: true });
+        symlinkSync(
+            '../../../../../../tools/vm-tooling/vm-tooling-stellar',
+            join(nested, 'node_modules', '@layerzerolabs', 'vm-tooling-stellar'),
+        );
+        // Parent tree includes the nested package directory on disk.
+        mkdirSync(join(parent, 'node_modules', '@layerzerolabs'), { recursive: true });
+        symlinkSync(
+            '../../../../tools/vm-tooling/vm-tooling-stellar',
+            join(parent, 'node_modules', '@layerzerolabs', 'vm-tooling-stellar'),
+        );
+
+        const dependencyGraph = {
+            repoRoot: repo,
+            packageRoot: current,
+            packageRelativePath: 'apps/current',
+            rootNodeModulesDependencyNames: [],
+            includedWorkspaceDependencies: [
+                {
+                    name: '@layerzerolabs/parent',
+                    importerRelativePath: 'apps/current',
+                    relativePath: 'apps/parent',
+                    absolutePath: parent,
+                    version: 'link:../parent',
+                },
+                {
+                    name: '@layerzerolabs/nested',
+                    importerRelativePath: 'apps/parent',
+                    relativePath: 'apps/parent/nested-pkg',
+                    absolutePath: nested,
+                    version: 'link:./nested-pkg',
+                },
+            ],
+        };
+
+        const result = await copyWorkspaceSources({ dependencyGraph });
+        const miniRoot = trackMiniRoot(result.miniRoot);
+        const nestedLink = join(
+            miniRoot,
+            'apps',
+            'parent',
+            'nested-pkg',
+            'node_modules',
+            '@layerzerolabs',
+            'vm-tooling-stellar',
+        );
+        expect(lstatSync(nestedLink).isSymbolicLink()).toBe(true);
+        expect(readlinkSync(nestedLink)).toBe(
+            '../../../../../../tools/vm-tooling/vm-tooling-stellar',
+        );
+    });
+
     it('falls back to default patterns when global prune patterns are empty', async () => {
         const repo = createRepo('workspace-source-package-pattern-copy');
         const current = join(repo, 'apps', 'current');

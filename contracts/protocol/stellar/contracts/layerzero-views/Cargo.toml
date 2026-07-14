@@ -2,7 +2,6 @@
 name = "layerzero-views"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
 publish = false
 
 [lib]
@@ -11,11 +10,7 @@ doctest = false
 
 [features]
 library = []
-testutils = []
-# Network selection
-mainnet = []
-testnet = []
-sandbox = []
+testutils = ["soroban-sdk/testutils"]
 
 [dependencies]
 soroban-sdk = { workspace = true }

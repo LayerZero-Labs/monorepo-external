@@ -1,0 +1,74 @@
+[workspace]
+resolver = "2"
+members = [
+    "endpoint-v2",
+    "upgrader",
+    "layerzero-views",
+    "message-libs/*",
+    "workers/*",
+]
+# Vendored path deps (build-utils-rust resolve) land under dependencies/ inside this workspace root;
+# cargo would otherwise auto-adopt them as members and try to test them (their test dirs are stripped
+# when vendored). Exclude so they stay plain path deps.
+exclude = ["dependencies"]
+
+[workspace.package]
+edition = "2021"
+version = "0.0.1"
+
+[workspace.dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+
+# Third-party dependencies (production)
+cfg-if = { version = "1.0", default-features = false }
+sha3 = "0.10"
+
+# Third-party dependencies (testing only)
+ed25519-dalek = "2"
+hex-literal = "1.0.0"
+k256 = "0.13"
+rand = "0.8"
+
+# Internal workspace dependencies
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+dvn = { path = "workers/dvn" }
+dvn-fee-lib = { path = "workers/dvn-fee-lib" }
+endpoint-v2 = { path = "endpoint-v2", default-features = false }
+executor = { path = "workers/executor" }
+executor-fee-lib = { path = "workers/executor-fee-lib" }
+fee-lib-interfaces = { path = "workers/fee-lib-interfaces" }
+message-lib-common = { path = "message-libs/message-lib-common" }
+simple-message-lib = { path = "message-libs/simple-message-lib" }
+uln302 = { path = "message-libs/uln-302", default-features = false }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
+worker = { path = "workers/worker" }
+
+# Fast dev builds for testing
+[profile.dev]
+opt-level = 0
+incremental = true
+codegen-units = 256
+
+# Optimize dependencies even in dev (compile once, run many tests)
+[profile.dev.package."*"]
+opt-level = 2
+
+# Test profile optimizations
+[profile.test]
+opt-level = 1
+incremental = true
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+# For more information about this profile see https://soroban.stellar.org/docs/basic-tutorials/logging#cargotoml-profile
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

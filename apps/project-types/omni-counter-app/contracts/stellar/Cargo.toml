@@ -1,0 +1,52 @@
+[package]
+name = "counter"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", default-features = false, features = ["library"] }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+oapp = { path = "dependencies/oapp-stellar-contracts" }
+oapp-macros = { path = "dependencies/oapp-macros-stellar-contracts" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true
+
+[dev-dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
+utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }
+simple-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/simple-message-lib", features = ["testutils"] }
+blocked-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/blocked-message-lib" }
+message-lib-common = { path = "dependencies/protocol-stellar-v2/message-libs/message-lib-common", features = ["testutils"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["testutils"] }
+executor = { path = "dependencies/protocol-stellar-v2/workers/executor", features = ["testutils"] }
+uln302 = { path = "dependencies/protocol-stellar-v2/message-libs/uln-302", features = ["testutils"] }
+dvn = { path = "dependencies/protocol-stellar-v2/workers/dvn", features = ["testutils"] }
+dvn-fee-lib = { path = "dependencies/protocol-stellar-v2/workers/dvn-fee-lib", features = ["testutils"] }
+executor-fee-lib = { path = "dependencies/protocol-stellar-v2/workers/executor-fee-lib", features = ["testutils"] }
+treasury = { path = "dependencies/protocol-stellar-v2/message-libs/treasury", features = ["testutils"] }
+price-feed = { path = "dependencies/protocol-stellar-v2/workers/price-feed", features = ["testutils"] }
+fee-lib-interfaces = { path = "dependencies/protocol-stellar-v2/workers/fee-lib-interfaces" }
+executor-helper = { path = "dependencies/protocol-stellar-v2/workers/executor-helper" }
+k256 = "0.13"
+sha3 = "0.10"
+rand = "0.8"
+ed25519-dalek = "2"

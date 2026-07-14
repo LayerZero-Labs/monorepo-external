@@ -113,25 +113,21 @@ describe('resolveDependencies — transitive dep rewriting', () => {
 
 describe('resolveDependencies — Stellar workspace dependency vendoring', () => {
     // Build a consumer (single crate) that path-deps into sub-crates of a
-    // protocol-stellar workspace dependency living in node_modules.
+    // protocol-stellar-v2 workspace dependency living in node_modules.
     const setupStellarConsumer = (root: string) => {
         createCrate(root, fixture('stellar-consumer.toml'));
 
-        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar');
+        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar-v2');
         createCrate(protocol, fixture('stellar-workspace-root.toml'));
         writeFileSync(join(protocol, 'package.json'), '{}');
-        // members: contracts/* and contracts/oapps/* — incl. a deep inheriting member
+        // members: endpoint-v2 + message-libs/* — incl. a deep inheriting member
+        createCrate(join(protocol, 'endpoint-v2'), fixture('stellar-member-inheriting.toml'));
         createCrate(
-            join(protocol, 'contracts', 'utils'),
+            join(protocol, 'message-libs', 'message-lib-common'),
             fixture('stellar-member-inheriting.toml'),
         );
         createCrate(
-            join(protocol, 'contracts', 'common-macros'),
-            fixture('stellar-member-inheriting.toml'),
-        );
-        createCrate(join(protocol, 'contracts', 'oapps'), fixture('minimal.toml')); // grouping crate
-        createCrate(
-            join(protocol, 'contracts', 'oapps', 'oft-core'),
+            join(protocol, 'message-libs', 'simple-message-lib'),
             fixture('stellar-member-inheriting.toml'),
         );
         return protocol;
@@ -143,11 +139,11 @@ describe('resolveDependencies — Stellar workspace dependency vendoring', () =>
 
         await resolveDependencies({ cwd: root });
 
-        const vendored = join(root, 'dependencies', 'protocol-stellar');
+        const vendored = join(root, 'dependencies', 'protocol-stellar-v2');
         expect(existsSync(join(vendored, 'Cargo.toml'))).toBe(true);
-        expect(existsSync(join(vendored, 'contracts', 'utils', 'Cargo.toml'))).toBe(true);
+        expect(existsSync(join(vendored, 'endpoint-v2', 'Cargo.toml'))).toBe(true);
         // the deep member — the case the old one-level scan missed
-        expect(existsSync(join(vendored, 'contracts', 'oapps', 'oft-core', 'Cargo.toml'))).toBe(
+        expect(existsSync(join(vendored, 'message-libs', 'simple-message-lib', 'Cargo.toml'))).toBe(
             true,
         );
     });
@@ -158,7 +154,9 @@ describe('resolveDependencies — Stellar workspace dependency vendoring', () =>
 
         await resolveDependencies({ cwd: root });
 
-        const vendoredRoot = readToml(join(root, 'dependencies', 'protocol-stellar', 'Cargo.toml'));
+        const vendoredRoot = readToml(
+            join(root, 'dependencies', 'protocol-stellar-v2', 'Cargo.toml'),
+        );
         // The root-only-table strip MUST be skipped for a vendored workspace root.
         expect(vendoredRoot).toContain('[workspace]');
         expect(vendoredRoot).toContain('[workspace.package]');
@@ -183,21 +181,147 @@ describe('resolveDependencies — Stellar workspace dependency vendoring', () =>
 
         await resolveDependencies({ cwd: root });
 
-        // The consumer's `path = "dependencies/protocol-stellar/contracts/oapps/oft-core"`
+        // The consumer's `path = "dependencies/protocol-stellar-v2/message-libs/simple-message-lib"`
         // resolves because that crate was vendored at exactly that location.
         expect(
             existsSync(
                 join(
                     root,
                     'dependencies',
-                    'protocol-stellar',
-                    'contracts',
-                    'oapps',
-                    'oft-core',
+                    'protocol-stellar-v2',
+                    'message-libs',
+                    'simple-message-lib',
                     'Cargo.toml',
                 ),
             ),
         ).toBe(true);
+    });
+
+    it('rewrites arbitrary-depth paths inside a vendored oft-core crate', async () => {
+        const root = join(TMP, 'stellar-oft-core-deep-paths');
+        createCrate(root, fixture('program-with-deps.toml'));
+
+        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar-v2');
+        createCrate(protocol, fixture('stellar-workspace-root.toml'));
+        writeFileSync(join(protocol, 'package.json'), '{}');
+        createCrate(join(protocol, 'endpoint-v2'), fixture('minimal.toml'));
+        createCrate(join(protocol, 'message-libs', 'simple-message-lib'), fixture('minimal.toml'));
+        createCrate(join(protocol, 'message-libs', 'message-lib-common'), fixture('minimal.toml'));
+
+        const oftCore = join(root, 'node_modules', '@layerzerolabs', 'oft-core-stellar-contracts');
+        createCrate(oftCore, fixture('oft-core-with-stale-deep-deps.toml'));
+        writeFileSync(join(oftCore, 'package.json'), '{}');
+
+        await resolveDependencies({ cwd: root });
+
+        const copiedOftCore = readToml(
+            join(root, 'dependencies', 'oft-core-stellar-contracts', 'Cargo.toml'),
+        );
+        expect(copiedOftCore).toContain(
+            'path = "../protocol-stellar-v2/message-libs/simple-message-lib"',
+        );
+        expect(copiedOftCore).toContain(
+            'path = "../protocol-stellar-v2/message-libs/message-lib-common"',
+        );
+    });
+});
+
+describe('resolveDependencies — production npm dependency closure', () => {
+    const writePkgJson = (dir: string, deps: Record<string, string>) => {
+        writeFileSync(
+            join(dir, 'package.json'),
+            JSON.stringify({ name: 'fixture', version: '0.0.0', dependencies: deps }),
+        );
+    };
+
+    const setupOappProductionLayout = (root: string) => {
+        createCrate(root, fixture('stellar-consumer.toml'));
+        writePkgJson(root, {
+            '@layerzerolabs/protocol-stellar-v2': '*',
+            '@layerzerolabs/common-utils-stellar-contracts': '*',
+            '@layerzerolabs/common-utils-macros-stellar-contracts': '*',
+        });
+
+        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar-v2');
+        createCrate(protocol, fixture('stellar-workspace-root.toml'));
+        writePkgJson(protocol, {
+            '@layerzerolabs/common-utils-stellar-contracts': '*',
+        });
+        createCrate(join(protocol, 'endpoint-v2'), fixture('minimal.toml'));
+        createCrate(join(protocol, 'message-libs', 'simple-message-lib'), fixture('minimal.toml'));
+
+        const utils = join(
+            root,
+            'node_modules',
+            '@layerzerolabs',
+            'common-utils-stellar-contracts',
+        );
+        createCrate(utils, fixture('minimal.toml'));
+        writePkgJson(utils, {
+            '@layerzerolabs/common-utils-macros-stellar-contracts': '*',
+        });
+
+        // Sibling proc-macro package (published separately from common-utils).
+        const macros = join(
+            root,
+            'node_modules',
+            '@layerzerolabs',
+            'common-utils-macros-stellar-contracts',
+        );
+        createCrate(macros, fixture('minimal.toml'));
+        writePkgJson(macros, {});
+    };
+
+    it('vendors the full production closure reachable through npm dependencies only', async () => {
+        const root = join(TMP, 'production-closure');
+        setupOappProductionLayout(root);
+
+        await resolveDependencies({ cwd: root });
+
+        expect(existsSync(join(root, 'dependencies', 'protocol-stellar-v2', 'Cargo.toml'))).toBe(
+            true,
+        );
+        expect(
+            existsSync(join(root, 'dependencies', 'common-utils-stellar-contracts', 'Cargo.toml')),
+        ).toBe(true);
+        expect(
+            existsSync(
+                join(root, 'dependencies', 'common-utils-macros-stellar-contracts', 'Cargo.toml'),
+            ),
+        ).toBe(true);
+    });
+
+    it('does not vendor crates that exist only as npm devDependencies', async () => {
+        const root = join(TMP, 'production-missing-devdep');
+        createCrate(root, fixture('stellar-consumer.toml'));
+        writeFileSync(
+            join(root, 'package.json'),
+            JSON.stringify({
+                name: 'oapp-stellar-contracts',
+                version: '0.0.0',
+                dependencies: {
+                    '@layerzerolabs/protocol-stellar-v2': '*',
+                },
+                devDependencies: {
+                    '@layerzerolabs/common-utils-stellar-contracts': '*',
+                },
+            }),
+        );
+
+        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar-v2');
+        createCrate(protocol, fixture('stellar-workspace-root.toml'));
+        writePkgJson(protocol, {});
+        createCrate(join(protocol, 'endpoint-v2'), fixture('minimal.toml'));
+        createCrate(join(protocol, 'message-libs', 'simple-message-lib'), fixture('minimal.toml'));
+
+        await resolveDependencies({ cwd: root });
+
+        expect(existsSync(join(root, 'dependencies', 'protocol-stellar-v2', 'Cargo.toml'))).toBe(
+            true,
+        );
+        expect(
+            existsSync(join(root, 'dependencies', 'common-utils-stellar-contracts', 'Cargo.toml')),
+        ).toBe(false);
     });
 });
 
@@ -209,13 +333,12 @@ describe('resolveDependencies — prune excluded workspace members', () => {
     const setupConsumerWithTestMember = (root: string) => {
         createCrate(root, fixture('stellar-consumer.toml'));
 
-        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar');
+        const protocol = join(root, 'node_modules', '@layerzerolabs', 'protocol-stellar-v2');
         createCrate(protocol, fixture('stellar-workspace-with-tests.toml'));
         writeFileSync(join(protocol, 'package.json'), '{}');
-        createCrate(
-            join(protocol, 'contracts', 'utils'),
-            fixture('stellar-member-inheriting.toml'),
-        );
+        createCrate(join(protocol, 'endpoint-v2'), fixture('stellar-member-inheriting.toml'));
+        // Consumer also path-deps into message-libs; create a stub so the layout is complete.
+        createCrate(join(protocol, 'message-libs', 'simple-message-lib'), fixture('minimal.toml'));
 
         // The excluded test member + extra files — none of this should be vendored.
         const mock = join(protocol, 'tests', 'mock_vault');
@@ -230,12 +353,14 @@ describe('resolveDependencies — prune excluded workspace members', () => {
 
         await resolveDependencies({ cwd: root });
 
-        const vendoredRoot = readToml(join(root, 'dependencies', 'protocol-stellar', 'Cargo.toml'));
+        const vendoredRoot = readToml(
+            join(root, 'dependencies', 'protocol-stellar-v2', 'Cargo.toml'),
+        );
         // The dangling test member is gone...
         expect(vendoredRoot).not.toContain('tests/mock_vault');
         // ...but the workspace table and real members/globs remain intact.
         expect(vendoredRoot).toContain('[workspace]');
-        expect(vendoredRoot).toContain('contracts/*');
+        expect(vendoredRoot).toContain('endpoint-v2');
     });
 
     it('does not vendor the excluded subtree at all', async () => {
@@ -244,10 +369,39 @@ describe('resolveDependencies — prune excluded workspace members', () => {
 
         await resolveDependencies({ cwd: root });
 
-        const vendored = join(root, 'dependencies', 'protocol-stellar');
+        const vendored = join(root, 'dependencies', 'protocol-stellar-v2');
         expect(existsSync(join(vendored, 'tests'))).toBe(false);
         // real members are still vendored
-        expect(existsSync(join(vendored, 'contracts', 'utils', 'Cargo.toml'))).toBe(true);
+        expect(existsSync(join(vendored, 'endpoint-v2', 'Cargo.toml'))).toBe(true);
+    });
+});
+
+describe('resolveDependencies — excludes integration test dirs from vendored crates', () => {
+    // Mirrors the real oft-core → oft leak: a vendored dependency carries
+    // integration-tests/ source that is compiled only under #[cfg(test)] (via a
+    // #[path] mod). Left in dependencies/ it would never build but would enter the
+    // consumer's snapshot + verifiable source zip, coupling test churn to a deployed
+    // contract's source_sha256. It must be pruned like the existing tests/ exclusion.
+    it('does not vendor integration-tests/ or integration_tests/ subtrees', async () => {
+        const root = join(TMP, 'exclude-integration-tests');
+        createCrate(root, fixture('program-with-deps.toml'));
+
+        const dep = join(root, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        createCrate(dep, fixture('minimal.toml'));
+        writeFileSync(join(dep, 'package.json'), '{}');
+        // Both spellings are used across the stellar contracts (hyphen: oft/oft-core;
+        // underscore: omni-counter).
+        for (const dir of ['integration-tests', 'integration_tests']) {
+            mkdirSync(join(dep, dir), { recursive: true });
+            writeFileSync(join(dep, dir, 'mod.rs'), '// must NOT be vendored');
+        }
+
+        await resolveDependencies({ cwd: root });
+
+        const vendored = join(root, 'dependencies', 'utils-solana-rbac');
+        expect(existsSync(join(vendored, 'src', 'lib.rs'))).toBe(true);
+        expect(existsSync(join(vendored, 'integration-tests'))).toBe(false);
+        expect(existsSync(join(vendored, 'integration_tests'))).toBe(false);
     });
 });
 

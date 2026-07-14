@@ -6,23 +6,32 @@
     "license": "GPL-3.0-only",
     "scripts": {
         "build": "pnpm build:contract",
-        "build:contract": "pnpm exec lz-tool stellar contract build --package onesig",
-        "build:contract:native": "pnpm exec lz-tool --docker-platform native stellar contract build --package onesig",
-        "build:mocks": "pnpm exec lz-tool --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
-        "build:mocks:native": "pnpm exec lz-tool --docker-platform native --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
+        "build:contract": "pnpm resolve-dependencies && pnpm exec lz-tool stellar contract build --package onesig",
+        "build:contract:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build --package onesig",
+        "build:mocks": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
+        "build:mocks:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
         "build:native": "pnpm build:contract:native",
-        "clean": "pnpm exec lz-tool --script \"cargo clean\" stellar",
-        "lint": "pnpm exec lz-tool --script \"cargo fmt --package onesig --check && cargo clippy --package onesig -- -D warnings\" stellar",
-        "lint:fix": "pnpm exec lz-tool --script \"cargo fmt --package onesig && cargo clippy --package onesig --fix --allow-dirty --allow-staged\" stellar",
+        "clean": "rm -rf ./dependencies ./target ./node_modules",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --package onesig -- -D warnings\" stellar",
+        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt --package onesig && cargo clippy --package onesig --fix --allow-dirty --allow-staged\" stellar",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:contract",
-        "test:contract": "pnpm exec lz-tool --script \"cargo test --package onesig\" stellar"
+        "test:contract": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run --package onesig\" stellar"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*"
     },
     "devDependencies": {
-        "@layerzerolabs/protocol-stellar-v2": "workspace:*",
+        "@layerzerolabs/build-utils-rust": "workspace:*",
         "@layerzerolabs/vm-tooling-stellar": "workspace:*"
     },
     "publishConfig": {
         "access": "restricted",
         "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*"
     }
 }

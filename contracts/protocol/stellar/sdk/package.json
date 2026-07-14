@@ -2,7 +2,7 @@
     "name": "@layerzerolabs/lz-v2-stellar-sdk",
     "version": "0.0.0",
     "private": false,
-    "description": "TypeScript SDK for endpoint-v2 Stellar contract",
+    "description": "TypeScript SDK bindings for LayerZero V2 Stellar protocol contracts (EndpointV2, ULN302, workers, views, …)",
     "repository": {
         "type": "git",
         "url": "https://github.com/layerzerolabs/monorepo-internal.git",
@@ -13,20 +13,21 @@
     "exports": "./dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc",
-        "test": "vitest"
+        "build": "pnpm gen:bindings && tsc",
+        "clean": "rm -rf ./dist ./src/generated ./node_modules",
+        "gen:bindings": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
     },
     "dependencies": {
-        "@noble/hashes": "catalog:",
-        "@noble/secp256k1": "catalog:",
         "@stellar/stellar-sdk": "catalog:",
         "buffer": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/common-node-utils": "workspace:*",
-        "@layerzerolabs/lz-v2-utilities": "catalog:",
         "@layerzerolabs/protocol-stellar-v2": "workspace:*",
-        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/stellar-ts-bindings-gen": "workspace:*",
+        "@layerzerolabs/test-utils-stellar": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vitest-configuration": "workspace:*",
         "typescript": "catalog:",

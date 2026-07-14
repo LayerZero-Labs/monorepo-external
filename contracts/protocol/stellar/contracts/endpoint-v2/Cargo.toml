@@ -2,7 +2,6 @@
 name = "endpoint-v2"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
 publish = false
 
 [lib]
@@ -11,7 +10,7 @@ doctest = false
 
 [features]
 library = []
-testutils = []
+testutils = ["soroban-sdk/testutils"]
 
 [dependencies]
 cfg-if = { workspace = true }
@@ -21,6 +20,8 @@ utils = { workspace = true }
 common-macros = { workspace = true }
 
 [dev-dependencies]
+# self-dep to enable this crate's `testutils` for its own test build
+endpoint-v2 = { path = ".", features = ["testutils"] }
 soroban-sdk = { workspace = true, features = ["testutils"] }
 utils = { workspace = true, features = ["testutils"] }
 hex-literal = { workspace = true }

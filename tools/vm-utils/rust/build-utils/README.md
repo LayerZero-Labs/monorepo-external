@@ -84,7 +84,8 @@ When a resolved dependency is itself a Cargo workspace (e.g.
 into `dependencies/<pkg>/` with its `[workspace]` root manifest preserved. That
 keeps the vendored member crates' workspace inheritance intact, and lets a
 consumer path-dep into a sub-crate any number of levels deep, e.g.
-`dependencies/protocol-stellar-v2/contracts/oapps/oft-core`.
+`dependencies/protocol-stellar-v2/endpoint-v2` or
+`dependencies/oft-core-stellar-contracts`.
 
 #### Consuming the vendored crates
 
@@ -95,8 +96,9 @@ directly (the same way the Solana packages do):
 ```toml
 # package Cargo.toml
 [dependencies]
-utils    = { path = "dependencies/protocol-stellar-v2/contracts/utils" }
-oft-core = { path = "dependencies/protocol-stellar-v2/contracts/oapps/oft-core" }
+utils    = { path = "dependencies/common-utils-stellar-contracts" }
+oft-core = { path = "dependencies/oft-core-stellar-contracts" }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["library"] }
 ```
 
 Typically wired into a package's `build` script ahead of the Cargo build so

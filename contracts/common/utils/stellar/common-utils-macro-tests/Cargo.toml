@@ -1,0 +1,17 @@
+# Standalone integration-test crate for the framework macros (extracted from protocol-stellar-v2).
+# Self-contained: explicit version/edition/dep versions (not workspace-inherited). Test-only, no wasm.
+# utils + common-utils-macros-stellar-contracts are vendored via build-utils-rust resolve.
+# (The former endpoint-v2 dev-dep was unused and dropped.)
+[package]
+name = "common-utils-macro-tests"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+# exact-pinned (=) -- see common-utils/Cargo.toml: a caret range let this drift to soroban-sdk 25.3.1,
+# which needs rustc 1.91 (this crate builds with 1.90).
+soroban-sdk = { version = "=25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
+trybuild = "1.0.114"
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }

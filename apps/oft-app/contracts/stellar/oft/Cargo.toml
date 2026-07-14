@@ -1,0 +1,44 @@
+[package]
+name = "oft"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+library = []
+testutils = ["soroban-sdk/testutils"]
+
+[dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+cfg-if = { version = "1.0", default-features = false }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["library"] }
+oapp = { path = "dependencies/oapp-stellar-contracts" }
+oapp-macros = { path = "dependencies/oapp-macros-stellar-contracts" }
+oft-core = { path = "dependencies/oft-core-stellar-contracts" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true
+
+[dev-dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
+simple-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/simple-message-lib", features = ["testutils"] }
+message-lib-common = { path = "dependencies/protocol-stellar-v2/message-libs/message-lib-common", features = ["testutils"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["testutils"] }
+utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }

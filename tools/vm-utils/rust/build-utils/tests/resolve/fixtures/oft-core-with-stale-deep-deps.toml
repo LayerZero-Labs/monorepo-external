@@ -1,0 +1,11 @@
+[package]
+name = "oft-core"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2" }
+
+[dev-dependencies]
+simple-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/simple-message-lib" }
+message-lib-common = { path = "dependencies/protocol-stellar-v2/message-libs/message-lib-common" }

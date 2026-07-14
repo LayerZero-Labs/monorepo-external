@@ -1,7 +1,1 @@
-# Rust test snapshots
-**/test_snapshots
-
-# Local settings
-.soroban
-.stellar
 .env

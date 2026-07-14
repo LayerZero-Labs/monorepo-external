@@ -166,25 +166,46 @@ const resolveViaRealpath = async (
     return resolvedPath ? pathMap.get(resolvedPath) : undefined;
 };
 
-/** Fallback: match the path's leaf dir name against a discovered package (for already-`dependencies/…` paths). */
+/**
+ * Fallback: locate a discovered npm package stem in the path and preserve every
+ * suffix segment after it (e.g. protocol-stellar-v2/message-libs/simple-message-lib).
+ *
+ * When several discovered package names appear as path segments, pick the
+ * **rightmost** (deepest) match — insertion order must not win over specificity.
+ */
 const resolveViaNameFallback = (pathValue: string, ctx: RewriteContext): string | undefined => {
     const segments = pathValue.split('/').filter(Boolean);
-    const leafDir = segments.at(-1);
-    if (!leafDir) return undefined;
+    if (segments.length === 0) return undefined;
+
+    let best:
+        | {
+              pkgIndex: number;
+              vendoredBase: string;
+              suffixSegments: string[];
+          }
+        | undefined;
 
     for (const [pkgName, realPath] of ctx.discovered) {
-        // Direct match: "dependencies/utils-solana-rbac" → match "utils-solana-rbac"
-        if (pkgName === leafDir) {
-            return ctx.pathMap.get(realPath);
-        }
-        // Subdir match: "dependencies/utils-solana-rbac/macros" → match parent
-        const parentDir = segments.at(-2);
-        if (parentDir && pkgName === parentDir) {
-            const subTarget = ctx.pathMap.get(join(realPath, leafDir));
-            if (subTarget) return subTarget;
-        }
+        const pkgIndex = segments.indexOf(pkgName);
+        if (pkgIndex === -1) continue;
+
+        const vendoredBase = ctx.pathMap.get(realPath);
+        if (!vendoredBase) continue;
+
+        // Prefer the deepest stem. Equal index cannot happen for distinct names.
+        if (best != null && pkgIndex <= best.pkgIndex) continue;
+
+        best = {
+            pkgIndex,
+            vendoredBase,
+            suffixSegments: segments.slice(pkgIndex + 1),
+        };
     }
-    return undefined;
+
+    if (!best) return undefined;
+    return best.suffixSegments.length === 0
+        ? best.vendoredBase
+        : join(best.vendoredBase, ...best.suffixSegments);
 };
 
 /**

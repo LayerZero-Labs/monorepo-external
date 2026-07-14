@@ -1,0 +1,7 @@
+# Clippy configuration for Stellar protocol contracts
+
+# Set the too_many_arguments threshold to 11.
+# This aligns with Stellar: contract functions are limited to 10 parameters, plus 1 for 'env'.
+# (Default is 7; raised here to prevent unnecessary clippy warnings on valid contract interfaces.)
+too-many-arguments-threshold = 11
+

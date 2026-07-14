@@ -1,0 +1,43 @@
+{
+    "name": "@layerzerolabs/oapp-stellar-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "files": [
+        "src",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml",
+        "clippy.toml"
+    ],
+    "scripts": {
+        "build": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo build --release\" stellar",
+        "clean": "rm -rf ./dependencies ./target ./node_modules",
+        "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",
+        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
+        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'not test(/^ui_/)'\" stellar",
+        "test:ui": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'test(/^ui_/)'\" stellar"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
+        "@layerzerolabs/oapp-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/protocol-stellar-v2": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/protocol-stellar-v2": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/oapp-macros-stellar-contracts": "workspace:*"
+    }
+}

@@ -184,23 +184,22 @@ describe('buildDependenciesPathMap', () => {
 
     it('maps every crate dir (incl. deeply nested) to its dependencies/ target', async () => {
         const depsDir = join(TMP, 'dependencies');
-        const crateDir = join(TMP, 'protocol-stellar');
-        createCrate(crateDir, '[workspace]\nmembers = ["contracts/*", "contracts/oapps/*"]');
-        createCrate(join(crateDir, 'contracts', 'utils'));
-        createCrate(join(crateDir, 'contracts', 'oapps'));
-        createCrate(join(crateDir, 'contracts', 'oapps', 'oft-core'));
+        const crateDir = join(TMP, 'protocol-stellar-v2');
+        createCrate(crateDir, '[workspace]\nmembers = ["endpoint-v2", "message-libs/*"]');
+        createCrate(join(crateDir, 'endpoint-v2'));
+        createCrate(join(crateDir, 'message-libs', 'simple-message-lib'));
 
         const pathMap = buildDependenciesPathMap([
-            await toTarget('protocol-stellar', crateDir, depsDir),
+            await toTarget('protocol-stellar-v2', crateDir, depsDir),
         ]);
 
-        expect(pathMap.get(crateDir)).toBe(join(depsDir, 'protocol-stellar'));
-        expect(pathMap.get(join(crateDir, 'contracts', 'utils'))).toBe(
-            join(depsDir, 'protocol-stellar', 'contracts', 'utils'),
+        expect(pathMap.get(crateDir)).toBe(join(depsDir, 'protocol-stellar-v2'));
+        expect(pathMap.get(join(crateDir, 'endpoint-v2'))).toBe(
+            join(depsDir, 'protocol-stellar-v2', 'endpoint-v2'),
         );
         // the deep member — the case the old one-level scan missed
-        expect(pathMap.get(join(crateDir, 'contracts', 'oapps', 'oft-core'))).toBe(
-            join(depsDir, 'protocol-stellar', 'contracts', 'oapps', 'oft-core'),
+        expect(pathMap.get(join(crateDir, 'message-libs', 'simple-message-lib'))).toBe(
+            join(depsDir, 'protocol-stellar-v2', 'message-libs', 'simple-message-lib'),
         );
     });
 });

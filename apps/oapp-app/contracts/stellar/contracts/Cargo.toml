@@ -1,0 +1,44 @@
+[package]
+name = "oapp"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", default-features = false, features = [
+    "library",
+] }
+oapp-macros = { path = "dependencies/oapp-macros-stellar-contracts" }
+
+[dev-dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
+utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", default-features = false, features = [
+    "testutils",
+] }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+oapp-macros = { path = "dependencies/oapp-macros-stellar-contracts" }
+trybuild = "1.0.114"
+insta = "1.44.3"
+prettyplease = "0.2.37"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

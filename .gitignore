@@ -53,6 +53,11 @@ test-ledger*/
 .daml/
 *.dar
 
+# stellar / soroban
+.soroban
+.stellar
+test_snapshots/
+
 # Deployments
 deployments/**/sandbox/**
 !deployments/layerzero/**

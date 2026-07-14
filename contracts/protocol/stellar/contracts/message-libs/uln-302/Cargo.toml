@@ -2,7 +2,6 @@
 name = "uln302"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
 publish = false
 
 [lib]
@@ -11,7 +10,7 @@ doctest = false
 
 [features]
 library = []
-testutils = []
+testutils = ["soroban-sdk/testutils"]
 
 [dependencies]
 cfg-if = { workspace = true }
@@ -23,6 +22,8 @@ endpoint-v2 = { workspace = true, features = ["library"] }
 message-lib-common = { workspace = true }
 
 [dev-dependencies]
+# self-dep to enable this crate's `testutils` for its own test build
+uln302 = { path = ".", features = ["testutils"] }
 soroban-sdk = { workspace = true, features = ["testutils"] }
 endpoint-v2 = { workspace = true, features = ["testutils"] }
 message-lib-common = { workspace = true, features = ["testutils"] }

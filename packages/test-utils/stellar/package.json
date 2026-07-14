@@ -1,0 +1,42 @@
+{
+    "name": "@layerzerolabs/test-utils-stellar",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Shared Stellar/Soroban test harness (localnet, funding, deploy helpers) for LayerZero V2 protocol SDK and custom OApp/OFT tests",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "@noble/hashes": "catalog:",
+        "@noble/secp256k1": "catalog:",
+        "@stellar/stellar-sdk": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@types/node": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

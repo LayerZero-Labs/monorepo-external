@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["contracts/*", "contracts/oapps/*"]
+members = ["endpoint-v2", "message-libs/*", "workers/*"]
 
 [workspace.package]
 edition = "2021"
@@ -9,9 +9,9 @@ license = "MIT"
 
 [workspace.dependencies]
 soroban-sdk = { version = "25.1.1" }
-utils = { path = "contracts/utils" }
-common-macros = { path = "contracts/common-macros" }
-oapp = { path = "contracts/oapps/oapp" }
+endpoint-v2 = { path = "endpoint-v2", default-features = false }
+message-lib-common = { path = "message-libs/message-lib-common" }
+simple-message-lib = { path = "message-libs/simple-message-lib" }
 
 [profile.release]
 opt-level = "z"

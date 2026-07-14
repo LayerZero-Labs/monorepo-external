@@ -1,0 +1,20 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!**/src/tests/**",
+                "!**/tests/**",
+                "!**/integration-tests/**",
+                "!**/integration_tests/**"
+            ],
+            "outputs": ["dependencies/**", "target/wasm32v1-none/release/*.wasm"]
+        },
+        "test": {
+            "dependsOn": ["build", "lint"]
+        }
+    }
+}

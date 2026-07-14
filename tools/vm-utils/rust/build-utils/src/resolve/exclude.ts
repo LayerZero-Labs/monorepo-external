@@ -18,6 +18,10 @@ const EXCLUDE_DIR = new Set([
     '.github',
     // shared directories
     'tests',
+    'integration-tests',
+    'integration_tests',
+    // stellar test snapshots
+    'test_snapshots',
 ]);
 
 /** Files matching COPY_EXTENSIONS that must still be skipped — lockfiles, toolchain config, etc. */

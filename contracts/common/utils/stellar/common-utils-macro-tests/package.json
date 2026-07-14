@@ -1,0 +1,35 @@
+{
+    "name": "@layerzerolabs/common-utils-macro-tests-stellar-contracts",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Compile-time test suite for the common-utils Stellar procedural macros",
+    "license": "MIT",
+    "files": [
+        "tests",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml",
+        "clippy.toml"
+    ],
+    "scripts": {
+        "build": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo build\" stellar",
+        "clean": "rm -rf ./dependencies ./target ./node_modules",
+        "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy -- -D warnings\" stellar",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
+        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'not test(/^ui_/)'\" stellar",
+        "test:ui": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'test(/^ui_/)'\" stellar"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*"
+    }
+}

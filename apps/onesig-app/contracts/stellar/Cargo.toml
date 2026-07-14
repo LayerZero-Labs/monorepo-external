@@ -1,30 +1,30 @@
 [workspace]
 resolver = "2"
 members = [
-  ".",
   "mocks/mock_vault",
   "mocks/mock_chain",
   "mocks/mock_factory",
 ]
+# NOTE: "." is intentionally NOT listed here even though this manifest also has a [package] section --
+# a root package is automatically a workspace member whenever both [package] and [workspace] are
+# present. Listing "." explicitly changes how cargo resolves `exclude` for vendored path deps: with
+# "." present, cargo still auto-adopts anything under dependencies/ as an implicit member regardless
+# of exclude (confirmed via an isolated minimal repro); omitting "." (relying on the implicit
+# self-membership) makes `exclude` work as expected. Do not re-add "." here.
+# @todo shankar - when resolving the bytecode. move tests outside of src/
+# Vendored path deps (build-utils-rust resolve) land under dependencies/ inside this workspace root;
+# exclude so cargo doesn't auto-adopt them as members and try to build their (stripped) test dirs.
+exclude = ["dependencies"]
 
 [workspace.package]
 edition = "2021"
 version = "0.0.1"
-license = "MIT"
+license = "GPL-3.0-only"
 
 [workspace.dependencies]
 soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
-common-macros = { path = "./node_modules/@layerzerolabs/protocol-stellar-v2/contracts/common-macros" }
-utils = { path = "./node_modules/@layerzerolabs/protocol-stellar-v2/contracts/utils" }
-
-# Third-party deps required by common-macros and utils (inherited via workspace = true)
-heck = "0.5"
-itertools = "0.14"
-proc-macro2 = "1.0"
-quote = "1.0"
-syn = { version = "2.0", features = ["full", "extra-traits"] }
-insta = "1.44.3"
-prettyplease = "0.2.37"
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
 
 [package]
 name = "onesig"

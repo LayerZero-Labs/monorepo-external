@@ -5,6 +5,7 @@ packages:
   - clusters/**
   - configs/**
   - contracts/**
+  - deployments/**
   - infrastructure/**
   - migrated/**
   - onboarding/**
@@ -45,7 +46,6 @@ catalogs:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
     '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
     '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
-    '@layerzerolabs/lz-v2-utilities': 3.0.168
     '@layerzerolabs/test-devtools-evm-foundry': 8.0.1
     '@layerzerolabs/toolbox-foundry': ^0.1.13
     '@noble/hashes': ^1.8.0

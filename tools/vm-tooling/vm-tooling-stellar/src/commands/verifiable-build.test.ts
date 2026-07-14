@@ -58,7 +58,7 @@ describe('buildVerifiableBuildDockerArgs', () => {
         const args = buildVerifiableBuildDockerArgs({
             imageRef,
             sourceDir: '/tmp/extracted-source',
-            buildArgs: ['--package', 'ethena-oft-oft', '--optimize'],
+            buildArgs: ['--package', 'ethena-oft', '--optimize'],
             bldimg,
         });
 
@@ -75,7 +75,7 @@ describe('buildVerifiableBuildDockerArgs', () => {
             'contract',
             'build',
             '--package',
-            'ethena-oft-oft',
+            'ethena-oft',
             '--optimize',
             '--meta',
             `bldimg=${bldimg}`,

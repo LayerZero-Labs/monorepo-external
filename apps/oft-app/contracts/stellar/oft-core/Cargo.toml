@@ -1,0 +1,38 @@
+[package]
+name = "oft-core"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", default-features = false, features = ["library"] }
+utils = { path = "dependencies/common-utils-stellar-contracts" }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+oapp = { path = "dependencies/oapp-stellar-contracts" }
+
+[dev-dependencies]
+soroban-sdk = { version = "25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
+simple-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/simple-message-lib" }
+message-lib-common = { path = "dependencies/protocol-stellar-v2/message-libs/message-lib-common", features = ["testutils"] }
+endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["testutils"] }
+utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }
+oapp-macros = { path = "dependencies/oapp-macros-stellar-contracts" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

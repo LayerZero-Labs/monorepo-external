@@ -2,7 +2,6 @@
 name = "executor-fee-lib"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
 publish = false
 
 [lib]
@@ -11,7 +10,7 @@ doctest = false
 
 [features]
 library = []
-testutils = []
+testutils = ["soroban-sdk/testutils"]
 
 [dependencies]
 cfg-if = { workspace = true }

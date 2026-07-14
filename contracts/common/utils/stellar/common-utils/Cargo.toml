@@ -1,0 +1,28 @@
+# Standalone framework crate (extracted from protocol-stellar-v2). Self-contained: explicit
+# version/edition/dep versions (not workspace-inherited) so it builds outside the protocol workspace
+# and vendors cleanly into consumers' dependencies/. Versions mirror the protocol's [workspace.dependencies].
+# Proc-macro crate lives in sibling package @layerzerolabs/common-utils-macros-stellar-contracts.
+[package]
+name = "utils"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[features]
+# Forwards Soroban test APIs so enabling utils/testutils alone is self-contained
+# for external consumers (no separate soroban-sdk/testutils required).
+testutils = ["soroban-sdk/testutils"]
+
+[dependencies]
+# exact-pinned (=): a bare "25.1.1" is a caret range that lets fresh resolution drift to soroban-sdk's
+# latest patch, which can raise its MSRV above the pinned rustc toolchain here (hit: 25.3.1 needs
+# rustc 1.91, this crate builds with 1.90) -- exact-pin so that can never happen silently.
+soroban-sdk = { version = "=25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+common-macros = { path = "dependencies/common-utils-macros-stellar-contracts" }
+
+[dev-dependencies]
+soroban-sdk = { version = "=25.1.1", features = ["hazmat-address", "hazmat-crypto", "testutils"] }
