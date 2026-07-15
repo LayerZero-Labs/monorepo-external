@@ -63,6 +63,10 @@ export const oneSigConfigSchema = oneSigOnchainConfigSchema.extend({
     updatedBy: z.string().optional().describe('Who made the last update (workflow ID, user, etc.)'),
 });
 
+/**
+ * @deprecated Use {@link OneSigInstanceConfig} instead. This flat config type is
+ * retained for legacy backend consumers only and should not be used in new code.
+ */
 export type OneSigConfig = z.infer<typeof oneSigConfigSchema>;
 
 // ============================================================================

@@ -25,3 +25,19 @@ export type ConfigChangeOperation =
     | 'setSeed'
     | 'setExecutor'
     | 'removeExecutor';
+
+/**
+ * The input `generateConfigChangeTransactions` needs to encode a config change
+ * (setSigner / setThreshold / setSeed / ...) into one transaction per chain.
+ *
+ * Callers used to pass the whole flat `OneSigConfig`, but the encoder only ever
+ * reads the per-chain OneSig contract addresses — the change values themselves are
+ * supplied separately as operation params. This purpose-built type captures just
+ * that, so the encoder no longer depends on the deprecated `OneSigConfig`, and
+ * callers pass only the chains a given change should apply to (e.g. a single
+ * partition's chains when editing a partitioned OneSig).
+ */
+export interface OneSigConfigChangeInput {
+    /** Map of chain name to that chain's OneSig contract address. */
+    contractAddresses: Record<string, string>;
+}

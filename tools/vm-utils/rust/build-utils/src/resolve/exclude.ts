@@ -29,6 +29,8 @@ const EXCLUDE_FILE = new Set([
     // npm
     'package.json',
     'pnpm-lock.yaml',
+    // Host-side TS config only; not needed for Rust crate vendoring.
+    'tsconfig.json',
     // turbo
     'turbo-snapshot.lock.json',
     'turbo.json',

@@ -1,0 +1,11 @@
+{
+    "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "rootDir": ".",
+        "strictPropertyInitialization": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
+    "include": ["scripts/**/*"]
+}

@@ -19,11 +19,13 @@
         "build:contracts": "pnpm resolve-dependencies && pnpm exec lz-tool stellar contract build",
         "build:contracts:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build",
         "build:native": "pnpm build:contracts:native",
-        "clean": "rm -rf ./dependencies ./target ./node_modules",
+        "build:verifiable": "pnpm package:source && tsx scripts/build-verifiable.ts",
+        "clean": "rm -rf ./dependencies ./target ./node_modules ./.artifacts",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
         "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
         "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -- -D warnings\" stellar",
         "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
+        "package:source": "pnpm resolve-dependencies && pnpm exec lz-tool extra stellar package-source",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run\" stellar"
     },
@@ -33,7 +35,13 @@
     },
     "devDependencies": {
         "@layerzerolabs/build-utils-rust": "workspace:*",
-        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
+        "@layerzerolabs/common-node-utils": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
+        "@types/node": "catalog:",
+        "fflate": "catalog:",
+        "toml": "catalog:",
+        "tsx": "catalog:"
     },
     "publishConfig": {
         "access": "public",
