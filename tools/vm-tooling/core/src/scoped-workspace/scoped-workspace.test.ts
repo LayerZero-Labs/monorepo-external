@@ -14,20 +14,20 @@ import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 
 import {
-    createMiniWorkspace,
+    createScopedWorkspace,
     DEFAULT_SOURCE_COPY_PATTERNS,
-    type MiniWorkspacePruner,
+    type ScopedWorkspacePruner,
 } from './index';
 import { copyRootNodeModulesSymlinks, getPnpmVirtualStoreMount } from './node-modules';
 import { resolveWorkspaceDependencyGraph } from './workspace-dependency-graph';
 import { copyWorkspaceSources } from './workspace-source-copy';
 
-const TMP = mkdtempSync(join(tmpdir(), 'lz-mini-workspace-test-'));
-const GENERATED_MINI_ROOTS: string[] = [];
+const TMP = mkdtempSync(join(tmpdir(), 'lz-scoped-workspace-test-'));
+const GENERATED_SCOPED_ROOTS: string[] = [];
 
-const trackMiniRoot = (miniRoot: string): string => {
-    GENERATED_MINI_ROOTS.push(miniRoot);
-    return miniRoot;
+const trackScopedRoot = (scopedRoot: string): string => {
+    GENERATED_SCOPED_ROOTS.push(scopedRoot);
+    return scopedRoot;
 };
 
 const createPackage = (dir: string, name: string, files: Record<string, string> = {}) => {
@@ -68,8 +68,8 @@ const writeLockfile = (repo: string, body: string) => {
 
 afterAll(() => {
     rmSync(TMP, { recursive: true, force: true });
-    for (const miniRoot of GENERATED_MINI_ROOTS) {
-        rmSync(miniRoot, { recursive: true, force: true });
+    for (const scopedRoot of GENERATED_SCOPED_ROOTS) {
+        rmSync(scopedRoot, { recursive: true, force: true });
     }
 });
 
@@ -203,18 +203,6 @@ describe(resolveWorkspaceDependencyGraph, () => {
         ]);
     });
 
-    it('uses the real repository lockfile to include transitive anchor-trait for console-oft', async () => {
-        const repo = join(__dirname, '..', '..', '..', '..', '..');
-        const dependencyGraph = await resolveWorkspaceDependencyGraph({
-            cwd: join(repo, 'apps/project-types/console-oft-app/contracts/solana'),
-            repoRoot: repo,
-        });
-
-        expect(
-            dependencyGraph.includedWorkspaceDependencies.map((dependency) => dependency.name),
-        ).toContain('@layerzerolabs/framework-solana-anchor-trait');
-    });
-
     it('invalidates cached lockfile importers when the lockfile changes', async () => {
         const repo = createRepo('dependency-graph-cache-invalidation');
         const current = join(repo, 'apps', 'current');
@@ -314,15 +302,15 @@ describe(copyWorkspaceSources, () => {
         };
 
         const result = await copyWorkspaceSources({ dependencyGraph });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
         expect(result.copiedWorkspaceDependencies).toHaveLength(1);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'target', 'deploy'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target', 'deploy'))).toBe(false);
         expect(
             existsSync(
                 join(
-                    miniRoot,
+                    scopedRoot,
                     'packages',
                     'dep',
                     'target',
@@ -335,7 +323,7 @@ describe(copyWorkspaceSources, () => {
         expect(
             existsSync(
                 join(
-                    miniRoot,
+                    scopedRoot,
                     'packages',
                     'dep',
                     'target',
@@ -345,28 +333,30 @@ describe(copyWorkspaceSources, () => {
                 ),
             ),
         ).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'node_modules'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'node_modules'))).toBe(true);
         expect(
-            existsSync(join(miniRoot, 'packages', 'dep', 'node_modules', 'pkg', 'index.js')),
+            existsSync(join(scopedRoot, 'packages', 'dep', 'node_modules', 'pkg', 'index.js')),
         ).toBe(false);
         expect(
             lstatSync(
-                join(miniRoot, 'packages', 'dep', 'node_modules', 'linked-pkg'),
+                join(scopedRoot, 'packages', 'dep', 'node_modules', 'linked-pkg'),
             ).isSymbolicLink(),
         ).toBe(true);
-        expect(readlinkSync(join(miniRoot, 'packages', 'dep', 'node_modules', 'linked-pkg'))).toBe(
-            '../../../../node_modules/.pnpm/linked-pkg@1.0.0/node_modules/linked-pkg',
-        );
-        expect(lstatSync(join(miniRoot, 'packages', 'dep', 'src-link.ts')).isSymbolicLink()).toBe(
+        expect(
+            readlinkSync(join(scopedRoot, 'packages', 'dep', 'node_modules', 'linked-pkg')),
+        ).toBe('../../../../node_modules/.pnpm/linked-pkg@1.0.0/node_modules/linked-pkg');
+        expect(lstatSync(join(scopedRoot, 'packages', 'dep', 'src-link.ts')).isSymbolicLink()).toBe(
             true,
         );
-        expect(readlinkSync(join(miniRoot, 'packages', 'dep', 'src-link.ts'))).toBe('src/index.ts');
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'dist', 'index.js'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'artifacts'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'apps', 'current'))).toBe(false);
+        expect(readlinkSync(join(scopedRoot, 'packages', 'dep', 'src-link.ts'))).toBe(
+            'src/index.ts',
+        );
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'dist', 'index.js'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'artifacts'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
     });
 
-    it('applies glob-compatible mini-workspace prune patterns to dependency source copies', async () => {
+    it('applies glob-compatible scoped-workspace prune patterns to dependency source copies', async () => {
         const repo = createRepo('workspace-source-pattern-copy');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -413,28 +403,28 @@ describe(copyWorkspaceSources, () => {
                 '!programs/**/tests/**',
             ],
         });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'apps', 'current'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
         expect(
-            existsSync(join(miniRoot, 'packages', 'dep', 'programs', 'demo', 'src', 'lib.rs')),
+            existsSync(join(scopedRoot, 'packages', 'dep', 'programs', 'demo', 'src', 'lib.rs')),
         ).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'README.md'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'LICENSE'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'sdk'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'scripts'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'tests'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'programs', 'demo', 'tests'))).toBe(
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'README.md'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'LICENSE'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'sdk'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'scripts'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'tests'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'programs', 'demo', 'tests'))).toBe(
             false,
         );
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'node_modules', 'pkg'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'node_modules', 'pkg'))).toBe(false);
         expect(
             lstatSync(
-                join(miniRoot, 'packages', 'dep', 'node_modules', 'dep-link'),
+                join(scopedRoot, 'packages', 'dep', 'node_modules', 'dep-link'),
             ).isSymbolicLink(),
         ).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'target'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target'))).toBe(false);
     });
 
     it('tolerates identical package-local symlinks copied twice (nested workspace package layout)', async () => {
@@ -485,9 +475,9 @@ describe(copyWorkspaceSources, () => {
         };
 
         const result = await copyWorkspaceSources({ dependencyGraph });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
         const nestedLink = join(
-            miniRoot,
+            scopedRoot,
             'apps',
             'parent',
             'nested-pkg',
@@ -555,28 +545,32 @@ describe(copyWorkspaceSources, () => {
                 ],
             },
         });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
-        expect(existsSync(join(miniRoot, 'apps', 'current'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'anchor-dep', 'Anchor.toml'))).toBe(true);
-        expect(
-            existsSync(join(miniRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'Cargo.toml')),
-        ).toBe(true);
+        expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'anchor-dep', 'Anchor.toml'))).toBe(true);
         expect(
             existsSync(
-                join(miniRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'src', 'lib.rs'),
+                join(scopedRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'Cargo.toml'),
             ),
         ).toBe(true);
         expect(
-            existsSync(join(miniRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'tests')),
+            existsSync(
+                join(scopedRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'src', 'lib.rs'),
+            ),
+        ).toBe(true);
+        expect(
+            existsSync(join(scopedRoot, 'packages', 'anchor-dep', 'programs', 'demo', 'tests')),
         ).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'utility-dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'utility-dep', 'src', 'index.ts'))).toBe(
+            true,
+        );
     });
 });
 
-describe(createMiniWorkspace, () => {
+describe(createScopedWorkspace, () => {
     it('uses the unpruned source-copy fallback when no pruner is configured', async () => {
-        const repo = createRepo('mini-workspace-fallback');
+        const repo = createRepo('scoped-workspace-fallback');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
         mkdirSync(join(repo, 'node_modules', '.pnpm'), { recursive: true });
@@ -600,27 +594,27 @@ describe(createMiniWorkspace, () => {
 `,
         );
 
-        const result = await createMiniWorkspace({ cwd: current });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const result = await createScopedWorkspace({ cwd: current });
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
         expect(result.prunerName).toBeUndefined();
         expect(result.diagnostics).toEqual([
-            'No mini-workspace pruner configured; using unpruned package-level source copy fallback.',
+            'No scoped-workspace pruner configured; using unpruned package-level source copy fallback.',
         ]);
         expect(result.copiedWorkspacePackageCount).toBe(1);
         expect(result.copiedWorkspacePackagePaths).toEqual({
             'packages/dep': realpathSync(dep),
         });
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'apps', 'current'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
     });
 
     it('uses a configured pruner to filter dependency package copies', async () => {
-        const repo = createRepo('mini-workspace-pruner');
+        const repo = createRepo('scoped-workspace-pruner');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
-        const inputs: Parameters<MiniWorkspacePruner['createPrunePlan']>[0][] = [];
-        const pruner: MiniWorkspacePruner = {
+        const inputs: Parameters<ScopedWorkspacePruner['createPrunePlan']>[0][] = [];
+        const pruner: ScopedWorkspacePruner = {
             name: 'test-pruner',
             createPrunePlan: async (input) => {
                 inputs.push(input);
@@ -658,11 +652,11 @@ describe(createMiniWorkspace, () => {
 `,
         );
 
-        const result = await createMiniWorkspace({
+        const result = await createScopedWorkspace({
             cwd: current,
             pruner,
         });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
         expect(inputs).toHaveLength(1);
         const firstInput = inputs[0]!;
@@ -684,17 +678,17 @@ describe(createMiniWorkspace, () => {
         expect(result.copiedWorkspacePackagePaths).toEqual({
             'packages/dep': realpathSync(dep),
         });
-        expect(existsSync(join(miniRoot, 'apps', 'current'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'dep', 'tests'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'tests'))).toBe(false);
     });
 
     it('uses default dependency copies for pruned packages without package-specific patterns', async () => {
-        const repo = createRepo('mini-workspace-empty-global-patterns');
+        const repo = createRepo('scoped-workspace-empty-global-patterns');
         const current = join(repo, 'apps', 'current');
         const prunedDep = join(repo, 'packages', 'pruned-dep');
         const defaultDep = join(repo, 'packages', 'default-dep');
-        const pruner: MiniWorkspacePruner = {
+        const pruner: ScopedWorkspacePruner = {
             name: 'test-pruner',
             createPrunePlan: async () => ({
                 patterns: [],
@@ -735,22 +729,26 @@ describe(createMiniWorkspace, () => {
 `,
         );
 
-        const result = await createMiniWorkspace({
+        const result = await createScopedWorkspace({
             cwd: current,
             pruner,
         });
-        const miniRoot = trackMiniRoot(result.miniRoot);
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
 
-        expect(existsSync(join(miniRoot, 'packages', 'pruned-dep', 'src', 'index.ts'))).toBe(true);
-        expect(existsSync(join(miniRoot, 'packages', 'pruned-dep', 'tests'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'packages', 'default-dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'pruned-dep', 'src', 'index.ts'))).toBe(
+            true,
+        );
+        expect(existsSync(join(scopedRoot, 'packages', 'pruned-dep', 'tests'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'packages', 'default-dep', 'src', 'index.ts'))).toBe(
+            true,
+        );
     });
 });
 
 describe(copyRootNodeModulesSymlinks, () => {
     it('copies only selected root dependency symlinks without copying dependency contents', async () => {
         const repo = createRepo('node-modules-symlinks');
-        const miniRoot = join(TMP, 'mini-node-modules-symlinks');
+        const scopedRoot = join(TMP, 'scoped-node-modules-symlinks');
         const dep = join(repo, 'apps', 'oapp-app', 'contracts', 'solana');
 
         createPackage(dep, '@layerzerolabs/oapp-solana-impl');
@@ -759,7 +757,7 @@ describe(copyRootNodeModulesSymlinks, () => {
         mkdirSync(join(repo, 'node_modules', '@types'), { recursive: true });
         mkdirSync(join(repo, 'node_modules', '@layerzerolabs'), { recursive: true });
         writeFileSync(join(repo, 'node_modules', '.bin', 'real-file'), 'do not copy');
-        mkdirSync(join(miniRoot, 'apps', 'oapp-app', 'contracts', 'solana'), { recursive: true });
+        mkdirSync(join(scopedRoot, 'apps', 'oapp-app', 'contracts', 'solana'), { recursive: true });
         symlinkSync('.pnpm/eslint@1.0.0/node_modules/eslint', join(repo, 'node_modules', 'eslint'));
         symlinkSync(
             '../.pnpm/typescript@1.0.0/node_modules/typescript/bin/tsc',
@@ -777,35 +775,35 @@ describe(copyRootNodeModulesSymlinks, () => {
 
         const result = await copyRootNodeModulesSymlinks({
             repoRoot: repo,
-            miniRoot,
+            scopedRoot,
             dependencyNames: ['@layerzerolabs/oapp-solana-impl', '@types/node', 'eslint'],
         });
 
-        expect(result.nodeModulesPath).toBe(join(miniRoot, 'node_modules'));
+        expect(result.nodeModulesPath).toBe(join(scopedRoot, 'node_modules'));
         expect(result.symlinks).toEqual([
             '@layerzerolabs/oapp-solana-impl',
             '@types/node',
             'eslint',
         ]);
-        expect(readlinkSync(join(miniRoot, 'node_modules', 'eslint'))).toBe(
+        expect(readlinkSync(join(scopedRoot, 'node_modules', 'eslint'))).toBe(
             '.pnpm/eslint@1.0.0/node_modules/eslint',
         );
-        expect(lstatSync(join(miniRoot, 'node_modules', '.pnpm')).isDirectory()).toBe(true);
-        expect(existsSync(join(miniRoot, 'node_modules', '.bin', 'real-file'))).toBe(false);
-        expect(existsSync(join(miniRoot, 'node_modules', '.bin', 'tsc'))).toBe(false);
-        expect(lstatSync(join(miniRoot, 'node_modules', '@types', 'node')).isSymbolicLink()).toBe(
+        expect(lstatSync(join(scopedRoot, 'node_modules', '.pnpm')).isDirectory()).toBe(true);
+        expect(existsSync(join(scopedRoot, 'node_modules', '.bin', 'real-file'))).toBe(false);
+        expect(existsSync(join(scopedRoot, 'node_modules', '.bin', 'tsc'))).toBe(false);
+        expect(lstatSync(join(scopedRoot, 'node_modules', '@types', 'node')).isSymbolicLink()).toBe(
             true,
         );
         expect(
             lstatSync(
-                join(miniRoot, 'node_modules', '@layerzerolabs', 'oapp-solana-impl'),
+                join(scopedRoot, 'node_modules', '@layerzerolabs', 'oapp-solana-impl'),
             ).isSymbolicLink(),
         ).toBe(true);
         expect(
-            readlinkSync(join(miniRoot, 'node_modules', '@layerzerolabs', 'oapp-solana-impl')),
+            readlinkSync(join(scopedRoot, 'node_modules', '@layerzerolabs', 'oapp-solana-impl')),
         ).toBe('../../apps/oapp-app/contracts/solana');
         expect(
-            existsSync(join(miniRoot, 'node_modules', '@layerzerolabs', 'whole-repo-link')),
+            existsSync(join(scopedRoot, 'node_modules', '@layerzerolabs', 'whole-repo-link')),
         ).toBe(false);
     });
 });

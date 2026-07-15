@@ -33,7 +33,7 @@ export interface WorkspaceSourceCopyOptions {
 export interface WorkspaceSourceCopyResult {
     repoRoot: string;
     packageRoot: string;
-    miniRoot: string;
+    scopedRoot: string;
     packageRelativePath: string;
     copiedWorkspaceDependencies: WorkspaceDependencyEdge[];
 }
@@ -46,7 +46,7 @@ export interface PnpmVirtualStoreMount {
 
 export interface RootNodeModulesSymlinkCopyOptions {
     repoRoot: string;
-    miniRoot: string;
+    scopedRoot: string;
     dependencyNames: readonly string[];
 }
 
@@ -55,15 +55,15 @@ export interface RootNodeModulesSymlinkCopyResult {
     symlinks: string[];
 }
 
-export interface MiniWorkspaceOptions {
+export interface ScopedWorkspaceOptions {
     cwd?: string;
-    pruner?: MiniWorkspacePruner;
+    pruner?: ScopedWorkspacePruner;
 }
 
-export interface MiniWorkspace {
+export interface ScopedWorkspace {
     packageRoot: string;
     repoRoot: string;
-    miniRoot: string;
+    scopedRoot: string;
     packageRelativePath: string;
     pnpmVirtualStoreMount: PnpmVirtualStoreMount;
     copiedWorkspacePackageCount: number;
@@ -72,12 +72,12 @@ export interface MiniWorkspace {
     diagnostics: string[];
 }
 
-export interface MiniWorkspacePruner {
+export interface ScopedWorkspacePruner {
     name: string;
-    createPrunePlan: (input: MiniWorkspacePrunerInput) => Promise<MiniWorkspacePrunePlan>;
+    createPrunePlan: (input: ScopedWorkspacePrunerInput) => Promise<ScopedWorkspacePrunePlan>;
 }
 
-export interface MiniWorkspacePrunerInput {
+export interface ScopedWorkspacePrunerInput {
     repoRoot: string;
     packageRoot: string;
     packageRelativePath: string;
@@ -85,7 +85,7 @@ export interface MiniWorkspacePrunerInput {
     dependencyGraph: WorkspaceDependencyGraph;
 }
 
-export interface MiniWorkspacePrunePlan {
+export interface ScopedWorkspacePrunePlan {
     patterns: readonly string[];
     /** Overrides keyed by workspace package relative path. */
     packagePatterns?: Readonly<Record<string, readonly string[]>>;

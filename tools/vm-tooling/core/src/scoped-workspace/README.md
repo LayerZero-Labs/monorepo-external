@@ -1,6 +1,6 @@
-# Mini Workspace
+# Scoped Workspace
 
-`mini-workspace` creates a temporary, repo-shaped filesystem for containerized package builds.
+`scoped-workspace` creates a temporary, repo-shaped filesystem for containerized package builds.
 It gives Docker the package sources and pnpm layout needed for a build without mounting the full
 monorepo.
 
@@ -8,9 +8,9 @@ The tool executor owns the created temp root and removes it after the Docker run
 
 ## Build Layout
 
-`createMiniWorkspace` returns three paths for the Docker runner:
+`createScopedWorkspace` returns three paths for the Docker runner:
 
-- `miniRoot`, mounted as `/workspace`.
+- `scopedRoot`, mounted as `/workspace`.
 - the current package root, bind-mounted at its repo-relative path under `/workspace`.
 - the real pnpm virtual store, bind-mounted at `/workspace/node_modules/.pnpm`.
 
@@ -21,7 +21,7 @@ as `target`, `build`, and `src/generated` are written back to the real package.
 
 1. `resolveWorkspaceDependencyGraph` finds the package that owns `cwd`.
 2. It reads `pnpm-lock.yaml` importers and follows workspace `link:` dependencies.
-3. `copyWorkspaceSources` copies source files for the workspace dependency closure into `miniRoot`.
+3. `copyWorkspaceSources` copies source files for the workspace dependency closure into `scopedRoot`.
 4. `copyRootNodeModulesSymlinks` copies the root `node_modules` symlinks referenced by that closure.
 
 ## Source Copy Rules

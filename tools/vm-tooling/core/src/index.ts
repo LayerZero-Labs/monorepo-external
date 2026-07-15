@@ -21,6 +21,6 @@ export type * from './context';
 export * from './core';
 export type * from './core/tool-executor';
 export * from './github';
-export * from './mini-workspace';
+export * from './scoped-workspace';
 export * from './test';
 export { findFileInParentDirectory } from './utils';

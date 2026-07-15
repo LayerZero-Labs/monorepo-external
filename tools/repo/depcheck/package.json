@@ -31,7 +31,8 @@
         "ignore": "catalog:",
         "isomorphic-git": "catalog:",
         "js-yaml": "catalog:",
-        "p-limit": "catalog:"
+        "p-limit": "catalog:",
+        "tinypool": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",

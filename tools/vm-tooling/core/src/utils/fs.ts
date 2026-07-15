@@ -35,7 +35,7 @@ export const isInside = (parent: string, child: string): boolean => {
 };
 
 // fs.rm({ maxRetries }) does not retry EACCES, which is the Docker bind-mount cleanup
-// failure seen in mini-workspaces. Mirror Node's retry behavior and add EACCES.
+// failure seen in scoped-workspaces. Mirror Node's retry behavior and add EACCES.
 export const safeRemove = async (
     path: string,
     {

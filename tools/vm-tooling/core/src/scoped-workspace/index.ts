@@ -3,34 +3,34 @@ import { resolve } from 'node:path';
 import { safeRemove } from '../utils/fs';
 import { copyRootNodeModulesSymlinks, getPnpmVirtualStoreMount } from './node-modules';
 import type {
-    MiniWorkspace,
-    MiniWorkspaceOptions,
-    MiniWorkspacePrunePlan,
-    MiniWorkspacePruner,
-    MiniWorkspacePrunerInput,
+    ScopedWorkspace,
+    ScopedWorkspaceOptions,
+    ScopedWorkspacePrunePlan,
+    ScopedWorkspacePruner,
+    ScopedWorkspacePrunerInput,
     WorkspaceDependencyGraph,
 } from './types';
 import { resolveWorkspaceDependencyGraph } from './workspace-dependency-graph';
 import { copyWorkspaceSources } from './workspace-source-copy';
 
 export type {
-    MiniWorkspace,
-    MiniWorkspaceOptions,
-    MiniWorkspacePrunePlan,
-    MiniWorkspacePruner,
-    MiniWorkspacePrunerInput,
     PnpmVirtualStoreMount,
+    ScopedWorkspace,
+    ScopedWorkspaceOptions,
+    ScopedWorkspacePrunePlan,
+    ScopedWorkspacePruner,
+    ScopedWorkspacePrunerInput,
     WorkspaceDependencyEdge,
     WorkspaceDependencyGraph,
 } from './types';
 export { DEFAULT_SOURCE_COPY_PATTERNS } from './workspace-source-copy';
 
 const FALLBACK_DIAGNOSTIC =
-    'No mini-workspace pruner configured; using unpruned package-level source copy fallback.';
+    'No scoped-workspace pruner configured; using unpruned package-level source copy fallback.';
 
 interface PrunerResolution {
     prunerName?: string;
-    prunePlan?: MiniWorkspacePrunePlan;
+    prunePlan?: ScopedWorkspacePrunePlan;
     diagnostics: string[];
 }
 
@@ -40,7 +40,7 @@ const createPrunerInput = ({
 }: {
     dependencyGraph: WorkspaceDependencyGraph;
     cwd: string;
-}): MiniWorkspacePrunerInput => ({
+}): ScopedWorkspacePrunerInput => ({
     repoRoot: dependencyGraph.repoRoot,
     packageRoot: dependencyGraph.packageRoot,
     packageRelativePath: dependencyGraph.packageRelativePath,
@@ -49,7 +49,7 @@ const createPrunerInput = ({
 });
 
 const collectDiagnostics = (
-    ...sources: readonly (MiniWorkspacePrunePlan | void | undefined)[]
+    ...sources: readonly (ScopedWorkspacePrunePlan | void | undefined)[]
 ): string[] => sources.flatMap((source) => (source?.diagnostics ? [...source.diagnostics] : []));
 
 const resolvePruner = async ({
@@ -57,7 +57,7 @@ const resolvePruner = async ({
     dependencyGraph,
     cwd,
 }: {
-    pruner?: MiniWorkspacePruner;
+    pruner?: ScopedWorkspacePruner;
     dependencyGraph: WorkspaceDependencyGraph;
     cwd: string;
 }): Promise<PrunerResolution> => {
@@ -75,10 +75,10 @@ const resolvePruner = async ({
     };
 };
 
-/** Create the shared mini-workspace filesystem used by containerized package builds. */
-export const createMiniWorkspace = async (
-    options: MiniWorkspaceOptions = {},
-): Promise<MiniWorkspace> => {
+/** Create the shared scoped-workspace filesystem used by containerized package builds. */
+export const createScopedWorkspace = async (
+    options: ScopedWorkspaceOptions = {},
+): Promise<ScopedWorkspace> => {
     const cwd = resolve(options.cwd ?? process.cwd());
     const dependencyGraph = await resolveWorkspaceDependencyGraph({
         cwd,
@@ -97,11 +97,11 @@ export const createMiniWorkspace = async (
     try {
         await copyRootNodeModulesSymlinks({
             repoRoot: dependencyGraph.repoRoot,
-            miniRoot: sourceCopy.miniRoot,
+            scopedRoot: sourceCopy.scopedRoot,
             dependencyNames: dependencyGraph.rootNodeModulesDependencyNames,
         });
     } catch (error) {
-        await safeRemove(sourceCopy.miniRoot);
+        await safeRemove(sourceCopy.scopedRoot);
         throw error;
     }
 
@@ -112,7 +112,7 @@ export const createMiniWorkspace = async (
     return {
         packageRoot: dependencyGraph.packageRoot,
         repoRoot: dependencyGraph.repoRoot,
-        miniRoot: sourceCopy.miniRoot,
+        scopedRoot: sourceCopy.scopedRoot,
         packageRelativePath: dependencyGraph.packageRelativePath,
         pnpmVirtualStoreMount: getPnpmVirtualStoreMount(dependencyGraph.repoRoot),
         copiedWorkspacePackageCount: copiedPackagePathEntries.length,

@@ -38,7 +38,7 @@ const copyNodeModulesSymlinks = async (
 };
 
 /**
- * Copy selected root node_modules dependency symlinks into a mini workspace.
+ * Copy selected root node_modules dependency symlinks into a scoped workspace.
  *
  * pnpm's node_modules is primarily symlinks over node_modules/.pnpm and workspace packages.
  * Copying those symlinks does not copy their targets. The `.pnpm` virtual store is provided by a
@@ -47,11 +47,11 @@ const copyNodeModulesSymlinks = async (
  */
 export const copyRootNodeModulesSymlinks = async ({
     repoRoot,
-    miniRoot,
+    scopedRoot,
     dependencyNames,
 }: RootNodeModulesSymlinkCopyOptions): Promise<RootNodeModulesSymlinkCopyResult> => {
     const sourceNodeModules = join(repoRoot, 'node_modules');
-    const targetNodeModules = join(miniRoot, 'node_modules');
+    const targetNodeModules = join(scopedRoot, 'node_modules');
 
     // Pre-create the .pnpm mountpoint (recursive mkdir also creates node_modules)
     // so Docker can bind-mount the virtual store over it.
@@ -72,7 +72,7 @@ export const copyRootNodeModulesSymlinks = async ({
  * Describe the pnpm virtual store mount used by package-root container builds.
  *
  * The implementation should mount `.pnpm` instead of copying it. This preserves pnpm's dependency
- * topology without copying the virtual store into every mini workspace.
+ * topology without copying the virtual store into every scoped workspace.
  */
 export const getPnpmVirtualStoreMount = (
     repoRoot: string,

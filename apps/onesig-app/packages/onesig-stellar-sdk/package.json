@@ -23,8 +23,8 @@
         "start:stellar": "tsx scripts/start-validator.ts",
         "stop:stellar": "docker stop onesig-stellar-service && docker rm onesig-stellar-service",
         "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts --exclude test/offchainWorkflow.test.ts",
-        "test:integration": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build:mocks && pnpm start:stellar && vitest run --no-file-parallelism test/integration.test.ts test/offchainWorkflow.test.ts; pnpm stop:stellar",
-        "test:offchain:workflow": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build:contract && pnpm start:stellar && vitest run test/offchainWorkflow.test.ts; pnpm stop:stellar"
+        "test:integration": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build && pnpm --filter @layerzerolabs/onesig-stellar-contracts build:mocks && pnpm start:stellar && vitest run --no-file-parallelism test/integration.test.ts test/offchainWorkflow.test.ts; pnpm stop:stellar",
+        "test:offchain:workflow": "pnpm --filter @layerzerolabs/onesig-stellar-contracts build && pnpm start:stellar && vitest run test/offchainWorkflow.test.ts; pnpm stop:stellar"
     },
     "dependencies": {
         "@layerzerolabs/common-encoding-utils": "workspace:*",

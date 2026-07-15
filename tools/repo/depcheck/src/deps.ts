@@ -4,6 +4,7 @@ import pLimit from 'p-limit';
 import path from 'path';
 
 import { catalogize } from './catalog';
+import { runPackagesInWorkers, shouldUseWorkers } from './parallel';
 import { safeRegexMatch } from './safeRegex';
 import type { Catalog, PackageJson, PnpmPackageObject } from './types';
 import { execPromise, getCachedCatalog, getCatalog, getPnpmLs } from './utils';
@@ -42,7 +43,9 @@ const versionCache = new Map<string, string | null>();
 const versionLimit = pLimit(5);
 
 export const validateCatalog = async (only?: string) => {
-    const { pnpmLs, pnpmLsObject } = await getPnpmLs();
+    // Catalog validation reads each package.json from disk (see catalogize), so
+    // it only needs the shallow workspace listing, not the resolved dep tree.
+    const { pnpmLs, pnpmLsObject } = await getPnpmLs({ workspacePackagesOnly: true });
     const packages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root' && !isLegacyPackage(x));
     const targets = only
         ? packages.filter((n) => n === only || safeRegexMatch({ str: n, pattern: only }))
@@ -88,23 +91,42 @@ export const updateDeps = async (params: {
 
     logInconsistentDependencies(allDeps);
 
-    // Limit concurrency to prevent resource exhaustion
-    const limit = pLimit(CONCURRENCY_LIMIT);
     const workspacePackages = new Set(Object.keys(pnpmLsObject));
-    const results = await Promise.all(
-        packages.map((p) =>
-            limit(() =>
-                processPackageDependencies({
-                    packageName: p,
-                    allDeps,
-                    packageInfo: pnpmLsObject[p],
-                    workspacePackages,
-                    ignorePatterns,
-                    customCatalog,
-                }),
+
+    // The per-package depcheck run is CPU-bound (@babel parsing), so async
+    // concurrency in a single process gives no speedup — it all runs on one
+    // core. For large runs (e.g. CI's full ~1400-package sweep) shard the work
+    // across worker threads; small/`--only` runs stay on the simple in-process
+    // path where worker spawn overhead wouldn't pay off.
+    let results: ([string, PackageJson] | null)[];
+    if (shouldUseWorkers(packages.length)) {
+        const catalog = customCatalog ?? (await getCachedCatalog());
+        results = await runPackagesInWorkers({
+            packages,
+            allDeps,
+            pnpmLsObject,
+            workspacePackages: [...workspacePackages],
+            ignorePatterns,
+            catalog,
+        });
+    } else {
+        // Limit concurrency to prevent resource exhaustion
+        const limit = pLimit(CONCURRENCY_LIMIT);
+        results = await Promise.all(
+            packages.map((p) =>
+                limit(() =>
+                    processPackageDependencies({
+                        packageName: p,
+                        allDeps,
+                        packageInfo: pnpmLsObject[p],
+                        workspacePackages,
+                        ignorePatterns,
+                        customCatalog,
+                    }),
+                ),
             ),
-        ),
-    );
+        );
+    }
 
     results.forEach((result) => {
         if (result) {

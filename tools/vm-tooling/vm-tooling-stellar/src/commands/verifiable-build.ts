@@ -1,5 +1,5 @@
 import { execFile, spawn } from 'node:child_process';
-import { stat } from 'node:fs/promises';
+import { chmod, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
@@ -242,6 +242,14 @@ export class VerifiableBuildWrapper {
                 `Verifiable build source directory is not an existing directory: ${buildDir}`,
                 { cause },
             );
+        }
+
+        // The official stellar-cli image runs as a non-host UID and must create cargo target
+        // dirs under the bind-mounted source. Do not pass --user (that would diverge from what
+        // external verifiers run). Only chmod when --source-dir is explicit (typically a
+        // throwaway extract dir); never world-write the process cwd.
+        if (sourceDir !== undefined) {
+            await chmod(buildDir, 0o777);
         }
 
         const tagRef = officialImageTagRef(stellarVersion, rustVersion);

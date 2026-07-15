@@ -9,7 +9,7 @@ import { $, type ProcessOutput } from 'zx';
 import type { DockerPlatformOverride, EnvironmentVariable, VolumeMapping } from '../config';
 import { CARGO_TARGET_CACHE_PATH } from '../config';
 import type { ChainContext } from '../context';
-import { createMiniWorkspace } from '../mini-workspace';
+import { createScopedWorkspace } from '../scoped-workspace';
 import {
     type DockerPlatform,
     type DockerPlatformExecution,
@@ -343,29 +343,29 @@ export async function executeToolCommand<TImageId extends string>(
         });
     }
 
-    const miniWorkspace = await createMiniWorkspace({
+    const scopedWorkspace = await createScopedWorkspace({
         cwd,
-        pruner: tool.miniWorkspacePruner,
+        pruner: tool.scopedWorkspacePruner,
     });
     try {
-        const workspaceRoot = miniWorkspace.repoRoot;
+        const workspaceRoot = scopedWorkspace.repoRoot;
 
         const workspaceVolumes: VolumeMapping[] = [
             {
                 type: 'host',
-                hostPath: miniWorkspace.miniRoot,
+                hostPath: scopedWorkspace.scopedRoot,
                 containerPath: '/workspace',
             },
             {
                 type: 'host',
-                hostPath: miniWorkspace.packageRoot,
-                containerPath: `/workspace/${miniWorkspace.packageRelativePath}`,
+                hostPath: scopedWorkspace.packageRoot,
+                containerPath: `/workspace/${scopedWorkspace.packageRelativePath}`,
             },
             {
                 type: 'host',
-                hostPath: miniWorkspace.pnpmVirtualStoreMount.hostPath,
-                containerPath: miniWorkspace.pnpmVirtualStoreMount.containerPath,
-                readOnly: miniWorkspace.pnpmVirtualStoreMount.readOnly,
+                hostPath: scopedWorkspace.pnpmVirtualStoreMount.hostPath,
+                containerPath: scopedWorkspace.pnpmVirtualStoreMount.containerPath,
+                readOnly: scopedWorkspace.pnpmVirtualStoreMount.readOnly,
             },
         ];
 
@@ -375,14 +375,14 @@ export async function executeToolCommand<TImageId extends string>(
             resolveVolumePath(volume, workspaceRoot),
         );
 
-        console.info(`📦 Using mini workspace: ${miniWorkspace.miniRoot}`);
+        console.info(`📦 Using scoped workspace: ${scopedWorkspace.scopedRoot}`);
         console.info(
-            `📦 Copied ${miniWorkspace.copiedWorkspacePackageCount} workspace package source(s)`,
+            `📦 Copied ${scopedWorkspace.copiedWorkspacePackageCount} workspace package source(s)`,
         );
-        if (miniWorkspace.prunerName) {
-            console.info(`📦 Mini workspace pruner: ${miniWorkspace.prunerName}`);
+        if (scopedWorkspace.prunerName) {
+            console.info(`📦 Scoped workspace pruner: ${scopedWorkspace.prunerName}`);
         }
-        for (const diagnostic of miniWorkspace.diagnostics) {
+        for (const diagnostic of scopedWorkspace.diagnostics) {
             console.info(`📦 ${diagnostic}`);
         }
 
@@ -532,10 +532,10 @@ export async function executeToolCommand<TImageId extends string>(
     } finally {
         // Docker can release bind mounts slightly after the command exits; cleanup failures should
         // not fail a completed tool run.
-        const removeResult = await safeRemove(miniWorkspace.miniRoot);
+        const removeResult = await safeRemove(scopedWorkspace.scopedRoot);
         if (!removeResult.removed) {
             console.warn(
-                `⚠️  Failed to clean up mini workspace ${miniWorkspace.miniRoot}: ${stringifyError(removeResult.error)}`,
+                `⚠️  Failed to clean up scoped workspace ${scopedWorkspace.scopedRoot}: ${stringifyError(removeResult.error)}`,
             );
         }
     }

@@ -20,6 +20,12 @@ packages:
   - '!**/src/daml/**'
   - '!**/.next/**'
   - '!packages/ui-monorepo/**/src/**'
+  - '!packages/ui-monorepo/scan-client'
+  - '!packages/ui-monorepo/ui-aptos'
+  - '!packages/ui-monorepo/ui-price-sdk'
+  - '!packages/ui-monorepo/ui-solana'
+  - '!packages/ui-monorepo/ui-wallet-aptos'
+  - '!packages/ui-monorepo/ui-wallet-solana'
 catalogs:
   console:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
@@ -114,6 +120,7 @@ catalogs:
     solidity-bytes-utils: ^0.8.4
     solidity-coverage: ^0.8.12
     string-format: ^2.0.0
+    tinypool: ^1.1.1
     toml: ^3.0.0
     ts-jest: ^29.3.1
     ts-node: ^10.9.2

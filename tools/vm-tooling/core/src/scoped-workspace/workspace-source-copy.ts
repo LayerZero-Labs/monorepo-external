@@ -136,7 +136,7 @@ const getPackageSourceCopyPatterns = ({
 
 /**
  * Copy only dependency source-like files for the resolved workspace dependency graph into a
- * repo-shaped mini workspace.
+ * repo-shaped scoped workspace.
  *
  * The current package itself is not copied. It is mounted from the host at the same repo-relative
  * path by the Docker executor so package-local build outputs such as `target`, `build`, and
@@ -147,7 +147,7 @@ const getPackageSourceCopyPatterns = ({
 export const copyWorkspaceSources = async (
     options: WorkspaceSourceCopyOptions,
 ): Promise<WorkspaceSourceCopyResult> => {
-    const miniRoot = await mkdtemp(join(tmpdir(), 'lz-mini-workspace-'));
+    const scopedRoot = await mkdtemp(join(tmpdir(), 'lz-scoped-workspace-'));
     const { prunePatterns, packagePrunePatterns } = options;
 
     const copyPackageSource = async ({
@@ -163,7 +163,7 @@ export const copyWorkspaceSources = async (
             );
         }
 
-        await copySourceDirectory(absolutePath, join(miniRoot, relativePath), [
+        await copySourceDirectory(absolutePath, join(scopedRoot, relativePath), [
             ...getPackageSourceCopyPatterns({
                 relativePath,
                 prunePatterns,
@@ -174,7 +174,7 @@ export const copyWorkspaceSources = async (
     };
 
     try {
-        await mkdir(dirname(join(miniRoot, options.dependencyGraph.packageRelativePath)), {
+        await mkdir(dirname(join(scopedRoot, options.dependencyGraph.packageRelativePath)), {
             recursive: true,
         });
 
@@ -190,14 +190,14 @@ export const copyWorkspaceSources = async (
             ),
         );
     } catch (error) {
-        await safeRemove(miniRoot);
+        await safeRemove(scopedRoot);
         throw error;
     }
 
     return {
         repoRoot: options.dependencyGraph.repoRoot,
         packageRoot: options.dependencyGraph.packageRoot,
-        miniRoot,
+        scopedRoot,
         packageRelativePath: options.dependencyGraph.packageRelativePath,
         copiedWorkspaceDependencies: options.dependencyGraph.includedWorkspaceDependencies,
     };

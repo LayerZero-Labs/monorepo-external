@@ -208,15 +208,12 @@ export async function deployOneSig(
     rpcUrl: string,
 ): Promise<{ client: Client; contractId: string }> {
     // Load the WASM file
-    // Wasm is built by the contract package (@layerzerolabs/onesig-stellar-contracts) into its target/.
-    const wasmPath = join(
-        __dirname,
-        '../../../contracts/stellar/target/wasm32v1-none/release/onesig.wasm',
-    );
+    // Verifiable wasm is built by the contract package into .artifacts/.
+    const wasmPath = join(__dirname, '../../../contracts/stellar/.artifacts/onesig.wasm');
 
     if (!existsSync(wasmPath)) {
         throw new Error(
-            `WASM file not found at: ${wasmPath}. Make sure to run 'pnpm build:contract' first.`,
+            `WASM file not found at: ${wasmPath}. Make sure to run 'pnpm build' in @layerzerolabs/onesig-stellar-contracts first.`,
         );
     }
 

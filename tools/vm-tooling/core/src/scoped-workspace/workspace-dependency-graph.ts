@@ -81,7 +81,7 @@ const isFile = async (path: string): Promise<boolean> => {
  * Find the workspace package that owns the command cwd.
  *
  * Tool commands are often run from nested directories such as `contracts/solana`, while
- * pnpm-lock.yaml only indexes package roots. Walking upward lets the mini workspace bind-mount the
+ * pnpm-lock.yaml only indexes package roots. Walking upward lets the scoped workspace bind-mount the
  * owning package instead of treating the nested cwd as its own package. The package.json check keeps
  * the search anchored to real package boundaries; the importer check makes sure that package is
  * actually represented in the lockfile graph we use for dependency discovery.

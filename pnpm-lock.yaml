@@ -262,6 +262,9 @@ catalogs:
     string-format:
       specifier: ^2.0.0
       version: 2.0.0
+    tinypool:
+      specifier: ^1.1.1
+      version: 1.1.1
     toml:
       specifier: ^3.0.0
       version: 3.0.0
@@ -833,9 +836,27 @@ importers:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
         version: link:../../../../tools/vm-utils/rust/build-utils
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../tools/vm-tooling/vm-tooling-stellar
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.1
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
+      toml:
+        specifier: 'catalog:'
+        version: 3.0.0
+      tsx:
+        specifier: 'catalog:'
+        version: 4.21.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
 
   apps/onesig-app/packages/onesig-stellar-sdk:
     dependencies:
@@ -1860,6 +1881,9 @@ importers:
       p-limit:
         specifier: 'catalog:'
         version: 6.2.0
+      tinypool:
+        specifier: 'catalog:'
+        version: 1.1.1
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*

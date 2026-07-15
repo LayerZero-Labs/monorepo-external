@@ -20,7 +20,10 @@ const validateMissingDependencies = async (options: {
 }) => {
     const { only, ignorePatterns, dups } = options;
     const shouldCheckDups = dups === false;
-    const { pnpmLs, pnpmLsObject } = await getPnpmLs();
+    // `--depth -1` lists workspace packages without resolving the full dependency
+    // tree. The validate path only needs each package's name + path (it reads
+    // package.json directly), and resolving the tree costs ~15s on this repo.
+    const { pnpmLs, pnpmLsObject } = await getPnpmLs({ workspacePackagesOnly: true });
     const allPackages = pnpmLs
         .map((p) => p.name)
         .filter((x) => x !== 'root' && !isLegacyPackage(x));
