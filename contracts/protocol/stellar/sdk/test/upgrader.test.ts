@@ -34,9 +34,7 @@ describe('Upgrader Contract Testing', async () => {
         'protocol',
         'stellar',
         'contracts',
-        'target',
-        'wasm32v1-none',
-        'release',
+        '.artifacts',
     );
     const testDataDir = path.join(
         repoRoot,

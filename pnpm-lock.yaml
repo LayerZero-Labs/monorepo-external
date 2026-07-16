@@ -1222,9 +1222,6 @@ importers:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
         version: link:../../../../tools/vm-utils/rust/build-utils
-      '@layerzerolabs/common-node-utils':
-        specifier: workspace:*
-        version: link:../../../../packages/common/common-node-utils
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../../../tooling-configs/typescript

@@ -1,6 +1,8 @@
-# Reads the wasm built by the sibling contract package (@layerzerolabs/protocol-stellar-v2)
-# and writes the generated TypeScript bindings into this SDK package.
-wasm_dir = "../contracts/target/wasm32v1-none/release"
+# TODO: figure out how to use relative path to the current folder. node_modules based method can lead to large package
+# Reads the verifiable wasm built by the sibling contract package
+# (@layerzerolabs/protocol-stellar-v2 → .artifacts/) and writes the generated
+# TypeScript bindings into this SDK package.
+wasm_dir = "../contracts/.artifacts"
 output_dir = "src/generated"
 
 # Protocol contracts

@@ -2,16 +2,8 @@
     "extends": ["//"],
     "tasks": {
         "build": {
-            "inputs": [
-                "$TURBO_DEFAULT$",
-                "!**/*.md",
-                "!**/LICENSE",
-                "!**/src/tests/**",
-                "!**/tests/**",
-                "!**/integration-tests/**",
-                "!**/integration_tests/**"
-            ],
-            "outputs": ["dependencies/**", "target/wasm32v1-none/release/*.wasm"]
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "outputs": ["dependencies/**", ".artifacts/*.wasm", ".artifacts/*.zip"]
         },
         "test": {
             "dependsOn": ["build", "lint"]
