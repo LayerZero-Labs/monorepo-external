@@ -413,6 +413,7 @@ overrides:
   undici@^7: ^7.28.0
   validator: ^13.15.22
   vite@^6: ^6.4.3
+  websocket-driver: ^0.7.5
   wrap-ansi: 7.0.0
   ws@^7: ^7.5.11
   ws@^8: ^8.21.0

@@ -249,7 +249,6 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
         tag: z.literal(OneSigCantonCallTag.CreateRequest),
         callContext: cantonCallContextSchema,
         callbackContext: cantonCallContextSchema,
-        requestObservers: z.array(CantonPartyIdSchema),
         feeAmount: z.union([z.string(), z.number()]),
         dso: CantonPartyIdSchema,
     }),
