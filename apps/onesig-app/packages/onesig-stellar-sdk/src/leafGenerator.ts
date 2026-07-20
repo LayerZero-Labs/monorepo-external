@@ -5,10 +5,13 @@ import { type BaseLeafData, type GenerateLeafsResult } from '@layerzerolabs/ones
 
 import { Client } from './generated/index';
 
-// Get the contract spec and Call type at module load
+// Get the contract spec and Call type at module load. Only `.spec` is used here (no
+// network call), but stellar-sdk v16 eagerly builds an RpcServer in the Client
+// constructor and validates `rpcUrl` via `new URL(...)`, so an empty string throws
+// "Invalid URL". Pass a syntactically valid placeholder instead.
 const ONE_SIG_SPEC = new Client({
     contractId: '',
-    rpcUrl: '',
+    rpcUrl: 'http://localhost',
     networkPassphrase: '',
     allowHttp: true,
 }).spec;

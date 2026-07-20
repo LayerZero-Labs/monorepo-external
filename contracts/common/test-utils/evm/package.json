@@ -5,6 +5,8 @@
     "description": "LayerZero Labs shared EVM test mocks and utilities",
     "license": "MIT",
     "scripts": {
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' --fix --noPrompt"
     },
     "devDependencies": {

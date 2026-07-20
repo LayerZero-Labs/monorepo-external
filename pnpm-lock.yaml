@@ -33,9 +33,6 @@ catalogs:
     '@layerzerolabs/utils-upgradeable-evm-contracts':
       specifier: 0.2.78
       version: 0.2.78
-    '@matterlabs/hardhat-zksync-solc':
-      specifier: 1.3.2
-      version: 1.3.2
     '@openzeppelin/contracts':
       specifier: 5.4.0
       version: 5.4.0
@@ -82,6 +79,9 @@ catalogs:
     '@layerzerolabs/toolbox-foundry':
       specifier: ^0.1.13
       version: 0.1.13
+    '@matterlabs/hardhat-zksync-solc':
+      specifier: ^1.4.0
+      version: 1.5.1
     '@noble/hashes':
       specifier: ^1.8.0
       version: 1.8.0
@@ -104,8 +104,8 @@ catalogs:
       specifier: ^5.0.2
       version: 5.4.0
     '@stellar/stellar-sdk':
-      specifier: ^14.4.3
-      version: 14.4.3
+      specifier: ^16.0.1
+      version: 16.0.1
     '@types/chai':
       specifier: ^4.3.16
       version: 4.3.20
@@ -299,9 +299,6 @@ catalogs:
       specifier: ^8.8.5
       version: 8.8.5
   onesig-evm:
-    '@matterlabs/hardhat-zksync-solc':
-      specifier: 1.3.2
-      version: 1.3.2
     '@openzeppelin/contracts':
       specifier: 5.0.2
       version: 5.0.2
@@ -496,12 +493,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
@@ -547,12 +538,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
@@ -629,12 +614,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
@@ -686,12 +665,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../../../../../contracts/common/utils/evm/non-upgradeable
@@ -872,7 +845,7 @@ importers:
         version: link:../../../../packages/onesig/onesig-model
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 14.4.3
+        version: 16.0.1
     devDependencies:
       '@layerzerolabs/onesig-stellar-contracts':
         specifier: workspace:*
@@ -959,8 +932,8 @@ importers:
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
-        specifier: catalog:console
-        version: 1.3.2(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
+        specifier: 'catalog:'
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
       '@openzeppelin/contracts':
         specifier: catalog:console
         version: 5.4.0
@@ -1018,12 +991,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/utils-evm-contracts':
         specifier: catalog:console
         version: 0.2.78
@@ -1034,8 +1001,8 @@ importers:
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
-        specifier: catalog:console
-        version: 1.3.2(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
+        specifier: 'catalog:'
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
       '@openzeppelin/contracts':
         specifier: catalog:console
         version: 5.4.0
@@ -1109,12 +1076,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-evm':
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
@@ -1136,12 +1097,6 @@ importers:
       '@layerzerolabs/toolbox-foundry':
         specifier: 'catalog:'
         version: 0.1.13
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/utils-evm-contracts':
         specifier: workspace:*
         version: link:../non-upgradeable
@@ -1246,7 +1201,7 @@ importers:
     dependencies:
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 14.4.3
+        version: 16.0.1
       buffer:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1510,8 +1465,8 @@ importers:
         specifier: workspace:*
         version: link:../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
-        specifier: catalog:onesig-evm
-        version: 1.3.2(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
+        specifier: 'catalog:'
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: 'catalog:'
         version: 1.0.6(@nomiclabs/hardhat-ethers@2.2.3(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)))(chai@4.5.0)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
@@ -1718,7 +1673,7 @@ importers:
         version: 1.7.1
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 14.4.3
+        version: 16.0.1
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -3429,8 +3384,8 @@ packages:
   '@layerzerolabs/utils-upgradeable-evm-contracts@0.2.78':
     resolution: {integrity: sha512-dQk1wrEguC2QGvb5Muy6l5A1d+dToGBaqkPQafkqjs6jMP2Xb8fx1a/hif9Uc8ASdKkj1xp++ZZA4P+Be9qZHQ==}
 
-  '@matterlabs/hardhat-zksync-solc@1.3.2':
-    resolution: {integrity: sha512-p367VgrjwDJ0UmKhwwKEEUgEHgU+HHw2mMk4J2C2JspaoBCGO2icyx9KNQUnV7n1cCPZNlzL5qUH+bgXrNxz3A==}
+  '@matterlabs/hardhat-zksync-solc@1.5.1':
+    resolution: {integrity: sha512-dd9CcOH31kgfe1QPAecNqGohcAzySVoFKFfp23kIfhenIXFhI7OfbxUy5uVyeycZYHip0zgRsNAIVPsIpgjPWw==}
     peerDependencies:
       hardhat: 2.27.0
 
@@ -3534,6 +3489,9 @@ packages:
     resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
     engines: {node: ^14.21.3 || >=16}
 
+  '@noble/ed25519@3.1.0':
+    resolution: {integrity: sha512-pfcObRY3CtvwfaG9Mt5XqZdKmAQppl37tHUeuBhDUbiwJBCVY4/A4lbMvb1xKhMDx96AqAqZpMWuBX1HulhX4g==}
+
   '@noble/hashes@1.2.0':
     resolution: {integrity: sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==}
 
@@ -3552,6 +3510,10 @@ packages:
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@2.2.0':
+    resolution: {integrity: sha512-IYqDGiTXab6FniAgnSdZwgWbomxpy9FtYvLKs7wCUs2a8RkITG+DFGO1DM9cr+E3/RgADRpFjrKVaJ1z6sjtEg==}
+    engines: {node: '>= 20.19.0'}
 
   '@noble/secp256k1@1.7.1':
     resolution: {integrity: sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==}
@@ -4268,17 +4230,14 @@ packages:
   '@solidity-parser/parser@0.20.2':
     resolution: {integrity: sha512-rbu0bzwNvMcwAjH86hiEAcOeRI2EeK8zCkHDrFykh/Al8mvJeFmjy3UrE7GYQjNwOgbGUUtCn5/k8CB8zIu7QA==}
 
-  '@stellar/js-xdr@3.1.2':
-    resolution: {integrity: sha512-VVolPL5goVEIsvuGqDc5uiKxV03lzfWdvYg1KikvwheDmTBO68CKDji3bAZ/kppZrx5iTA8z3Ld5yuytcvhvOQ==}
+  '@stellar/js-xdr@4.0.0':
+    resolution: {integrity: sha512-+NmNa7Tk5BI5XFdy/6xGTqAN4J9a9KgCrCGhj2uEUTCBhLkch0M+QbKzNH8zEnejWe0p8w+0q5hUVX6L3OzoVA==}
+    engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
-  '@stellar/stellar-base@14.0.4':
-    resolution: {integrity: sha512-UbNW6zbdOBXJwLAV2mMak0bIC9nw3IZVlQXkv2w2dk1jgCbJjy3oRVC943zeGE5JAm0Z9PHxrIjmkpGhayY7kw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: This package is now rolled into @stellar/stellar-sdk. Please use @stellar/stellar-sdk to continue receiving updates and support.
-
-  '@stellar/stellar-sdk@14.4.3':
-    resolution: {integrity: sha512-QfaScSNd4Ku0GGfaZjR8679+M5gLHG+09OLLqV3Bv1VaDKXjHmhf8ikalz2jlx3oFnmlEpEgnqXIdf4kdD2x/w==}
-    engines: {node: '>=20.0.0'}
+  '@stellar/stellar-sdk@16.0.1':
+    resolution: {integrity: sha512-bxKohaiyKVqoudRhbOOHeHhHIaeYV5Zab4rCjxhP4Ty1h1ozTLBOv8lWFnZz9ilBzXG8Bb7usQI3rlEcfvUynA==}
+    engines: {node: '>=22.0.0'}
+    hasBin: true
 
   '@swc/core-darwin-arm64@1.15.2':
     resolution: {integrity: sha512-Ghyz4RJv4zyXzrUC1B2MLQBbppIB5c4jMZJybX2ebdEQAvryEKp3gq1kBksCNsatKGmEgXul88SETU19sMWcrw==}
@@ -4923,6 +4882,9 @@ packages:
     engines: {node: '>= 18.20.6'}
     peerDependencies:
       ajv: 4.11.8 - 8
+
+  bignumber.js@11.1.5:
+    resolution: {integrity: sha512-6WmzCNtUnfKpbozq+hOgWaZMMzORmYBwF1xZScyoIX3QRYWeKTtxxwDOW5tIz7C9BdjkIYHGTcelCLkXg0mndw==}
 
   bignumber.js@9.3.1:
     resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
@@ -5680,9 +5642,13 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
-  eventsource@2.0.2:
-    resolution: {integrity: sha512-IzUmBGPR3+oUG9dUeXynyNmf91/3zUSJg1lCktzKw47OXuhco54U3r9B7O4XX+Rb1Itm9OZ2b0RkTs10bICOxA==}
-    engines: {node: '>=12.0.0'}
+  eventsource-parser@3.1.0:
+    resolution: {integrity: sha512-kJezFj9YFAMLeORyi7aCLxLbD5/qWMQnoMVlVPyHIll7lgRJCc3JVln9Vgl9nwQi0YkMnhdGTMNn7CkRRAptMg==}
+    engines: {node: '>=18.0.0'}
+
+  eventsource@4.1.0:
+    resolution: {integrity: sha512-2GuF51iuHX6A9xdTccMTsNb7VO0lHZihApxhvQzJB5A03DvHDd2FQepodbMaztPBmBcE/ox7o2gqaxGhYB9LhQ==}
+    engines: {node: '>=20.0.0'}
 
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
@@ -8040,6 +8006,10 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
 
+  uint8array-extras@1.5.0:
+    resolution: {integrity: sha512-rvKSBiC5zqCCiDZ9kAOszZcDvdAHwwIKJG33Ykj43OKcWsnmcBRL09YTU4nOeHZ8Y2a7l1MgTd08SBe9A8Qj6A==}
+    engines: {node: '>=18'}
+
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
@@ -8073,9 +8043,6 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
-
-  urijs@1.19.11:
-    resolution: {integrity: sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==}
 
   utf-8-validate@5.0.10:
     resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
@@ -9965,7 +9932,7 @@ snapshots:
 
   '@layerzerolabs/utils-upgradeable-evm-contracts@0.2.78': {}
 
-  '@matterlabs/hardhat-zksync-solc@1.3.2(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))':
+  '@matterlabs/hardhat-zksync-solc@1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))':
     dependencies:
       '@matterlabs/hardhat-zksync-telemetry': 1.1.1(debug@4.4.3)(hardhat@2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
       '@nomiclabs/hardhat-docker': 2.0.2(encoding@0.1.13)
@@ -9975,6 +9942,7 @@ snapshots:
       dockerode: 4.0.9
       fs-extra: 11.3.4
       hardhat: 2.27.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)
+      lodash: 4.18.1
       proper-lockfile: 4.1.2
       semver: 7.8.1
       sinon: 18.0.1
@@ -9984,7 +9952,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@matterlabs/hardhat-zksync-solc@1.3.2(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))':
+  '@matterlabs/hardhat-zksync-solc@1.5.1(encoding@0.1.13)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))':
     dependencies:
       '@matterlabs/hardhat-zksync-telemetry': 1.1.1(debug@4.4.3)(hardhat@2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10))
       '@nomiclabs/hardhat-docker': 2.0.2(encoding@0.1.13)
@@ -9994,6 +9962,7 @@ snapshots:
       dockerode: 4.0.9
       fs-extra: 11.3.4
       hardhat: 2.28.5(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2))(typescript@5.8.2)(utf-8-validate@5.0.10)
+      lodash: 4.18.1
       proper-lockfile: 4.1.2
       semver: 7.8.1
       sinon: 18.0.1
@@ -10133,6 +10102,8 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.8.0
 
+  '@noble/ed25519@3.1.0': {}
+
   '@noble/hashes@1.2.0': {}
 
   '@noble/hashes@1.3.2': {}
@@ -10142,6 +10113,8 @@ snapshots:
   '@noble/hashes@1.7.2': {}
 
   '@noble/hashes@1.8.0': {}
+
+  '@noble/hashes@2.2.0': {}
 
   '@noble/secp256k1@1.7.1': {}
 
@@ -10942,27 +10915,22 @@ snapshots:
 
   '@solidity-parser/parser@0.20.2': {}
 
-  '@stellar/js-xdr@3.1.2': {}
+  '@stellar/js-xdr@4.0.0': {}
 
-  '@stellar/stellar-base@14.0.4':
+  '@stellar/stellar-sdk@16.0.1':
     dependencies:
-      '@noble/curves': 1.9.7
-      '@stellar/js-xdr': 3.1.2
-      base32.js: 0.1.0
-      bignumber.js: 9.3.1
-      buffer: 6.0.3
-      sha.js: 2.4.12
-
-  '@stellar/stellar-sdk@14.4.3':
-    dependencies:
-      '@stellar/stellar-base': 14.0.4
+      '@noble/ed25519': 3.1.0
+      '@noble/hashes': 2.2.0
+      '@stellar/js-xdr': 4.0.0
       axios: 1.16.1(debug@4.4.3)
-      bignumber.js: 9.3.1
-      eventsource: 2.0.2
+      base32.js: 0.1.0
+      bignumber.js: 11.1.5
+      buffer: 6.0.3
+      commander: 14.0.3
+      eventsource: 4.1.0
       feaxios: 0.0.23
-      randombytes: 2.1.0
-      toml: 3.0.0
-      urijs: 1.19.11
+      smol-toml: 1.7.0
+      uint8array-extras: 1.5.0
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -11708,6 +11676,8 @@ snapshots:
       chalk: 4.1.2
       jsonpointer: 5.0.1
       leven: 3.1.0
+
+  bignumber.js@11.1.5: {}
 
   bignumber.js@9.3.1: {}
 
@@ -12619,7 +12589,11 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
-  eventsource@2.0.2: {}
+  eventsource-parser@3.1.0: {}
+
+  eventsource@4.1.0:
+    dependencies:
+      eventsource-parser: 3.1.0
 
   execa@5.1.1:
     dependencies:
@@ -15378,6 +15352,8 @@ snapshots:
   uglify-js@3.17.4:
     optional: true
 
+  uint8array-extras@1.5.0: {}
+
   undici-types@6.19.8: {}
 
   undici-types@6.21.0: {}
@@ -15401,8 +15377,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
-
-  urijs@1.19.11: {}
 
   utf-8-validate@5.0.10:
     dependencies:

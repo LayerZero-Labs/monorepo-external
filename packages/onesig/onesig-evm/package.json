@@ -31,7 +31,7 @@
         "@layerzerolabs/toolbox-foundry": "catalog:",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
-        "@matterlabs/hardhat-zksync-solc": "catalog:onesig-evm",
+        "@matterlabs/hardhat-zksync-solc": "catalog:",
         "@nomicfoundation/hardhat-chai-matchers": "catalog:",
         "@nomicfoundation/hardhat-ethers": "catalog:",
         "@nomiclabs/hardhat-ethers": "catalog:",
