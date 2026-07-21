@@ -46,6 +46,9 @@ const defaultVolumes: readonly VolumeMapping[] = [
         // shared target's concurrency safety depend on another volume's lock surviving.
         locked: true,
     },
+];
+
+const verifyVolumes: readonly VolumeMapping[] = [
     // Mount host Docker socket instead of using DinD (Docker-in-Docker)
     // This removes ~50% overhead from verifiable builds
     {
@@ -63,18 +66,13 @@ const defaultEnv: readonly EnvironmentVariable[] = [{ name: 'CARGO_BUILD_JOBS', 
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'anchor',
-        // Keep privileged mode for backward compatibility with older images that use DinD
-        privileged: true,
         dockerPlatform: 'linux/amd64',
         defaultVolumes: defaultVolumes,
         defaultEnv,
-        // HOST_CWD and HOST_WORKSPACE_ROOT are injected dynamically by tool-executor
-        // when Docker socket is mounted (detected by /var/run/docker.sock volume)
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'anchor'),
     },
     {
         name: 'solana',
-        privileged: true,
         // No platform pin: the Solana CLI does not produce build artifacts.
         defaultVolumes: defaultVolumes,
         defaultEnv,
@@ -85,9 +83,8 @@ export const tools: readonly [Tool, ...Tool[]] = [
         // docker/solana/Dockerfile does not forward CARGO_BUILD_JOBS into it, so unlike anchor
         // and solana the cap cannot reach rustc here. See PRO-3664.
         name: 'solana-verify',
-        privileged: true,
         // No platform pin: solana-verify delegates artifact builds to its own verifiable-build image.
-        defaultVolumes: defaultVolumes,
+        defaultVolumes: [...defaultVolumes, ...verifyVolumes],
     },
     {
         // surfpool runtime engine; builds nothing, so no privileged mode / socket / cache volumes.

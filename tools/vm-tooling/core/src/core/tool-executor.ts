@@ -432,7 +432,7 @@ export async function executeToolCommand<TImageId extends string>(
         // Merge default env vars with custom env vars (custom takes precedence)
         const defaultEnv = tool.defaultEnv ?? [];
 
-        // Check if Docker socket is mounted (for tools that spawn Docker containers like anchor --verifiable)
+        // Check if Docker socket is mounted (for tools that spawn Docker containers)
         // If so, inject HOST_CWD and HOST_WORKSPACE_ROOT so the inner container knows the host paths
         const hasDockerSocketMount = resolvedVolumes.some(
             (volume) => volume.type === 'host' && volume.containerPath === '/var/run/docker.sock',
