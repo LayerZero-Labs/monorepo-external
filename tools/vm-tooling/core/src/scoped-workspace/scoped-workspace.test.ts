@@ -272,6 +272,7 @@ describe(copyWorkspaceSources, () => {
         });
         createPackage(dep, '@layerzerolabs/dep', {
             'src/index.ts': 'export const dep = true',
+            'dependencies/generated-crate/src/lib.rs': 'pub fn generated() {}',
             'target/deploy/program.so': 'compiled',
             'target/wasm32v1-none/release/program.d': 'program.wasm: src/lib.rs',
             'target/wasm32v1-none/release/program.wasm': 'compiled wasm',
@@ -306,6 +307,7 @@ describe(copyWorkspaceSources, () => {
 
         expect(result.copiedWorkspaceDependencies).toHaveLength(1);
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'dependencies'))).toBe(false);
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target', 'deploy'))).toBe(false);
         expect(
             existsSync(

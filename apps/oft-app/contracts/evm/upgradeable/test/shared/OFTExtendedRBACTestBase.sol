@@ -35,8 +35,8 @@ interface IOFTExtendedHarness {
 
 /**
  * @notice Base test contract for OFT Extended RBAC tests.
- * @dev Provides common state variables, helper functions, and shared tests for
- * `OFTBurnMintExtendedRBACUpgradeable`, `OFTLockUnlockExtendedRBACUpgradeable`, and `OFTNativeExtendedRBACUpgradeable` tests.
+ * @dev Provides common state variables, helper functions, and shared tests for `OFTBurnMintExtendedRBACUpgradeable`,
+ *      `OFTLockUnlockExtendedRBACUpgradeable`, and `OFTNativeExtendedRBACUpgradeable` tests.
  */
 abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
     address endpoint;

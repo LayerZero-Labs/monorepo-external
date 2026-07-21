@@ -25,6 +25,7 @@ export const DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS = [
     '!**/artifacts*/**',
     '!**/build/**',
     '!**/cache/**',
+    '!**/dependencies/**',
     '!**/debug_info/**',
     '!**/hh-cache/**',
     '!**/out/**',
