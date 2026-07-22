@@ -5,9 +5,9 @@ import { IAllowlist } from "@layerzerolabs/utils-evm-contracts/contracts/interfa
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { AllowlistRBACUpgradeable } from "./../contracts/allowlist/AllowlistRBACUpgradeable.sol";
-import { AllowlistBaseUpgradeableTest, IAllowlistMock } from "./AllowlistBaseUpgradeable.t.sol";
+import { AllowlistBaseUpgradeableTest, AllowlistBaseUpgradeableHarness } from "./AllowlistBaseUpgradeable.t.sol";
 
-contract AllowlistRBACUpgradeableMock is AllowlistRBACUpgradeable {
+contract AllowlistRBACUpgradeableHarness is AllowlistRBACUpgradeable {
     constructor() {
         _disableInitializers();
     }
@@ -24,22 +24,26 @@ contract AllowlistRBACUpgradeableMock is AllowlistRBACUpgradeable {
 
 contract AllowlistRBACUpgradeableTest is AllowlistBaseUpgradeableTest {
     address dave = makeAddr("dave");
+    AllowlistRBACUpgradeableHarness allowlistRbac;
 
-    function _createAllowlist(IAllowlist.AllowlistMode _mode) internal virtual override returns (IAllowlistMock) {
-        AllowlistRBACUpgradeableMock impl = new AllowlistRBACUpgradeableMock();
+    function _deployAllowlist(
+        IAllowlist.AllowlistMode _mode
+    ) internal virtual override returns (AllowlistBaseUpgradeableHarness) {
+        AllowlistRBACUpgradeableHarness impl = new AllowlistRBACUpgradeableHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(AllowlistRBACUpgradeableMock.initialize.selector, _mode, address(this))
+            abi.encodeWithSelector(AllowlistRBACUpgradeableHarness.initialize.selector, _mode, address(this))
         );
-        AllowlistRBACUpgradeableMock _allowlist = AllowlistRBACUpgradeableMock(address(proxy));
-        _allowlist.grantRole(_allowlist.WHITELISTER_ROLE(), address(this));
-        _allowlist.grantRole(_allowlist.BLACKLISTER_ROLE(), address(this));
-        return IAllowlistMock(address(proxy));
+        AllowlistRBACUpgradeableHarness rbac = AllowlistRBACUpgradeableHarness(address(proxy));
+        rbac.grantRole(rbac.WHITELISTER_ROLE(), address(this));
+        rbac.grantRole(rbac.BLACKLISTER_ROLE(), address(this));
+        return AllowlistBaseUpgradeableHarness(address(proxy));
     }
 
     function setUp() public override {
-        allowlist = _createAllowlist(IAllowlist.AllowlistMode.Open);
+        super.setUp();
+        allowlistRbac = AllowlistRBACUpgradeableHarness(address(allowlist));
     }
 
     function test_setAllowlistMode_Revert_Unauthorized() public virtual {
@@ -47,11 +51,11 @@ contract AllowlistRBACUpgradeableTest is AllowlistBaseUpgradeableTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 dave,
-                AllowlistRBACUpgradeableMock(address(allowlist)).DEFAULT_ADMIN_ROLE()
+                allowlistRbac.DEFAULT_ADMIN_ROLE()
             )
         );
         vm.prank(dave);
-        AllowlistRBACUpgradeableMock(address(allowlist)).setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+        allowlistRbac.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
     }
 
     function test_setWhitelisted_Revert_Unauthorized() public virtual {
@@ -61,11 +65,11 @@ contract AllowlistRBACUpgradeableTest is AllowlistBaseUpgradeableTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 dave,
-                AllowlistRBACUpgradeableMock(address(allowlist)).WHITELISTER_ROLE()
+                allowlistRbac.WHITELISTER_ROLE()
             )
         );
         vm.prank(dave);
-        AllowlistRBACUpgradeableMock(address(allowlist)).setWhitelisted(params);
+        allowlistRbac.setWhitelisted(params);
     }
 
     function test_setBlacklisted_Revert_Unauthorized() public virtual {
@@ -75,10 +79,10 @@ contract AllowlistRBACUpgradeableTest is AllowlistBaseUpgradeableTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 dave,
-                AllowlistRBACUpgradeableMock(address(allowlist)).BLACKLISTER_ROLE()
+                allowlistRbac.BLACKLISTER_ROLE()
             )
         );
         vm.prank(dave);
-        AllowlistRBACUpgradeableMock(address(allowlist)).setBlacklisted(params);
+        allowlistRbac.setBlacklisted(params);
     }
 }

@@ -7,9 +7,9 @@ import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.so
 import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { PauseByIDRBACUpgradeable } from "./../contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
-import { PauseByIDBaseUpgradeableTest, IPauseByIDBaseMock } from "./PauseByIDBaseUpgradeable.t.sol";
+import { PauseByIDBaseUpgradeableTest, PauseByIDBaseUpgradeableHarness } from "./PauseByIDBaseUpgradeable.t.sol";
 
-contract PauseByIDRBACUpgradeableMock is PauseByIDRBACUpgradeable {
+contract PauseByIDRBACUpgradeableHarness is PauseByIDRBACUpgradeable {
     uint256 public callCount;
 
     constructor() {
@@ -38,9 +38,10 @@ contract PauseByIDRBACUpgradeableMock is PauseByIDRBACUpgradeable {
 contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
     address alice = makeAddr("alice");
     address proxyAdmin;
+    PauseByIDRBACUpgradeableHarness pauseRbac;
 
-    function _createPause() internal virtual override returns (IPauseByIDBaseMock) {
-        PauseByIDRBACUpgradeableMock impl = new PauseByIDRBACUpgradeableMock();
+    function _deployPause() internal virtual override returns (PauseByIDBaseUpgradeableHarness) {
+        PauseByIDRBACUpgradeableHarness impl = new PauseByIDRBACUpgradeableHarness();
 
         uint256 currentNonce = vm.getNonce(address(this));
         proxyAdmin = vm.computeCreateAddress(vm.computeCreateAddress(address(this), currentNonce), 1);
@@ -48,92 +49,88 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(PauseByIDRBACUpgradeableMock.initialize.selector, address(this))
+            abi.encodeWithSelector(PauseByIDRBACUpgradeableHarness.initialize.selector, address(this))
         );
 
         bytes32 adminSlot = vm.load(address(proxy), ERC1967Utils.ADMIN_SLOT);
         proxyAdmin = address(uint160(uint256(adminSlot)));
 
-        return IPauseByIDBaseMock(address(proxy));
+        pauseRbac = PauseByIDRBACUpgradeableHarness(address(proxy));
+        return PauseByIDBaseUpgradeableHarness(address(proxy));
     }
 
-    function setUp() public override {
-        pauseHelper = _createPause();
-    }
-
-    /// @dev `PauseByIDRBACUpgradeableMock.initialize(address)` has a different signature.
+    /// @dev `PauseByIDRBACUpgradeableHarness.initialize(address)` has a different signature.
     function test_initialize_Revert_AlreadyInitialized() public virtual override {
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        PauseByIDRBACUpgradeableMock(address(pauseHelper)).initialize(alice);
+        pauseRbac.initialize(alice);
     }
 
     function test_setDefaultPaused_Success() public {
-        pauseHelper.setDefaultPaused(true);
-        assertTrue(pauseHelper.defaultPaused());
+        pause.setDefaultPaused(true);
+        assertTrue(pause.defaultPaused());
     }
 
     function test_setDefaultPaused_Revert_Unauthorized() public {
-        bytes32 pauserRole = PauseByIDRBACUpgradeableMock(address(pauseHelper)).PAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, pauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
     }
 
     function test_setPaused_Success() public {
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, true, true);
-        pauseHelper.setPaused(params);
-        assertTrue(pauseHelper.isPaused(1));
+        pause.setPaused(params);
+        assertTrue(pause.isPaused(1));
     }
 
     function test_setPaused_Revert_Unauthorized() public {
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, true, true);
 
-        bytes32 pauserRole = PauseByIDRBACUpgradeableMock(address(pauseHelper)).PAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, pauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     function test_setPaused_Success_Batch() public {
-        pauseHelper.setDefaultPaused(true);
-        assertTrue(pauseHelper.defaultPaused());
+        pause.setDefaultPaused(true);
+        assertTrue(pause.defaultPaused());
 
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, false, true);
-        pauseHelper.setPaused(params);
-        assertFalse(pauseHelper.isPaused(1));
+        pause.setPaused(params);
+        assertFalse(pause.isPaused(1));
 
         params[0] = IPauseByID.SetPausedParam(2, true, true);
-        pauseHelper.setPaused(params);
-        assertTrue(pauseHelper.isPaused(2));
+        pause.setPaused(params);
+        assertTrue(pause.isPaused(2));
 
-        pauseHelper.setDefaultPaused(false);
-        assertFalse(pauseHelper.defaultPaused());
+        pause.setDefaultPaused(false);
+        assertFalse(pause.defaultPaused());
 
         IPauseByID.SetPausedParam[] memory batchParams = new IPauseByID.SetPausedParam[](10);
         for (uint32 i = 0; i < 10; i++) {
             batchParams[i] = IPauseByID.SetPausedParam(i + 10, (i + 10) % 2 == 0, true);
         }
-        pauseHelper.setPaused(batchParams);
+        pause.setPaused(batchParams);
     }
 
     function test_setPaused_Revert_UnpauserCannotCauseEffectivePause() public {
         // `defaultPaused=true` and `enabled=false`.
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         // Set default to paused.
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
 
         // Grant only `UNPAUSER_ROLE` to `alice`.
-        mock.grantRole(unpauserRole, alice);
+        pauseRbac.grantRole(unpauserRole, alice);
 
         // `alice` tries to set `enabled=false` with `paused=false` — effective state is paused.
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
@@ -143,20 +140,19 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, pauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     function test_setPaused_Revert_PauserCannotCauseEffectiveUnpause() public {
         // `defaultPaused=false` and `enabled=false`.
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         // Default is already false (unpaused).
-        assertFalse(pauseHelper.defaultPaused());
+        assertFalse(pause.defaultPaused());
 
         // Grant only `PAUSER_ROLE` to `alice`.
-        mock.grantRole(pauserRole, alice);
+        pauseRbac.grantRole(pauserRole, alice);
 
         // `alice` tries to set `enabled=false` with `paused=true` — effective state is unpaused.
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
@@ -166,60 +162,57 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, unpauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     function test_setPaused_Success_PauserCanSetDisabledWhenDefaultPaused() public {
         // `defaultPaused=true` and `enabled=false`.
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
 
         // Set default to paused.
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
 
         // Grant only `PAUSER_ROLE` to `alice`.
-        mock.grantRole(pauserRole, alice);
+        pauseRbac.grantRole(pauserRole, alice);
 
         // `alice` sets `enabled=false` — effective state is paused, so `PAUSER_ROLE` suffices.
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, false, false);
 
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
-        assertTrue(pauseHelper.isPaused(1));
+        assertTrue(pause.isPaused(1));
     }
 
     function test_setPaused_Success_UnpauserCanSetDisabledWhenDefaultUnpaused() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         // Default is already false (unpaused).
-        assertFalse(pauseHelper.defaultPaused());
+        assertFalse(pause.defaultPaused());
 
         // Grant only `UNPAUSER_ROLE` to `alice`.
-        mock.grantRole(unpauserRole, alice);
+        pauseRbac.grantRole(unpauserRole, alice);
 
         // `alice` sets `enabled=false` — effective state is unpaused (from default), so `UNPAUSER_ROLE` suffices.
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, true, false);
 
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
-        assertFalse(pauseHelper.isPaused(1));
+        assertFalse(pause.isPaused(1));
     }
 
     function test_setPaused_Revert_MixedBatchWithDisabledConfigs_NeedsBothRoles() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         // Set default to paused.
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
 
         // Grant only `PAUSER_ROLE` to `alice`.
-        mock.grantRole(pauserRole, alice);
+        pauseRbac.grantRole(pauserRole, alice);
 
         // Batch: one explicitly unpauses (`enabled=true`, `paused=false`), one falls back to default paused (`enabled=false`).
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](2);
@@ -230,20 +223,19 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, unpauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     function test_setPaused_Success_MixedBatchWithDisabledConfigs_BothRoles() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         // Set default to paused.
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
 
         // Grant both roles to `alice`.
-        mock.grantRole(pauserRole, alice);
-        mock.grantRole(unpauserRole, alice);
+        pauseRbac.grantRole(pauserRole, alice);
+        pauseRbac.grantRole(unpauserRole, alice);
 
         // Batch: one explicitly unpauses, one falls back to default paused.
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](2);
@@ -251,29 +243,28 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
         params[1] = IPauseByID.SetPausedParam(2, false, false); // effective: paused (default)
 
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
-        assertFalse(pauseHelper.isPaused(1));
-        assertTrue(pauseHelper.isPaused(2));
+        assertFalse(pause.isPaused(1));
+        assertTrue(pause.isPaused(2));
     }
 
     /// @dev Dormant data planted by one role cannot be activated without the other role.
     function test_setPaused_DormantData() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         address frank = address(0x456);
-        mock.grantRole(unpauserRole, alice);
-        mock.grantRole(pauserRole, frank);
+        pauseRbac.grantRole(unpauserRole, alice);
+        pauseRbac.grantRole(pauserRole, frank);
 
         // `defaultPaused=false`. `UNPAUSER_ROLE` stores dormant `paused=true` (`enabled=false`).
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
         params[0] = IPauseByID.SetPausedParam(1, true, false);
         vm.prank(alice);
-        pauseHelper.setPaused(params);
-        assertFalse(pauseHelper.isPaused(1));
-        assertTrue(pauseHelper.pauseConfig(1).paused);
+        pause.setPaused(params);
+        assertFalse(pause.isPaused(1));
+        assertTrue(pause.pauseConfig(1).paused);
 
         // `UNPAUSER_ROLE` cannot activate dormant `paused=true`.
         params[0] = IPauseByID.SetPausedParam(1, true, true);
@@ -281,19 +272,19 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, pauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
         // `PAUSER_ROLE` can activate it.
         vm.prank(frank);
-        pauseHelper.setPaused(params);
-        assertTrue(pauseHelper.isPaused(1));
+        pause.setPaused(params);
+        assertTrue(pause.isPaused(1));
 
         // Symmetric: `defaultPaused=true`. `PAUSER_ROLE` stores dormant `paused=false` (`enabled=false`).
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
         params[0] = IPauseByID.SetPausedParam(2, false, false);
         vm.prank(frank);
-        pauseHelper.setPaused(params);
-        assertTrue(pauseHelper.isPaused(2));
+        pause.setPaused(params);
+        assertTrue(pause.isPaused(2));
 
         // `PAUSER_ROLE` cannot activate dormant `paused=false`.
         params[0] = IPauseByID.SetPausedParam(2, false, true);
@@ -301,28 +292,25 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, frank, unpauserRole)
         );
         vm.prank(frank);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
         // `UNPAUSER_ROLE` can activate it.
         vm.prank(alice);
-        pauseHelper.setPaused(params);
-        assertFalse(pauseHelper.isPaused(2));
+        pause.setPaused(params);
+        assertFalse(pause.isPaused(2));
     }
 
     function test_setPaused_EmptyArrayWithUnpauserRole() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-
-        mock.grantRole(mock.UNPAUSER_ROLE(), alice);
+        pauseRbac.grantRole(pauseRbac.UNPAUSER_ROLE(), alice);
 
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](0);
 
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     function test_setPaused_Revert_EmptyArrayUnauthorized() public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](0);
 
@@ -330,17 +318,16 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, unpauserRole)
         );
         vm.prank(alice);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
     }
 
     /// @dev Correct role succeeds, wrong role reverts, for all effective-state combinations.
     function test_setPaused_Fuzz_EffectiveStateRoleCheck(bool _defaultPaused, bool _paused, bool _enabled) public {
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
         if (_defaultPaused) {
-            pauseHelper.setDefaultPaused(true);
+            pause.setDefaultPaused(true);
         }
 
         bool effectivePaused = _enabled ? _paused : _defaultPaused;
@@ -351,64 +338,63 @@ contract PauseByIDRBACUpgradeableTest is PauseByIDBaseUpgradeableTest {
         // Wrong role reverts.
         address wrongCaller = address(0xBAD);
         if (effectivePaused) {
-            mock.grantRole(unpauserRole, wrongCaller);
+            pauseRbac.grantRole(unpauserRole, wrongCaller);
         } else {
-            mock.grantRole(pauserRole, wrongCaller);
+            pauseRbac.grantRole(pauserRole, wrongCaller);
         }
         bytes32 missingRole = effectivePaused ? pauserRole : unpauserRole;
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, wrongCaller, missingRole)
         );
         vm.prank(wrongCaller);
-        pauseHelper.setPaused(params);
+        pause.setPaused(params);
 
         // Correct role succeeds.
         if (effectivePaused) {
-            mock.grantRole(pauserRole, alice);
+            pauseRbac.grantRole(pauserRole, alice);
         } else {
-            mock.grantRole(unpauserRole, alice);
+            pauseRbac.grantRole(unpauserRole, alice);
         }
         vm.prank(alice);
-        pauseHelper.setPaused(params);
-        assertEq(pauseHelper.isPaused(1), effectivePaused);
+        pause.setPaused(params);
+        assertEq(pause.isPaused(1), effectivePaused);
     }
 
     function test_roleManagement_grantAndRevoke() public {
         address newPauser = address(0x123);
-        PauseByIDRBACUpgradeableMock mock = PauseByIDRBACUpgradeableMock(address(pauseHelper));
-        bytes32 pauserRole = mock.PAUSER_ROLE();
-        bytes32 unpauserRole = mock.UNPAUSER_ROLE();
+        bytes32 pauserRole = pauseRbac.PAUSER_ROLE();
+        bytes32 unpauserRole = pauseRbac.UNPAUSER_ROLE();
 
-        mock.grantRole(pauserRole, newPauser);
+        pauseRbac.grantRole(pauserRole, newPauser);
 
         // `newPauser` can now pause.
         vm.prank(newPauser);
-        pauseHelper.setDefaultPaused(true);
-        assertTrue(pauseHelper.defaultPaused());
+        pause.setDefaultPaused(true);
+        assertTrue(pause.defaultPaused());
 
         // But `newPauser` cannot unpause (needs `UNPAUSER_ROLE`).
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, newPauser, unpauserRole)
         );
         vm.prank(newPauser);
-        pauseHelper.setDefaultPaused(false);
+        pause.setDefaultPaused(false);
 
         // Grant `UNPAUSER_ROLE` to `newPauser`.
-        mock.grantRole(unpauserRole, newPauser);
+        pauseRbac.grantRole(unpauserRole, newPauser);
 
         // Now `newPauser` can unpause.
         vm.prank(newPauser);
-        pauseHelper.setDefaultPaused(false);
-        assertFalse(pauseHelper.defaultPaused());
+        pause.setDefaultPaused(false);
+        assertFalse(pause.defaultPaused());
 
         // Revoke `PAUSER_ROLE`.
-        mock.revokeRole(pauserRole, newPauser);
+        pauseRbac.revokeRole(pauserRole, newPauser);
 
         // `newPauser` can no longer pause.
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, newPauser, pauserRole)
         );
         vm.prank(newPauser);
-        pauseHelper.setDefaultPaused(true);
+        pause.setDefaultPaused(true);
     }
 }

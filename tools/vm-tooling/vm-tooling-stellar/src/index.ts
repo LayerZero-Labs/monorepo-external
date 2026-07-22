@@ -1,14 +1,18 @@
+import path from 'node:path';
+
 import type { ChainContext } from '@layerzerolabs/vm-tooling';
 import { runCli } from '@layerzerolabs/vm-tooling';
 
 import { packageSource } from './commands/package-source';
 import { syncToolchain } from './commands/sync-toolchain';
-import { VerifiableBuildWrapper } from './commands/verifiable-build';
+import { parsePackageSpec, runVerifiableBuildFromArchive } from './commands/verifiable-build';
 import { type ImageId, images, tools, versionCombinations } from './config';
+
+const DEFAULT_OUTPUT_DIR = '.artifacts';
 
 const context: ChainContext<ImageId> = { tools, images, versionCombinations };
 
-const verifiableBuildWrapper = new VerifiableBuildWrapper();
+const collectPackageSpecs = (value: string, previous: string[]): string[] => [...previous, value];
 
 export const main = (): Promise<void> =>
     runCli(context, (program, parseGlobalOptions) => {
@@ -20,52 +24,67 @@ export const main = (): Promise<void> =>
             .action(async () => syncToolchain(context, await parseGlobalOptions(program)));
 
         // Extra (non-passthrough) commands, namespaced under `extra <tool>` like vm-tooling-sui:
-        //   lz-tool extra stellar verifiable-build [args...]
+        //   lz-tool extra stellar verifiable-build [options]
         const extra = program.command('extra').description('Extra commands for VM tooling');
         const stellar = extra.command('stellar');
 
         stellar
             .command('verifiable-build')
             .description(
-                'Reproducible `stellar contract build` of the self-contained source in the cwd by ' +
-                    'default, inside the official stellar/stellar-cli:<stellar>-rust<rust>-slim-bookworm ' +
-                    'image pinned by its linux/amd64 digest (run from the host, no Docker socket; embeds ' +
-                    'the bldimg WASM meta automatically)',
+                'Build one or more Stellar contracts reproducibly from a source archive: ' +
+                    'extract → hash → build each --package in the official stellar/stellar-cli ' +
+                    'image → atomically publish contracts-source.zip and *.wasm.',
             )
             .requiredOption(
                 '--stellar-version <version>',
                 'Stellar CLI version of the official reproducible image (e.g. 25.1.0)',
             )
-            .requiredOption(
+            .option(
                 '--rust-version <version>',
-                'Rust version of the official reproducible image (e.g. 1.90.0)',
+                'Rust version of the official reproducible image (e.g. 1.90.0); defaults to ' +
+                    "the archive's rust-toolchain.toml channel",
+            )
+            .requiredOption(
+                '--archive <path>',
+                'Self-contained source .zip for the SEP-58 verifiable build',
             )
             .option(
-                '--source-dir <path>',
-                'Directory to build — the self-contained/decompressed source. Relative paths ' +
-                    'resolve against the cwd; defaults to the cwd.',
+                '--package <name:manifest>',
+                'Package to build as <name>:<manifest-path> (repeatable; required at least once)',
+                collectPackageSpecs,
+                [] as string[],
             )
-            .argument(
-                '[args...]',
-                'Arguments for `stellar contract build`, after `--` (e.g. -- --package <crate>)',
+            .option(
+                '--output-dir <path>',
+                'Directory for contracts-source.zip and *.wasm',
+                DEFAULT_OUTPUT_DIR,
             )
-            .passThroughOptions(true)
-            .allowUnknownOption()
             .action(
-                async (
-                    args: string[],
-                    {
-                        stellarVersion,
-                        rustVersion,
-                        sourceDir,
-                    }: { stellarVersion: string; rustVersion: string; sourceDir?: string },
-                ) =>
-                    verifiableBuildWrapper.run(
-                        args,
-                        { stellarVersion, rustVersion },
-                        await parseGlobalOptions(program),
-                        sourceDir,
-                    ),
+                async ({
+                    stellarVersion,
+                    rustVersion,
+                    archive,
+                    package: packageSpecs,
+                    outputDir,
+                }: {
+                    stellarVersion: string;
+                    rustVersion?: string;
+                    archive: string;
+                    package: string[];
+                    outputDir: string;
+                }) => {
+                    const options = await parseGlobalOptions(program);
+                    await runVerifiableBuildFromArchive(
+                        {
+                            archive: path.resolve(options.cwd, archive),
+                            packages: packageSpecs.map(parsePackageSpec),
+                            outputDir: path.resolve(options.cwd, outputDir),
+                            stellarVersion,
+                            rustVersion,
+                        },
+                        { cwd: options.cwd },
+                    );
+                },
             );
 
         stellar

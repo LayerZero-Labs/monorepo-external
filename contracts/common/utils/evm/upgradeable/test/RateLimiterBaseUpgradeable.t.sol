@@ -6,7 +6,7 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 import { Test } from "forge-std/Test.sol";
 import { RateLimiterBaseUpgradeable } from "./../contracts/rate-limiter/RateLimiterBaseUpgradeable.sol";
 
-contract RateLimiterBaseUpgradeableMock is RateLimiterBaseUpgradeable {
+contract RateLimiterBaseUpgradeableHarness is RateLimiterBaseUpgradeable {
     constructor(uint8 _scaleDecimals) RateLimiterBaseUpgradeable(_scaleDecimals) {
         _disableInitializers();
     }
@@ -71,12 +71,12 @@ contract RateLimiterBaseUpgradeableMock is RateLimiterBaseUpgradeable {
 }
 
 contract RateLimiterBaseUpgradeableTest is Test {
-    RateLimiterBaseUpgradeableMock rateLimiter;
+    RateLimiterBaseUpgradeableHarness rateLimiter;
     /// @dev Separate instance for global state tests to avoid warm storage overlap or conflict.
-    RateLimiterBaseUpgradeableMock rateLimiterGlobal;
+    RateLimiterBaseUpgradeableHarness rateLimiterGlobal;
     /// @dev Separate instances for conflicting default config permutations.
-    RateLimiterBaseUpgradeableMock rateLimiterDefaultNet;
-    RateLimiterBaseUpgradeableMock rateLimiterDefaultDisabled;
+    RateLimiterBaseUpgradeableHarness rateLimiterDefaultNet;
+    RateLimiterBaseUpgradeableHarness rateLimiterDefaultDisabled;
 
     uint256 constant ID_1 = uint256(keccak256("ID_1"));
     uint256 constant ID_2 = uint256(keccak256("ID_2"));
@@ -113,25 +113,29 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function setUp() public virtual {
-        rateLimiter = _createRateLimiter(0, false);
-        rateLimiterGlobal = _createRateLimiter(0, true);
-        rateLimiterDefaultNet = _createRateLimiter(0, false);
-        rateLimiterDefaultDisabled = _createRateLimiter(0, false);
+        rateLimiter = _deployRateLimiter(0, false);
+        rateLimiterGlobal = _deployRateLimiter(0, true);
+        rateLimiterDefaultNet = _deployRateLimiter(0, false);
+        rateLimiterDefaultDisabled = _deployRateLimiter(0, false);
 
         _setUpConfigs();
     }
 
-    function _createRateLimiter(
+    function _deployRateLimiter(
         uint8 _scaleDecimals,
         bool _useGlobalState
-    ) internal virtual returns (RateLimiterBaseUpgradeableMock) {
-        RateLimiterBaseUpgradeableMock impl = new RateLimiterBaseUpgradeableMock(_scaleDecimals);
+    ) internal virtual returns (RateLimiterBaseUpgradeableHarness) {
+        RateLimiterBaseUpgradeableHarness impl = new RateLimiterBaseUpgradeableHarness(_scaleDecimals);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(RateLimiterBaseUpgradeableMock.initialize.selector, _useGlobalState, address(this))
+            abi.encodeWithSelector(
+                RateLimiterBaseUpgradeableHarness.initialize.selector,
+                _useGlobalState,
+                address(this)
+            )
         );
-        return RateLimiterBaseUpgradeableMock(address(proxy));
+        return RateLimiterBaseUpgradeableHarness(address(proxy));
     }
 
     function _setUpConfigs() internal {
@@ -303,17 +307,17 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
     function test_constructor_Revert_InvalidScaledDecimals() public {
         vm.expectRevert(abi.encodeWithSelector(IRateLimiter.InvalidScaledDecimals.selector, 19));
-        new RateLimiterBaseUpgradeableMock(19);
+        new RateLimiterBaseUpgradeableHarness(19);
     }
 
     function test_constructor_MaxScaledDecimals() public {
-        RateLimiterBaseUpgradeableMock impl = new RateLimiterBaseUpgradeableMock(18);
+        RateLimiterBaseUpgradeableHarness impl = new RateLimiterBaseUpgradeableHarness(18);
 
         assertEq(impl.SCALE_DECIMALS(), 18);
     }
 
     function test_constructor_ZeroScaledDecimals() public {
-        RateLimiterBaseUpgradeableMock impl = new RateLimiterBaseUpgradeableMock(0);
+        RateLimiterBaseUpgradeableHarness impl = new RateLimiterBaseUpgradeableHarness(0);
 
         assertEq(impl.SCALE_DECIMALS(), 0);
     }
@@ -321,7 +325,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     // ============ Scaling Tests ============
 
     function test_outflow_WithScaleDecimals() public {
-        RateLimiterBaseUpgradeableMock scaledLimiter = _createRateLimiter(12, false);
+        RateLimiterBaseUpgradeableHarness scaledLimiter = _deployRateLimiter(12, false);
 
         uint96 limit = 1_000_000_000;
         uint32 window = 1000;
@@ -341,7 +345,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_inflow_WithScaleDecimals() public {
-        RateLimiterBaseUpgradeableMock scaledLimiter = _createRateLimiter(12, false);
+        RateLimiterBaseUpgradeableHarness scaledLimiter = _deployRateLimiter(12, false);
 
         uint96 limit = 1_000_000_000;
         uint32 window = 1000;
@@ -361,7 +365,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_upscaleRateLimitAmount() public {
-        RateLimiterBaseUpgradeableMock scaledLimiter = _createRateLimiter(12, false);
+        RateLimiterBaseUpgradeableHarness scaledLimiter = _deployRateLimiter(12, false);
 
         uint256 downscaled = 100;
         uint256 upscaled = scaledLimiter.upscaleRateLimitAmount(downscaled);
@@ -372,7 +376,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     // ============ Global State Tests ============
 
     function test_globalState_UsesDefaultIdForState() public {
-        RateLimiterBaseUpgradeableMock globalLimiter = _createRateLimiter(0, true);
+        RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
 
         uint96 limit = 1000;
         uint32 window = 1000;
@@ -391,7 +395,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_globalState_IgnoresIdSpecificConfig() public {
-        RateLimiterBaseUpgradeableMock globalLimiter = _createRateLimiter(0, true);
+        RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
 
         uint96 defaultLimit = 1000;
         uint96 idSpecificLimit = 500;
@@ -430,7 +434,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_globalState_SharesStateAcrossIds() public {
-        RateLimiterBaseUpgradeableMock globalLimiter = _createRateLimiter(0, true);
+        RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
 
         uint96 limit = 1000;
         uint32 window = 1000;
@@ -802,7 +806,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_initial_state_closed() public {
-        RateLimiterBaseUpgradeableMock freshLimiter = _createRateLimiter(0, false);
+        RateLimiterBaseUpgradeableHarness freshLimiter = _deployRateLimiter(0, false);
 
         IRateLimiter.RateLimit memory rl = freshLimiter.rateLimits(0);
 

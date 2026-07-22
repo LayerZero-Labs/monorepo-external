@@ -9,14 +9,13 @@
         "message-libs",
         "upgrader",
         "workers",
-        "scripts",
         "Cargo.toml",
         "rust-toolchain.toml",
         "rustfmt.toml",
         "clippy.toml"
     ],
     "scripts": {
-        "build": "pnpm package:source && tsx scripts/build-verifiable.ts",
+        "build": "pnpm package:source && pnpm exec lz-tool extra stellar verifiable-build --stellar-version 25.1.0 --archive .artifacts/.incoming/contracts-source.zip --package endpoint-v2:endpoint-v2/Cargo.toml --package uln302:message-libs/uln-302/Cargo.toml --package treasury:message-libs/treasury/Cargo.toml --package simple-message-lib:message-libs/simple-message-lib/Cargo.toml --package blocked-message-lib:message-libs/blocked-message-lib/Cargo.toml --package layerzero-views:layerzero-views/Cargo.toml --package upgrader:upgrader/Cargo.toml --package executor:workers/executor/Cargo.toml --package executor-helper:workers/executor-helper/Cargo.toml --package executor-fee-lib:workers/executor-fee-lib/Cargo.toml --package dvn:workers/dvn/Cargo.toml --package dvn-fee-lib:workers/dvn-fee-lib/Cargo.toml --package price-feed:workers/price-feed/Cargo.toml",
         "build:contracts": "pnpm resolve-dependencies && pnpm exec lz-tool stellar contract build",
         "build:contracts:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build",
         "build:native": "pnpm build:contracts:native",
@@ -36,12 +35,7 @@
     },
     "devDependencies": {
         "@layerzerolabs/build-utils-rust": "workspace:*",
-        "@layerzerolabs/typescript-configuration": "workspace:*",
-        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
-        "@types/node": "catalog:",
-        "fflate": "catalog:",
-        "toml": "catalog:",
-        "tsx": "catalog:"
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
     },
     "publishConfig": {
         "access": "public",

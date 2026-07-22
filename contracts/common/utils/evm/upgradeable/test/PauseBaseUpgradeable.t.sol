@@ -7,12 +7,7 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 import { Test } from "forge-std/Test.sol";
 import { PauseBaseUpgradeable } from "./../contracts/pause/PauseBaseUpgradeable.sol";
 
-interface IPauseTestHelper is IPause {
-    function pause() external;
-    function unpause() external;
-}
-
-contract PauseBaseUpgradeableMock is PauseBaseUpgradeable {
+contract PauseBaseUpgradeableHarness is PauseBaseUpgradeable {
     uint256 public callCount;
 
     constructor() {
@@ -43,16 +38,20 @@ contract PauseBaseUpgradeableMock is PauseBaseUpgradeable {
 }
 
 contract PauseBaseUpgradeableTest is Test {
-    IPauseTestHelper pauseHelper;
+    PauseBaseUpgradeableHarness pause;
 
-    function setUp() public virtual {
-        PauseBaseUpgradeableMock impl = new PauseBaseUpgradeableMock();
+    function _deployPause() internal virtual returns (PauseBaseUpgradeableHarness) {
+        PauseBaseUpgradeableHarness impl = new PauseBaseUpgradeableHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(PauseBaseUpgradeableMock.initialize.selector)
+            abi.encodeWithSelector(PauseBaseUpgradeableHarness.initialize.selector)
         );
-        pauseHelper = IPauseTestHelper(address(proxy));
+        return PauseBaseUpgradeableHarness(address(proxy));
+    }
+
+    function setUp() public virtual {
+        pause = _deployPause();
     }
 
     function test_storageHash() public pure {
@@ -62,183 +61,171 @@ contract PauseBaseUpgradeableTest is Test {
     }
 
     function test_isPaused_InitialState() public view {
-        assertFalse(pauseHelper.isPaused());
+        assertFalse(pause.isPaused());
     }
 
     function test_pause() public {
         vm.expectEmit(false, false, false, true);
         emit IPause.PauseSet(true);
-        pauseHelper.pause();
+        pause.pause();
 
-        assertTrue(pauseHelper.isPaused());
+        assertTrue(pause.isPaused());
     }
 
     function test_unpause() public {
-        pauseHelper.pause();
-        assertTrue(pauseHelper.isPaused());
+        pause.pause();
+        assertTrue(pause.isPaused());
 
         vm.expectEmit(false, false, false, true);
         emit IPause.PauseSet(false);
-        pauseHelper.unpause();
+        pause.unpause();
 
-        assertFalse(pauseHelper.isPaused());
+        assertFalse(pause.isPaused());
     }
 
     function test_setPaused_Fuzz(bool _paused) public {
         if (!_paused) {
             vm.expectRevert(abi.encodeWithSelector(IPause.PauseStateIdempotent.selector, false));
-            pauseHelper.unpause();
+            pause.unpause();
             return;
         }
 
         vm.expectEmit(false, false, false, true);
         emit IPause.PauseSet(_paused);
-        pauseHelper.pause();
-        assertEq(pauseHelper.isPaused(), _paused);
+        pause.pause();
+        assertEq(pause.isPaused(), _paused);
     }
 
     function test_setPaused_Success_ToggleMultipleTimes() public {
-        assertFalse(pauseHelper.isPaused());
+        assertFalse(pause.isPaused());
 
-        pauseHelper.pause();
-        assertTrue(pauseHelper.isPaused());
+        pause.pause();
+        assertTrue(pause.isPaused());
 
-        pauseHelper.unpause();
-        assertFalse(pauseHelper.isPaused());
+        pause.unpause();
+        assertFalse(pause.isPaused());
 
-        pauseHelper.pause();
-        assertTrue(pauseHelper.isPaused());
+        pause.pause();
+        assertTrue(pause.isPaused());
 
-        pauseHelper.unpause();
-        assertFalse(pauseHelper.isPaused());
+        pause.unpause();
+        assertFalse(pause.isPaused());
 
-        pauseHelper.pause();
-        assertTrue(pauseHelper.isPaused());
+        pause.pause();
+        assertTrue(pause.isPaused());
     }
 
     function test_assertNotPaused_Success() public view {
-        PauseBaseUpgradeableMock(address(pauseHelper)).assertNotPaused();
+        pause.assertNotPaused();
     }
 
     function test_assertNotPaused_Revert_Paused() public {
-        pauseHelper.pause();
+        pause.pause();
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        PauseBaseUpgradeableMock(address(pauseHelper)).assertNotPaused();
+        pause.assertNotPaused();
     }
 
     function test_assertNotPaused_Fuzz(bool _paused) public {
         if (_paused) {
-            pauseHelper.pause();
+            pause.pause();
         }
 
         if (_paused) {
             vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-            PauseBaseUpgradeableMock(address(pauseHelper)).assertNotPaused();
+            pause.assertNotPaused();
         } else {
-            PauseBaseUpgradeableMock(address(pauseHelper)).assertNotPaused();
+            pause.assertNotPaused();
         }
     }
 
     function test_initialize_Revert_AlreadyInitialized() public virtual {
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        PauseBaseUpgradeableMock(address(pauseHelper)).initialize();
+        pause.initialize();
     }
 
     function test_setPaused_Idempotent_Reverts() public {
-        pauseHelper.pause();
+        pause.pause();
 
         vm.expectRevert(abi.encodeWithSelector(IPause.PauseStateIdempotent.selector, true));
-        pauseHelper.pause();
+        pause.pause();
     }
 
     function test_setPaused_Idempotent_InitialState_Reverts() public {
-        assertFalse(pauseHelper.isPaused());
+        assertFalse(pause.isPaused());
 
         vm.expectRevert(abi.encodeWithSelector(IPause.PauseStateIdempotent.selector, false));
-        pauseHelper.unpause();
+        pause.unpause();
     }
 
     function test_whenNotPaused_Success() public {
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
-        mock.functionWithModifier();
-        assertEq(mock.callCount(), 1);
+        pause.functionWithModifier();
+        assertEq(pause.callCount(), 1);
     }
 
     function test_whenNotPaused_Revert_Paused() public {
-        pauseHelper.pause();
-
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
+        pause.pause();
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        mock.functionWithModifier();
+        pause.functionWithModifier();
 
-        assertEq(mock.callCount(), 0);
+        assertEq(pause.callCount(), 0);
     }
 
     function test_whenNotPaused_Success_AfterUnpause() public {
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
-
-        pauseHelper.pause();
+        pause.pause();
 
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        mock.functionWithModifier();
+        pause.functionWithModifier();
 
-        pauseHelper.unpause();
+        pause.unpause();
 
-        mock.functionWithModifier();
-        assertEq(mock.callCount(), 1);
+        pause.functionWithModifier();
+        assertEq(pause.callCount(), 1);
     }
 
     function test_whenNotPaused_WithReturnValue() public view {
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
-        uint256 result = mock.functionWithModifierReturns();
+        uint256 result = pause.functionWithModifierReturns();
         assertEq(result, 42);
     }
 
     function test_whenNotPaused_Revert_WithReturnValue() public {
-        pauseHelper.pause();
-
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
+        pause.pause();
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        mock.functionWithModifierReturns();
+        pause.functionWithModifierReturns();
     }
 
     function test_whenNotPaused_Fuzz(bool _paused) public {
         if (_paused) {
-            pauseHelper.pause();
+            pause.pause();
         }
-
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
 
         if (_paused) {
             vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-            mock.functionWithModifier();
-            assertEq(mock.callCount(), 0);
+            pause.functionWithModifier();
+            assertEq(pause.callCount(), 0);
         } else {
-            mock.functionWithModifier();
-            assertEq(mock.callCount(), 1);
+            pause.functionWithModifier();
+            assertEq(pause.callCount(), 1);
         }
     }
 
     function test_whenNotPaused_Success_MultipleCalls() public {
-        PauseBaseUpgradeableMock mock = PauseBaseUpgradeableMock(address(pauseHelper));
+        pause.functionWithModifier();
+        pause.functionWithModifier();
+        pause.functionWithModifier();
+        assertEq(pause.callCount(), 3);
 
-        mock.functionWithModifier();
-        mock.functionWithModifier();
-        mock.functionWithModifier();
-        assertEq(mock.callCount(), 3);
-
-        pauseHelper.pause();
+        pause.pause();
 
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        mock.functionWithModifier();
+        pause.functionWithModifier();
         vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
-        mock.functionWithModifier();
-        assertEq(mock.callCount(), 3);
+        pause.functionWithModifier();
+        assertEq(pause.callCount(), 3);
 
-        pauseHelper.unpause();
+        pause.unpause();
 
-        mock.functionWithModifier();
-        mock.functionWithModifier();
-        assertEq(mock.callCount(), 5);
+        pause.functionWithModifier();
+        pause.functionWithModifier();
+        assertEq(pause.callCount(), 5);
     }
 }

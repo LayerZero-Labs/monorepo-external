@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
+import { IFeeHandler } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFeeHandler.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { FeeHandlerRBACUpgradeable } from "./../contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
-import { FeeHandlerBaseUpgradeableTestCommon, IFeeHandlerTestHelper } from "./FeeHandlerBaseUpgradeable.t.sol";
+import { FeeHandlerBaseUpgradeableTest } from "./FeeHandlerBaseUpgradeable.t.sol";
 
-contract FeeHandlerRBACUpgradeableMock is FeeHandlerRBACUpgradeable {
+contract FeeHandlerRBACUpgradeableHarness is FeeHandlerRBACUpgradeable {
     constructor() {
         _disableInitializers();
     }
@@ -17,18 +18,20 @@ contract FeeHandlerRBACUpgradeableMock is FeeHandlerRBACUpgradeable {
     }
 }
 
-contract FeeHandlerRBACUpgradeableTest is FeeHandlerBaseUpgradeableTestCommon {
+contract FeeHandlerRBACUpgradeableTest is FeeHandlerBaseUpgradeableTest {
     address charlie = makeAddr("charlie");
+    FeeHandlerRBACUpgradeableHarness feeHandlerRbac;
 
-    function _deployFeeHandlerHelper() internal virtual override returns (IFeeHandlerTestHelper) {
-        FeeHandlerRBACUpgradeableMock impl = new FeeHandlerRBACUpgradeableMock();
+    function _deployFeeHandler() internal virtual override returns (IFeeHandler) {
+        FeeHandlerRBACUpgradeableHarness impl = new FeeHandlerRBACUpgradeableHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(FeeHandlerRBACUpgradeableMock.initialize.selector, address(this), alice)
+            abi.encodeWithSelector(FeeHandlerRBACUpgradeableHarness.initialize.selector, address(this), alice)
         );
 
-        return IFeeHandlerTestHelper(address(proxy));
+        feeHandlerRbac = FeeHandlerRBACUpgradeableHarness(address(proxy));
+        return IFeeHandler(address(proxy));
     }
 
     function test_setFeeDeposit_Revert_Unauthorized() public {
@@ -36,10 +39,10 @@ contract FeeHandlerRBACUpgradeableTest is FeeHandlerBaseUpgradeableTestCommon {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 charlie,
-                FeeHandlerRBACUpgradeableMock(address(feeHandlerHelper)).DEFAULT_ADMIN_ROLE()
+                feeHandlerRbac.DEFAULT_ADMIN_ROLE()
             )
         );
         vm.prank(charlie);
-        feeHandlerHelper.setFeeDeposit(bob);
+        feeHandler.setFeeDeposit(bob);
     }
 }

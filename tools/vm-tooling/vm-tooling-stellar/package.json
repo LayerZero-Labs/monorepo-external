@@ -27,13 +27,13 @@
     "dependencies": {
         "@layerzerolabs/deterministic-zip": "workspace:*",
         "@layerzerolabs/vm-tooling": "workspace:*",
+        "fflate": "catalog:",
         "toml": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vitest-configuration": "workspace:*",
-        "fflate": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
         "typescript": "catalog:",

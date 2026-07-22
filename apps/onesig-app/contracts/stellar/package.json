@@ -5,7 +5,7 @@
     "description": "Stellar Soroban contracts for LayerZero OneSig protocol",
     "license": "GPL-3.0-only",
     "scripts": {
-        "build": "pnpm package:source && tsx scripts/build-verifiable.ts",
+        "build": "pnpm package:source && pnpm exec lz-tool extra stellar verifiable-build --stellar-version 25.1.0 --archive .artifacts/.incoming/contracts-source.zip --package onesig:Cargo.toml",
         "build:contract": "pnpm resolve-dependencies && pnpm exec lz-tool stellar contract build --package onesig",
         "build:contract:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build --package onesig",
         "build:mocks": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo build --release --target wasm32v1-none -p mock_vault -p mock_chain -p mock_factory\" stellar",
@@ -15,10 +15,9 @@
         "clean": "rm -rf ./dependencies ./target ./node_modules ./.artifacts*",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
         "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
-        "lint": "pnpm lint:scripts && pnpm lint:rust",
-        "lint:fix": "eslint scripts --fix --max-warnings 0 && pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets -p onesig -p mock_vault -p mock_chain -p mock_factory --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
+        "lint": "pnpm lint:rust",
+        "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets -p onesig -p mock_vault -p mock_chain -p mock_factory --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "lint:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -p onesig -p mock_vault -p mock_chain -p mock_factory -- -D warnings\" stellar",
-        "lint:scripts": "tsc --noEmit && (eslint scripts --max-warnings 0 || (eslint scripts --fix --max-warnings 0 && false))",
         "package:source": "pnpm resolve-dependencies && pnpm exec lz-tool extra stellar package-source --output .artifacts/.incoming/contracts-source.zip --exclude 'src/tests/**'",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:contract",
@@ -30,13 +29,7 @@
     },
     "devDependencies": {
         "@layerzerolabs/build-utils-rust": "workspace:*",
-        "@layerzerolabs/typescript-configuration": "workspace:*",
-        "@layerzerolabs/vm-tooling-stellar": "workspace:*",
-        "@types/node": "catalog:",
-        "fflate": "catalog:",
-        "toml": "catalog:",
-        "tsx": "catalog:",
-        "typescript": "catalog:"
+        "@layerzerolabs/vm-tooling-stellar": "workspace:*"
     },
     "publishConfig": {
         "access": "restricted",

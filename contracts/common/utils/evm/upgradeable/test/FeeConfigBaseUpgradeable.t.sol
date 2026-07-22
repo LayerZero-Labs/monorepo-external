@@ -6,9 +6,7 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 import { Test } from "forge-std/Test.sol";
 import { FeeConfigBaseUpgradeable } from "./../contracts/fee-config/FeeConfigBaseUpgradeable.sol";
 
-interface IFeeConfigTestHelper is IFeeConfig {}
-
-contract FeeConfigBaseUpgradeableMock is FeeConfigBaseUpgradeable {
+contract FeeConfigBaseUpgradeableHarness is FeeConfigBaseUpgradeable {
     constructor() {
         _disableInitializers();
     }
@@ -25,36 +23,36 @@ contract FeeConfigBaseUpgradeableMock is FeeConfigBaseUpgradeable {
 }
 
 contract FeeConfigBaseUpgradeableTest is Test {
-    IFeeConfigTestHelper public feeConfigHelper;
+    IFeeConfig public feeConfig;
 
     uint32 constant EID_1 = 1;
     uint32 constant EID_2 = 2;
     uint16 constant BPS_DENOMINATOR = 10000;
 
-    function _deployFeeConfigHelper() internal virtual returns (IFeeConfigTestHelper) {
-        FeeConfigBaseUpgradeableMock impl = new FeeConfigBaseUpgradeableMock();
+    function _deployFeeConfig() internal virtual returns (IFeeConfig) {
+        FeeConfigBaseUpgradeableHarness impl = new FeeConfigBaseUpgradeableHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(FeeConfigBaseUpgradeableMock.initialize.selector)
+            abi.encodeWithSelector(FeeConfigBaseUpgradeableHarness.initialize.selector)
         );
 
-        return IFeeConfigTestHelper(address(proxy));
+        return IFeeConfig(address(proxy));
     }
 
     function setUp() public virtual {
-        feeConfigHelper = _deployFeeConfigHelper();
+        feeConfig = _deployFeeConfig();
     }
 
     function test_setDefaultFeeBps_Fuzz(uint16 _feeBps) public {
         if (_feeBps > BPS_DENOMINATOR) {
             vm.expectRevert(abi.encodeWithSelector(IFeeConfig.InvalidBps.selector, _feeBps));
-            feeConfigHelper.setDefaultFeeBps(_feeBps);
+            feeConfig.setDefaultFeeBps(_feeBps);
         } else {
             vm.expectEmit(false, false, false, true);
             emit IFeeConfig.DefaultFeeBpsSet(_feeBps);
-            feeConfigHelper.setDefaultFeeBps(_feeBps);
-            assertEq(feeConfigHelper.defaultFeeBps(), _feeBps);
+            feeConfig.setDefaultFeeBps(_feeBps);
+            assertEq(feeConfig.defaultFeeBps(), _feeBps);
         }
     }
 
@@ -64,22 +62,22 @@ contract FeeConfigBaseUpgradeableTest is Test {
 
     function test_setFeeBps_Fuzz(uint16 _defaultFeeBps, uint32 _dstEid, uint16 _feeBps, bool _enabled) public {
         _defaultFeeBps = uint16(bound(_defaultFeeBps, 0, BPS_DENOMINATOR));
-        feeConfigHelper.setDefaultFeeBps(_defaultFeeBps);
-        assertEq(feeConfigHelper.defaultFeeBps(), _defaultFeeBps);
+        feeConfig.setDefaultFeeBps(_defaultFeeBps);
+        assertEq(feeConfig.defaultFeeBps(), _defaultFeeBps);
 
         if (_feeBps > BPS_DENOMINATOR) {
             vm.expectRevert(abi.encodeWithSelector(IFeeConfig.InvalidBps.selector, _feeBps));
-            feeConfigHelper.setFeeBps(_dstEid, _feeBps, _enabled);
+            feeConfig.setFeeBps(_dstEid, _feeBps, _enabled);
         } else {
             vm.expectEmit(false, false, false, true);
             emit IFeeConfig.FeeBpsSet(_dstEid, _feeBps, _enabled);
-            feeConfigHelper.setFeeBps(_dstEid, _feeBps, _enabled);
+            feeConfig.setFeeBps(_dstEid, _feeBps, _enabled);
 
-            IFeeConfig.FeeConfig memory config = feeConfigHelper.feeBps(_dstEid);
+            IFeeConfig.FeeConfig memory config = feeConfig.feeBps(_dstEid);
             assertEq(config.feeBps, _feeBps);
             assertEq(config.enabled, _enabled);
 
-            uint256 fee = feeConfigHelper.getFee(_dstEid, 10000);
+            uint256 fee = feeConfig.getFee(_dstEid, 10000);
             uint16 expectedBps = _enabled ? _feeBps : _defaultFeeBps;
             assertEq(fee, expectedBps);
         }
@@ -91,127 +89,127 @@ contract FeeConfigBaseUpgradeableTest is Test {
 
     function test_getFee_Fuzz(uint16 _defaultFeeBps, uint32 _dstEid, uint240 _amount) public {
         _defaultFeeBps = uint16(bound(_defaultFeeBps, 0, BPS_DENOMINATOR));
-        feeConfigHelper.setDefaultFeeBps(_defaultFeeBps);
+        feeConfig.setDefaultFeeBps(_defaultFeeBps);
 
         uint256 expectedFee = _defaultFeeBps == 0 ? 0 : (uint256(_amount) * _defaultFeeBps) / BPS_DENOMINATOR;
-        assertEq(feeConfigHelper.getFee(_dstEid, _amount), expectedFee);
+        assertEq(feeConfig.getFee(_dstEid, _amount), expectedFee);
     }
 
     function test_setDefaultFeeBps_RevertInvalid() public {
         vm.expectRevert(abi.encodeWithSelector(IFeeConfig.InvalidBps.selector, 10001));
-        feeConfigHelper.setDefaultFeeBps(10001);
+        feeConfig.setDefaultFeeBps(10001);
     }
 
     function test_setFeeBps_RevertInvalid() public {
         vm.expectRevert(abi.encodeWithSelector(IFeeConfig.InvalidBps.selector, 10001));
-        feeConfigHelper.setFeeBps(EID_1, 10001, true);
+        feeConfig.setFeeBps(EID_1, 10001, true);
     }
 
     function test_getFee_Default() public {
-        feeConfigHelper.setDefaultFeeBps(500);
+        feeConfig.setDefaultFeeBps(500);
         uint256 amount = 1000;
         uint256 expectedFee = 50;
-        assertEq(feeConfigHelper.getFee(EID_1, amount), expectedFee);
+        assertEq(feeConfig.getFee(EID_1, amount), expectedFee);
     }
 
     function test_getFee_Specific() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        feeConfigHelper.setFeeBps(EID_1, 200, true);
+        feeConfig.setDefaultFeeBps(500);
+        feeConfig.setFeeBps(EID_1, 200, true);
         uint256 amount = 1000;
         uint256 expectedFee = 20;
-        assertEq(feeConfigHelper.getFee(EID_1, amount), expectedFee);
+        assertEq(feeConfig.getFee(EID_1, amount), expectedFee);
     }
 
     function test_getFee_SpecificDisabled() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        feeConfigHelper.setFeeBps(EID_1, 200, false);
+        feeConfig.setDefaultFeeBps(500);
+        feeConfig.setFeeBps(EID_1, 200, false);
         uint256 amount = 1000;
         uint256 expectedFee = 50;
-        assertEq(feeConfigHelper.getFee(EID_1, amount), expectedFee);
+        assertEq(feeConfig.getFee(EID_1, amount), expectedFee);
     }
 
     function test_getFee_BoundaryConditions() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        assertEq(feeConfigHelper.getFee(EID_1, 0), 0);
-        feeConfigHelper.setFeeBps(EID_1, 10000, true);
-        assertEq(feeConfigHelper.getFee(EID_1, 100), 100);
-        feeConfigHelper.setFeeBps(EID_1, 0, true);
-        assertEq(feeConfigHelper.getFee(EID_1, 1000), 0);
+        feeConfig.setDefaultFeeBps(500);
+        assertEq(feeConfig.getFee(EID_1, 0), 0);
+        feeConfig.setFeeBps(EID_1, 10000, true);
+        assertEq(feeConfig.getFee(EID_1, 100), 100);
+        feeConfig.setFeeBps(EID_1, 0, true);
+        assertEq(feeConfig.getFee(EID_1, 1000), 0);
     }
 
     function test_getFee_Rounding() public {
-        feeConfigHelper.setDefaultFeeBps(1000);
-        assertEq(feeConfigHelper.getFee(EID_1, 15), 1);
-        assertEq(feeConfigHelper.getFee(EID_1, 9), 0);
+        feeConfig.setDefaultFeeBps(1000);
+        assertEq(feeConfig.getFee(EID_1, 15), 1);
+        assertEq(feeConfig.getFee(EID_1, 9), 0);
     }
 
     // ============ getAmountBeforeFee Tests ============
 
     function test_getAmountBeforeFee_ZeroBps() public view {
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 0), 0);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 1000), 1000);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, type(uint256).max), type(uint256).max);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 0), 0);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 1000), 1000);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, type(uint256).max), type(uint256).max);
     }
 
     function test_getAmountBeforeFee_MaxBps() public {
-        feeConfigHelper.setDefaultFeeBps(BPS_DENOMINATOR);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 0), 0);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 1000), 0);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, type(uint256).max), 0);
+        feeConfig.setDefaultFeeBps(BPS_DENOMINATOR);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 0), 0);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 1000), 0);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, type(uint256).max), 0);
     }
 
     function test_getAmountBeforeFee_Default() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 950), 1000);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_2, 950), 1000);
+        feeConfig.setDefaultFeeBps(500);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 950), 1000);
+        assertEq(feeConfig.getAmountBeforeFee(EID_2, 950), 1000);
     }
 
     function test_getAmountBeforeFee_Specific() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        feeConfigHelper.setFeeBps(EID_1, 200, true);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 980), 1000);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_2, 950), 1000);
+        feeConfig.setDefaultFeeBps(500);
+        feeConfig.setFeeBps(EID_1, 200, true);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 980), 1000);
+        assertEq(feeConfig.getAmountBeforeFee(EID_2, 950), 1000);
     }
 
     function test_getAmountBeforeFee_SpecificDisabled() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        feeConfigHelper.setFeeBps(EID_1, 200, false);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 950), 1000);
+        feeConfig.setDefaultFeeBps(500);
+        feeConfig.setFeeBps(EID_1, 200, false);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 950), 1000);
     }
 
     function test_getAmountBeforeFee_ZeroAmount() public {
-        feeConfigHelper.setDefaultFeeBps(500);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 0), 0);
+        feeConfig.setDefaultFeeBps(500);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 0), 0);
     }
 
     function test_getAmountBeforeFee_Rounding() public {
-        feeConfigHelper.setDefaultFeeBps(1000);
+        feeConfig.setDefaultFeeBps(1000);
 
         // (15 * 10000) / 9000 = 16, getFee(16) = 1, 16-1 = 15.
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 15), 16);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 15), 16);
         // (9 * 10000) / 9000 = 10, getFee(10) = 1, 10-1 = 9.
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 9), 10);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 9), 10);
         // (1 * 10000) / 9000 = 1, getFee(1) = 0, 1-0 = 1.
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 1), 1);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 1), 1);
     }
 
     function test_getAmountBeforeFee_BoundaryConditions() public {
         // 1 bps (0.01%) — near-zero fee.
-        feeConfigHelper.setDefaultFeeBps(1);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 9999), 10000);
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 1), 1);
+        feeConfig.setDefaultFeeBps(1);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 9999), 10000);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 1), 1);
 
         // 9999 bps (99.99%) — near-total fee.
-        feeConfigHelper.setDefaultFeeBps(9999);
+        feeConfig.setDefaultFeeBps(9999);
         // (1 * 10000) / 1 = 10000, getFee(10000) = 9999, 10000-9999 = 1.
-        assertEq(feeConfigHelper.getAmountBeforeFee(EID_1, 1), 10000);
+        assertEq(feeConfig.getAmountBeforeFee(EID_1, 1), 10000);
     }
 
     function test_getAmountBeforeFee_Fuzz(uint16 _feeBps, uint224 _amountAfterFee) public {
         _feeBps = uint16(bound(_feeBps, 0, BPS_DENOMINATOR));
-        feeConfigHelper.setDefaultFeeBps(_feeBps);
+        feeConfig.setDefaultFeeBps(_feeBps);
 
-        uint256 amountBefore = feeConfigHelper.getAmountBeforeFee(EID_1, _amountAfterFee);
+        uint256 amountBefore = feeConfig.getAmountBeforeFee(EID_1, _amountAfterFee);
 
         if (_feeBps == BPS_DENOMINATOR) {
             assertEq(amountBefore, 0);
@@ -219,7 +217,7 @@ contract FeeConfigBaseUpgradeableTest is Test {
             assertEq(amountBefore, _amountAfterFee);
         } else {
             // Core inverse invariant: `amountBefore - getFee(amountBefore) == amountAfterFee`.
-            uint256 fee = feeConfigHelper.getFee(EID_1, amountBefore);
+            uint256 fee = feeConfig.getFee(EID_1, amountBefore);
             assertEq(amountBefore - fee, _amountAfterFee);
         }
     }

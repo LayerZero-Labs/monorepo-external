@@ -810,27 +810,9 @@ importers:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
         version: link:../../../../tools/vm-utils/rust/build-utils
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../tools/vm-tooling/vm-tooling-stellar
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.1
-      fflate:
-        specifier: 'catalog:'
-        version: 0.8.3
-      toml:
-        specifier: 'catalog:'
-        version: 3.0.0
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.2
 
   apps/onesig-app/packages/onesig-stellar-sdk:
     dependencies:
@@ -1178,24 +1160,9 @@ importers:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
         version: link:../../../../tools/vm-utils/rust/build-utils
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../tools/vm-tooling/vm-tooling-stellar
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.1
-      fflate:
-        specifier: 'catalog:'
-        version: 0.8.3
-      toml:
-        specifier: 'catalog:'
-        version: 3.0.0
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
 
   contracts/protocol/stellar/sdk:
     dependencies:
@@ -2087,6 +2054,9 @@ importers:
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
         version: link:../core
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
       toml:
         specifier: 'catalog:'
         version: 3.0.0
@@ -2100,9 +2070,6 @@ importers:
       '@layerzerolabs/vitest-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/vitest
-      fflate:
-        specifier: 'catalog:'
-        version: 0.8.3
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)

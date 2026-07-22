@@ -6,14 +6,7 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 import { Test } from "forge-std/Test.sol";
 import { AllowlistBaseUpgradeable } from "./../contracts/allowlist/AllowlistBaseUpgradeable.sol";
 
-interface IAllowlistMock is IAllowlist {
-    function setAllowlistMode(AllowlistMode _mode) external;
-    function setWhitelisted(SetAllowlistParam[] calldata _params) external;
-    function setBlacklisted(SetAllowlistParam[] calldata _params) external;
-    function restrictedFunction() external view returns (bool);
-}
-
-contract AllowlistBaseUpgradeableMock is AllowlistBaseUpgradeable {
+contract AllowlistBaseUpgradeableHarness is AllowlistBaseUpgradeable {
     constructor() {
         _disableInitializers();
     }
@@ -40,24 +33,26 @@ contract AllowlistBaseUpgradeableMock is AllowlistBaseUpgradeable {
 }
 
 contract AllowlistBaseUpgradeableTest is Test {
-    IAllowlistMock allowlist;
+    AllowlistBaseUpgradeableHarness allowlist;
 
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
     address charlie = makeAddr("charlie");
 
-    function _createAllowlist(IAllowlist.AllowlistMode _mode) internal virtual returns (IAllowlistMock) {
-        AllowlistBaseUpgradeableMock impl = new AllowlistBaseUpgradeableMock();
+    function _deployAllowlist(
+        IAllowlist.AllowlistMode _mode
+    ) internal virtual returns (AllowlistBaseUpgradeableHarness) {
+        AllowlistBaseUpgradeableHarness impl = new AllowlistBaseUpgradeableHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(AllowlistBaseUpgradeableMock.initialize.selector, _mode)
+            abi.encodeWithSelector(AllowlistBaseUpgradeableHarness.initialize.selector, _mode)
         );
-        return IAllowlistMock(address(proxy));
+        return AllowlistBaseUpgradeableHarness(address(proxy));
     }
 
     function setUp() public virtual {
-        allowlist = _createAllowlist(IAllowlist.AllowlistMode.Open);
+        allowlist = _deployAllowlist(IAllowlist.AllowlistMode.Open);
     }
 
     // ============ Initial State Tests ============
@@ -67,7 +62,7 @@ contract AllowlistBaseUpgradeableTest is Test {
     }
 
     function test_constructor_InitializeWhitelist() public {
-        IAllowlistMock al = _createAllowlist(IAllowlist.AllowlistMode.Whitelist);
+        AllowlistBaseUpgradeableHarness al = _deployAllowlist(IAllowlist.AllowlistMode.Whitelist);
         assertEq(uint256(al.allowlistMode()), uint256(IAllowlist.AllowlistMode.Whitelist));
     }
 

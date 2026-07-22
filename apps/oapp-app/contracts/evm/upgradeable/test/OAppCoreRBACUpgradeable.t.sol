@@ -33,20 +33,26 @@ contract OAppCoreRBACUpgradeableTest is TestHelperOz5 {
         owner = address(this);
         setUpEndpoints(2, LibraryType.SimpleMessageLib);
         endpoint = endpointSetup.endpointList[0];
+
+        oapp = _deployOApp();
+    }
+
+    function _deployOApp() internal returns (OAppCoreRBACHarness) {
         OAppCoreRBACHarness impl = new OAppCoreRBACHarness(address(endpoint));
 
         uint256 currentNonce = vm.getNonce(address(this));
         proxyAdmin = vm.computeCreateAddress(vm.computeCreateAddress(address(this), currentNonce), 1);
 
-        oapp = OAppCoreRBACHarness(
-            address(
-                new TransparentUpgradeableProxy(
-                    address(impl),
-                    address(this),
-                    abi.encodeWithSelector(OAppCoreRBACHarness.initialize.selector, owner)
+        return
+            OAppCoreRBACHarness(
+                address(
+                    new TransparentUpgradeableProxy(
+                        address(impl),
+                        address(this),
+                        abi.encodeWithSelector(OAppCoreRBACHarness.initialize.selector, owner)
+                    )
                 )
-            )
-        );
+            );
     }
 
     // ============ initialize ============

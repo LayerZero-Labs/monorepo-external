@@ -7,7 +7,10 @@ import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/I
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { OAppOptionsType3RBACUpgradeable } from "./../contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
-import { OAppOptionsType3BaseUpgradeableTest } from "./OAppOptionsType3BaseUpgradeable.t.sol";
+import {
+    OAppOptionsType3BaseUpgradeableTest,
+    OAppOptionsType3BaseHarness
+} from "./OAppOptionsType3BaseUpgradeable.t.sol";
 
 contract OAppOptionsType3RBACHarness is OAppOptionsType3RBACUpgradeable {
     constructor() {
@@ -23,19 +26,17 @@ contract OAppOptionsType3RBACUpgradeableTest is OAppOptionsType3BaseUpgradeableT
     using OptionsBuilder for bytes;
 
     address alice = makeAddr("alice");
+    OAppOptionsType3RBACHarness oappRbac;
 
-    function _createOApp() internal virtual override returns (IOAppOptionsType3) {
+    function _deployOApp() internal virtual override returns (OAppOptionsType3BaseHarness) {
         OAppOptionsType3RBACHarness impl = new OAppOptionsType3RBACHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
             abi.encodeWithSelector(OAppOptionsType3RBACHarness.initialize.selector, address(this))
         );
-        return IOAppOptionsType3(address(proxy));
-    }
-
-    function setUp() public override {
-        oapp = _createOApp();
+        oappRbac = OAppOptionsType3RBACHarness(address(proxy));
+        return OAppOptionsType3BaseHarness(address(proxy));
     }
 
     // ============ initialize ============
@@ -43,7 +44,7 @@ contract OAppOptionsType3RBACUpgradeableTest is OAppOptionsType3BaseUpgradeableT
     /// @dev Override since `OAppOptionsType3RBACHarness.initialize(address)` has a different signature.
     function test_initialize_Revert_AlreadyInitialized() public override {
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        OAppOptionsType3RBACHarness(address(oapp)).initialize(alice);
+        oappRbac.initialize(alice);
     }
 
     // ============ setEnforcedOptions ============
@@ -58,7 +59,7 @@ contract OAppOptionsType3RBACUpgradeableTest is OAppOptionsType3BaseUpgradeableT
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 alice,
-                OAppOptionsType3RBACHarness(address(oapp)).DEFAULT_ADMIN_ROLE()
+                oappRbac.DEFAULT_ADMIN_ROLE()
             )
         );
         vm.prank(alice);

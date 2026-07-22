@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
-import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { OFTRegistryRBACUpgradeable } from "./../contracts/extensions/OFTRegistryRBACUpgradeable.sol";
 import { IOFTRegistry } from "./../contracts/interfaces/IOFTRegistry.sol";
 import { NexusOFT } from "./../contracts/NexusOFT.sol";
-import { OFTRegistryBaseUpgradeableTest } from "./OFTRegistryBaseUpgradeable.t.sol";
+import { OFTRegistryBaseUpgradeableTest, OFTRegistryBaseUpgradeableHarness } from "./OFTRegistryBaseUpgradeable.t.sol";
 
-contract OFTRegistryRBACUpgradeableMock is OFTRegistryRBACUpgradeable {
+contract OFTRegistryRBACUpgradeableHarness is OFTRegistryRBACUpgradeable {
     constructor(uint8 _localDecimals) OFTRegistryRBACUpgradeable(_localDecimals) {
         _disableInitializers();
     }
@@ -35,41 +33,31 @@ contract OFTRegistryRBACUpgradeableMock is OFTRegistryRBACUpgradeable {
 
 contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
     address alice = makeAddr("alice");
+    OFTRegistryRBACUpgradeableHarness registryRbac;
 
-    OFTRegistryRBACUpgradeableMock registryRBACMock;
-
-    function setUp() public override {
-        OFTRegistryRBACUpgradeableMock impl = new OFTRegistryRBACUpgradeableMock(LOCAL_DECIMALS);
-
+    function _deployRegistry() internal virtual override returns (OFTRegistryBaseUpgradeableHarness) {
+        OFTRegistryRBACUpgradeableHarness impl = new OFTRegistryRBACUpgradeableHarness(LOCAL_DECIMALS);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(OFTRegistryRBACUpgradeableMock.initialize.selector, address(this))
+            abi.encodeWithSelector(OFTRegistryRBACUpgradeableHarness.initialize.selector, address(this))
         );
-        registry = IOFTRegistry(address(proxy));
-        registryRBACMock = OFTRegistryRBACUpgradeableMock(address(proxy));
-
-        bytes32 adminSlot = vm.load(address(proxy), ERC1967Utils.ADMIN_SLOT);
-        proxyAdmin = address(uint160(uint256(adminSlot)));
-
-        token1 = new MockERC20(LOCAL_DECIMALS);
-        token2 = new MockERC20(LOCAL_DECIMALS);
-        oft1 = _createNexusOFT(address(token1), TOKEN_ID_1);
-        oft2 = _createNexusOFT(address(token2), TOKEN_ID_2);
+        registryRbac = OFTRegistryRBACUpgradeableHarness(address(proxy));
+        return OFTRegistryBaseUpgradeableHarness(address(proxy));
     }
 
     // ============ Initialization Tests ============
 
     function test_localDecimals() public view override {
-        assertEq(registryRBACMock.localDecimals(), LOCAL_DECIMALS);
+        assertEq(registry.localDecimals(), LOCAL_DECIMALS);
     }
 
     function test_sharedDecimals() public view override {
-        assertEq(registryRBACMock.sharedDecimals(), SHARED_DECIMALS);
+        assertEq(registry.sharedDecimals(), SHARED_DECIMALS);
     }
 
     function test_decimalConversionRate() public view override {
-        assertEq(registryRBACMock.decimalConversionRate(), 10 ** (LOCAL_DECIMALS - SHARED_DECIMALS));
+        assertEq(registry.decimalConversionRate(), 10 ** (LOCAL_DECIMALS - SHARED_DECIMALS));
     }
 
     // ============ Registration Tests ============
@@ -86,7 +74,7 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
     function test_registerToken_Success_AfterRoleGrant() public {
         address newRegistrar = address(0x400);
 
-        registryRBACMock.grantRole(registryRBACMock.TOKEN_REGISTRAR_ROLE(), newRegistrar);
+        registryRbac.grantRole(registryRbac.TOKEN_REGISTRAR_ROLE(), newRegistrar);
 
         vm.prank(newRegistrar);
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
@@ -95,7 +83,7 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
     }
 
     function test_registerToken_Revert_Unauthorized() public {
-        bytes32 tokenRegistrarRole = registryRBACMock.TOKEN_REGISTRAR_ROLE();
+        bytes32 tokenRegistrarRole = registryRbac.TOKEN_REGISTRAR_ROLE();
         vm.prank(alice);
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, tokenRegistrarRole)
@@ -107,9 +95,9 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
         vm.assume(_nonRegistrar != address(this));
         vm.assume(_nonRegistrar != address(0));
         vm.assume(_nonRegistrar != proxyAdmin);
-        vm.assume(!registryRBACMock.hasRole(registryRBACMock.TOKEN_REGISTRAR_ROLE(), _nonRegistrar));
+        vm.assume(!registryRbac.hasRole(registryRbac.TOKEN_REGISTRAR_ROLE(), _nonRegistrar));
 
-        bytes32 tokenRegistrarRole = registryRBACMock.TOKEN_REGISTRAR_ROLE();
+        bytes32 tokenRegistrarRole = registryRbac.TOKEN_REGISTRAR_ROLE();
         vm.prank(_nonRegistrar);
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -138,7 +126,7 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
 
         address newRegistrar = address(0x400);
-        registryRBACMock.grantRole(registryRBACMock.TOKEN_REGISTRAR_ROLE(), newRegistrar);
+        registryRbac.grantRole(registryRbac.TOKEN_REGISTRAR_ROLE(), newRegistrar);
 
         vm.prank(newRegistrar);
         registry.deregisterToken(TOKEN_ID_1);
@@ -149,7 +137,7 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
     function test_deregisterToken_Revert_Unauthorized() public {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
 
-        bytes32 tokenRegistrarRole = registryRBACMock.TOKEN_REGISTRAR_ROLE();
+        bytes32 tokenRegistrarRole = registryRbac.TOKEN_REGISTRAR_ROLE();
         vm.prank(alice);
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, tokenRegistrarRole)
@@ -163,9 +151,9 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
         vm.assume(_nonRegistrar != address(this));
         vm.assume(_nonRegistrar != address(0));
         vm.assume(_nonRegistrar != proxyAdmin);
-        vm.assume(!registryRBACMock.hasRole(registryRBACMock.TOKEN_REGISTRAR_ROLE(), _nonRegistrar));
+        vm.assume(!registryRbac.hasRole(registryRbac.TOKEN_REGISTRAR_ROLE(), _nonRegistrar));
 
-        bytes32 tokenRegistrarRole = registryRBACMock.TOKEN_REGISTRAR_ROLE();
+        bytes32 tokenRegistrarRole = registryRbac.TOKEN_REGISTRAR_ROLE();
         vm.prank(_nonRegistrar);
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -181,9 +169,9 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
 
     function test_getAndAssertTokenId() public override {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryRBACMock.getAndAssertTokenId(address(oft1));
+        registry.getAndAssertTokenId(address(oft1));
 
-        assertEq(registryRBACMock.getAndAssertTokenId(address(oft1)), TOKEN_ID_1);
+        assertEq(registry.getAndAssertTokenId(address(oft1)), TOKEN_ID_1);
     }
 
     function test_getAndAssertTokenId_Fuzz(uint32 _tokenId, address _burnerMinter) public override {
@@ -192,35 +180,35 @@ contract OFTRegistryRBACUpgradeableTest is OFTRegistryBaseUpgradeableTest {
 
         NexusOFT fuzzOft = _createNexusOFT(address(token1), _tokenId);
         registry.registerToken(_tokenId, address(fuzzOft), _burnerMinter);
-        assertEq(registryRBACMock.getAndAssertTokenId(address(fuzzOft)), _tokenId);
+        assertEq(registry.getAndAssertTokenId(address(fuzzOft)), _tokenId);
     }
 
     function test_getAndAssertTokenId_Revert_InvalidOFT() public override {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidOFT.selector, address(oft1)));
-        registryRBACMock.getAndAssertTokenId(address(oft1));
+        registry.getAndAssertTokenId(address(oft1));
     }
 
     function test_getAndAssertBurnerMinterAddress() public override {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryRBACMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
+        registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
 
-        assertEq(registryRBACMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1), address(token1));
+        assertEq(registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1), address(token1));
     }
 
     function test_getAndAssertBurnerMinterAddress_Revert_InvalidTokenId() public override {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidTokenId.selector, TOKEN_ID_1));
-        registryRBACMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
+        registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
     }
 
     function test_getAndAssertOFTAddress() public override {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryRBACMock.getAndAssertOFTAddress(TOKEN_ID_1);
+        registry.getAndAssertOFTAddress(TOKEN_ID_1);
 
-        assertEq(registryRBACMock.getAndAssertOFTAddress(TOKEN_ID_1), address(oft1));
+        assertEq(registry.getAndAssertOFTAddress(TOKEN_ID_1), address(oft1));
     }
 
     function test_getAndAssertOFTAddress_Revert_InvalidTokenId() public override {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidTokenId.selector, TOKEN_ID_1));
-        registryRBACMock.getAndAssertOFTAddress(TOKEN_ID_1);
+        registry.getAndAssertOFTAddress(TOKEN_ID_1);
     }
 }

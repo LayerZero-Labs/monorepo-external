@@ -10,7 +10,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { OAppAltUpgradeable } from "./../contracts/oapp/alt/OAppAltUpgradeable.sol";
 import { OAppCoreBaseUpgradeable } from "./../contracts/oapp/OAppCoreBaseUpgradeable.sol";
 
-contract OAppAltUpgradeableHarness is OAppCoreBaseUpgradeable, OAppAltUpgradeable {
+contract OAppAltHarness is OAppCoreBaseUpgradeable, OAppAltUpgradeable {
     constructor(address _endpoint) OAppCoreBaseUpgradeable(_endpoint) {}
 
     function initialize(address _delegate) public initializer {
@@ -39,8 +39,7 @@ contract OAppAltUpgradeableHarness is OAppCoreBaseUpgradeable, OAppAltUpgradeabl
 }
 
 contract OAppAltUpgradeableTest is TestHelperOz5 {
-    OAppAltUpgradeableHarness impl;
-    OAppAltUpgradeableHarness oapp;
+    OAppAltHarness oapp;
     MockERC20 nativeToken;
     address endpoint;
 
@@ -56,12 +55,14 @@ contract OAppAltUpgradeableTest is TestHelperOz5 {
         createEndpoints(2, LibraryType.SimpleMessageLib, nativeTokenAddrs);
         endpoint = address(endpointSetup.endpointList[0]);
 
-        impl = new OAppAltUpgradeableHarness(endpoint);
+        oapp = _deployOApp();
+    }
 
-        bytes memory initData = abi.encodeWithSelector(OAppAltUpgradeableHarness.initialize.selector, delegate);
+    function _deployOApp() internal returns (OAppAltHarness) {
+        OAppAltHarness impl = new OAppAltHarness(endpoint);
+        bytes memory initData = abi.encodeWithSelector(OAppAltHarness.initialize.selector, delegate);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(address(impl), delegate, initData);
-
-        oapp = OAppAltUpgradeableHarness(address(proxy));
+        return OAppAltHarness(address(proxy));
     }
 
     function test_constructor() public view {
@@ -72,7 +73,7 @@ contract OAppAltUpgradeableTest is TestHelperOz5 {
         EndpointV2AltMock endpointZeroNative = new EndpointV2AltMock(1, address(this), address(0));
 
         vm.expectRevert(IOAppAlt.InvalidNativeToken.selector);
-        new OAppAltUpgradeableHarness(address(endpointZeroNative));
+        new OAppAltHarness(address(endpointZeroNative));
     }
 
     function test_payNative() public {

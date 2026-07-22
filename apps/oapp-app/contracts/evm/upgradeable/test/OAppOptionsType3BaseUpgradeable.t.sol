@@ -25,30 +25,30 @@ contract OAppOptionsType3BaseHarness is OAppOptionsType3BaseUpgradeable {
 contract OAppOptionsType3BaseUpgradeableTest is Test {
     using OptionsBuilder for bytes;
 
-    IOAppOptionsType3 oapp;
+    OAppOptionsType3BaseHarness oapp;
 
     uint16 internal constant SEND = 1;
     uint16 internal constant SEND_AND_CALL = 2;
 
-    function _createOApp() internal virtual returns (IOAppOptionsType3) {
+    function _deployOApp() internal virtual returns (OAppOptionsType3BaseHarness) {
         OAppOptionsType3BaseHarness impl = new OAppOptionsType3BaseHarness();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
             abi.encodeWithSelector(OAppOptionsType3BaseHarness.initialize.selector)
         );
-        return IOAppOptionsType3(address(proxy));
+        return OAppOptionsType3BaseHarness(address(proxy));
     }
 
     function setUp() public virtual {
-        oapp = _createOApp();
+        oapp = _deployOApp();
     }
 
     // ============ initialize ============
 
     function test_initialize_Revert_AlreadyInitialized() public virtual {
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        OAppOptionsType3BaseHarness(address(oapp)).initialize();
+        oapp.initialize();
     }
 
     // ============ enforcedOptions ============

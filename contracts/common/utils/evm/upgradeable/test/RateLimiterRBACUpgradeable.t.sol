@@ -5,9 +5,9 @@ import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/inter
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { RateLimiterRBACUpgradeable } from "./../contracts/rate-limiter/RateLimiterRBACUpgradeable.sol";
-import { RateLimiterBaseUpgradeableTest, RateLimiterBaseUpgradeableMock } from "./RateLimiterBaseUpgradeable.t.sol";
+import { RateLimiterBaseUpgradeableTest, RateLimiterBaseUpgradeableHarness } from "./RateLimiterBaseUpgradeable.t.sol";
 
-contract RateLimiterRBACUpgradeableMock is RateLimiterRBACUpgradeable {
+contract RateLimiterRBACUpgradeableHarness is RateLimiterRBACUpgradeable {
     constructor(uint8 _scaleDecimals) RateLimiterRBACUpgradeable(_scaleDecimals) {
         _disableInitializers();
     }
@@ -39,18 +39,28 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
     bytes32 constant RATE_LIMITER_MANAGER_ROLE = keccak256("RATE_LIMITER_MANAGER_ROLE");
 
     address charlie = makeAddr("charlie");
+    RateLimiterRBACUpgradeableHarness rateLimiterRbac;
 
-    function _createRateLimiter(
+    function setUp() public override {
+        super.setUp();
+        rateLimiterRbac = RateLimiterRBACUpgradeableHarness(address(rateLimiter));
+    }
+
+    function _deployRateLimiter(
         uint8 _scaleDecimals,
         bool _useGlobalState
-    ) internal virtual override returns (RateLimiterBaseUpgradeableMock) {
-        RateLimiterRBACUpgradeableMock impl = new RateLimiterRBACUpgradeableMock(_scaleDecimals);
+    ) internal virtual override returns (RateLimiterBaseUpgradeableHarness) {
+        RateLimiterRBACUpgradeableHarness impl = new RateLimiterRBACUpgradeableHarness(_scaleDecimals);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(RateLimiterRBACUpgradeableMock.initialize.selector, _useGlobalState, address(this))
+            abi.encodeWithSelector(
+                RateLimiterRBACUpgradeableHarness.initialize.selector,
+                _useGlobalState,
+                address(this)
+            )
         );
-        return RateLimiterBaseUpgradeableMock(address(proxy));
+        return RateLimiterBaseUpgradeableHarness(address(proxy));
     }
 
     function test_setRateLimitGlobalConfig_Revert_Unauthorized() public {
@@ -66,7 +76,7 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
             )
         );
         vm.prank(charlie);
-        RateLimiterRBACUpgradeableMock(address(rateLimiter)).setRateLimitGlobalConfig(config);
+        rateLimiterRbac.setRateLimitGlobalConfig(config);
     }
 
     function test_setRateLimitConfigs_Revert_Unauthorized() public {
@@ -80,7 +90,7 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
             )
         );
         vm.prank(charlie);
-        RateLimiterRBACUpgradeableMock(address(rateLimiter)).setRateLimitConfigs(configs);
+        rateLimiterRbac.setRateLimitConfigs(configs);
     }
 
     function test_setRateLimitStates_Revert_Unauthorized() public {
@@ -94,7 +104,7 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
             )
         );
         vm.prank(charlie);
-        RateLimiterRBACUpgradeableMock(address(rateLimiter)).setRateLimitStates(states);
+        rateLimiterRbac.setRateLimitStates(states);
     }
 
     function test_setRateLimitAddressExemptions_Revert_Unauthorized() public {
@@ -109,7 +119,7 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
             )
         );
         vm.prank(charlie);
-        RateLimiterRBACUpgradeableMock(address(rateLimiter)).setRateLimitAddressExemptions(exemptions);
+        rateLimiterRbac.setRateLimitAddressExemptions(exemptions);
     }
 
     function test_checkpointRateLimits_Revert_Unauthorized() public {
@@ -123,6 +133,6 @@ contract RateLimiterRBACUpgradeableTest is RateLimiterBaseUpgradeableTest {
             )
         );
         vm.prank(charlie);
-        RateLimiterRBACUpgradeableMock(address(rateLimiter)).checkpointRateLimits(ids);
+        rateLimiterRbac.checkpointRateLimits(ids);
     }
 }

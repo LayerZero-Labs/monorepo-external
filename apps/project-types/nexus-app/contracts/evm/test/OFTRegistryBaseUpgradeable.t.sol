@@ -9,7 +9,7 @@ import { OFTRegistryBaseUpgradeable } from "./../contracts/extensions/OFTRegistr
 import { IOFTRegistry } from "./../contracts/interfaces/IOFTRegistry.sol";
 import { NexusOFT } from "./../contracts/NexusOFT.sol";
 
-contract OFTRegistryBaseUpgradeableMock is OFTRegistryBaseUpgradeable {
+contract OFTRegistryBaseUpgradeableHarness is OFTRegistryBaseUpgradeable {
     constructor(uint8 _localDecimals) OFTRegistryBaseUpgradeable(_localDecimals) {
         _disableInitializers();
     }
@@ -38,8 +38,7 @@ contract OFTRegistryBaseUpgradeableMock is OFTRegistryBaseUpgradeable {
 }
 
 contract OFTRegistryBaseUpgradeableTest is Test {
-    IOFTRegistry registry;
-    OFTRegistryBaseUpgradeableMock registryMock;
+    OFTRegistryBaseUpgradeableHarness registry;
 
     uint8 constant LOCAL_DECIMALS = 18;
     uint8 constant SHARED_DECIMALS = 6;
@@ -54,18 +53,20 @@ contract OFTRegistryBaseUpgradeableTest is Test {
     uint32 constant TOKEN_ID_1 = 1;
     uint32 constant TOKEN_ID_2 = 2;
 
-    function setUp() public virtual {
-        OFTRegistryBaseUpgradeableMock impl = new OFTRegistryBaseUpgradeableMock(LOCAL_DECIMALS);
-
+    function _deployRegistry() internal virtual returns (OFTRegistryBaseUpgradeableHarness) {
+        OFTRegistryBaseUpgradeableHarness impl = new OFTRegistryBaseUpgradeableHarness(LOCAL_DECIMALS);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
-            abi.encodeWithSelector(OFTRegistryBaseUpgradeableMock.initialize.selector)
+            abi.encodeWithSelector(OFTRegistryBaseUpgradeableHarness.initialize.selector)
         );
-        registry = IOFTRegistry(address(proxy));
-        registryMock = OFTRegistryBaseUpgradeableMock(address(proxy));
+        return OFTRegistryBaseUpgradeableHarness(address(proxy));
+    }
 
-        bytes32 adminSlot = vm.load(address(proxy), ERC1967Utils.ADMIN_SLOT);
+    function setUp() public virtual {
+        registry = _deployRegistry();
+
+        bytes32 adminSlot = vm.load(address(registry), ERC1967Utils.ADMIN_SLOT);
         proxyAdmin = address(uint160(uint256(adminSlot)));
 
         token1 = new MockERC20(LOCAL_DECIMALS);
@@ -93,15 +94,15 @@ contract OFTRegistryBaseUpgradeableTest is Test {
     // ============ Initialization Tests ============
 
     function test_localDecimals() public view virtual {
-        assertEq(registryMock.localDecimals(), LOCAL_DECIMALS);
+        assertEq(registry.localDecimals(), LOCAL_DECIMALS);
     }
 
     function test_sharedDecimals() public view virtual {
-        assertEq(registryMock.sharedDecimals(), SHARED_DECIMALS);
+        assertEq(registry.sharedDecimals(), SHARED_DECIMALS);
     }
 
     function test_decimalConversionRate() public view virtual {
-        assertEq(registryMock.decimalConversionRate(), 10 ** (LOCAL_DECIMALS - SHARED_DECIMALS));
+        assertEq(registry.decimalConversionRate(), 10 ** (LOCAL_DECIMALS - SHARED_DECIMALS));
     }
 
     // ============ Initial State Tests ============
@@ -400,9 +401,9 @@ contract OFTRegistryBaseUpgradeableTest is Test {
 
     function test_getAndAssertTokenId() public virtual {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryMock.getAndAssertTokenId(address(oft1));
+        registry.getAndAssertTokenId(address(oft1));
 
-        assertEq(registryMock.getAndAssertTokenId(address(oft1)), TOKEN_ID_1);
+        assertEq(registry.getAndAssertTokenId(address(oft1)), TOKEN_ID_1);
     }
 
     function test_getAndAssertTokenId_Fuzz(uint32 _tokenId, address _burnerMinter) public virtual {
@@ -411,35 +412,35 @@ contract OFTRegistryBaseUpgradeableTest is Test {
 
         NexusOFT fuzzOft = _createNexusOFT(address(token1), _tokenId);
         registry.registerToken(_tokenId, address(fuzzOft), _burnerMinter);
-        assertEq(registryMock.getAndAssertTokenId(address(fuzzOft)), _tokenId);
+        assertEq(registry.getAndAssertTokenId(address(fuzzOft)), _tokenId);
     }
 
     function test_getAndAssertTokenId_Revert_InvalidOFT() public virtual {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidOFT.selector, address(oft1)));
-        registryMock.getAndAssertTokenId(address(oft1));
+        registry.getAndAssertTokenId(address(oft1));
     }
 
     function test_getAndAssertBurnerMinterAddress() public virtual {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
+        registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
 
-        assertEq(registryMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1), address(token1));
+        assertEq(registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1), address(token1));
     }
 
     function test_getAndAssertBurnerMinterAddress_Revert_InvalidTokenId() public virtual {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidTokenId.selector, TOKEN_ID_1));
-        registryMock.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
+        registry.getAndAssertBurnerMinterAddress(TOKEN_ID_1);
     }
 
     function test_getAndAssertOFTAddress() public virtual {
         registry.registerToken(TOKEN_ID_1, address(oft1), address(token1));
-        registryMock.getAndAssertOFTAddress(TOKEN_ID_1);
+        registry.getAndAssertOFTAddress(TOKEN_ID_1);
 
-        assertEq(registryMock.getAndAssertOFTAddress(TOKEN_ID_1), address(oft1));
+        assertEq(registry.getAndAssertOFTAddress(TOKEN_ID_1), address(oft1));
     }
 
     function test_getAndAssertOFTAddress_Revert_InvalidTokenId() public virtual {
         vm.expectRevert(abi.encodeWithSelector(IOFTRegistry.InvalidTokenId.selector, TOKEN_ID_1));
-        registryMock.getAndAssertOFTAddress(TOKEN_ID_1);
+        registry.getAndAssertOFTAddress(TOKEN_ID_1);
     }
 }

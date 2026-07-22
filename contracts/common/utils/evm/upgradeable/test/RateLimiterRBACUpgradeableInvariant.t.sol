@@ -8,7 +8,7 @@ import { StdInvariant } from "forge-std/StdInvariant.sol";
 import { Test } from "forge-std/Test.sol";
 import { RateLimiterRBACUpgradeable } from "./../contracts/rate-limiter/RateLimiterRBACUpgradeable.sol";
 
-contract RateLimiterRBACUpgradeableFuzzMock is RateLimiterRBACUpgradeable {
+contract RateLimiterRBACUpgradeableFuzzHarness is RateLimiterRBACUpgradeable {
     constructor(uint8 _scaleDecimals) RateLimiterRBACUpgradeable(_scaleDecimals) {
         _disableInitializers();
     }
@@ -29,7 +29,7 @@ contract RateLimiterRBACUpgradeableFuzzMock is RateLimiterRBACUpgradeable {
 }
 
 contract RateLimiterRBACUpgradeableHandler is Test {
-    RateLimiterRBACUpgradeableFuzzMock public limiter;
+    RateLimiterRBACUpgradeableFuzzHarness public limiter;
 
     uint256 public immutable ID;
     address public constant USER = address(0x123);
@@ -49,7 +49,7 @@ contract RateLimiterRBACUpgradeableHandler is Test {
     bool public ghost_globallyDisabled;
     bool public ghost_revertMismatch;
 
-    constructor(RateLimiterRBACUpgradeableFuzzMock _limiter, uint256 _id) {
+    constructor(RateLimiterRBACUpgradeableFuzzHarness _limiter, uint256 _id) {
         limiter = _limiter;
         ID = _id;
 
@@ -294,12 +294,12 @@ contract RateLimiterRBACUpgradeableHandler is Test {
 }
 
 contract RateLimiterRBACUpgradeableInvariantTest is StdInvariant, Test {
-    RateLimiterRBACUpgradeableFuzzMock limiter;
+    RateLimiterRBACUpgradeableFuzzHarness limiter;
     RateLimiterRBACUpgradeableHandler handler;
     uint256 constant PRISTINE_ID = uint256(keccak256("PRISTINE_ID"));
 
     function setUp() public virtual {
-        limiter = _createRateLimiter(0, _globalStateEnabled());
+        limiter = _deployRateLimiter(0, _globalStateEnabled());
         handler = new RateLimiterRBACUpgradeableHandler(limiter, _handlerId());
 
         limiter.grantRole(limiter.RATE_LIMITER_MANAGER_ROLE(), address(handler));
@@ -317,21 +317,21 @@ contract RateLimiterRBACUpgradeableInvariantTest is StdInvariant, Test {
         targetSelector(FuzzSelector({ addr: address(handler), selectors: selectors }));
     }
 
-    function _createRateLimiter(
+    function _deployRateLimiter(
         uint8 _scaleDecimals,
         bool _useGlobalState
-    ) internal virtual returns (RateLimiterRBACUpgradeableFuzzMock) {
-        RateLimiterRBACUpgradeableFuzzMock impl = new RateLimiterRBACUpgradeableFuzzMock(_scaleDecimals);
+    ) internal virtual returns (RateLimiterRBACUpgradeableFuzzHarness) {
+        RateLimiterRBACUpgradeableFuzzHarness impl = new RateLimiterRBACUpgradeableFuzzHarness(_scaleDecimals);
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl),
             address(this),
             abi.encodeWithSelector(
-                RateLimiterRBACUpgradeableFuzzMock.initialize.selector,
+                RateLimiterRBACUpgradeableFuzzHarness.initialize.selector,
                 _useGlobalState,
                 address(this)
             )
         );
-        return RateLimiterRBACUpgradeableFuzzMock(address(proxy));
+        return RateLimiterRBACUpgradeableFuzzHarness(address(proxy));
     }
 
     function _globalStateEnabled() internal pure virtual returns (bool) {

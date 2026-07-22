@@ -6,9 +6,7 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 import { Test } from "forge-std/Test.sol";
 import { FeeHandlerBaseUpgradeable } from "./../contracts/fee-accounting/FeeHandlerBaseUpgradeable.sol";
 
-interface IFeeHandlerTestHelper is IFeeHandler {}
-
-contract FeeHandlerBaseUpgradeableMock is FeeHandlerBaseUpgradeable {
+contract FeeHandlerBaseUpgradeableHarness is FeeHandlerBaseUpgradeable {
     constructor() {
         _disableInitializers();
     }
@@ -22,57 +20,53 @@ contract FeeHandlerBaseUpgradeableMock is FeeHandlerBaseUpgradeable {
     }
 }
 
-abstract contract FeeHandlerBaseUpgradeableTestCommon is Test {
-    IFeeHandlerTestHelper public feeHandlerHelper;
+contract FeeHandlerBaseUpgradeableTest is Test {
+    IFeeHandler public feeHandler;
 
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
 
-    function setUp() public virtual {
-        feeHandlerHelper = _deployFeeHandlerHelper();
+    function _deployFeeHandler() internal virtual returns (IFeeHandler) {
+        FeeHandlerBaseUpgradeableHarness impl = new FeeHandlerBaseUpgradeableHarness();
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
+            address(impl),
+            address(this),
+            abi.encodeWithSelector(FeeHandlerBaseUpgradeableHarness.initialize.selector, alice)
+        );
+
+        return IFeeHandler(address(proxy));
     }
 
-    function _deployFeeHandlerHelper() internal virtual returns (IFeeHandlerTestHelper);
+    function setUp() public virtual {
+        feeHandler = _deployFeeHandler();
+    }
 
     function test_feeDeposit() public view {
-        assertEq(feeHandlerHelper.feeDeposit(), alice);
+        assertEq(feeHandler.feeDeposit(), alice);
     }
 
     function test_setFeeDeposit() public {
-        vm.expectEmit(true, true, true, true, address(feeHandlerHelper));
+        vm.expectEmit(true, true, true, true, address(feeHandler));
         emit IFeeHandler.FeeDepositSet(bob);
-        feeHandlerHelper.setFeeDeposit(bob);
+        feeHandler.setFeeDeposit(bob);
 
-        assertEq(feeHandlerHelper.feeDeposit(), bob);
+        assertEq(feeHandler.feeDeposit(), bob);
     }
 
     function test_setFeeDeposit_Revert_ZeroAddress() public {
         vm.expectRevert(IFeeHandler.InvalidFeeDeposit.selector);
-        feeHandlerHelper.setFeeDeposit(address(0));
+        feeHandler.setFeeDeposit(address(0));
     }
 
     function test_setFeeDeposit_Fuzz(address _newDeposit) public {
         vm.assume(_newDeposit != address(0));
-        feeHandlerHelper.setFeeDeposit(_newDeposit);
-        assertEq(feeHandlerHelper.feeDeposit(), _newDeposit);
+        feeHandler.setFeeDeposit(_newDeposit);
+        assertEq(feeHandler.feeDeposit(), _newDeposit);
     }
 
     function test_storageHash() public pure {
         bytes32 storageHash = keccak256(abi.encode(uint256(keccak256("layerzerov2.storage.feehandler")) - 1)) &
             ~bytes32(uint256(0xff));
         assertEq(storageHash, 0xe32e0c5f1df3081ca85b86156deac82a46e8fb7b21b412e09f7ccdc5fca29900);
-    }
-}
-
-contract FeeHandlerBaseUpgradeableTest is FeeHandlerBaseUpgradeableTestCommon {
-    function _deployFeeHandlerHelper() internal virtual override returns (IFeeHandlerTestHelper) {
-        FeeHandlerBaseUpgradeableMock impl = new FeeHandlerBaseUpgradeableMock();
-        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
-            address(impl),
-            address(this),
-            abi.encodeWithSelector(FeeHandlerBaseUpgradeableMock.initialize.selector, alice)
-        );
-
-        return IFeeHandlerTestHelper(address(proxy));
     }
 }
