@@ -74,7 +74,7 @@ describe('resolveDependencies — transitive dep rewriting', () => {
         createCrate(root, fixture('program-with-deps.toml'));
 
         // oapp depends on rbac (stale dependencies/ path from previous build)
-        const oappSource = join(root, 'node_modules', '@layerzerolabs', 'oapp-solana-impl');
+        const oappSource = join(root, 'node_modules', '@layerzerolabs', 'oapp-solana-contracts');
         createCrate(oappSource, fixture('oapp-with-stale-deps.toml'));
         writeFileSync(join(oappSource, 'package.json'), '{}');
 
@@ -85,7 +85,7 @@ describe('resolveDependencies — transitive dep rewriting', () => {
         await resolveDependencies({ cwd: root });
 
         const copiedOappToml = readToml(
-            join(root, 'dependencies', 'oapp-solana-impl', 'Cargo.toml'),
+            join(root, 'dependencies', 'oapp-solana-contracts', 'Cargo.toml'),
         );
         expect(copiedOappToml).toContain('path = "../utils-solana-rbac"');
     });
@@ -95,14 +95,14 @@ describe('resolveDependencies — transitive dep rewriting', () => {
 
         createCrate(root, fixture('program-with-deps.toml'));
 
-        const oappSource = join(root, 'node_modules', '@layerzerolabs', 'oapp-solana-impl');
+        const oappSource = join(root, 'node_modules', '@layerzerolabs', 'oapp-solana-contracts');
         createCrate(oappSource, fixture('root-only-sections.toml'));
         writeFileSync(join(oappSource, 'package.json'), '{}');
 
         await resolveDependencies({ cwd: root });
 
         const copiedOapp = parse(
-            readToml(join(root, 'dependencies', 'oapp-solana-impl', 'Cargo.toml')),
+            readToml(join(root, 'dependencies', 'oapp-solana-contracts', 'Cargo.toml')),
         );
         expect(copiedOapp.package).toBeDefined();
         expect(copiedOapp.dependencies).toBeDefined();

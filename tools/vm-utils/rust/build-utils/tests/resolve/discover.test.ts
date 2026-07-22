@@ -149,13 +149,13 @@ describe('buildDependenciesPathMap', () => {
         createCrate(oapp);
         const targets = [
             await toTarget('utils-solana-rbac', rbac, depsDir),
-            await toTarget('oapp-solana-impl', oapp, depsDir),
+            await toTarget('oapp-solana-contracts', oapp, depsDir),
         ];
 
         const pathMap = buildDependenciesPathMap(targets);
 
         expect(pathMap.get(rbac)).toBe(join(depsDir, 'utils-solana-rbac'));
-        expect(pathMap.get(oapp)).toBe(join(depsDir, 'oapp-solana-impl'));
+        expect(pathMap.get(oapp)).toBe(join(depsDir, 'oapp-solana-contracts'));
     });
 
     it('includes subdirectories with Cargo.toml (macros/)', async () => {

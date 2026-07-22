@@ -1,0 +1,1 @@
+pub mod test_erc20_mint_burn_upgradeable;

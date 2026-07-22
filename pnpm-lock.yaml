@@ -345,6 +345,7 @@ overrides:
   '@types/react-dom': 19.2.3
   '@xmldom/xmldom': ^0.9.10
   '@xmldom/xmldom@^0.8': ^0.8.12
+  adm-zip: ^0.6.0
   axios@^0: ^0.32.0
   axios@^1: ^1.16.0
   cmdk>@types/react: 19.2.6
@@ -1022,6 +1023,27 @@ importers:
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-stellar
+
+  apps/token-app/contracts/starknet:
+    devDependencies:
+      '@layerzerolabs/build-utils-starknet':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-utils/starknet/build-utils
+      '@layerzerolabs/protocol-starknet-v2':
+        specifier: workspace:*
+        version: link:../../../../contracts/protocol/starknet
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/vm-tooling-starknet':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-starknet
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
 
   contracts/common/test-utils/evm:
     devDependencies:
@@ -4613,9 +4635,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  adm-zip@0.4.16:
-    resolution: {integrity: sha512-TFi4HBKSGfIKsK5YCkKaaFG2m4PEDyViZmEwof3MTIgzimHLto6muaHVpbrljdIvIrFZzEq/p4nafOeLcYegrg==}
-    engines: {node: '>=0.3.0'}
+  adm-zip@0.6.0:
+    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+    engines: {node: '>=14.0'}
 
   aes-js@3.0.0:
     resolution: {integrity: sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==}
@@ -11374,7 +11396,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  adm-zip@0.4.16: {}
+  adm-zip@0.6.0: {}
 
   aes-js@3.0.0: {}
 
@@ -12975,7 +12997,7 @@ snapshots:
       '@nomicfoundation/edr': 0.12.0-next.23
       '@nomicfoundation/solidity-analyzer': 0.1.2
       '@sentry/node': 5.30.0
-      adm-zip: 0.4.16
+      adm-zip: 0.6.0
       aggregate-error: 3.1.0
       ansi-escapes: 4.3.2
       boxen: 5.1.2
@@ -13024,7 +13046,7 @@ snapshots:
       '@nomicfoundation/edr': 0.12.0-next.23
       '@nomicfoundation/solidity-analyzer': 0.1.2
       '@sentry/node': 5.30.0
-      adm-zip: 0.4.16
+      adm-zip: 0.6.0
       aggregate-error: 3.1.0
       ansi-escapes: 4.3.2
       boxen: 5.1.2
