@@ -10,13 +10,6 @@ import type { WorkspaceSourceCopyOptions, WorkspaceSourceCopyResult } from './ty
 
 export const DEFAULT_SOURCE_COPY_PATTERNS = ['**/*'] as const;
 
-// TODO(#5328): This allowlist is temporary. VM-specific pruners should own build-output
-// selection, and #5328 will remove this fallback once those pruners are in place.
-const DEFAULT_SOURCE_COPY_ALLOWLIST_PATTERNS = [
-    'target/wasm32v1-none/release/*.d',
-    'target/wasm32v1-none/release/*.wasm',
-];
-
 export const DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS = [
     '!**/.git/**',
     '!**/.next/**',
@@ -31,6 +24,11 @@ export const DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS = [
     '!**/out/**',
     '!**/target/**',
     '!**/typechain-types/**',
+] as const;
+
+const DEFAULT_SOURCE_COPY_FALLBACK_PATTERNS = [
+    ...DEFAULT_SOURCE_COPY_PATTERNS,
+    ...DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
 ] as const;
 
 const getPathSegments = (relativePath: string): string[] =>
@@ -71,9 +69,7 @@ const copySourceDirectory = async (
         nodir: false,
         posix: true,
     };
-    const defaultEntries = await glob(include, { ...globOptions, ignore });
-    const allowlistedEntries = await glob([...DEFAULT_SOURCE_COPY_ALLOWLIST_PATTERNS], globOptions);
-    const entries = [...new Set([...defaultEntries, ...allowlistedEntries])];
+    const entries = await glob(include, { ...globOptions, ignore });
     const limit = pLimit(COPY_CONCURRENCY);
 
     await Promise.all(
@@ -116,6 +112,11 @@ const copySourceDirectory = async (
     );
 };
 
+/**
+ * Resolve copy patterns for one dependency package. Package-specific pruner globs are used as-is,
+ * so a pruner can copy build outputs from dirs we usually skip, such as `target`. Packages without
+ * specific globs use broader pruner globs or the default source-copy set.
+ */
 const getPackageSourceCopyPatterns = ({
     relativePath,
     prunePatterns,
@@ -128,22 +129,22 @@ const getPackageSourceCopyPatterns = ({
     const packagePatterns = packagePrunePatterns?.[relativePath];
 
     if (packagePatterns) {
-        return packagePatterns.length ? packagePatterns : DEFAULT_SOURCE_COPY_PATTERNS;
+        return packagePatterns.length ? packagePatterns : DEFAULT_SOURCE_COPY_FALLBACK_PATTERNS;
     }
     if (prunePatterns?.length) return prunePatterns;
 
-    return DEFAULT_SOURCE_COPY_PATTERNS;
+    return DEFAULT_SOURCE_COPY_FALLBACK_PATTERNS;
 };
 
 /**
- * Copy only dependency source-like files for the resolved workspace dependency graph into a
- * repo-shaped scoped workspace.
+ * Copy selected workspace dependency files into a repo-shaped scoped workspace.
  *
  * The current package itself is not copied. It is mounted from the host at the same repo-relative
  * path by the Docker executor so package-local build outputs such as `target`, `build`, and
- * `src/generated` land in the real package. Generated artifacts and caches are deliberately
- * excluded from dependency copies. Package-local node_modules directories are copied as symlinks
- * only, relying on the root `.pnpm` virtual store mount for external package contents.
+ * `src/generated` land in the real package. Dependency files come from pruner patterns when
+ * configured; otherwise we copy source-like files and skip generated artifacts/caches.
+ * Package-local node_modules directories are copied as symlinks only, relying on the root `.pnpm`
+ * virtual store mount for external package contents.
  */
 export const copyWorkspaceSources = async (
     options: WorkspaceSourceCopyOptions,
@@ -164,14 +165,15 @@ export const copyWorkspaceSources = async (
             );
         }
 
-        await copySourceDirectory(absolutePath, join(scopedRoot, relativePath), [
-            ...getPackageSourceCopyPatterns({
+        await copySourceDirectory(
+            absolutePath,
+            join(scopedRoot, relativePath),
+            getPackageSourceCopyPatterns({
                 relativePath,
                 prunePatterns,
                 packagePrunePatterns,
             }),
-            ...DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
-        ]);
+        );
     };
 
     try {

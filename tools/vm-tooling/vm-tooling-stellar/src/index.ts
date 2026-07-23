@@ -10,6 +10,8 @@ import { type ImageId, images, tools, versionCombinations } from './config';
 
 const DEFAULT_OUTPUT_DIR = '.artifacts';
 
+export { createStellarScopedWorkspacePruner } from './scoped-workspace-pruner';
+
 const context: ChainContext<ImageId> = { tools, images, versionCombinations };
 
 const collectPackageSpecs = (value: string, previous: string[]): string[] => [...previous, value];

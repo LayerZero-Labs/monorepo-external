@@ -25,9 +25,11 @@
         "test": "vitest"
     },
     "dependencies": {
+        "@layerzerolabs/common-node-utils": "workspace:*",
         "@layerzerolabs/deterministic-zip": "workspace:*",
         "@layerzerolabs/vm-tooling": "workspace:*",
         "fflate": "catalog:",
+        "p-limit": "catalog:",
         "toml": "catalog:"
     },
     "devDependencies": {

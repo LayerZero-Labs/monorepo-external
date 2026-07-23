@@ -5,7 +5,11 @@ import type {
     VersionCombination,
     VolumeMapping,
 } from '@layerzerolabs/vm-tooling';
-import { CARGO_TARGET_CACHE_PATH, DockerRegistryMirror } from '@layerzerolabs/vm-tooling';
+import {
+    CARGO_TARGET_CACHE_PATH,
+    createExcludeWorkspaceDependencySourcesPruner,
+    DockerRegistryMirror,
+} from '@layerzerolabs/vm-tooling';
 
 import { parseAnchorTomlVersion } from './utility';
 
@@ -63,12 +67,19 @@ const verifyVolumes: readonly VolumeMapping[] = [
 // crate`. Cap jobs to bound memory; see PRO-3664.
 const defaultEnv: readonly EnvironmentVariable[] = [{ name: 'CARGO_BUILD_JOBS', value: '4' }];
 
+// Solana contract builds copy workspace Rust dependencies into the current package's dependencies/
+// directory before lz-tool runs. Surfpool only reads package-local artifacts such as
+// target/base.json. The current package is bind-mounted for both cases, so no tool needs source
+// copies from other workspace packages.
+const scopedWorkspacePruner = createExcludeWorkspaceDependencySourcesPruner('solana');
+
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'anchor',
         dockerPlatform: 'linux/amd64',
         defaultVolumes: defaultVolumes,
         defaultEnv,
+        scopedWorkspacePruner,
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'anchor'),
     },
     {
@@ -76,6 +87,7 @@ export const tools: readonly [Tool, ...Tool[]] = [
         // No platform pin: the Solana CLI does not produce build artifacts.
         defaultVolumes: defaultVolumes,
         defaultEnv,
+        scopedWorkspacePruner,
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'solana'),
     },
     {
@@ -85,10 +97,12 @@ export const tools: readonly [Tool, ...Tool[]] = [
         name: 'solana-verify',
         // No platform pin: solana-verify delegates artifact builds to its own verifiable-build image.
         defaultVolumes: [...defaultVolumes, ...verifyVolumes],
+        scopedWorkspacePruner,
     },
     {
         // surfpool runtime engine; builds nothing, so no privileged mode / socket / cache volumes.
         name: 'surfpool',
+        scopedWorkspacePruner,
     },
 ];
 

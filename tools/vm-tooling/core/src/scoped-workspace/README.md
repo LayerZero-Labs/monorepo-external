@@ -21,14 +21,16 @@ as `target`, `build`, and `src/generated` are written back to the real package.
 
 1. `resolveWorkspaceDependencyGraph` finds the package that owns `cwd`.
 2. It reads `pnpm-lock.yaml` importers and follows workspace `link:` dependencies.
-3. `copyWorkspaceSources` copies source files for the workspace dependency closure into `scopedRoot`.
-4. `copyRootNodeModulesSymlinks` copies the root `node_modules` symlinks referenced by that closure.
+3. A configured pruner selects which workspace dependency sources are needed.
+4. `copyWorkspaceSources` copies the selected files into `scopedRoot`.
+5. `copyRootNodeModulesSymlinks` copies the root `node_modules` symlinks referenced by that closure.
 
 ## Source Copy Rules
 
-By default, dependency packages are copied with `DEFAULT_SOURCE_COPY_PATTERNS`, currently `['**/*']`.
-The copy always also applies `DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS`, which skips generated outputs
-and caches such as `.turbo`, `artifacts*`, `build`, `cache`, `out`, `target`, and `typechain-types`.
+By default, dependency packages are copied with the default source-copy set:
+`DEFAULT_SOURCE_COPY_PATTERNS`, currently `['**/*']`, plus
+`DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS`. The excludes skip generated outputs and caches such as
+`.turbo`, `artifacts*`, `build`, `cache`, `out`, `target`, and `typechain-types`.
 
 Symlinks are preserved as links. Files under package-local `node_modules` are not copied; dependency
 contents come from the mounted root pnpm virtual store.
@@ -43,5 +45,6 @@ plan:
 - `diagnostics` are surfaced by the tool executor.
 
 Use explicit glob patterns such as `src/**` for directory contents and `!tests/**` for exclusions.
-If no pruner is configured, or if the selected pruner pattern list is empty, the copy falls back to
-`DEFAULT_SOURCE_COPY_PATTERNS`.
+Pruner patterns are used exactly as returned; the core copy step does not append default excludes to
+non-empty pattern lists. If no pruner is configured, or if the selected pattern list is empty, the
+copy falls back to the default source-copy set.

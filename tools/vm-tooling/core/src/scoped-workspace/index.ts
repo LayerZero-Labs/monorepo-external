@@ -13,6 +13,7 @@ import type {
 import { resolveWorkspaceDependencyGraph } from './workspace-dependency-graph';
 import { copyWorkspaceSources } from './workspace-source-copy';
 
+export { createExcludeWorkspaceDependencySourcesPruner } from './exclude-workspace-dependency-sources-pruner';
 export type {
     PnpmVirtualStoreMount,
     ScopedWorkspace,
@@ -23,7 +24,10 @@ export type {
     WorkspaceDependencyEdge,
     WorkspaceDependencyGraph,
 } from './types';
-export { DEFAULT_SOURCE_COPY_PATTERNS } from './workspace-source-copy';
+export {
+    DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
+    DEFAULT_SOURCE_COPY_PATTERNS,
+} from './workspace-source-copy';
 
 const FALLBACK_DIAGNOSTIC =
     'No scoped-workspace pruner configured; using unpruned package-level source copy fallback.';

@@ -3,6 +3,8 @@ import { runCli } from '@layerzerolabs/vm-tooling';
 import * as starknetCommands from './commands/starknet';
 import { images, tools, versionCombinations } from './config';
 
+export { createStarknetScopedWorkspacePruner } from './scoped-workspace-pruner';
+
 export const main = (): Promise<void> =>
     runCli({ tools, images, versionCombinations }, (program) => {
         const extra = program.command('extra').description('Extra commands for VM tooling');

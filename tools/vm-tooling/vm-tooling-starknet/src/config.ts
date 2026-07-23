@@ -5,9 +5,14 @@ import {
     type VersionCombination,
 } from '@layerzerolabs/vm-tooling';
 
+import { createStarknetScopedWorkspacePruner } from './scoped-workspace-pruner';
+
+const scopedWorkspacePruner = createStarknetScopedWorkspacePruner();
+
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'scarb',
+        scopedWorkspacePruner,
     },
 ];
 

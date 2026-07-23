@@ -15,12 +15,13 @@ import { afterAll, describe, expect, it } from 'vitest';
 
 import {
     createScopedWorkspace,
+    DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
     DEFAULT_SOURCE_COPY_PATTERNS,
     type ScopedWorkspacePruner,
-} from './index';
-import { copyRootNodeModulesSymlinks, getPnpmVirtualStoreMount } from './node-modules';
-import { resolveWorkspaceDependencyGraph } from './workspace-dependency-graph';
-import { copyWorkspaceSources } from './workspace-source-copy';
+} from '../index';
+import { copyRootNodeModulesSymlinks, getPnpmVirtualStoreMount } from '../node-modules';
+import { resolveWorkspaceDependencyGraph } from '../workspace-dependency-graph';
+import { copyWorkspaceSources } from '../workspace-source-copy';
 
 const TMP = mkdtempSync(join(tmpdir(), 'lz-scoped-workspace-test-'));
 const GENERATED_SCOPED_ROOTS: string[] = [];
@@ -274,8 +275,6 @@ describe(copyWorkspaceSources, () => {
             'src/index.ts': 'export const dep = true',
             'dependencies/generated-crate/src/lib.rs': 'pub fn generated() {}',
             'target/deploy/program.so': 'compiled',
-            'target/wasm32v1-none/release/program.d': 'program.wasm: src/lib.rs',
-            'target/wasm32v1-none/release/program.wasm': 'compiled wasm',
             'node_modules/pkg/index.js': 'module.exports = {}',
             'dist/index.js': 'module.exports = {}',
             'artifacts/contracts/Contract.json': '{}',
@@ -308,33 +307,7 @@ describe(copyWorkspaceSources, () => {
         expect(result.copiedWorkspaceDependencies).toHaveLength(1);
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src', 'index.ts'))).toBe(true);
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'dependencies'))).toBe(false);
-        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target', 'deploy'))).toBe(false);
-        expect(
-            existsSync(
-                join(
-                    scopedRoot,
-                    'packages',
-                    'dep',
-                    'target',
-                    'wasm32v1-none',
-                    'release',
-                    'program.d',
-                ),
-            ),
-        ).toBe(true);
-        expect(
-            existsSync(
-                join(
-                    scopedRoot,
-                    'packages',
-                    'dep',
-                    'target',
-                    'wasm32v1-none',
-                    'release',
-                    'program.wasm',
-                ),
-            ),
-        ).toBe(true);
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target'))).toBe(false);
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'node_modules'))).toBe(true);
         expect(
             existsSync(join(scopedRoot, 'packages', 'dep', 'node_modules', 'pkg', 'index.js')),
@@ -403,6 +376,7 @@ describe(copyWorkspaceSources, () => {
                 '!scripts/**',
                 '!tests/**',
                 '!programs/**/tests/**',
+                ...DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
             ],
         });
         const scopedRoot = trackScopedRoot(result.scopedRoot);
@@ -567,6 +541,58 @@ describe(copyWorkspaceSources, () => {
         expect(existsSync(join(scopedRoot, 'packages', 'utility-dep', 'src', 'index.ts'))).toBe(
             true,
         );
+    });
+
+    it('copies pruner-selected build outputs under otherwise-excluded directories', async () => {
+        const repo = createRepo('workspace-source-build-output-copy');
+        const current = join(repo, 'apps', 'current');
+        const dep = join(repo, 'packages', 'dep');
+        createPackage(current, '@layerzerolabs/current');
+        createPackage(dep, '@layerzerolabs/dep', {
+            'src/index.ts': 'export const dep = true',
+            'target/wasm32v1-none/release/dep.wasm': 'wasm',
+            'target/wasm32v1-none/release/dep.d': 'deps',
+        });
+
+        const dependencyGraph = {
+            repoRoot: repo,
+            packageRoot: current,
+            packageRelativePath: 'apps/current',
+            rootNodeModulesDependencyNames: [],
+            includedWorkspaceDependencies: [
+                {
+                    name: '@layerzerolabs/dep',
+                    importerRelativePath: 'apps/current',
+                    relativePath: 'packages/dep',
+                    absolutePath: dep,
+                    version: 'link:../../packages/dep',
+                },
+            ],
+        };
+
+        const result = await copyWorkspaceSources({
+            dependencyGraph,
+            packagePrunePatterns: {
+                'packages/dep': [
+                    'target/wasm32v1-none/release/*.d',
+                    'target/wasm32v1-none/release/*.wasm',
+                ],
+            },
+        });
+        const scopedRoot = trackScopedRoot(result.scopedRoot);
+
+        const releaseDir = join(
+            scopedRoot,
+            'packages',
+            'dep',
+            'target',
+            'wasm32v1-none',
+            'release',
+        );
+        expect(existsSync(join(releaseDir, 'dep.wasm'))).toBe(true);
+        expect(existsSync(join(releaseDir, 'dep.d'))).toBe(true);
+        // Only selected files are copied; src was not selected.
+        expect(existsSync(join(scopedRoot, 'packages', 'dep', 'src'))).toBe(false);
     });
 });
 

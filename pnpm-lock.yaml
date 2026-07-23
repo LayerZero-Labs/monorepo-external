@@ -2039,9 +2039,15 @@ importers:
 
   tools/vm-tooling/vm-tooling-starknet:
     dependencies:
+      '@layerzerolabs/common-node-utils':
+        specifier: workspace:*
+        version: link:../../../packages/common/common-node-utils
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
         version: link:../core
+      p-limit:
+        specifier: 'catalog:'
+        version: 6.2.0
       zod:
         specifier: 'catalog:'
         version: 4.3.5
@@ -2070,6 +2076,9 @@ importers:
 
   tools/vm-tooling/vm-tooling-stellar:
     dependencies:
+      '@layerzerolabs/common-node-utils':
+        specifier: workspace:*
+        version: link:../../../packages/common/common-node-utils
       '@layerzerolabs/deterministic-zip':
         specifier: workspace:*
         version: link:../../vm-utils/common/deterministic-zip
@@ -2079,6 +2088,9 @@ importers:
       fflate:
         specifier: 'catalog:'
         version: 0.8.3
+      p-limit:
+        specifier: 'catalog:'
+        version: 6.2.0
       toml:
         specifier: 'catalog:'
         version: 3.0.0

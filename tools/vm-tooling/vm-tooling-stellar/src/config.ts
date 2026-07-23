@@ -6,12 +6,16 @@ import {
 } from '@layerzerolabs/vm-tooling';
 
 import { syncToolchain } from './commands/sync-toolchain';
+import { createStellarScopedWorkspacePruner } from './scoped-workspace-pruner';
+
+const scopedWorkspacePruner = createStellarScopedWorkspacePruner();
 
 export const tools: readonly [Tool, ...Tool[]] = [
     {
         name: 'stellar',
         preExecute: syncToolchain,
         dockerPlatform: 'linux/amd64',
+        scopedWorkspacePruner,
         defaultVolumes: [
             // NOTE: for configuration commands, you should never put it in your package.json#build or #test, since the config is locked for parallel builds
             // while common commands like contract build and binding generation are allowed since they are not writing to the config files
@@ -36,7 +40,7 @@ export const tools: readonly [Tool, ...Tool[]] = [
                 name: 'stellar-rustup',
                 shared: true,
             },
-            // safe as the wort case of corruption is cache miss, since it is key-based cache, concurrent writes will produce identical content
+            // safe as the worst case of corruption is cache miss, since it is key-based cache, concurrent writes will produce identical content
             {
                 type: 'host',
                 containerPath: '/cache/sccache',
