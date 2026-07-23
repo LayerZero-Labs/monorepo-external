@@ -11,11 +11,7 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
-        },
-        "./cairo/layerzero": "./layerzero",
-        "./cairo/libs/lz_utils": "./libs/lz_utils",
-        "./cairo/libs/enumerable_set": "./libs/enumerable_set",
-        "./cairo/libs/multisig": "./libs/multisig"
+        }
     },
     "main": "./dist/index.js",
     "module": "./dist/index.js",
@@ -23,12 +19,10 @@
     "scripts": {
         "build": "lz-tool scarb --release build && pnpm build:abi && pnpm build:verification && tsup",
         "build:abi": "lz-tool extra starknet build-typescript-sdk layerzero target src/generated",
-        "build:verification": " generate-starknet-verification --package layerzero --path src/generated/verification",
+        "build:verification": "generate-starknet-verification --package layerzero --path src/generated/verification",
         "clean": "rm -rf .turbo ./dist ./target ./node_modules && pnpm generated:clean",
-        "format": "lz-tool scarb fmt",
-        "format:check": "node --run format --check",
         "generated:clean": "rm -rf ./target .snfoundry_cache ./src/generated",
-        "lint": "pnpm format:check && lz-tool scarb lint --test",
+        "lint": "lz-tool scarb fmt --check && lz-tool scarb lint --test",
         "test": "lz-tool scarb test",
         "update:contracts": "tools/update_contracts.sh"
     },

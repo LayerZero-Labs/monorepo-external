@@ -19,13 +19,6 @@ packages:
   - '!**/debug_info/**'
   - '!**/src/daml/**'
   - '!**/.next/**'
-  - '!packages/ui-monorepo/**/src/**'
-  - '!packages/ui-monorepo/scan-client'
-  - '!packages/ui-monorepo/ui-aptos'
-  - '!packages/ui-monorepo/ui-price-sdk'
-  - '!packages/ui-monorepo/ui-solana'
-  - '!packages/ui-monorepo/ui-wallet-aptos'
-  - '!packages/ui-monorepo/ui-wallet-solana'
 catalogs:
   console:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
@@ -110,7 +103,7 @@ catalogs:
     js-yaml: 4.1.0
     merkletreejs: ^0.3.11
     p-limit: ^6.1.0
-    prettier: 3.5.3
+    prettier: 3.6.2
     prettier-plugin-packagejson: 2.5.19
     prettier-plugin-solidity: 2.1.0
     prettier-plugin-tailwindcss: 0.6.8
@@ -229,6 +222,7 @@ ignoredBuiltDependencies:
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
+  - '@temporalio/*'
 onlyBuiltDependencies:
   - '@swc/core'
   - bufferutil
@@ -240,3 +234,6 @@ packageExtensions:
   '@ronomon/crypto-async':
     dependencies:
       node-gyp: ^12.2.0
+  '@solana-developers/helpers':
+    dependencies:
+      '@noble/hashes': ^1.3.1

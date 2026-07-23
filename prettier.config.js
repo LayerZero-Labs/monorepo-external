@@ -19,7 +19,7 @@ const config = {
     ],
     overrides: [
         {
-            files: ['*.yaml', '*.yml'],
+            files: ['**/*.yaml', '**/*.yml'],
             options: {
                 bracketSpacing: true,
                 printWidth: 120,
@@ -29,7 +29,7 @@ const config = {
             },
         },
         {
-            files: '*.sol',
+            files: '**/*.sol',
             options: {
                 bracketSpacing: true,
                 printWidth: 120,
@@ -39,13 +39,13 @@ const config = {
             },
         },
         {
-            files: 'package.json',
+            files: '**/package.json',
             options: {
                 tabWidth: 4,
             },
         },
         {
-            files: '*.jsonc',
+            files: '**/*.jsonc',
             options: {
                 trailingComma: 'none',
             },

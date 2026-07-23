@@ -49,7 +49,6 @@
             "@ton/crypto": "3.3.0",
             "@ton/test-utils>chai": "5.3.3",
             "@ton/ton": "npm:@layerzerolabs/ton@15.1.0-rc.11",
-            "@types/compression>@types/express": "4.17.21",
             "@types/react": "19.2.6",
             "@types/react-dom": "19.2.3",
             "@xmldom/xmldom": "^0.9.10",

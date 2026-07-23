@@ -233,8 +233,8 @@ catalogs:
       specifier: ^6.1.0
       version: 6.2.0
     prettier:
-      specifier: 3.5.3
-      version: 3.5.3
+      specifier: 3.6.2
+      version: 3.6.2
     prettier-plugin-packagejson:
       specifier: 2.5.19
       version: 2.5.19
@@ -340,7 +340,6 @@ overrides:
   '@ton/crypto': 3.3.0
   '@ton/test-utils>chai': 5.3.3
   '@ton/ton': npm:@layerzerolabs/ton@15.1.0-rc.11
-  '@types/compression>@types/express': 4.17.21
   '@types/react': 19.2.6
   '@types/react-dom': 19.2.3
   '@xmldom/xmldom': ^0.9.10
@@ -417,9 +416,7 @@ overrides:
   ws@^8: ^8.21.0
   zod@^4: 4.3.5
 
-packageExtensionsChecksum: sha256-TyKREPPirmulSgKkLgUeX1jC6mLzynWQletkdP0hZLs=
-
-pnpmfileChecksum: sha256-Vn3wkrx4IUEKt0W2PRzI7hfjcYeJKyUl8A/XwsdxdUE=
+packageExtensionsChecksum: sha256-V7RyKKvNvIVv5jFVxSLAQGzqejvDTzf8QwoM9Be7NI0=
 
 importers:
 
@@ -445,16 +442,16 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
-        version: 3.5.3
+        version: 3.6.2
       prettier-plugin-packagejson:
         specifier: 'catalog:'
-        version: 2.5.19(prettier@3.5.3)
+        version: 2.5.19(prettier@3.6.2)
       prettier-plugin-solidity:
         specifier: 'catalog:'
-        version: 2.1.0(prettier@3.5.3)
+        version: 2.1.0(prettier@3.6.2)
       prettier-plugin-tailwindcss:
         specifier: 'catalog:'
-        version: 0.6.8(@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.5.3))(prettier@3.5.3)
+        version: 0.6.8(@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.6.2))(prettier@3.6.2)
       ts-node:
         specifier: 'catalog:'
         version: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@5.8.2)
@@ -689,13 +686,14 @@ importers:
         version: 6.0.1(typescript@5.8.2)
 
   apps/oft-app/contracts/starknet/oft-adapter-starknet:
+    dependencies:
+      '@layerzerolabs/protocol-starknet-v2':
+        specifier: workspace:*
+        version: link:../../../../../contracts/protocol/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
         version: link:../../../../../tools/vm-utils/starknet/build-utils
-      '@layerzerolabs/protocol-starknet-v2':
-        specifier: workspace:*
-        version: link:../../../../../contracts/protocol/starknet
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/tsup
@@ -710,13 +708,14 @@ importers:
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
 
   apps/oft-app/contracts/starknet/oft-mint-burn-starknet:
+    dependencies:
+      '@layerzerolabs/protocol-starknet-v2':
+        specifier: workspace:*
+        version: link:../../../../../contracts/protocol/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
         version: link:../../../../../tools/vm-utils/starknet/build-utils
-      '@layerzerolabs/protocol-starknet-v2':
-        specifier: workspace:*
-        version: link:../../../../../contracts/protocol/starknet
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/tsup
@@ -1025,13 +1024,14 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-stellar
 
   apps/token-app/contracts/starknet:
+    dependencies:
+      '@layerzerolabs/protocol-starknet-v2':
+        specifier: workspace:*
+        version: link:../../../../contracts/protocol/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
         version: link:../../../../tools/vm-utils/starknet/build-utils
-      '@layerzerolabs/protocol-starknet-v2':
-        specifier: workspace:*
-        version: link:../../../../contracts/protocol/starknet
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../../tooling-configs/tsup
@@ -1416,7 +1416,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
-        version: 3.5.3
+        version: 3.6.2
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
@@ -1543,7 +1543,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
-        version: 3.5.3
+        version: 3.6.2
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
@@ -2134,7 +2134,7 @@ importers:
         version: link:../../../../tooling-configs/typescript
       prettier:
         specifier: 'catalog:'
-        version: 3.5.3
+        version: 3.6.2
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.8.2)
@@ -7171,13 +7171,13 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.5.3:
-    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
     engines: {node: '>=14'}
     hasBin: true
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.8.3:
+    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -8674,7 +8674,7 @@ snapshots:
       '@codama/visitors-core': 1.4.0
       '@solana/codecs-strings': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.2)
       nunjucks: 3.2.4(chokidar@3.6.0)
-      prettier: 3.6.2
+      prettier: 3.8.3
     transitivePeerDependencies:
       - chokidar
       - fastestsmallesttextencoderdecoder
@@ -10988,7 +10988,7 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.5.3)':
+  '@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.6.2)':
     dependencies:
       '@babel/generator': 7.17.7
       '@babel/parser': 7.29.7
@@ -10996,7 +10996,7 @@ snapshots:
       '@babel/types': 7.17.0
       javascript-natural-sort: 0.7.1
       lodash: 4.18.1
-      prettier: 3.5.3
+      prettier: 3.6.2
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.24
     transitivePeerDependencies:
@@ -14364,32 +14364,32 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-packagejson@2.5.19(prettier@3.5.3):
+  prettier-plugin-packagejson@2.5.19(prettier@3.6.2):
     dependencies:
       sort-package-json: 3.4.0
       synckit: 0.11.11
     optionalDependencies:
-      prettier: 3.5.3
+      prettier: 3.6.2
 
-  prettier-plugin-solidity@2.1.0(prettier@3.5.3):
+  prettier-plugin-solidity@2.1.0(prettier@3.6.2):
     dependencies:
       '@nomicfoundation/slang': 1.2.0
       '@solidity-parser/parser': 0.20.2
-      prettier: 3.5.3
+      prettier: 3.6.2
       semver: 7.8.1
 
-  prettier-plugin-tailwindcss@0.6.8(@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.5.3))(prettier@3.5.3):
+  prettier-plugin-tailwindcss@0.6.8(@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.6.2))(prettier@3.6.2):
     dependencies:
-      prettier: 3.5.3
+      prettier: 3.6.2
     optionalDependencies:
-      '@trivago/prettier-plugin-sort-imports': 4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.5.3)
+      '@trivago/prettier-plugin-sort-imports': 4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.6.2)
 
   prettier@2.8.8:
     optional: true
 
-  prettier@3.5.3: {}
-
   prettier@3.6.2: {}
+
+  prettier@3.8.3: {}
 
   pretty-format@29.7.0:
     dependencies:

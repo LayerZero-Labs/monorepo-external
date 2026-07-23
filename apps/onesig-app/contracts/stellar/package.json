@@ -36,7 +36,7 @@
         "registry": "https://registry.npmjs.org/"
     },
     "implicitDependencies": {
-        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
-        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*"
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*"
     }
 }

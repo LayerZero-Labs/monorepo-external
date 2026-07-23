@@ -38,11 +38,11 @@
         "registry": "https://registry.npmjs.org/"
     },
     "implicitDependencies": {
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
+        "@layerzerolabs/oapp-macros-stellar-contracts": "workspace:*",
         "@layerzerolabs/oapp-stellar-contracts": "workspace:*",
         "@layerzerolabs/oft-core-stellar-contracts": "workspace:*",
-        "@layerzerolabs/protocol-stellar-v2": "workspace:*",
-        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
-        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
-        "@layerzerolabs/oapp-macros-stellar-contracts": "workspace:*"
+        "@layerzerolabs/protocol-stellar-v2": "workspace:*"
     }
 }

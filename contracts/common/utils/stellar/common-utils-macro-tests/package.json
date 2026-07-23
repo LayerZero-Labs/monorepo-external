@@ -32,7 +32,7 @@
         "@layerzerolabs/vm-tooling-stellar": "workspace:*"
     },
     "implicitDependencies": {
-        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*",
-        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*"
+        "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",
+        "@layerzerolabs/common-utils-stellar-contracts": "workspace:*"
     }
 }
