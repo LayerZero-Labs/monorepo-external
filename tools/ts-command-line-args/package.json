@@ -29,7 +29,6 @@
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@types/command-line-args": "catalog:",
         "@types/command-line-usage": "catalog:",
-        "@types/node": "catalog:",
         "@types/string-format": "catalog:",
         "tsup": "catalog:",
         "typescript": "catalog:"

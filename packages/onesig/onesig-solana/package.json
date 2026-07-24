@@ -62,7 +62,6 @@
         "@layerzerolabs/vm-tooling-solana": "workspace:*",
         "@metaplex-foundation/mpl-toolbox": "catalog:onesig-solana",
         "@metaplex-foundation/umi-bundle-defaults": "catalog:onesig-solana",
-        "@types/node": "catalog:",
         "codama": "catalog:",
         "ethers": "catalog:",
         "tsup": "catalog:",

@@ -30,7 +30,6 @@
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
-        "@types/node": "catalog:",
         "dotenv": "catalog:",
         "eslint": "catalog:",
         "prettier": "catalog:",

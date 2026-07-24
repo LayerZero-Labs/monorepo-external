@@ -1,0 +1,16 @@
+{
+    "name": "layerzero-vm-tooling-evm",
+    "private": true,
+    "dependencies": {
+        "@layerzerolabs/hardhat-tron": "3.0.134",
+        "@matterlabs/hardhat-zksync-deploy": "1.2.0",
+        "@matterlabs/hardhat-zksync-solc": "1.3.2",
+        "ethers": "6.7.1",
+        "hardhat": "2.26.3",
+        "hardhat-deploy": "0.12.4",
+        "sol-merger": "4.4.2",
+        "ts-node": "10.9.2",
+        "typescript": "5.3.3",
+        "zksync-ethers": "6.7.1"
+    }
+}

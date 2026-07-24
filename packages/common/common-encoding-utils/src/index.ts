@@ -100,7 +100,7 @@ export function stringToUint8Array(str: string): Uint8Array {
  * Throws on non-hex and on odd-length input: a dangling half-byte is always a caller bug,
  * never silently padded or truncated.
  */
-export function hexToBytes(hex: string): Uint8Array {
+export function hexToBytes(hex: string): Uint8Array<ArrayBuffer> {
     if (!isHexString(hex)) {
         // Length only, never the value (sometimes a private key).
         throw new Error(`invalid hex string (length ${hex.length})`);

@@ -29,7 +29,6 @@
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
-        "@types/node": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
         "vitest": "catalog:"

@@ -4,6 +4,7 @@
     "compilerOptions": {
         // JavaScript Language Level Configuration
         "lib": ["ES2023"],
+        "types": ["node"],
         "target": "ES2023",
         "resolveJsonModule": true,
         "allowJs": true,
