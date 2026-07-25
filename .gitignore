@@ -16,6 +16,8 @@ artifacts*/
 !migrated/offchain-monorepo/packages/contracts/lz-ton-contracts/deprecated-contracts/artifacts/**
 !packages/protocol/lz-v2-protocol-ton/deprecated-contracts/artifacts/
 !packages/protocol/lz-v2-protocol-ton/deprecated-contracts/artifacts/**
+!packages/ui/ui-bridge-oft/src/ton/artifacts/
+!packages/ui/ui-bridge-oft/src/ton/artifacts/**
 target
 out/
 cache_foundry/
