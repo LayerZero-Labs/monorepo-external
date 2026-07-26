@@ -1,3 +1,0 @@
-# Packaged / published verifiable-build artifacts and atomic-swap siblings
-# (.artifacts, .artifacts.prev, .artifacts.next-*, .artifacts/.incoming, …)
-.artifacts*

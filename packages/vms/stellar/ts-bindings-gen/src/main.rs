@@ -186,9 +186,23 @@ fn main() -> Result<()> {
         config.contracts.len()
     );
 
-    fs::create_dir_all(output_dir)?;
+    // Validate all WASM files exist before writing any outputs, so a missing
+    // contract cannot leave the output directory in a partial state.
+    let mut missing_wasm = Vec::new();
+    for entry in &config.contracts {
+        let wasm_path = wasm_base.join(format!("{}.wasm", entry.wasm_name));
+        if !wasm_path.exists() {
+            missing_wasm.push(format!(
+                "WASM file not found: {}\n   Build the contract package first with `pnpm build`.",
+                wasm_path.display()
+            ));
+        }
+    }
+    if !missing_wasm.is_empty() {
+        anyhow::bail!("{}", missing_wasm.join("\n"));
+    }
 
-    let mut generated = Vec::new();
+    fs::create_dir_all(output_dir)?;
 
     for entry in &config.contracts {
         let wasm_path = wasm_base.join(format!("{}.wasm", entry.wasm_name));
@@ -197,16 +211,6 @@ fn main() -> Result<()> {
         println!("Processing contract: {}", entry.wasm_name);
         println!("   WASM: {}", wasm_path.display());
         println!("   Output: {}", output_file.display());
-
-        if !wasm_path.exists() {
-            eprintln!("   WASM file not found: {}", wasm_path.display());
-            eprintln!(
-                "   Skipping {}. Build the contract first with:",
-                entry.wasm_name
-            );
-            eprintln!("   stellar contract build -p {}\n", entry.wasm_name);
-            continue;
-        }
 
         let wasm_bytes = fs::read(&wasm_path)?;
         println!(
@@ -227,23 +231,15 @@ fn main() -> Result<()> {
         let complete_code = format!("{}{}{}", IMPORTS_HEADER, wasm_embed, ts_code);
         fs::write(&output_file, &complete_code)?;
         println!("   Generated: {}", output_file.display());
-
-        let module_name = entry.output_name.trim_end_matches(".ts");
-        generated.push(module_name.to_string());
     }
 
     println!(
         "\nTypeScript binding generation complete! Generated {} contract(s) with embedded WASM",
-        generated.len()
+        config.contracts.len()
     );
-
-    if generated.is_empty() {
-        println!("\nTip: Build your contracts first before generating bindings.");
-    } else {
-        println!("\nGenerated files in {}:", output_dir.display());
-        for name in &generated {
-            println!("   - {}.ts", name);
-        }
+    println!("\nGenerated files in {}:", output_dir.display());
+    for entry in &config.contracts {
+        println!("   - {}", entry.output_name);
     }
 
     Ok(())
