@@ -94,11 +94,13 @@ export type OneSigInstanceSummary = {
     role: OneSigRole;
 };
 
-export type OneSigSigningConfig = {
-    seed: string;
-    threshold: number;
-    signers: string[];
-};
+export const oneSigSigningConfigSchema = z.object({
+    seed: z.string(),
+    threshold: z.number(),
+    signers: z.array(z.string()),
+});
+
+export type OneSigSigningConfig = z.infer<typeof oneSigSigningConfigSchema>;
 
 export type OneSigPerChainConfig = {
     contractAddress: string;
