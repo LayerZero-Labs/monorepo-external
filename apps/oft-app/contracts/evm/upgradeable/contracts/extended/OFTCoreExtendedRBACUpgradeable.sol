@@ -8,8 +8,12 @@ import {
     OFTReceipt,
     OFTFeeDetail
 } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
-import { IOFTExtended } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFTExtended.sol";
+import {
+    IOFTExtended,
+    OFT_EXTENDED_INTERFACE_ID
+} from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFTExtended.sol";
 import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
+import { CreditRedirectRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/credit-redirect/CreditRedirectRBACUpgradeable.sol";
 import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
 import { FeeConfigRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-config/FeeConfigRBACUpgradeable.sol";
 import { PauseByIDRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/pause-by-id/PauseByIDRBACUpgradeable.sol";
@@ -21,18 +25,19 @@ import { OFTCoreRBACUpgradeable } from "./../oft/OFTCoreRBACUpgradeable.sol";
 /**
  * @title OFTCoreExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Abstract upgradeable contract that implements the core functionality of an extended OFT token.
- * @dev Includes Fee, RateLimiter, and Pause extensions with RBAC access control.
+ * @dev Includes `CreditRedirect`, `Fee`, `RateLimiter`, and `Pause` extensions with RBAC access control.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  */
 abstract contract OFTCoreExtendedRBACUpgradeable is
     IOFTExtended,
     OFTCoreRBACUpgradeable,
+    CreditRedirectRBACUpgradeable,
     FeeConfigRBACUpgradeable,
     FeeHandlerRBACUpgradeable,
-    RateLimiterRBACUpgradeable,
-    PauseByIDRBACUpgradeable
+    PauseByIDRBACUpgradeable,
+    RateLimiterRBACUpgradeable
 {
     /// @dev Immutable address of the underlying ERC20 token.
     IERC20 internal immutable INNER_TOKEN;
@@ -87,7 +92,7 @@ abstract contract OFTCoreExtendedRBACUpgradeable is
         override(IOFT, OFTCoreBaseUpgradeable)
         returns (bytes4 interfaceId, uint64 version)
     {
-        return (type(IOFTExtended).interfaceId, 1);
+        return (OFT_EXTENDED_INTERFACE_ID, 1);
     }
 
     /**

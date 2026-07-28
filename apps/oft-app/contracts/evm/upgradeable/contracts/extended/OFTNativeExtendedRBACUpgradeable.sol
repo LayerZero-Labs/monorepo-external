@@ -15,7 +15,7 @@ import { OFTCoreExtendedRBACUpgradeable } from "./OFTCoreExtendedRBACUpgradeable
 /**
  * @title OFTNativeExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT native adapter with toggleable pause, fee, and rate limit functionality.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  */
@@ -116,7 +116,7 @@ contract OFTNativeExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable {
     }
 
     /**
-     * @dev Override to apply rate limit.
+     * @dev Override to apply rate limit and credit redirect.
      * @inheritdoc OFTCoreBaseUpgradeable
      */
     function _credit(
@@ -124,17 +124,22 @@ contract OFTNativeExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable {
         uint256 _amountLD,
         uint32 _srcEid
     ) internal virtual override returns (uint256 amountReceivedLD) {
-        /// @dev We assume `_amountLD` is equal to `amountReceivedLD`.
+        /// @dev Apply rate limit.
         _inflow(_srcEid, _to, _amountLD);
 
+        /// @dev Redirect the credit to the escrow if the recipient is not allowlisted.
+        address creditTo = _redirectCredit(_to, _amountLD);
+
         /// @dev Transfer tokens to the recipient.
-        (bool success, bytes memory data) = payable(_to).call{ value: _amountLD }("");
+        (bool success, bytes memory data) = payable(creditTo).call{ value: _amountLD }("");
         if (!success) {
-            revert CreditFailed(_to, _amountLD, data);
+            revert CreditFailed(creditTo, _amountLD, data);
         }
 
+        /// @dev Report `0` when the credit did not land at `_to` so compose / `OFTReceived`
+        ///      cannot be treated as proof of payment to the intended recipient.
         /// @dev In the case of a non-default OFT adapter, `_amountLD` might not be equal to `amountReceivedLD`.
-        return _amountLD;
+        return _to == creditTo ? _amountLD : 0;
     }
 
     /**

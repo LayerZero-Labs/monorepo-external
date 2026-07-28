@@ -8,7 +8,7 @@ import { OFTBurnMintExtendedRBACUpgradeable } from "./OFTBurnMintExtendedRBACUpg
 /**
  * @title OFTBurnSelfMintExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT burn-mint adapter with toggleable pause, fee, and rate limit functionality.
  *         Supports dynamic mint/burn function selectors, assuming that the burn operation happens in 2 steps:
  *         - First, the OFT transfers the tokens to itself.

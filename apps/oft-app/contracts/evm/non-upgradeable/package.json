@@ -7,14 +7,15 @@
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron",
         "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
-        "compile:evm": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js",
-        "compile:tron": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network tron-mainnet",
-        "compile:zksync": "pnpm lz-tool hardhat compile --config /hardhat/hardhat.default.config.js --network zksync-mainnet",
+        "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.js",
+        "compile:tron": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network tron-mainnet",
+        "compile:zksync": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network zksync-mainnet",
         "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
         "test": "pnpm lz-tool forge test"
     },
     "devDependencies": {
+        "@layerzerolabs/hardhat-tron": "catalog:",
         "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
         "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
         "@layerzerolabs/lz-evm-v1-0.7": "catalog:",
@@ -24,9 +25,11 @@
         "@layerzerolabs/toolbox-foundry": "catalog:",
         "@layerzerolabs/utils-evm-contracts": "workspace:*",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@matterlabs/hardhat-zksync-solc": "catalog:",
         "@openzeppelin/contracts": "catalog:",
         "@openzeppelin/contracts-upgradeable": "catalog:",
         "ethers": "catalog:",
+        "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {

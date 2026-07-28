@@ -1,43 +1,33 @@
 {
-    "name": "@layerzerolabs/oft-upgradeable-evm-contracts",
+    "name": "@layerzerolabs/proxy-v5-6-evm-contracts",
     "version": "0.0.0",
     "private": false,
-    "description": "LayerZero Labs reference EVM upgradeable OFT implementation",
+    "description": "",
     "license": "MIT",
     "scripts": {
-        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron",
+        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten:all",
         "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
         "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.js",
         "compile:tron": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network tron-mainnet",
         "compile:zksync": "pnpm lz-tool hardhat compile --config ./hardhat.config.js --network zksync-mainnet",
+        "flatten:all": "mkdir -p ./artifacts-flattened-contracts/contracts && pnpm flatten:proxyadmin2step && pnpm flatten:transparentupgradeableproxy2step",
+        "flatten:proxyadmin2step": "pnpm exec lz-tool -e sol_merger.sh hardhat ./contracts/ProxyAdmin2Step.sol ./artifacts-flattened-contracts/contracts/ProxyAdmin2Step.flattened.sol",
+        "flatten:transparentupgradeableproxy2step": "pnpm exec lz-tool -e sol_merger.sh hardhat ./contracts/TransparentUpgradeableProxy2Step.sol ./artifacts-flattened-contracts/contracts/TransparentUpgradeableProxy2Step.flattened.sol",
         "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
         "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
         "test": "pnpm lz-tool forge test"
     },
     "devDependencies": {
         "@layerzerolabs/hardhat-tron": "catalog:",
-        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
-        "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
-        "@layerzerolabs/lz-evm-v1-0.7": "catalog:",
-        "@layerzerolabs/oapp-evm-contracts": "workspace:*",
-        "@layerzerolabs/oapp-upgradeable-evm-contracts": "workspace:*",
-        "@layerzerolabs/oft-evm-contracts": "workspace:*",
         "@layerzerolabs/solhint-configuration": "workspace:*",
-        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
-        "@layerzerolabs/test-utils-evm-contracts": "workspace:*",
         "@layerzerolabs/toolbox-foundry": "catalog:",
-        "@layerzerolabs/utils-evm-contracts": "workspace:*",
-        "@layerzerolabs/utils-upgradeable-evm-contracts": "workspace:*",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
         "@matterlabs/hardhat-zksync-solc": "catalog:",
-        "@openzeppelin/contracts": "catalog:",
-        "@openzeppelin/contracts-upgradeable": "catalog:",
-        "ethers": "catalog:",
+        "@openzeppelin/contracts": "catalog:proxy-v5-6",
         "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {
-        "access": "public",
-        "registry": "https://registry.npmjs.org/"
+        "access": "restricted"
     }
 }

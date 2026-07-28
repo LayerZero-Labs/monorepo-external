@@ -58,8 +58,8 @@ catalogs:
     '@nomicfoundation/hardhat-chai-matchers': ^1.0.6
     '@nomicfoundation/hardhat-ethers': ^3.0.5
     '@nomiclabs/hardhat-ethers': ^2.2.3
-    '@openzeppelin/contracts': '>=5.0.2 <5.5.0'
-    '@openzeppelin/contracts-upgradeable': '>=5.0.2 <5.5.0'
+    '@openzeppelin/contracts': ^5.0.2
+    '@openzeppelin/contracts-upgradeable': ^5.0.2
     '@solana/web3.js': 1.98.4
     '@stellar/stellar-sdk': ^16.0.1
     '@types/chai': ^4.3.16

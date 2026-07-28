@@ -9,7 +9,7 @@ import { OFTCoreExtendedRBACUpgradeable } from "./OFTCoreExtendedRBACUpgradeable
 /**
  * @title OFTLockUnlockExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT lock-unlock adapter with toggleable pause, fee, and rate limit functionality.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  */
@@ -74,7 +74,7 @@ contract OFTLockUnlockExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable 
     }
 
     /**
-     * @dev Override to apply rate limit.
+     * @dev Override to apply rate limit and credit redirect.
      * @inheritdoc OFTCoreBaseUpgradeable
      */
     function _credit(
@@ -82,14 +82,21 @@ contract OFTLockUnlockExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable 
         uint256 _amountLD,
         uint32 _srcEid
     ) internal virtual override returns (uint256 amountReceivedLD) {
-        /// @dev Most ERC20 implementations do not support transferring to `address(0x0)`.
-        if (_to == address(0)) _to = address(0xdead);
-
+        /// @dev Apply rate limit.
         _inflow(_srcEid, _to, _amountLD);
 
+        /// @dev Redirect the credit to the escrow if the recipient is not allowlisted.
+        address creditTo = _redirectCredit(_to, _amountLD);
+
+        /// @dev Most ERC20 implementations do not support transferring to `address(0x0)`.
+        if (creditTo == address(0)) creditTo = address(0xdead);
+
         /// @dev Unlock the tokens and transfer to the recipient.
-        INNER_TOKEN.safeTransfer(_to, _amountLD);
+        INNER_TOKEN.safeTransfer(creditTo, _amountLD);
+
+        /// @dev Report `0` when the credit did not land at `_to` so compose / `OFTReceived`
+        ///      cannot be treated as proof of payment to the intended recipient.
         /// @dev In the case of a non-default OFT adapter, `_amountLD` might not be equal to `amountReceivedLD`.
-        return _amountLD;
+        return _to == creditTo ? _amountLD : 0;
     }
 }

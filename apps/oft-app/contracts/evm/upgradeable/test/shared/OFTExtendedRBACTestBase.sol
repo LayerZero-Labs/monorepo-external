@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
+import { IMessagingChannel } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/IMessagingChannel.sol";
+import { IMessagingComposer } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/IMessagingComposer.sol";
 import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
+import { Origin } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
 import {
     IOFT,
     SendParam,
@@ -10,10 +13,16 @@ import {
     OFTReceipt,
     MessagingFee
 } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFT_EXTENDED_INTERFACE_ID } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFTExtended.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
+import { EndpointV2Mock } from "@layerzerolabs/test-devtools-evm-foundry/contracts/mocks/EndpointV2Mock.sol";
 import { TestHelperOz5 } from "@layerzerolabs/test-devtools-evm-foundry/contracts/TestHelperOz5.sol";
+import { MockComposer } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockComposer.sol";
 import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/RejectingMsgInspector.sol";
+import { ICreditRedirect } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/ICreditRedirect.sol";
 import { IPauseByID } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IPauseByID.sol";
 import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
+import { CreditRedirectAllowlistMock } from "@layerzerolabs/utils-upgradeable-evm-contracts/test/CreditRedirectBaseUpgradeable.t.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import { OFTCoreExtendedRBACUpgradeable } from "./../../contracts/extended/OFTCoreExtendedRBACUpgradeable.sol";
@@ -44,8 +53,14 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
     address admin = makeAddr("admin");
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
+    address charlie = makeAddr("charlie");
+    address dave = makeAddr("dave");
 
     uint32 constant DST_EID = 2;
+    bytes32 internal constant MSG_CHANNEL_SENDER = bytes32(uint256(uint160(address(0xBEEF))));
+    bytes32 internal constant MSG_CHANNEL_GUID = keccak256("guid");
+    bytes32 internal constant MSG_CHANNEL_PAYLOAD_HASH = keccak256("payload");
+    bytes internal constant MSG_CHANNEL_MESSAGE = hex"01";
     uint16 constant BPS_DENOMINATOR = 10_000;
     uint16 constant FEE_BPS = 1_000; // 10%
 
@@ -162,6 +177,15 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
                 inboundWindow: _inboundWindow
             })
         });
+    }
+
+    // ============ Shared Tests: oftVersion ============
+
+    function test_oftVersion() public view {
+        (bytes4 interfaceId, uint64 version) = _adapter().oftVersion();
+        assertEq(interfaceId, OFT_EXTENDED_INTERFACE_ID);
+        assertEq(interfaceId, bytes4(0x06fbb406));
+        assertEq(version, 1);
     }
 
     // ============ Shared Tests: quoteOFT ============
@@ -486,6 +510,148 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         assertEq(_readBalance(alice) - balanceBefore, _amount);
     }
 
+    // ============ Shared Tests: Credit Redirect ============
+
+    function test_credit_Redirect_NotAllowlisted() public {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        vm.startPrank(admin);
+        _adapter().setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: bob })
+        );
+        vm.stopPrank();
+
+        _fundAdapterForCredit(1 ether);
+
+        uint256 escrowBefore = _readBalance(bob);
+        uint256 recipientBefore = _readBalance(alice);
+
+        vm.expectEmit(true, true, true, true, address(_adapter()));
+        emit ICreditRedirect.CreditRedirected(alice, bob, 1 ether);
+        uint256 received = _harness().credit(alice, 1 ether, DST_EID);
+
+        assertEq(received, 0);
+        assertEq(_readBalance(bob) - escrowBefore, 1 ether);
+        assertEq(_readBalance(alice), recipientBefore);
+    }
+
+    function test_credit_NoRedirect_Allowlisted() public {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        allowlist.setAllowlisted(alice, true);
+        vm.startPrank(admin);
+        _adapter().setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: bob })
+        );
+        vm.stopPrank();
+
+        _fundAdapterForCredit(1 ether);
+
+        uint256 balanceBefore = _readBalance(alice);
+        uint256 received = _harness().credit(alice, 1 ether, DST_EID);
+
+        assertEq(received, 1 ether);
+        assertEq(_readBalance(alice) - balanceBefore, 1 ether);
+    }
+
+    function test_credit_NoRedirect_ConfigUnset() public {
+        _fundAdapterForCredit(1 ether);
+
+        uint256 balanceBefore = _readBalance(alice);
+        uint256 received = _harness().credit(alice, 1 ether, DST_EID);
+
+        assertEq(received, 1 ether);
+        assertEq(_readBalance(alice) - balanceBefore, 1 ether);
+    }
+
+    function test_lzReceive_Redirect_WithCompose() public {
+        MockComposer composer = new MockComposer();
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        vm.startPrank(admin);
+        _adapter().setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: bob })
+        );
+        vm.stopPrank();
+
+        _fundAdapterForCredit(1 ether);
+
+        bytes32 guid = bytes32(uint256(1));
+        uint64 nonce = 1;
+        bytes memory composePayload = hex"01";
+        bytes memory message = abi.encodePacked(
+            bytes32(uint256(uint160(address(composer)))),
+            uint64(1 ether / 1e12),
+            bytes32(uint256(uint160(alice))),
+            composePayload
+        );
+        bytes memory expectedComposeMsg = OFTComposeMsgCodec.encode(
+            nonce,
+            DST_EID,
+            0,
+            abi.encodePacked(bytes32(uint256(uint160(alice))), composePayload)
+        );
+
+        uint256 escrowBefore = _readBalance(bob);
+        uint256 composerBefore = _readBalance(address(composer));
+
+        vm.expectEmit(true, true, true, true, address(_adapter()));
+        emit ICreditRedirect.CreditRedirected(address(composer), bob, 1 ether);
+        vm.expectEmit(true, true, true, true, endpoint);
+        emit IMessagingComposer.ComposeSent(address(_adapter()), address(composer), guid, 0, expectedComposeMsg);
+        vm.expectEmit(true, true, true, true, address(_adapter()));
+        emit IOFT.OFTReceived(guid, DST_EID, address(composer), 0);
+
+        vm.prank(endpoint);
+        _adapter().lzReceive(
+            Origin({ srcEid: DST_EID, sender: bytes32(uint256(1)), nonce: nonce }),
+            guid,
+            message,
+            address(0),
+            bytes("")
+        );
+
+        assertEq(_readBalance(bob) - escrowBefore, 1 ether);
+        assertEq(_readBalance(address(composer)), composerBefore);
+    }
+
+    function test_credit_Redirect_RateLimitUsesOriginalRecipient() public {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = IRateLimiter.SetRateLimitConfigParam({
+            id: DST_EID,
+            config: IRateLimiter.RateLimitConfig({
+                overrideDefaultConfig: true,
+                outboundEnabled: false,
+                inboundEnabled: true,
+                netAccountingEnabled: false,
+                addressExemptionEnabled: true,
+                outboundLimit: 0,
+                inboundLimit: 1 ether,
+                outboundWindow: 0,
+                inboundWindow: 100
+            })
+        });
+
+        IRateLimiter.SetRateLimitAddressExemptionParam[]
+            memory exemptions = new IRateLimiter.SetRateLimitAddressExemptionParam[](1);
+        exemptions[0] = IRateLimiter.SetRateLimitAddressExemptionParam({ user: bob, isExempt: true });
+
+        vm.startPrank(admin);
+        _adapter().setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: bob })
+        );
+        _adapter().setRateLimitConfigs(configs);
+        _adapter().setRateLimitAddressExemptions(exemptions);
+        vm.stopPrank();
+
+        _fundAdapterForCredit(3 ether);
+
+        /// @dev Escrow (`bob`) is exempt; inflow must still key on original `alice` or this would skip limits.
+        _harness().credit(alice, 1 ether, DST_EID);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1 ether));
+        _harness().credit(alice, 1 ether, DST_EID);
+    }
+
     // ============ Shared Tests: Slippage ============
 
     function test_debit_Revert_SlippageExceeded() public {
@@ -579,5 +745,189 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         assertEq(sent, expectedSent);
         assertEq(received, expectedReceived);
         assertEq(_readBalance(admin), sent - received);
+    }
+
+    // ============ Shared Tests: Messaging Channel ============
+
+    function _origin(uint64 _nonce) internal pure returns (Origin memory origin) {
+        return Origin({ srcEid: DST_EID, sender: MSG_CHANNEL_SENDER, nonce: _nonce });
+    }
+
+    function _verify(uint64 _nonce, bytes32 _payloadHash) internal {
+        vm.prank(admin);
+        _adapter().setPeer(DST_EID, MSG_CHANNEL_SENDER);
+        vm.prank(endpointSetup.receiveLibs[0]);
+        EndpointV2Mock(endpoint).verify(_origin(_nonce), address(_adapter()), _payloadHash);
+    }
+
+    function _grantMessagingChannelRoles() internal {
+        vm.startPrank(admin);
+        _adapter().grantRole(_adapter().MESSAGING_CHANNEL_MANAGER_ROLE(), admin);
+        _adapter().grantRole(_adapter().MESSAGING_CHANNEL_MANAGER_ROLE(), charlie);
+        _adapter().grantRole(_adapter().MESSAGE_NILIFIER_ROLE(), admin);
+        _adapter().grantRole(_adapter().MESSAGE_NILIFIER_ROLE(), dave);
+        vm.stopPrank();
+    }
+
+    function test_clear() public {
+        bytes32 payloadHash = keccak256(abi.encodePacked(MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE));
+        _verify(1, payloadHash);
+        _grantMessagingChannelRoles();
+
+        vm.prank(admin);
+        _adapter().clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+
+        assertEq(
+            EndpointV2Mock(endpoint).inboundPayloadHash(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER, 1),
+            bytes32(0)
+        );
+        assertEq(EndpointV2Mock(endpoint).lazyInboundNonce(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER), 1);
+    }
+
+    function test_clear_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                _adapter().MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        _adapter().clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+    }
+
+    function test_clear_Revert_NilifierUnauthorized() public {
+        _grantMessagingChannelRoles();
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                dave,
+                _adapter().MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(dave);
+        _adapter().clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+    }
+
+    function test_skip() public {
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoint);
+        emit IMessagingChannel.InboundNonceSkipped(DST_EID, MSG_CHANNEL_SENDER, address(_adapter()), 1);
+
+        vm.prank(admin);
+        _adapter().skip(DST_EID, MSG_CHANNEL_SENDER, 1);
+
+        assertEq(EndpointV2Mock(endpoint).lazyInboundNonce(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER), 1);
+    }
+
+    function test_skip_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                _adapter().MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        _adapter().skip(DST_EID, MSG_CHANNEL_SENDER, 1);
+    }
+
+    function test_burn() public {
+        _verify(1, MSG_CHANNEL_PAYLOAD_HASH);
+        _grantMessagingChannelRoles();
+
+        vm.startPrank(admin);
+        _adapter().skip(DST_EID, MSG_CHANNEL_SENDER, 2);
+
+        vm.expectEmit(true, true, true, true, endpoint);
+        emit IMessagingChannel.PacketBurnt(
+            DST_EID,
+            MSG_CHANNEL_SENDER,
+            address(_adapter()),
+            1,
+            MSG_CHANNEL_PAYLOAD_HASH
+        );
+        _adapter().burn(DST_EID, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+        vm.stopPrank();
+
+        assertEq(
+            EndpointV2Mock(endpoint).inboundPayloadHash(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER, 1),
+            bytes32(0)
+        );
+    }
+
+    function test_burn_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                _adapter().MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        _adapter().burn(DST_EID, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+    }
+
+    function test_nilify() public {
+        _verify(1, MSG_CHANNEL_PAYLOAD_HASH);
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoint);
+        emit IMessagingChannel.PacketNilified(
+            DST_EID,
+            MSG_CHANNEL_SENDER,
+            address(_adapter()),
+            1,
+            MSG_CHANNEL_PAYLOAD_HASH
+        );
+
+        vm.prank(admin);
+        _adapter().nilify(DST_EID, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+
+        assertEq(
+            EndpointV2Mock(endpoint).inboundPayloadHash(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER, 1),
+            bytes32(type(uint256).max)
+        );
+    }
+
+    function test_nilify_Unverified() public {
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoint);
+        emit IMessagingChannel.PacketNilified(DST_EID, MSG_CHANNEL_SENDER, address(_adapter()), 1, bytes32(0));
+
+        vm.prank(admin);
+        _adapter().nilify(DST_EID, MSG_CHANNEL_SENDER, 1, bytes32(0));
+
+        assertEq(
+            EndpointV2Mock(endpoint).inboundPayloadHash(address(_adapter()), DST_EID, MSG_CHANNEL_SENDER, 1),
+            bytes32(type(uint256).max)
+        );
+    }
+
+    function test_nilify_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                _adapter().MESSAGE_NILIFIER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        _adapter().nilify(DST_EID, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+    }
+
+    function test_nilify_Revert_ManagerUnauthorized() public {
+        _grantMessagingChannelRoles();
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                charlie,
+                _adapter().MESSAGE_NILIFIER_ROLE()
+            )
+        );
+        vm.prank(charlie);
+        _adapter().nilify(DST_EID, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
     }
 }

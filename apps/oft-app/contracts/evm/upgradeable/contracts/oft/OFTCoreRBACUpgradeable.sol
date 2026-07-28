@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
+import { OAppMessagingChannelRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/messaging-channel/OAppMessagingChannelRBACUpgradeable.sol";
 import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
 import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppCoreRBACUpgradeable.sol";
 import { OAppOptionsType3RBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/options-type-3/OAppOptionsType3RBACUpgradeable.sol";
@@ -10,7 +11,7 @@ import { OFTCoreBaseUpgradeable } from "./OFTCoreBaseUpgradeable.sol";
 /**
  * @title OFTCoreRBACUpgradeable
  * @author LayerZero Labs
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Abstract upgradeable contract for the OmniChain Fungible Token (OFT) with RBAC access control.
  * @dev Inherits `OFTCoreBaseUpgradeable` and adds RBAC extensions for access-controlled configuration.
  * @dev Does not initialize `AccessControl2StepUpgradeable`. Inheriting contracts must call `__AccessControl2Step_init`
@@ -18,6 +19,7 @@ import { OFTCoreBaseUpgradeable } from "./OFTCoreBaseUpgradeable.sol";
  */
 abstract contract OFTCoreRBACUpgradeable is
     OFTCoreBaseUpgradeable,
+    OAppMessagingChannelRBACUpgradeable,
     OAppCoreRBACUpgradeable,
     OAppOptionsType3RBACUpgradeable,
     OAppMsgInspectionRBACUpgradeable

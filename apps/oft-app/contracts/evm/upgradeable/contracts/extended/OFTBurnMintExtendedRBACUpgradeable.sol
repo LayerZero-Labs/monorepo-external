@@ -9,14 +9,15 @@ import { OFTCoreExtendedRBACUpgradeable } from "./OFTCoreExtendedRBACUpgradeable
 /**
  * @title OFTBurnMintExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT burn-mint adapter with toggleable pause, fee, and rate limit functionality.
  *         Supports dynamic mint/burn function selectors and configurable approval requirements.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  * @dev Burner-minter configurations supported:
  *      - Any mint function if it has `(address,uint256)` parameters.
  *      - Any burn function if it has `(address,uint256)` parameters.
- *      - Non-privileged burn functions, by burning through ERC20 approvals of the OFT contract with `(address,uint256)` parameters.
+ *      - Non-privileged burn functions, by burning through ERC20 approvals of the OFT contract with `(address,uint256)`
+ *        parameters.
  *      - Examples:
  *        - `mint(address,uint256)`, `burn(address,uint256)`:
  *          - `_mintSelector`: `0x40c10f19`
@@ -109,7 +110,7 @@ contract OFTBurnMintExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable {
     }
 
     /**
-     * @dev Override to apply rate limit.
+     * @dev Override to apply rate limit and credit redirect.
      * @inheritdoc OFTCoreBaseUpgradeable
      */
     function _credit(
@@ -117,17 +118,22 @@ contract OFTBurnMintExtendedRBACUpgradeable is OFTCoreExtendedRBACUpgradeable {
         uint256 _amountLD,
         uint32 _srcEid
     ) internal virtual override returns (uint256 amountReceivedLD) {
-        /// @dev Most ERC20 implementations do not support minting to `address(0x0)`.
-        if (_to == address(0)) _to = address(0xdead);
-
         /// @dev Apply rate limit.
         _inflow(_srcEid, _to, _amountLD);
 
-        /// @dev Mint the tokens to the recipient.
-        _mint(_to, _amountLD);
+        /// @dev Redirect the credit to the escrow if the recipient is not allowlisted.
+        address creditTo = _redirectCredit(_to, _amountLD);
 
+        /// @dev Most ERC20 implementations do not support minting to `address(0x0)`.
+        if (creditTo == address(0)) creditTo = address(0xdead);
+
+        /// @dev Mint the tokens to the recipient.
+        _mint(creditTo, _amountLD);
+
+        /// @dev Report `0` when the credit did not land at `_to` so compose / `OFTReceived`
+        ///      cannot be treated as proof of payment to the intended recipient.
         /// @dev In the case of a non-default OFT adapter, `_amountLD` might not be equal to `amountReceivedLD`.
-        return _amountLD;
+        return _to == creditTo ? _amountLD : 0;
     }
 
     /**
