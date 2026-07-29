@@ -15,13 +15,13 @@ import {
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { INexus } from "./interfaces/INexus.sol";
-import { INexusOFT } from "./interfaces/INexusOFT.sol";
+import { INexusOFT, NEXUS_OFT_INTERFACE_ID } from "./interfaces/INexusOFT.sol";
 import { IOFTRegistry } from "./interfaces/IOFTRegistry.sol";
 
 /**
  * @title NexusOFT
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice OFT contract that forwards cross-chain operations to the Nexus hub.
  * @dev This contract is stateless and acts as a proxy between users and the Nexus contract.
  * @dev Users interact with this contract using the standard IOFT interface.
@@ -87,7 +87,7 @@ contract NexusOFT is INexusOFT {
      * @inheritdoc IOFT
      */
     function oftVersion() public pure virtual returns (bytes4 interfaceId, uint64 version) {
-        return (type(INexusOFT).interfaceId, 1);
+        return (NEXUS_OFT_INTERFACE_ID, 1);
     }
 
     /**

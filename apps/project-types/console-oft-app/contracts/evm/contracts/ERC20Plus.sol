@@ -14,7 +14,7 @@ import { IERC20Plus } from "./interfaces/IERC20Plus.sol";
 /**
  * @title ERC20Plus
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable ERC20 token with burn-mint interface, permit, pause, toggleable allowlist, and fund recovery.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  */
@@ -53,12 +53,14 @@ contract ERC20Plus is IERC20Plus, ERC20PermitUpgradeable, AllowlistRBACUpgradeab
 
     /**
      * @notice Mints tokens to address.
-     * @dev It does not revert if the recipient is not allowlisted, as funds cannot be debited in that state.
      * @param _to Address to mint tokens to
      * @param _amount Amount of tokens to mint
      * @return success Always returns true
      */
-    function mint(address _to, uint256 _amount) public virtual onlyRole(MINTER_ROLE) returns (bool success) {
+    function mint(
+        address _to,
+        uint256 _amount
+    ) public virtual onlyRole(MINTER_ROLE) whenNotPaused onlyAllowlisted(_to) returns (bool success) {
         _mint(_to, _amount);
         return true;
     }

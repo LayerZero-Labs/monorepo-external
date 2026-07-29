@@ -247,6 +247,45 @@ contract ERC20PlusTest is Test {
         proxy.mint(bob, 1000);
     }
 
+    function test_mint_Revert_BlacklistedTo() public {
+        proxy.setAllowlistMode(IAllowlist.AllowlistMode.Blacklist);
+
+        IAllowlist.SetAllowlistParam[] memory params = new IAllowlist.SetAllowlistParam[](1);
+        params[0] = IAllowlist.SetAllowlistParam(bob, true);
+        proxy.setBlacklisted(params);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IAllowlist.NotAllowlisted.selector, bob, IAllowlist.AllowlistMode.Blacklist)
+        );
+        proxy.mint(bob, 1000);
+    }
+
+    function test_mint_Revert_NotWhitelistedTo() public {
+        proxy.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IAllowlist.NotAllowlisted.selector, bob, IAllowlist.AllowlistMode.Whitelist)
+        );
+        proxy.mint(bob, 1000);
+    }
+
+    function test_mint_Success_WhitelistedTo() public {
+        proxy.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+
+        IAllowlist.SetAllowlistParam[] memory params = new IAllowlist.SetAllowlistParam[](1);
+        params[0] = IAllowlist.SetAllowlistParam(bob, true);
+        proxy.setWhitelisted(params);
+
+        vm.expectEmit(true, true, true, true, address(proxy));
+        emit IERC20.Transfer(address(0), bob, 1000);
+
+        bool success = proxy.mint(bob, 1000);
+
+        assertTrue(success);
+        assertEq(proxy.balanceOf(bob), 1000);
+        assertEq(proxy.totalSupply(), 1000);
+    }
+
     // ============ Burn ============
 
     function test_burn_Success() public {
@@ -692,16 +731,11 @@ contract ERC20PlusTest is Test {
         assertEq(proxy.balanceOf(charlie), 100);
     }
 
-    function test_mint_Success_WhenPaused() public {
+    function test_mint_Revert_Paused() public {
         proxy.pause();
 
-        vm.expectEmit(true, true, true, true, address(proxy));
-        emit IERC20.Transfer(address(0), bob, 1000);
-
-        bool success = proxy.mint(bob, 1000);
-
-        assertTrue(success);
-        assertEq(proxy.balanceOf(bob), 1000);
+        vm.expectRevert(abi.encodeWithSelector(IPause.Paused.selector));
+        proxy.mint(bob, 1000);
     }
 
     function test_burn_Revert_Paused() public {

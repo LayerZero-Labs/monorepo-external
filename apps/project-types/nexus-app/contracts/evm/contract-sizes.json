@@ -1,54 +1,54 @@
 {
     "Nexus": {
         "evm": {
-            "runtimeSize": 23470,
-            "initcodeSize": 24080
+            "runtimeSize": 24066,
+            "initcodeSize": 24695
         },
         "tron": {
-            "runtimeSize": 23111,
-            "initcodeSize": 23699
+            "runtimeSize": 23759,
+            "initcodeSize": 24370
         },
         "zksync": {
-            "runtimeSize": 64672,
-            "initcodeSize": 64672
+            "runtimeSize": 76448,
+            "initcodeSize": 76448
         }
     },
     "NexusAlt": {
         "evm": {
-            "runtimeSize": 23406,
-            "initcodeSize": 24205
+            "runtimeSize": 24003,
+            "initcodeSize": 24817
         },
         "tron": {
-            "runtimeSize": 23045,
-            "initcodeSize": 23834
+            "runtimeSize": 23692,
+            "initcodeSize": 24498
         },
         "zksync": {
-            "runtimeSize": 65312,
-            "initcodeSize": 65312
+            "runtimeSize": 77152,
+            "initcodeSize": 77152
         }
     },
     "NexusERC20": {
         "evm": {
-            "runtimeSize": 16829,
-            "initcodeSize": 17150
+            "runtimeSize": 16475,
+            "initcodeSize": 16791
         },
         "tron": {
-            "runtimeSize": 16253,
-            "initcodeSize": 16539
+            "runtimeSize": 15873,
+            "initcodeSize": 16156
         },
         "zksync": {
-            "runtimeSize": 39392,
-            "initcodeSize": 39392
+            "runtimeSize": 40288,
+            "initcodeSize": 40288
         }
     },
     "NexusERC20Guard": {
         "evm": {
-            "runtimeSize": 13846,
-            "initcodeSize": 14062
+            "runtimeSize": 13521,
+            "initcodeSize": 13734
         },
         "tron": {
-            "runtimeSize": 12195,
-            "initcodeSize": 12386
+            "runtimeSize": 11752,
+            "initcodeSize": 11942
         },
         "zksync": {
             "runtimeSize": 30432,
@@ -57,12 +57,12 @@
     },
     "NexusFeeConfigModule": {
         "evm": {
-            "runtimeSize": 5228,
-            "initcodeSize": 5584
+            "runtimeSize": 5119,
+            "initcodeSize": 5468
         },
         "tron": {
-            "runtimeSize": 4587,
-            "initcodeSize": 4907
+            "runtimeSize": 4317,
+            "initcodeSize": 4634
         },
         "zksync": {
             "runtimeSize": 11872,
@@ -71,12 +71,12 @@
     },
     "NexusMsgCodec": {
         "evm": {
-            "runtimeSize": 58,
-            "initcodeSize": 87
+            "runtimeSize": 57,
+            "initcodeSize": 85
         },
         "tron": {
-            "runtimeSize": 58,
-            "initcodeSize": 87
+            "runtimeSize": 57,
+            "initcodeSize": 85
         },
         "zksync": {
             "runtimeSize": 352,
@@ -85,40 +85,40 @@
     },
     "NexusOFT": {
         "evm": {
-            "runtimeSize": 4618,
-            "initcodeSize": 5047
+            "runtimeSize": 4438,
+            "initcodeSize": 4853
         },
         "tron": {
-            "runtimeSize": 4573,
-            "initcodeSize": 5022
+            "runtimeSize": 4380,
+            "initcodeSize": 4822
         },
         "zksync": {
-            "runtimeSize": 19936,
-            "initcodeSize": 19936
+            "runtimeSize": 20384,
+            "initcodeSize": 20384
         }
     },
     "NexusOFTAlt": {
         "evm": {
-            "runtimeSize": 4919,
-            "initcodeSize": 5514
+            "runtimeSize": 4716,
+            "initcodeSize": 5300
         },
         "tron": {
-            "runtimeSize": 4819,
-            "initcodeSize": 5443
+            "runtimeSize": 4599,
+            "initcodeSize": 5211
         },
         "zksync": {
-            "runtimeSize": 21216,
-            "initcodeSize": 21216
+            "runtimeSize": 22240,
+            "initcodeSize": 22240
         }
     },
     "NexusPauseModule": {
         "evm": {
-            "runtimeSize": 5627,
-            "initcodeSize": 5990
+            "runtimeSize": 5551,
+            "initcodeSize": 5907
         },
         "tron": {
-            "runtimeSize": 4941,
-            "initcodeSize": 5268
+            "runtimeSize": 4656,
+            "initcodeSize": 4980
         },
         "zksync": {
             "runtimeSize": 13088,
@@ -127,12 +127,12 @@
     },
     "NexusRateLimiterModule": {
         "evm": {
-            "runtimeSize": 11332,
-            "initcodeSize": 11800
+            "runtimeSize": 10946,
+            "initcodeSize": 11406
         },
         "tron": {
-            "runtimeSize": 11157,
-            "initcodeSize": 11599
+            "runtimeSize": 10976,
+            "initcodeSize": 11414
         },
         "zksync": {
             "runtimeSize": 34464,

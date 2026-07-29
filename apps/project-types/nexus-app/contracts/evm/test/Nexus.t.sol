@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
+import { MessagingReceipt } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
+import { IMessagingChannel } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/IMessagingChannel.sol";
+import { IMessagingComposer } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/IMessagingComposer.sol";
 import { IOAppCore } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppCore.sol";
 import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
 import { Origin } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
@@ -12,8 +15,13 @@ import {
     OFTReceipt,
     MessagingFee
 } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
+import { EndpointV2Mock } from "@layerzerolabs/test-devtools-evm-foundry/contracts/mocks/EndpointV2Mock.sol";
+import { MockComposer } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockComposer.sol";
 import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/WhitelistMsgInspector.sol";
+import { ICreditRedirect } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/ICreditRedirect.sol";
 import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
+import { CreditRedirectAllowlistMock } from "@layerzerolabs/utils-upgradeable-evm-contracts/test/CreditRedirectBaseUpgradeable.t.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
 import { INexus } from "./../contracts/interfaces/INexus.sol";
@@ -27,6 +35,10 @@ contract NexusTest is NexusTestHelper {
 
     uint16 constant BPS_DENOMINATOR = 10_000;
     uint16 constant FEE_BPS = 1_000; // 10%
+    bytes32 internal constant MSG_CHANNEL_SENDER = bytes32(uint256(uint160(address(0xBEEF))));
+    bytes32 internal constant MSG_CHANNEL_GUID = keccak256("guid");
+    bytes32 internal constant MSG_CHANNEL_PAYLOAD_HASH = keccak256("payload");
+    bytes internal constant MSG_CHANNEL_MESSAGE = hex"01";
 
     /// @dev Helper to execute send with proper fee payment. Override in Alt tests for ERC20 fee payment.
     function _executeSend(
@@ -34,10 +46,10 @@ contract NexusTest is NexusTestHelper {
         SendParam memory _sendParam,
         MessagingFee memory _fee,
         address _refundAddress
-    ) internal virtual {
+    ) internal virtual returns (MessagingReceipt memory receipt) {
         vm.deal(_sender, _fee.nativeFee);
         vm.prank(_sender);
-        aNexusOFT.send{ value: _fee.nativeFee }(_sendParam, _fee, payable(_refundAddress));
+        (receipt, ) = aNexusOFT.send{ value: _fee.nativeFee }(_sendParam, _fee, payable(_refundAddress));
     }
 
     function test_initialize() public view {
@@ -677,5 +689,338 @@ contract NexusTest is NexusTestHelper {
         bytes32 storageHash = keccak256(abi.encode(uint256(keccak256("layerzerov2.storage.nexus")) - 1)) &
             ~bytes32(uint256(0xff));
         assertEq(storageHash, 0xc20e04226fab28e0e9310021f59f0226a6ef622ef143aefd892d971127154900);
+    }
+
+    // ============ Credit Redirect Tests ============
+
+    function test_credit_Redirect_NotAllowlisted() public virtual {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        bNexus.setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: charlie })
+        );
+
+        aToken.mint(alice, 1 ether);
+
+        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200_000, 0);
+        SendParam memory sendParam = _buildSendParamWithOptions(bEid, bob, 1 ether, 0, options);
+        MessagingFee memory fee = aNexusOFT.quoteSend(sendParam, false);
+
+        uint256 escrowBefore = bToken.balanceOf(charlie);
+        uint256 recipientBefore = bToken.balanceOf(bob);
+
+        _executeSend(alice, sendParam, fee, alice);
+        verifyPackets(bEid, addressToBytes32(address(bNexus)));
+
+        assertEq(bToken.balanceOf(charlie) - escrowBefore, 1 ether);
+        assertEq(bToken.balanceOf(bob), recipientBefore);
+    }
+
+    function test_credit_NoRedirect_Allowlisted() public virtual {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        allowlist.setAllowlisted(bob, true);
+        bNexus.setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: charlie })
+        );
+
+        aToken.mint(alice, 1 ether);
+
+        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200_000, 0);
+        SendParam memory sendParam = _buildSendParamWithOptions(bEid, bob, 1 ether, 0, options);
+        MessagingFee memory fee = aNexusOFT.quoteSend(sendParam, false);
+
+        uint256 balanceBefore = bToken.balanceOf(bob);
+        _executeSend(alice, sendParam, fee, alice);
+        verifyPackets(bEid, addressToBytes32(address(bNexus)));
+
+        assertEq(bToken.balanceOf(bob) - balanceBefore, 1 ether);
+        assertEq(bToken.balanceOf(charlie), 0);
+    }
+
+    function test_credit_NoRedirect_ConfigUnset() public virtual {
+        aToken.mint(alice, 1 ether);
+
+        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200_000, 0);
+        SendParam memory sendParam = _buildSendParamWithOptions(bEid, bob, 1 ether, 0, options);
+        MessagingFee memory fee = aNexusOFT.quoteSend(sendParam, false);
+
+        uint256 balanceBefore = bToken.balanceOf(bob);
+        _executeSend(alice, sendParam, fee, alice);
+        verifyPackets(bEid, addressToBytes32(address(bNexus)));
+
+        assertEq(bToken.balanceOf(bob) - balanceBefore, 1 ether);
+    }
+
+    function test_credit_Redirect_WithCompose() public virtual {
+        MockComposer composer = new MockComposer();
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        bNexus.setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: charlie })
+        );
+
+        aToken.mint(alice, 1 ether);
+
+        bytes memory composePayload = hex"01";
+        bytes memory options = OptionsBuilder
+            .newOptions()
+            .addExecutorLzReceiveOption(200_000, 0)
+            .addExecutorLzComposeOption(0, 200_000, 0);
+
+        SendParam memory sendParam = SendParam({
+            dstEid: bEid,
+            to: bytes32(uint256(uint160(address(composer)))),
+            amountLD: 1 ether,
+            minAmountLD: 1 ether,
+            extraOptions: options,
+            composeMsg: composePayload,
+            oftCmd: bytes("")
+        });
+        MessagingFee memory fee = aNexusOFT.quoteSend(sendParam, false);
+
+        uint256 escrowBefore = bToken.balanceOf(charlie);
+        uint256 composerBefore = bToken.balanceOf(address(composer));
+
+        MessagingReceipt memory receipt = _executeSend(alice, sendParam, fee, address(this));
+
+        bytes memory expectedComposeMsg = OFTComposeMsgCodec.encode(
+            receipt.nonce,
+            aEid,
+            0,
+            abi.encodePacked(OFTComposeMsgCodec.addressToBytes32(alice), composePayload)
+        );
+
+        vm.expectEmit(true, true, true, true, address(bNexus));
+        emit ICreditRedirect.CreditRedirected(address(composer), charlie, 1 ether);
+        vm.expectEmit(true, true, true, true, endpoints[bEid]);
+        emit IMessagingComposer.ComposeSent(address(bNexusOFT), address(composer), receipt.guid, 0, expectedComposeMsg);
+
+        this.verifyPackets(bEid, address(bNexus));
+
+        assertEq(bToken.balanceOf(charlie) - escrowBefore, 1 ether);
+        assertEq(bToken.balanceOf(address(composer)), composerBefore);
+
+        IMessagingComposer(endpoints[bEid]).lzCompose(
+            address(bNexusOFT),
+            address(composer),
+            receipt.guid,
+            0,
+            expectedComposeMsg,
+            bytes("")
+        );
+
+        assertEq(composer.lastFrom(), address(bNexusOFT));
+        assertEq(composer.lastGuid(), receipt.guid);
+        assertEq(composer.lastMessage(), expectedComposeMsg);
+    }
+
+    function test_credit_Redirect_RateLimitUsesOriginalRecipient() public virtual {
+        CreditRedirectAllowlistMock allowlist = new CreditRedirectAllowlistMock();
+        bNexus.setCreditRedirectConfig(
+            ICreditRedirect.CreditRedirectConfig({ allowlist: address(allowlist), escrow: charlie })
+        );
+
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = IRateLimiter.SetRateLimitConfigParam({
+            id: uint256(aEid),
+            config: IRateLimiter.RateLimitConfig({
+                overrideDefaultConfig: true,
+                outboundEnabled: false,
+                inboundEnabled: true,
+                netAccountingEnabled: false,
+                addressExemptionEnabled: true,
+                outboundLimit: 0,
+                inboundLimit: 1 ether,
+                outboundWindow: 0,
+                inboundWindow: 100
+            })
+        });
+        bRateLimiterModule.setRateLimitConfigs(configs);
+
+        IRateLimiter.SetRateLimitAddressExemptionParam[]
+            memory exemptions = new IRateLimiter.SetRateLimitAddressExemptionParam[](1);
+        exemptions[0] = IRateLimiter.SetRateLimitAddressExemptionParam({ user: charlie, isExempt: true });
+        bRateLimiterModule.setRateLimitAddressExemptions(exemptions);
+
+        aToken.mint(alice, 2 ether);
+
+        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200_000, 0);
+        SendParam memory sendParam = _buildSendParamWithOptions(bEid, bob, 1 ether, 0, options);
+        MessagingFee memory fee = aNexusOFT.quoteSend(sendParam, false);
+
+        /// @dev Escrow (`charlie`) is exempt; inflow must still key on original `bob` or this would skip limits.
+        _executeSend(alice, sendParam, fee, alice);
+        verifyPackets(bEid, addressToBytes32(address(bNexus)));
+
+        assertEq(bToken.balanceOf(charlie), 1 ether);
+        assertEq(bToken.balanceOf(bob), 0);
+        (, , uint256 inboundUsage, uint256 inboundAvailable) = bRateLimiterModule.getRateLimitUsages(uint256(aEid));
+        assertEq(inboundUsage, 1 ether);
+        assertEq(inboundAvailable, 0);
+
+        _executeSend(alice, sendParam, fee, alice);
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1 ether));
+        this.verifyPackets(bEid, addressToBytes32(address(bNexus)));
+    }
+
+    // ============ Messaging Channel Tests ============
+
+    function _origin(uint64 _nonce) internal view returns (Origin memory origin) {
+        return Origin({ srcEid: bEid, sender: MSG_CHANNEL_SENDER, nonce: _nonce });
+    }
+
+    function _verify(uint64 _nonce, bytes32 _payloadHash) internal {
+        aNexus.setPeer(bEid, MSG_CHANNEL_SENDER);
+        vm.prank(endpointSetup.receiveLibs[0]);
+        EndpointV2Mock(endpoints[aEid]).verify(_origin(_nonce), address(aNexus), _payloadHash);
+    }
+
+    function _grantMessagingChannelRoles() internal {
+        aNexus.grantRole(aNexus.MESSAGING_CHANNEL_MANAGER_ROLE(), owner);
+        aNexus.grantRole(aNexus.MESSAGING_CHANNEL_MANAGER_ROLE(), charlie);
+        aNexus.grantRole(aNexus.MESSAGE_NILIFIER_ROLE(), owner);
+        aNexus.grantRole(aNexus.MESSAGE_NILIFIER_ROLE(), dave);
+    }
+
+    function test_clear() public {
+        bytes32 payloadHash = keccak256(abi.encodePacked(MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE));
+        _verify(1, payloadHash);
+        _grantMessagingChannelRoles();
+
+        aNexus.clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+
+        assertEq(
+            EndpointV2Mock(endpoints[aEid]).inboundPayloadHash(address(aNexus), bEid, MSG_CHANNEL_SENDER, 1),
+            bytes32(0)
+        );
+        assertEq(EndpointV2Mock(endpoints[aEid]).lazyInboundNonce(address(aNexus), bEid, MSG_CHANNEL_SENDER), 1);
+    }
+
+    function test_clear_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                aNexus.MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        aNexus.clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+    }
+
+    function test_clear_Revert_NilifierUnauthorized() public {
+        _grantMessagingChannelRoles();
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                dave,
+                aNexus.MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(dave);
+        aNexus.clear(_origin(1), MSG_CHANNEL_GUID, MSG_CHANNEL_MESSAGE);
+    }
+
+    function test_skip() public {
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoints[aEid]);
+        emit IMessagingChannel.InboundNonceSkipped(bEid, MSG_CHANNEL_SENDER, address(aNexus), 1);
+
+        aNexus.skip(bEid, MSG_CHANNEL_SENDER, 1);
+
+        assertEq(EndpointV2Mock(endpoints[aEid]).lazyInboundNonce(address(aNexus), bEid, MSG_CHANNEL_SENDER), 1);
+    }
+
+    function test_skip_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                aNexus.MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        aNexus.skip(bEid, MSG_CHANNEL_SENDER, 1);
+    }
+
+    function test_burn() public {
+        _verify(1, MSG_CHANNEL_PAYLOAD_HASH);
+        _grantMessagingChannelRoles();
+
+        aNexus.skip(bEid, MSG_CHANNEL_SENDER, 2);
+
+        vm.expectEmit(true, true, true, true, endpoints[aEid]);
+        emit IMessagingChannel.PacketBurnt(bEid, MSG_CHANNEL_SENDER, address(aNexus), 1, MSG_CHANNEL_PAYLOAD_HASH);
+        aNexus.burn(bEid, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+
+        assertEq(
+            EndpointV2Mock(endpoints[aEid]).inboundPayloadHash(address(aNexus), bEid, MSG_CHANNEL_SENDER, 1),
+            bytes32(0)
+        );
+    }
+
+    function test_burn_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                aNexus.MESSAGING_CHANNEL_MANAGER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        aNexus.burn(bEid, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+    }
+
+    function test_nilify() public {
+        _verify(1, MSG_CHANNEL_PAYLOAD_HASH);
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoints[aEid]);
+        emit IMessagingChannel.PacketNilified(bEid, MSG_CHANNEL_SENDER, address(aNexus), 1, MSG_CHANNEL_PAYLOAD_HASH);
+
+        aNexus.nilify(bEid, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+
+        assertEq(
+            EndpointV2Mock(endpoints[aEid]).inboundPayloadHash(address(aNexus), bEid, MSG_CHANNEL_SENDER, 1),
+            bytes32(type(uint256).max)
+        );
+    }
+
+    function test_nilify_Unverified() public {
+        _grantMessagingChannelRoles();
+
+        vm.expectEmit(true, true, true, true, endpoints[aEid]);
+        emit IMessagingChannel.PacketNilified(bEid, MSG_CHANNEL_SENDER, address(aNexus), 1, bytes32(0));
+
+        aNexus.nilify(bEid, MSG_CHANNEL_SENDER, 1, bytes32(0));
+
+        assertEq(
+            EndpointV2Mock(endpoints[aEid]).inboundPayloadHash(address(aNexus), bEid, MSG_CHANNEL_SENDER, 1),
+            bytes32(type(uint256).max)
+        );
+    }
+
+    function test_nilify_Revert_Unauthorized() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                alice,
+                aNexus.MESSAGE_NILIFIER_ROLE()
+            )
+        );
+        vm.prank(alice);
+        aNexus.nilify(bEid, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
+    }
+
+    function test_nilify_Revert_ManagerUnauthorized() public {
+        _grantMessagingChannelRoles();
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                charlie,
+                aNexus.MESSAGE_NILIFIER_ROLE()
+            )
+        );
+        vm.prank(charlie);
+        aNexus.nilify(bEid, MSG_CHANNEL_SENDER, 1, MSG_CHANNEL_PAYLOAD_HASH);
     }
 }

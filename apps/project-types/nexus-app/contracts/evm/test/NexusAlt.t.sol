@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
+import { MessagingReceipt } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
 import { IOAppAlt } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppAlt.sol";
 import { SendParam, MessagingFee } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/MockERC20.sol";
@@ -65,11 +66,11 @@ contract NexusAltTest is NexusTest {
         SendParam memory _sendParam,
         MessagingFee memory _fee,
         address _refundAddress
-    ) internal override {
+    ) internal override returns (MessagingReceipt memory receipt) {
         nativeToken.mint(_sender, _fee.nativeFee);
         vm.startPrank(_sender);
         nativeToken.approve(address(aNexusOFT), _fee.nativeFee);
-        aNexusOFT.send(_sendParam, _fee, payable(_refundAddress));
+        (receipt, ) = aNexusOFT.send(_sendParam, _fee, payable(_refundAddress));
         vm.stopPrank();
     }
 

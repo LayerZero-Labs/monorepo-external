@@ -6,7 +6,7 @@ import { OFTLockUnlockExtendedRBACUpgradeable } from "@layerzerolabs/oft-upgrade
 /**
  * @title OFTLockUnlock
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT lock-unlock adapter with toggleable pause, fee, and rate limit functionality.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  */

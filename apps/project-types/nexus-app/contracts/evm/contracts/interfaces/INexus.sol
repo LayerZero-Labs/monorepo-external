@@ -10,6 +10,7 @@ import {
     MessagingReceipt,
     MessagingFee
 } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
+import { ICreditRedirect } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/ICreditRedirect.sol";
 import { IFeeHandler } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IFeeHandler.sol";
 import { INexusFeeConfig } from "./INexusFeeConfig.sol";
 import { INexusPause } from "./INexusPause.sol";
@@ -19,10 +20,10 @@ import { IOFTRegistry } from "./IOFTRegistry.sol";
 /**
  * @title INexus
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Interface for the `Nexus` contract.
  */
-interface INexus is IOAppExtended, IOFTRegistry, IFeeHandler {
+interface INexus is IOAppExtended, IOFTRegistry, ICreditRedirect, IFeeHandler {
     // ============ Events ============
 
     /**

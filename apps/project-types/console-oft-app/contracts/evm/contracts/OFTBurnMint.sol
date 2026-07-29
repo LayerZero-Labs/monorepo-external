@@ -6,14 +6,15 @@ import { OFTBurnMintExtendedRBACUpgradeable } from "@layerzerolabs/oft-upgradeab
 /**
  * @title OFTBurnMint
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable OFT burn-mint adapter with toggleable pause, fee, and rate limit functionality.
  *         Supports dynamic mint/burn function selectors and configurable approval requirements.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.
  * @dev Burner-minter configurations supported:
  *      - Any mint function if it has `(address,uint256)` parameters.
  *      - Any burn function if it has `(address,uint256)` parameters.
- *      - Non-privileged burn functions, by burning through ERC20 approvals of the OFT contract with `(address,uint256)` parameters.
+ *      - Non-privileged burn functions, by burning through ERC20 approvals of the OFT contract with `(address,uint256)`
+ *        parameters.
  *      - Examples:
  *        - `mint(address,uint256)`, `burn(address,uint256)`:
  *          - `_mintSelector`: `0x40c10f19`

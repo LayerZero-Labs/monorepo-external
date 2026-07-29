@@ -20,7 +20,7 @@ import { MockERC20 } from "@layerzerolabs/test-utils-evm-contracts/contracts/moc
 import { RejectingMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/RejectingMsgInspector.sol";
 import { WhitelistMsgInspector } from "@layerzerolabs/test-utils-evm-contracts/contracts/mocks/WhitelistMsgInspector.sol";
 import { IRateLimiter } from "@layerzerolabs/utils-evm-contracts/contracts/interfaces/IRateLimiter.sol";
-import { INexusOFT } from "./../contracts/interfaces/INexusOFT.sol";
+import { INexusOFT, NEXUS_OFT_INTERFACE_ID } from "./../contracts/interfaces/INexusOFT.sol";
 import { INexusPause } from "./../contracts/interfaces/INexusPause.sol";
 import { INexusPauseModule } from "./../contracts/interfaces/INexusPauseModule.sol";
 import { NexusMsgCodec } from "./../contracts/libs/NexusMsgCodec.sol";
@@ -253,7 +253,8 @@ contract NexusOFTTest is NexusTestHelper {
     function test_oftVersion() public view {
         (bytes4 interfaceId, uint64 version) = aNexusOFT.oftVersion();
 
-        assertEq(interfaceId, type(INexusOFT).interfaceId);
+        assertEq(interfaceId, NEXUS_OFT_INTERFACE_ID);
+        assertEq(interfaceId, bytes4(0xcf0f6c4f));
         assertEq(version, 1);
     }
 

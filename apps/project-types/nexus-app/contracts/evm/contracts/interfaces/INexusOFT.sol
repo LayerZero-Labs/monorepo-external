@@ -6,7 +6,7 @@ import { IOFT } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT
 /**
  * @title INexusOFT
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Interface for `NexusOFT` contracts that extends `IOFT` with Nexus receive functionality.
  */
 interface INexusOFT is IOFT {
@@ -64,3 +64,6 @@ interface INexusOFT is IOFT {
         bytes calldata _composeMsg
     ) external;
 }
+
+/// @dev Flatten all leaf interface IDs.
+bytes4 constant NEXUS_OFT_INTERFACE_ID = type(IOFT).interfaceId ^ type(INexusOFT).interfaceId;

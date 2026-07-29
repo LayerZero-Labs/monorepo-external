@@ -12,11 +12,11 @@ module.exports = {
             {
                 version: '0.8.26',
                 settings: {
-                    evmVersion: 'paris',
+                    evmVersion: 'cancun',
                     viaIR: true,
                     optimizer: {
                         enabled: true,
-                        runs: 1_000_000,
+                        runs: 100_000,
                     },
                 },
             },
@@ -29,14 +29,13 @@ module.exports = {
     },
     tronSolc: {
         enable: true,
-        versionRemapping: [['0.8.22', '0.8.20']],
         compilers: [
             {
-                version: '0.8.20',
+                version: '0.8.24',
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 1_000_000,
+                        runs: 100_000,
                     },
                 },
             },

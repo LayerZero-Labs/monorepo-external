@@ -12,11 +12,11 @@ module.exports = {
             {
                 version: '0.8.26',
                 settings: {
-                    evmVersion: 'paris',
+                    evmVersion: 'cancun',
                     viaIR: true,
                     optimizer: {
                         enabled: true,
-                        runs: 750,
+                        runs: 400,
                     },
                     // Making the implicit `hardhat-deploy` behaviour explicit.
                     // https://github.com/wighawag/hardhat-deploy/blob/v0.12.4/src/index.ts#L317
@@ -28,7 +28,7 @@ module.exports = {
             'contracts/ERC20Plus.sol': {
                 version: '0.8.26',
                 settings: {
-                    evmVersion: 'paris',
+                    evmVersion: 'cancun',
                     viaIR: true,
                     optimizer: {
                         enabled: true,
@@ -47,14 +47,13 @@ module.exports = {
     },
     tronSolc: {
         enable: true,
-        versionRemapping: [['0.8.22', '0.8.20']],
         compilers: [
             {
-                version: '0.8.20',
+                version: '0.8.24',
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 750,
+                        runs: 500,
                     },
                 },
             },

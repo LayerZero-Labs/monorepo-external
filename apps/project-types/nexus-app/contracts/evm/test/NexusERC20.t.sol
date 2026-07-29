@@ -134,6 +134,17 @@ contract NexusERC20Test is Test {
         assertEq(token.balanceOf(alice), 1000e18);
     }
 
+    function test_mint_Whitelisted() public {
+        guard.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+
+        IAllowlist.SetAllowlistParam[] memory params = new IAllowlist.SetAllowlistParam[](1);
+        params[0] = IAllowlist.SetAllowlistParam(alice, true);
+        guard.setWhitelisted(params);
+
+        token.mint(alice, 1000e18);
+        assertEq(token.balanceOf(alice), 1000e18);
+    }
+
     function test_mint_Revert_Unauthorized() public {
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, alice, token.MINTER_ROLE())
@@ -142,10 +153,41 @@ contract NexusERC20Test is Test {
         token.mint(alice, 1000e18);
     }
 
+    function test_mint_Revert_Paused() public {
+        IPauseByID.SetPausedParam[] memory params = new IPauseByID.SetPausedParam[](1);
+        params[0] = IPauseByID.SetPausedParam(uint160(address(token)), true, true);
+        guard.setPaused(params);
+
+        vm.expectRevert(abi.encodeWithSelector(IPauseByID.Paused.selector, uint160(address(token))));
+        token.mint(alice, 1000e18);
+    }
+
+    function test_mint_Revert_NotAllowlisted() public {
+        guard.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IAllowlist.NotAllowlisted.selector, alice, IAllowlist.AllowlistMode.Whitelist)
+        );
+        token.mint(alice, 1000e18);
+    }
+
     // ============ Burn Tests ============
 
     function test_burn() public {
         token.mint(alice, 1000e18);
+        token.burn(alice, 500e18);
+        assertEq(token.balanceOf(alice), 500e18);
+    }
+
+    function test_burn_Whitelisted() public {
+        token.mint(alice, 1000e18);
+
+        guard.setAllowlistMode(IAllowlist.AllowlistMode.Whitelist);
+
+        IAllowlist.SetAllowlistParam[] memory params = new IAllowlist.SetAllowlistParam[](1);
+        params[0] = IAllowlist.SetAllowlistParam(alice, true);
+        guard.setWhitelisted(params);
+
         token.burn(alice, 500e18);
         assertEq(token.balanceOf(alice), 500e18);
     }

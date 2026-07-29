@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import { IOAppMsgInspector } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppMsgInspector.sol";
 import { IOAppReceiver } from "@layerzerolabs/oapp-evm-contracts/contracts/interfaces/IOAppReceiver.sol";
+import { OAppMessagingChannelRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/messaging-channel/OAppMessagingChannelRBACUpgradeable.sol";
 import { OAppMsgInspectionRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/msg-inspection/OAppMsgInspectionRBACUpgradeable.sol";
 import { OAppCoreRBACUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppCoreRBACUpgradeable.sol";
 import { OAppReceiverUpgradeable } from "@layerzerolabs/oapp-upgradeable-evm-contracts/contracts/oapp/OAppReceiverUpgradeable.sol";
@@ -23,6 +24,7 @@ import {
 } from "@layerzerolabs/oft-evm-contracts/contracts/interfaces/IOFT.sol";
 import { OFTComposeMsgCodec } from "@layerzerolabs/oft-evm-contracts/contracts/libs/OFTComposeMsgCodec.sol";
 import { AccessControl2StepUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/access/AccessControl2StepUpgradeable.sol";
+import { CreditRedirectRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/credit-redirect/CreditRedirectRBACUpgradeable.sol";
 import { FeeHandlerRBACUpgradeable } from "@layerzerolabs/utils-upgradeable-evm-contracts/contracts/fee-accounting/FeeHandlerRBACUpgradeable.sol";
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { OFTRegistryRBACUpgradeable } from "./extensions/OFTRegistryRBACUpgradeable.sol";
@@ -36,7 +38,7 @@ import { NexusMsgCodec } from "./libs/NexusMsgCodec.sol";
 /**
  * @title Nexus
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice OApp in which OFTs are registered and inherit cross-chain messaging capabilities.
  *         Supports dynamic mint/burn function selectors.
  * @dev Fee configuration, pause, and rate-limiting are delegated to independently upgradeable modules. Module addresses
@@ -58,9 +60,11 @@ import { NexusMsgCodec } from "./libs/NexusMsgCodec.sol";
 contract Nexus is
     INexus,
     OAppUpgradeable,
+    OAppMessagingChannelRBACUpgradeable,
     OAppCoreRBACUpgradeable,
     OAppOptionsType3RBACUpgradeable,
     OAppMsgInspectionRBACUpgradeable,
+    CreditRedirectRBACUpgradeable,
     FeeHandlerRBACUpgradeable,
     OFTRegistryRBACUpgradeable
 {
@@ -449,7 +453,9 @@ contract Nexus is
     /**
      * @notice Credits tokens to a recipient on the destination chain.
      * @dev Applies inbound rate limiting before minting tokens.
+     * @dev Redirects to escrow if the recipient is not allowlisted and credit escrow is configured.
      * @dev Redirects to `0xdead` if recipient is `address(0)`.
+     * @dev Returns `0` when the credited address differs from `_to` (compose / `OFTReceived` amount signal).
      * @param _nexusId Unique Nexus identifier of token and EID
      * @param _burnerMinter Burner minter contract of underlying token
      * @param _to Recipient address
@@ -462,16 +468,21 @@ contract Nexus is
         address _to,
         uint256 _amountLD
     ) internal virtual returns (uint256 amountReceivedLD) {
-        /// @dev Most ERC20 implementations do not support minting to `address(0x0)`.
-        if (_to == address(0)) _to = address(0xdead);
-
         /// @dev Apply rate limit.
         _inflow(_nexusId, _to, _amountLD);
 
-        _mint(_burnerMinter, _to, _amountLD);
+        /// @dev Redirect the credit to the escrow if the recipient is not allowlisted.
+        address creditTo = _redirectCredit(_to, _amountLD);
 
+        /// @dev Most ERC20 implementations do not support minting to `address(0x0)`.
+        if (creditTo == address(0)) creditTo = address(0xdead);
+
+        _mint(_burnerMinter, creditTo, _amountLD);
+
+        /// @dev Report `0` when the credit did not land at `_to` so compose / `OFTReceived`
+        ///      cannot be treated as proof of payment to the intended recipient.
         /// @dev In the case of a non-default OFT adapter, `_amountLD` might not be equal to `amountReceivedLD`.
-        return _amountLD;
+        return _to == creditTo ? _amountLD : 0;
     }
 
     /**

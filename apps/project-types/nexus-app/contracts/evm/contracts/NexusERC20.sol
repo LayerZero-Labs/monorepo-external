@@ -14,7 +14,7 @@ import { INexusERC20Guard } from "./interfaces/INexusERC20Guard.sol";
 /**
  * @title NexusERC20
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Upgradeable ERC20 token with burn-mint interface, permit, and fund recovery.
  * @dev Allowlist and pause checks are delegated to a shared `NexusERC20Guard` contract.
  */
@@ -104,12 +104,12 @@ contract NexusERC20 is INexusERC20, ERC20PermitUpgradeable, AccessControl2StepUp
 
     /**
      * @notice Mints tokens to address.
-     * @dev It does not revert if the recipient is not allowlisted, as funds cannot be debited in that state.
      * @param _to Address to mint tokens to
      * @param _amount Amount of tokens to mint
      * @return success Always returns true
      */
     function mint(address _to, uint256 _amount) public virtual onlyRole(MINTER_ROLE) returns (bool success) {
+        _getNexusERC20Storage().guard.checkTransfer(address(this), address(0), address(0), _to, _amount);
         _mint(_to, _amount);
         return true;
     }

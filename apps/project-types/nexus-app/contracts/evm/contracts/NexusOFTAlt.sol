@@ -15,12 +15,12 @@ import { NexusOFT } from "./NexusOFT.sol";
 /**
  * @title NexusOFTAlt
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice `NexusOFT` variant that pays native fees using an ERC20 token instead of `msg.value`.
  * @dev For chains where gas/native fees are paid via an ERC20 token (e.g., some L2s using `EndpointV2Alt`).
- * @dev Conventional native fee payment flow is altered in this contract, since the native fee is pushed to the
- *      endpoint before the OFT token transfer. This can result in native fee griefing if the OFT uses tokens that
- *      have hooks or allow arbitrary calls.
+ * @dev Conventional native fee payment flow is altered in this contract, since the native fee is pushed to the endpoint
+ *      before the OFT token transfer. This can result in native fee griefing if the OFT uses tokens that have hooks or
+ *      allow arbitrary calls.
  */
 contract NexusOFTAlt is IOAppAlt, NexusOFT {
     using SafeERC20 for IERC20;
