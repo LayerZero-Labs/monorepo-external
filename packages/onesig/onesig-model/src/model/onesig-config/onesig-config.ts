@@ -89,46 +89,90 @@ export enum ManageMemberRole {
     WITNESS = 'WITNESS',
 }
 
-export type OneSigInstanceSummary = {
-    name: string;
-    role: OneSigRole;
-};
+export const oneSigRoleSchema = z.enum(OneSigRole);
 
 export const oneSigSigningConfigSchema = z.object({
     seed: z.string(),
     threshold: z.number(),
     signers: z.array(z.string()),
 });
-
 export type OneSigSigningConfig = z.infer<typeof oneSigSigningConfigSchema>;
 
-export type OneSigPerChainConfig = {
-    contractAddress: string;
-    signingConfig: string;
-    executionConfig?: string;
-};
+export const oneSigInstanceSummarySchema = z.object({
+    name: z.string(),
+    role: oneSigRoleSchema,
+});
+export type OneSigInstanceSummary = z.infer<typeof oneSigInstanceSummarySchema>;
 
-export type OneSigInstanceMembers = {
-    proposers: string[];
-    witnesses: string[];
-};
+export const oneSigPerChainConfigSchema = z.object({
+    contractAddress: z.string(),
+    signingConfig: z.string().describe('Hash referencing an entry in signingConfigs'),
+    executionConfig: z
+        .string()
+        .optional()
+        .describe('Hash referencing an entry in executionConfigs'),
+    createdAt: z.number().optional().describe('When this chain config was created, unix ms'),
+    updatedAt: z
+        .number()
+        .optional()
+        .describe('When this chain config was last refreshed from chain, unix ms'),
+});
 
-export type OneSigInstanceConfig = {
-    name: string;
-    members: OneSigInstanceMembers;
-    signingConfigs: Record<string, OneSigSigningConfig>;
-    executionConfigs: Record<string, OneSigExecutorConfig>;
-    perChainConfigs: Record<string, OneSigPerChainConfig>;
-    version?: string;
-    createdAt?: number;
-    updatedAt?: number;
-};
+export type OneSigPerChainConfig = z.infer<typeof oneSigPerChainConfigSchema>;
 
-export type ManageMemberRequest = {
-    action: ManageMemberAction;
-    role: ManageMemberRole;
-    addresses: string[];
-};
+export const oneSigInstanceMembersSchema = z.object({
+    proposers: z.array(z.string()),
+    witnesses: z.array(z.string()),
+});
+
+export type OneSigInstanceMembers = z.infer<typeof oneSigInstanceMembersSchema>;
+
+/**
+ * Partition of chains that share the same signing config.
+ * Present when the API includes partition metadata; otherwise derive from
+ * signingConfigs + perChainConfigs. Unused by legacy flat-config consumers.
+ */
+export const oneSigPartitionSchema = z.object({
+    signingConfigHash: z.string(),
+    chains: z.array(z.string()),
+});
+
+export type OneSigPartition = z.infer<typeof oneSigPartitionSchema>;
+
+export const oneSigInstanceConfigSchema = z.object({
+    name: z.string(),
+    members: oneSigInstanceMembersSchema,
+    signingConfigs: z
+        .record(z.string(), oneSigSigningConfigSchema)
+        .describe('Signing configs keyed by content hash'),
+    executionConfigs: z
+        .record(z.string(), oneSigExecutorConfigSchema)
+        .describe('Execution configs keyed by content hash'),
+    perChainConfigs: z.record(z.string(), oneSigPerChainConfigSchema),
+    version: z.string().optional(),
+    createdAt: z.number().optional(),
+    updatedAt: z.number().optional(),
+});
+
+export type OneSigInstanceConfig = z.infer<typeof oneSigInstanceConfigSchema>;
+
+export const listOneSigInstancesResponseSchema = z.object({
+    instances: z.array(oneSigInstanceSummarySchema),
+    nextToken: z.string().nullable(),
+});
+
+export type ListOneSigInstancesResponse = z.infer<typeof listOneSigInstancesResponseSchema>;
+
+export const manageMemberActionSchema = z.enum(ManageMemberAction);
+export const manageMemberRoleSchema = z.enum(ManageMemberRole);
+
+export const manageMemberRequestSchema = z.object({
+    action: manageMemberActionSchema,
+    role: manageMemberRoleSchema,
+    addresses: z.array(z.string()),
+});
+
+export type ManageMemberRequest = z.infer<typeof manageMemberRequestSchema>;
 
 export enum DeployOneSigOrchestratorStatus {
     INIT = 'INIT',
