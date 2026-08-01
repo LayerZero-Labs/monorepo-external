@@ -1,7 +1,7 @@
 {
     "name": "@layerzerolabs/console-oft-evm-contracts",
     "version": "0.0.0",
-    "private": true,
+    "private": false,
     "license": "MIT",
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten && pnpm contract-sizes",
@@ -39,7 +39,7 @@
         "solhint": "catalog:"
     },
     "publishConfig": {
-        "access": "restricted",
+        "access": "public",
         "registry": "https://registry.npmjs.org/"
     }
 }

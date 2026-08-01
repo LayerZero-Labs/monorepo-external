@@ -1,7 +1,7 @@
 {
     "name": "@layerzerolabs/nexus-evm-contracts",
     "version": "0.0.0",
-    "private": true,
+    "private": false,
     "description": "LayerZero Labs Nexus EVM implementation",
     "license": "MIT",
     "scripts": {
@@ -39,7 +39,7 @@
         "solhint": "catalog:"
     },
     "publishConfig": {
-        "access": "restricted",
+        "access": "public",
         "registry": "https://registry.npmjs.org/"
     }
 }
