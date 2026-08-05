@@ -25,6 +25,7 @@ cdk.out
 cdk.context.json
 docker-target
 .next
+next-env.d.ts
 
 .*.swp
 .vscode/*

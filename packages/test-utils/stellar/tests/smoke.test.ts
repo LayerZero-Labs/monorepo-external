@@ -10,6 +10,7 @@ import {
     pauseBeforeFundingRetry,
     startStellarLocalnet,
     STELLAR_LOCALNET_OWNER_LABEL,
+    waitForAccountOnRpc,
 } from '../src/localnet.js';
 
 describe('createStellarTestEnv', () => {
@@ -81,6 +82,29 @@ describe('Docker localnet arguments', () => {
         expect(buildDockerRunArgs(env).at(-1)).toBe('registry.example.com/stellar:local');
     });
 
+    it('appends validated docker command args after the image', () => {
+        const env = createStellarTestEnv({
+            containerName: 'stellar-localnet',
+            hostPort: 8096,
+            dockerImage:
+                'stellar/quickstart@sha256:ccb7e1a24c1d0878be4163836c863960445ffa670c382bdb39d4996f05c30130',
+            dockerCommand: ['--local'],
+        });
+
+        expect(buildDockerRunArgs(env)).toEqual([
+            'run',
+            '-d',
+            '--name',
+            'stellar-localnet',
+            '--label',
+            STELLAR_LOCALNET_OWNER_LABEL,
+            '-p',
+            '127.0.0.1:8096:8000',
+            'stellar/quickstart@sha256:ccb7e1a24c1d0878be4163836c863960445ffa670c382bdb39d4996f05c30130',
+            '--local',
+        ]);
+    });
+
     it('rejects invalid Docker image overrides', () => {
         const env = createStellarTestEnv({
             containerName: 'stellar-localnet',
@@ -89,6 +113,16 @@ describe('Docker localnet arguments', () => {
         });
 
         expect(() => buildDockerRunArgs(env)).toThrow(/Invalid docker image/);
+    });
+
+    it('rejects invalid docker command args', () => {
+        const env = createStellarTestEnv({
+            containerName: 'stellar-localnet',
+            hostPort: 8096,
+            dockerCommand: ['--local; rm -rf /'],
+        });
+
+        expect(() => buildDockerRunArgs(env)).toThrow(/Invalid docker command arg/);
     });
 });
 
@@ -115,6 +149,42 @@ describe('funding idempotency helper', () => {
         await expect(
             accountExists(async () => Promise.reject(new Error('not found')), 'destination'),
         ).resolves.toBe(false);
+    });
+});
+
+describe('waitForAccountOnRpc', () => {
+    it('resolves once getAccount succeeds after initial misses', async () => {
+        let attempts = 0;
+        const slept: number[] = [];
+        await waitForAccountOnRpc(
+            async () => {
+                attempts += 1;
+                if (attempts < 3) {
+                    throw new Error('not found');
+                }
+                return { id: 'GACCOUNT' };
+            },
+            'GACCOUNT',
+            {
+                timeoutMs: 10_000,
+                intervalMs: 5,
+                sleep: async (ms) => {
+                    slept.push(ms);
+                },
+            },
+        );
+        expect(attempts).toBe(3);
+        expect(slept).toEqual([5, 5]);
+    });
+
+    it('times out when the account never appears', async () => {
+        await expect(
+            waitForAccountOnRpc(async () => Promise.reject(new Error('not found')), 'GACCOUNT', {
+                timeoutMs: 20,
+                intervalMs: 5,
+                sleep: async () => {},
+            }),
+        ).rejects.toThrow(/not visible to Soroban RPC/);
     });
 });
 

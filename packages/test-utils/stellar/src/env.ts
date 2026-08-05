@@ -9,9 +9,14 @@ export interface CreateStellarTestEnvOptions {
     hostPort: number;
     /**
      * Optional localnet image override. Defaults to the versioned LayerZero ECR snapshot.
-     * Useful for testing a locally built image without changing the shared default.
+     * Useful for testing a locally built image or a pinned public image (e.g. stellar/quickstart@sha256:…).
      */
     dockerImage?: string;
+    /**
+     * Optional args appended after the image name in `docker run` (e.g. `['--local']` for
+     * stock stellar/quickstart). Ignored by images whose ENTRYPOINT does not forward argv.
+     */
+    dockerCommand?: readonly string[];
 }
 
 /**
@@ -23,6 +28,8 @@ export interface StellarTestEnv {
     HOST_PORT: number;
     /** Optional localnet Docker image override. */
     DOCKER_IMAGE?: string;
+    /** Optional args appended after the image name in `docker run`. */
+    DOCKER_COMMAND?: readonly string[];
     RPC_URL: string;
     NETWORK_PASSPHRASE: typeof Networks.STANDALONE;
     JUNK_WALLET: Keypair;
@@ -46,11 +53,12 @@ export interface StellarTestEnv {
 }
 
 export function createStellarTestEnv(options: CreateStellarTestEnvOptions): StellarTestEnv {
-    const { containerName, hostPort, dockerImage } = options;
+    const { containerName, hostPort, dockerImage, dockerCommand } = options;
     const networkPassphrase = Networks.STANDALONE;
     const coreUrl = `http://localhost:${hostPort}`;
 
-    // Pre-funded in the ECR localnet image (BIP39: "test test...junk", path m/44'/148'/0')
+    // BIP39 "test test...junk" path m/44'/148'/0'. Pre-funded in the LayerZero ECR snapshot;
+    // for stock stellar/quickstart, startStellarLocalnet funds it via friendbot first.
     const junkWallet = Keypair.fromSecret(
         'SCZ5VBFVGE4SLZV5WJO33LEEU36EEOEHWO27KYJIIUWGOKZB2OSNAQBI',
     );
@@ -81,6 +89,7 @@ export function createStellarTestEnv(options: CreateStellarTestEnvOptions): Stel
         CONTAINER_NAME: containerName,
         HOST_PORT: hostPort,
         DOCKER_IMAGE: dockerImage,
+        DOCKER_COMMAND: dockerCommand,
         RPC_URL: `${coreUrl}/soroban/rpc`,
         NETWORK_PASSPHRASE: networkPassphrase,
         JUNK_WALLET: junkWallet,

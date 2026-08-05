@@ -19,6 +19,8 @@ export const FUNDING_RETRY_INTERVAL_MS = 2_000;
 const DOCKER_NAME_RE = /^[a-zA-Z0-9][a-zA-Z0-9_.-]*$/;
 const DOCKER_IMAGE_RE =
     /^(?!-)[a-z0-9][a-z0-9._/-]*(?::[a-zA-Z0-9][a-zA-Z0-9_.-]*)?(?:@[a-zA-Z0-9][a-zA-Z0-9_+.-]*:[a-fA-F0-9]{32,})?$/;
+/** Safe argv tokens for `docker run … IMAGE <args>` (flags / simple values only). */
+const DOCKER_COMMAND_ARG_RE = /^(?:--)?[a-zA-Z0-9][a-zA-Z0-9._/=+-]*$/;
 
 export interface DockerCommandResult {
     status: number;
@@ -47,6 +49,11 @@ export function assertDockerArgs(env: StellarTestEnv): void {
     if (!DOCKER_IMAGE_RE.test(dockerImage)) {
         throw new Error(`Invalid docker image: ${JSON.stringify(dockerImage)}`);
     }
+    for (const arg of env.DOCKER_COMMAND ?? []) {
+        if (!DOCKER_COMMAND_ARG_RE.test(arg)) {
+            throw new Error(`Invalid docker command arg: ${JSON.stringify(arg)}`);
+        }
+    }
 }
 
 export function buildDockerRunArgs(env: StellarTestEnv): string[] {
@@ -61,6 +68,7 @@ export function buildDockerRunArgs(env: StellarTestEnv): string[] {
         '-p',
         `127.0.0.1:${env.HOST_PORT}:${CONTAINER_PORT}`,
         env.DOCKER_IMAGE ?? DEFAULT_STELLAR_LOCALNET_IMAGE,
+        ...(env.DOCKER_COMMAND ?? []),
     ];
 }
 
@@ -171,6 +179,9 @@ export async function startStellarLocalnet({
         await waitForRpcHealth(env);
         console.log('✅ Stellar RPC is healthy');
 
+        // Stock stellar/quickstart does not pre-fund the junk wallet; friendbot does.
+        // Idempotent on the LayerZero ECR snapshot where the account already exists.
+        await fundAccountViaFriendbot(env, env.JUNK_WALLET.publicKey());
         await fundTestAccounts(env);
         await deployNativeSac(env);
         await deployZroToken(env);
@@ -306,6 +317,82 @@ async function waitForRpcHealth(env: StellarTestEnv): Promise<void> {
     }
     throw new Error(
         `Stellar RPC failed to become healthy within ${STARTUP_TIMEOUT_MS / 1000} seconds`,
+    );
+}
+
+/**
+ * Poll until an account is visible to Soroban RPC `getAccount`.
+ * Friendbot / Horizon can acknowledge createAccount before RPC indexes it.
+ */
+export async function waitForAccountOnRpc(
+    getAccount: (accountId: string) => Promise<unknown>,
+    publicKey: string,
+    {
+        timeoutMs = STARTUP_TIMEOUT_MS,
+        intervalMs = FUNDING_RETRY_INTERVAL_MS,
+        sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)),
+    }: {
+        timeoutMs?: number;
+        intervalMs?: number;
+        sleep?: (ms: number) => Promise<void>;
+    } = {},
+): Promise<void> {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeoutMs) {
+        if (await accountExists(getAccount, publicKey)) {
+            return;
+        }
+        await sleep(intervalMs);
+    }
+    throw new Error(
+        `Account ${publicKey} not visible to Soroban RPC within ${timeoutMs / 1000} seconds`,
+    );
+}
+
+/**
+ * Fund an account via quickstart friendbot (creates the account if missing).
+ * Idempotent when the account already exists. Waits until Soroban RPC can see
+ * the account so subsequent `getAccount` calls (e.g. fundTestAccounts) do not race.
+ */
+export async function fundAccountViaFriendbot(
+    env: StellarTestEnv,
+    publicKey: string,
+): Promise<void> {
+    const friendbotUrl = `http://localhost:${env.HOST_PORT}/friendbot?addr=${encodeURIComponent(publicKey)}`;
+    const startTime = Date.now();
+    let lastError: unknown;
+
+    while (Date.now() - startTime < STARTUP_TIMEOUT_MS) {
+        try {
+            const response = await fetch(friendbotUrl, {
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+            });
+            const body = await response.text();
+            if (
+                response.ok ||
+                body.includes('already funded') ||
+                body.includes('op_already_exists')
+            ) {
+                console.log(`✅ Friendbot funded ${publicKey}; waiting for RPC visibility…`);
+                const server = new rpc.Server(env.RPC_URL, { allowHttp: true });
+                const remainingMs = Math.max(1, STARTUP_TIMEOUT_MS - (Date.now() - startTime));
+                await waitForAccountOnRpc((accountId) => server.getAccount(accountId), publicKey, {
+                    timeoutMs: remainingMs,
+                });
+                console.log(`✅ Account ${publicKey} visible to Soroban RPC`);
+                return;
+            }
+            lastError = new Error(`friendbot HTTP ${response.status}: ${body}`);
+        } catch (err) {
+            lastError = err;
+        }
+        await new Promise((resolve) => setTimeout(resolve, FUNDING_RETRY_INTERVAL_MS));
+    }
+
+    throw new Error(
+        `Friendbot failed to fund ${publicKey} within ${STARTUP_TIMEOUT_MS / 1000} seconds: ${
+            lastError instanceof Error ? lastError.message : String(lastError)
+        }`,
     );
 }
 

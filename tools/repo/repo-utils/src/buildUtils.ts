@@ -103,19 +103,15 @@ export const runCodeFormatters = async (
  * @param packagePath - The path to the package directory.
  */
 export const installDependencies = async (packagePath: string): Promise<void> => {
-    try {
-        console.log(`\n🔧 Deduping dependencies...`);
-        await runPnpm(['dedupe'], packagePath, false);
-        console.log(`\n🔧 Installing dependencies...`);
-        await runPnpm(['install'], packagePath, false);
-        console.log(`✅ Dependencies installed successfully`);
-    } catch (error) {
-        console.error(
-            `❌ Failed to install dependencies:`,
-            error instanceof Error ? error.message : error,
-        );
-        console.log(`💡 You can manually run 'pnpm install'`);
-    }
+    console.log(`\n🔧 Installing dependencies...`);
+    await runPnpm(
+        ['install', '--no-frozen-lockfile', '--filter', '!./migrated/**'],
+        packagePath,
+        false,
+    );
+    console.log(`\n🔧 Deduping dependencies...`);
+    await runPnpm(['dedupe'], packagePath, false);
+    console.log(`✅ Dependencies installed successfully`);
 };
 
 /**
@@ -154,10 +150,35 @@ export const runBuild = async (packagePath: string): Promise<void> => {
     }
 };
 
-export const generateContractsSnapshot = async (repoDirectory: string): Promise<void> => {
+export type GenerateContractsSnapshotOptions = {
+    /**
+     * Limit snapshot update to workspace packages under these directories (same filter shape as
+     * `directoriesToLint`). When omitted, turbo updates every package with
+     * `test:snapshot:update` — which is what made generator-build flake on unrelated packages
+     * (e.g. `contracts/protocol/sui/contracts`).
+     */
+    directories?: string[];
+};
+
+export const generateContractsSnapshot = async (
+    repoDirectory: string,
+    { directories }: GenerateContractsSnapshotOptions = {},
+): Promise<void> => {
     console.log(`\n🔧 Generating contracts snapshot...`);
+    const filters =
+        directories?.flatMap((directory) => [
+            '--filter',
+            toPnpmFilterPath(directory, repoDirectory),
+        ]) ?? [];
     try {
-        await runPnpm(['turbo:run', 'test:snapshot:update', '--continue'], repoDirectory, false);
+        // Verbose (inherit): `turbo-run.sh` merges task failure details onto stdout (`2>&1 | tee`).
+        // Non-verbose mode discards stdout, so snapshot failures collapsed to "exited with code 1".
+        // Same pattern as `runBuild` above.
+        await runPnpm(
+            ['turbo:run', 'test:snapshot:update', '--continue', ...filters],
+            repoDirectory,
+            true,
+        );
         console.log(`✅ Contracts snapshot generated successfully`);
     } catch (error) {
         console.error(

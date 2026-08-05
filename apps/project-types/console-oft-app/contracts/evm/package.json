@@ -2,6 +2,7 @@
     "name": "@layerzerolabs/console-oft-evm-contracts",
     "version": "0.0.0",
     "private": false,
+    "description": "Console OFT top-level EVM contracts",
     "license": "MIT",
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten && pnpm contract-sizes",

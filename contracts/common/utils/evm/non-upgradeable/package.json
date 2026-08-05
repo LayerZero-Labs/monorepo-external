@@ -2,7 +2,7 @@
     "name": "@layerzerolabs/utils-evm-contracts",
     "version": "0.0.0",
     "private": false,
-    "description": "LayerZero Labs reference EVM utility implementations",
+    "description": "LayerZero Labs utility EVM contracts",
     "license": "MIT",
     "scripts": {
         "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",

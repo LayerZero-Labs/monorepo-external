@@ -1,8 +1,18 @@
 import { createStellarTestEnv } from '@layerzerolabs/test-utils-stellar';
 
+/**
+ * Pin stellar/quickstart by multi-arch index digest (resolved from :latest on 2026-08-05).
+ * Avoids the private LayerZero ECR localnet snapshot from @layerzerolabs/localnet-image-builder.
+ */
+export const STELLAR_QUICKSTART_IMAGE =
+    'stellar/quickstart@sha256:ccb7e1a24c1d0878be4163836c863960445ffa670c382bdb39d4996f05c30130';
+
 export const env = createStellarTestEnv({
     containerName: 'stellar-protocol-sdk',
     hostPort: 8086,
+    dockerImage: STELLAR_QUICKSTART_IMAGE,
+    // RPC is on by default in current quickstart; --local selects the standalone network.
+    dockerCommand: ['--local'],
 });
 
 export const {

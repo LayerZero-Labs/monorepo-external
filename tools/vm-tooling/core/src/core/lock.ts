@@ -13,7 +13,7 @@ interface LockOptions {
 }
 
 const directory = join(homedir(), '.cache/vm-tooling/locks');
-const defaultOptions = { interval: 1000, timeout: 15 * 60_000 };
+const defaultOptions = { interval: 1000, timeout: 30 * 60_000 };
 const signals = ['SIGINT', 'SIGTERM', 'SIGHUP'] as const;
 
 export const buildLockFilePath = (key: string): string => join(directory, key);

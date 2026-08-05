@@ -2,7 +2,7 @@
     "name": "@layerzerolabs/proxy-v5-6-evm-contracts",
     "version": "0.0.0",
     "private": false,
-    "description": "",
+    "description": "OpenZeppelin v5.6 transparent proxy stack with two-step ownership: TransparentUpgradeableProxy2Step and ProxyAdmin2Step",
     "license": "MIT",
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten:all",
