@@ -252,6 +252,7 @@ allowBuilds:
   ssh2: false
   utf-8-validate: true
 overrides:
+  '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.4
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@react-spring/animated>@types/react': 19.2.6
