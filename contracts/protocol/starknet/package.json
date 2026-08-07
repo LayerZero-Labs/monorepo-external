@@ -23,8 +23,7 @@
         "clean": "rm -rf .turbo ./dist ./target ./node_modules && pnpm generated:clean",
         "generated:clean": "rm -rf ./target .snfoundry_cache ./src/generated",
         "lint": "lz-tool scarb fmt --check && lz-tool scarb lint --test",
-        "test": "lz-tool scarb test",
-        "update:contracts": "tools/update_contracts.sh"
+        "test": "lz-tool scarb test"
     },
     "devDependencies": {
         "@layerzerolabs/build-utils-starknet": "workspace:*",

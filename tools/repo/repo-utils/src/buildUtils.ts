@@ -29,7 +29,6 @@ const runPnpm = (args: string[], cwd: string, verbose: boolean): Promise<void> =
     });
 
 export type RunCodeFormattersOptions = {
-    directoriesToLint?: string[];
     skipFormatting?: boolean;
     skipLint?: boolean;
 };
@@ -42,35 +41,39 @@ const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
 };
 
 /**
- * Runs prettier on `filepath` and lint on the relevant package(s).
+ * Runs prettier and lint scoped to `paths`.
  *
- * @param filepath - The file or directory path to run prettier against.
- * @param packagePath - The package root used as the working directory for formatter commands.
+ * @param paths - File or directory paths to format and lint.
+ * @param packagePath - Working directory for formatter commands (workspace root or package root).
  * @param options - Optional formatter configuration.
- * @param options.directoriesToLint - When provided, lint runs against every workspace package
- *   located under these directories. When omitted, lint runs only against the package at `packagePath`.
  * @param options.skipFormatting - Skip prettier when true.
  * @param options.skipLint - Skip package lint commands when true.
  */
 export const runCodeFormatters = async (
-    filepath: string,
+    paths: string[],
     packagePath: string,
-    { directoriesToLint, skipFormatting = false, skipLint = false }: RunCodeFormattersOptions = {},
+    { skipFormatting = false, skipLint = false }: RunCodeFormattersOptions = {},
 ): Promise<void> => {
     if (skipFormatting && skipLint) {
         return;
     }
 
     if (!skipFormatting) {
-        await runPnpm(['prettier', '--write', filepath], packagePath, false);
+        await runPnpm(
+            ['prettier', '--write', '--cache', '--experimental-cli', ...paths],
+            packagePath,
+            false,
+        );
     }
 
     if (!skipLint) {
-        const filters =
-            directoriesToLint?.flatMap((directory) => [
-                '--filter',
-                toPnpmFilterPath(directory, packagePath),
-            ]) ?? [];
+        const filters = paths.flatMap((directory) => {
+            const relativePath = relative(packagePath, directory).split(sep).join('/');
+            if (!relativePath || relativePath === '.') {
+                return [];
+            }
+            return ['--filter', toPnpmFilterPath(directory, packagePath)];
+        });
         const isMultiPackage = filters.length > 0;
 
         try {
@@ -104,12 +107,6 @@ export const runCodeFormatters = async (
  */
 export const installDependencies = async (packagePath: string): Promise<void> => {
     console.log(`\n🔧 Installing dependencies...`);
-    await runPnpm(
-        ['install', '--no-frozen-lockfile', '--filter', '!./migrated/**'],
-        packagePath,
-        false,
-    );
-    console.log(`\n🔧 Deduping dependencies...`);
     await runPnpm(['dedupe'], packagePath, false);
     console.log(`✅ Dependencies installed successfully`);
 };
@@ -152,10 +149,9 @@ export const runBuild = async (packagePath: string): Promise<void> => {
 
 export type GenerateContractsSnapshotOptions = {
     /**
-     * Limit snapshot update to workspace packages under these directories (same filter shape as
-     * `directoriesToLint`). When omitted, turbo updates every package with
-     * `test:snapshot:update` — which is what made generator-build flake on unrelated packages
-     * (e.g. `contracts/protocol/sui/contracts`).
+     * Limit snapshot update to workspace packages under these directories. When omitted, turbo
+     * updates every package with `test:snapshot:update` — which is what made generator-build
+     * flake on unrelated packages (e.g. `contracts/protocol/sui/contracts`).
      */
     directories?: string[];
 };

@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import url from 'url';
 
@@ -47,6 +48,28 @@ export const resolvePathWithProjectDir = (targetPath: string, internal: boolean 
         return targetPath;
     }
     return resolve(findProjectDir(internal), targetPath);
+};
+
+/**
+ * Resolve an installed package's root directory from its npm name.
+ *
+ * Anchored at the cwd rather than this module so resolution walks the consuming package's
+ * node_modules, letting a build step reach a dependency's files without hardcoding relative
+ * paths.
+ */
+export const resolvePackageDir = (packageName: string): string => {
+    const req = createRequire(join(process.cwd(), 'package.json'));
+
+    try {
+        return dirname(req.resolve(`${packageName}/package.json`));
+    } catch (cause) {
+        throw new Error(
+            `Cannot resolve package "${packageName}" from ${process.cwd()}. Add it as a ` +
+                'dependency of the package running this command, and make sure it either omits ' +
+                'an "exports" map or exposes "./package.json" within it.',
+            { cause },
+        );
+    }
 };
 
 export const writeFile = async (path: string, content: string) => {

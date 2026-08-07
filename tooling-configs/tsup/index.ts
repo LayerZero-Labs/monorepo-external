@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 import type { Options } from 'tsup';
 
 const baseConfig: Partial<Options> = {
-    entry: ['src/**/*.ts', 'src/**/*.tsx'],
+    entry: ['src/**/*.ts', 'src/**/*.tsx', '!**/*.{test,spec}.{ts,tsx}'],
     // Build output configuration
     format: ['esm'],
     outDir: 'dist',
