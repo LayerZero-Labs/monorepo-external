@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { oneSigLeafSchema } from './onesig-leaf';
+import { oneSigBundleMetadataSchema } from './onesig-metadata';
 import { oneSigBundleSizeOverrideSchema } from './onesig-overrides';
 import { proposerSignatureSchema } from './onesig-proposer-signature';
 import { signerSignatureSchema } from './onesig-signer-signature';
@@ -21,7 +22,7 @@ export const oneSigEntitySchema = z.object({
         .optional()
         .describe('List of signatures of the signers'),
     leaves: z.array(oneSigLeafSchema).describe('List of leaves'),
-    metadata: z.record(z.any(), z.any()).optional().describe('Metadata for the OneSig'),
+    metadata: oneSigBundleMetadataSchema.optional().describe('Metadata for the OneSig'),
     bundlingOverride: oneSigBundleSizeOverrideSchema
         .optional()
         .describe('Override for the number of calls in a leaf'),

@@ -125,8 +125,8 @@ catalogs:
       specifier: 4.17.12
       version: 4.17.12
     '@types/node':
-      specifier: ^22.18.6
-      version: 22.19.1
+      specifier: ^24.13.3
+      version: 24.13.3
     '@types/semver':
       specifier: ^7.5.4
       version: 7.7.1
@@ -407,13 +407,13 @@ importers:
         version: 4.17.12
       '@types/node':
         specifier: 'catalog:'
-        version: 22.19.1
+        version: 24.13.3
       esbuild:
         specifier: 'catalog:'
         version: 0.25.4
       eslint:
         specifier: 'catalog:'
-        version: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+        version: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -428,10 +428,10 @@ importers:
         version: 0.6.8(@trivago/prettier-plugin-sort-imports@4.3.0(@vue/compiler-sfc@3.5.24)(prettier@3.6.2)(supports-color@8.1.1))(prettier@3.6.2)
       ts-node:
         specifier: 'catalog:'
-        version: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3)
+        version: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3)
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -443,7 +443,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@22.19.1)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   apps/oapp-app/contracts/evm/non-upgradeable:
     devDependencies:
@@ -567,7 +567,7 @@ importers:
     devDependencies:
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
+        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: 'catalog:'
         version: 3.0.168(0f0ffa785b4ea2e9c33a9b19a4b4f096)
@@ -597,7 +597,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: 'catalog:'
-        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.6.1
@@ -618,7 +618,7 @@ importers:
     devDependencies:
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
+        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: 'catalog:'
         version: 3.0.168(0f0ffa785b4ea2e9c33a9b19a4b4f096)
@@ -660,7 +660,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: 'catalog:'
-        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
       '@openzeppelin/contracts':
         specifier: 'catalog:'
         version: 5.6.1
@@ -697,7 +697,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   apps/oft-app/contracts/starknet/oft-mint-burn-starknet:
     dependencies:
@@ -719,7 +719,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   apps/oft-app/contracts/stellar/oft:
     dependencies:
@@ -841,7 +841,7 @@ importers:
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -850,7 +850,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   apps/project-types/console-oft-app/contracts/evm:
     devDependencies:
@@ -859,7 +859,7 @@ importers:
         version: link:../../../../../tools/vm-utils/evm/contract-sizes
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
+        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: catalog:console
         version: 3.0.168(0f0ffa785b4ea2e9c33a9b19a4b4f096)
@@ -904,7 +904,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: 'catalog:'
-        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
       '@openzeppelin/contracts':
         specifier: catalog:console
         version: 5.6.1
@@ -928,7 +928,7 @@ importers:
         version: link:../../../../../tools/vm-utils/evm/contract-sizes
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
+        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: catalog:console
         version: 3.0.168(0f0ffa785b4ea2e9c33a9b19a4b4f096)
@@ -973,7 +973,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: 'catalog:'
-        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
       '@openzeppelin/contracts':
         specifier: catalog:console
         version: 5.6.1
@@ -1016,7 +1016,7 @@ importers:
     devDependencies:
       '@layerzerolabs/hardhat-tron':
         specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
+        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/solhint-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/solhint
@@ -1028,7 +1028,7 @@ importers:
         version: link:../../../../../tools/vm-tooling/vm-tooling-evm
       '@matterlabs/hardhat-zksync-solc':
         specifier: 'catalog:'
-        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
+        version: 1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)
       '@openzeppelin/contracts':
         specifier: catalog:proxy-v5-6
         version: 5.6.1
@@ -1059,7 +1059,7 @@ importers:
         version: link:../../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   contracts/common/test-utils/evm:
     devDependencies:
@@ -1184,7 +1184,7 @@ importers:
         version: link:../../../tools/vm-tooling/vm-tooling-starknet
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   contracts/protocol/stellar/contracts:
     dependencies:
@@ -1234,7 +1234,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/common/common-concurrency-utils:
     devDependencies:
@@ -1246,10 +1246,10 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/common/common-encoding-utils:
     dependencies:
@@ -1268,10 +1268,10 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/common/common-node-utils:
     devDependencies:
@@ -1286,10 +1286,10 @@ importers:
         version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/framework/definitions/base-definitions:
     dependencies:
@@ -1317,10 +1317,10 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/framework/definitions/function-pointer:
     dependencies:
@@ -1336,10 +1336,10 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/framework/definitions/logger:
     dependencies:
@@ -1361,7 +1361,7 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   packages/framework/dependency-graph:
     devDependencies:
@@ -1373,7 +1373,7 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   packages/framework/dfs:
     dependencies:
@@ -1389,10 +1389,10 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/onesig/onesig-core:
     dependencies:
@@ -1423,19 +1423,19 @@ importers:
         version: 16.4.7
       eslint:
         specifier: 'catalog:'
-        version: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+        version: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/onesig/onesig-evm:
     devDependencies:
@@ -1519,7 +1519,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/onesig/onesig-evm-sdk:
     dependencies:
@@ -1544,19 +1544,19 @@ importers:
         version: link:../../../tooling-configs/typescript
       eslint:
         specifier: 'catalog:'
-        version: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+        version: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/onesig/onesig-model:
     dependencies:
@@ -1572,10 +1572,10 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/onesig/onesig-solana:
     dependencies:
@@ -1642,7 +1642,7 @@ importers:
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -1651,7 +1651,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/test-utils/stellar:
     dependencies:
@@ -1673,13 +1673,13 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/typescript-utils:
     devDependencies:
@@ -1691,10 +1691,10 @@ importers:
         version: link:../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/vms/stellar/ts-bindings-gen:
     dependencies:
@@ -1714,22 +1714,22 @@ importers:
         version: 9.39.1
       '@typescript-eslint/eslint-plugin':
         specifier: 'catalog:'
-        version: 8.49.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 8.49.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@typescript-eslint/parser':
         specifier: 'catalog:'
-        version: 8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       eslint-config-prettier:
         specifier: 'catalog:'
-        version: 10.1.8(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))
+        version: 10.1.8(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))
       eslint-config-turbo:
         specifier: 'catalog:'
-        version: 2.6.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(turbo@2.6.1)
+        version: 2.6.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(turbo@2.6.1)
       eslint-plugin-only-warn:
         specifier: 'catalog:'
         version: 1.1.0
       eslint-plugin-simple-import-sort:
         specifier: 'catalog:'
-        version: 12.1.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))
+        version: 12.1.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))
       espree:
         specifier: 'catalog:'
         version: 10.4.0
@@ -1746,7 +1746,7 @@ importers:
         version: link:../typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1755,7 +1755,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
-        version: 22.19.1
+        version: 24.13.3
       '@types/react':
         specifier: 19.2.6
         version: 19.2.6
@@ -1773,13 +1773,13 @@ importers:
         version: link:../typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/args:
     dependencies:
@@ -1795,10 +1795,10 @@ importers:
         version: link:../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/repo/depcheck:
     dependencies:
@@ -1838,7 +1838,7 @@ importers:
         version: 4.0.9
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -1847,7 +1847,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/repo/repo-utils:
     dependencies:
@@ -1869,7 +1869,7 @@ importers:
         version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
 
   tools/ts-command-line-args:
     dependencies:
@@ -1903,7 +1903,7 @@ importers:
         version: 2.0.3
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1964,7 +1964,7 @@ importers:
         version: 29.4.7(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.0.5(supports-color@8.1.1))(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.2)(jest-util@30.0.5)(jest@29.7.0(@types/node@25.9.5)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@25.9.5)(typescript@6.0.3)))(typescript@6.0.3)
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -1973,7 +1973,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-tooling/vm-tooling-evm:
     dependencies:
@@ -1992,7 +1992,7 @@ importers:
         version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -2001,7 +2001,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-tooling/vm-tooling-solana:
     dependencies:
@@ -2020,7 +2020,7 @@ importers:
         version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -2029,7 +2029,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-tooling/vm-tooling-starknet:
     dependencies:
@@ -2057,7 +2057,7 @@ importers:
         version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -2066,7 +2066,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-tooling/vm-tooling-stellar:
     dependencies:
@@ -2100,7 +2100,7 @@ importers:
         version: link:../../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
@@ -2109,7 +2109,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-utils/common/deterministic-zip:
     dependencies:
@@ -2125,10 +2125,10 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-utils/evm/contract-sizes:
     devDependencies:
@@ -2143,13 +2143,13 @@ importers:
         version: 3.6.2
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-utils/rust/build-utils:
     dependencies:
@@ -2171,13 +2171,13 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
   tools/vm-utils/starknet/build-utils:
     dependencies:
@@ -2205,10 +2205,10 @@ importers:
         version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
 
 packages:
 
@@ -4185,11 +4185,11 @@ packages:
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
-  '@types/node@22.19.1':
-    resolution: {integrity: sha512-LCCV0HdSZZZb34qifBsyWlUmok6W7ouER+oQIGBScS8EsZsQbrtFTUrDX4hOl+CS6p7cnNC4td+qrSVGSCTUfQ==}
-
   '@types/node@22.7.5':
     resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
+
+  '@types/node@24.13.3':
+    resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
   '@types/node@25.9.5':
     resolution: {integrity: sha512-OScDchr2fwuUmWdf4kZ9h7PcJiYDVInhJizG/biAq3cAvqwYktuy/TYGGdZNMtNTFUP7rnb0NU4TUdm82kt4Rg==}
@@ -6109,8 +6109,8 @@ packages:
       node-notifier:
         optional: true
 
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
+  jiti@2.7.0:
+    resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
 
   joycon@3.1.1:
@@ -7671,8 +7671,8 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
@@ -8634,9 +8634,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.2':
     optional: true
 
-  '@eslint-community/eslint-utils@4.9.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))':
+  '@eslint-community/eslint-utils@4.9.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))':
     dependencies:
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
@@ -9280,7 +9280,7 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
-  '@layerzerolabs/hardhat-tron@3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)':
+  '@layerzerolabs/hardhat-tron@3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@ethersproject/abstract-signer': 5.8.0
       '@ethersproject/address': 5.8.0
@@ -9300,7 +9300,7 @@ snapshots:
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       form-data: 4.0.6
       fs-extra: 11.3.4
-      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
+      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
       hardhat-deploy: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       match-all: 1.2.7
       murmur-128: 0.2.1
@@ -9420,16 +9420,16 @@ snapshots:
 
   '@layerzerolabs/utils-upgradeable-evm-contracts@1.2.20': {}
 
-  '@matterlabs/hardhat-zksync-solc@1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)':
+  '@matterlabs/hardhat-zksync-solc@1.5.1(encoding@0.1.13)(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))(supports-color@8.1.1)':
     dependencies:
-      '@matterlabs/hardhat-zksync-telemetry': 1.1.1(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))
+      '@matterlabs/hardhat-zksync-telemetry': 1.1.1(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))
       '@nomiclabs/hardhat-docker': 2.0.2(encoding@0.1.13)(supports-color@8.1.1)
       chai: 4.5.0
       chalk: 4.1.2
       debug: 4.4.3(supports-color@8.1.1)
       dockerode: 4.0.9(supports-color@8.1.1)
       fs-extra: 11.3.4
-      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
+      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
       lodash: 4.18.1
       proper-lockfile: 4.1.2
       semver: 7.8.1
@@ -9460,10 +9460,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@matterlabs/hardhat-zksync-telemetry@1.1.1(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))':
+  '@matterlabs/hardhat-zksync-telemetry@1.1.1(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@matterlabs/zksync-telemetry-js': link:packages/zksync-telemetry-js-stub
-      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
+      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10)
 
   '@matterlabs/hardhat-zksync-telemetry@1.1.1(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@25.9.5)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10))':
     dependencies:
@@ -10244,13 +10244,13 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
-  '@types/node@22.19.1':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@22.7.5':
     dependencies:
       undici-types: 6.19.8
+
+  '@types/node@24.13.3':
+    dependencies:
+      undici-types: 7.18.2
 
   '@types/node@25.9.5':
     dependencies:
@@ -10290,15 +10290,15 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@typescript-eslint/eslint-plugin@8.49.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/eslint-plugin@8.49.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@typescript-eslint/scope-manager': 8.49.0
-      '@typescript-eslint/type-utils': 8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@typescript-eslint/type-utils': 8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.49.0
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       ignore: 7.0.5
       natural-compare: 1.4.0
       ts-api-utils: 2.1.0(typescript@6.0.3)
@@ -10306,14 +10306,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.49.0
       '@typescript-eslint/types': 8.49.0
       '@typescript-eslint/typescript-estree': 8.49.0(supports-color@8.1.1)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.49.0
       debug: 4.4.3(supports-color@8.1.1)
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -10336,13 +10336,13 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  '@typescript-eslint/type-utils@8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/type-utils@8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.49.0
       '@typescript-eslint/typescript-estree': 8.49.0(supports-color@8.1.1)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       debug: 4.4.3(supports-color@8.1.1)
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       ts-api-utils: 2.1.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -10365,13 +10365,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.49.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/utils@8.49.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))
       '@typescript-eslint/scope-manager': 8.49.0
       '@typescript-eslint/types': 8.49.0
       '@typescript-eslint/typescript-estree': 8.49.0(supports-color@8.1.1)(typescript@6.0.3)
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -10396,7 +10396,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@22.19.1)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
     optional: true
 
   '@vitest/expect@4.1.10':
@@ -10408,21 +10408,21 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.10(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitest/mocker@4.1.10(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
-  '@vitest/mocker@4.1.10(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitest/mocker@4.1.10(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -10451,7 +10451,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@22.19.1)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
     optional: true
 
   '@vitest/utils@4.1.10':
@@ -11516,26 +11516,26 @@ snapshots:
     optionalDependencies:
       source-map: 0.2.0
 
-  eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1)):
+  eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1)):
     dependencies:
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
 
-  eslint-config-turbo@2.6.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(turbo@2.6.1):
+  eslint-config-turbo@2.6.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(turbo@2.6.1):
     dependencies:
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
-      eslint-plugin-turbo: 2.6.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(turbo@2.6.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
+      eslint-plugin-turbo: 2.6.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(turbo@2.6.1)
       turbo: 2.6.1
 
   eslint-plugin-only-warn@1.1.0: {}
 
-  eslint-plugin-simple-import-sort@12.1.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1)):
+  eslint-plugin-simple-import-sort@12.1.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1)):
     dependencies:
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
 
-  eslint-plugin-turbo@2.6.1(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))(turbo@2.6.1):
+  eslint-plugin-turbo@2.6.1(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))(turbo@2.6.1):
     dependencies:
       dotenv: 16.0.3
-      eslint: 9.39.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
       turbo: 2.6.1
 
   eslint-scope@8.4.0:
@@ -11547,9 +11547,9 @@ snapshots:
 
   eslint-visitor-keys@4.2.1: {}
 
-  eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1):
+  eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.1(jiti@2.6.1)(supports-color@8.1.1))
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.1(jiti@2.7.0)(supports-color@8.1.1))
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.21.1(supports-color@8.1.1)
       '@eslint/config-helpers': 0.4.2
@@ -11584,7 +11584,7 @@ snapshots:
       natural-compare: 1.4.0
       optionator: 0.9.4
     optionalDependencies:
-      jiti: 2.6.1
+      jiti: 2.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -12074,7 +12074,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10):
+  hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3))(typescript@6.0.3)(utf-8-validate@5.0.10):
     dependencies:
       '@ethereumjs/util': 9.1.0
       '@ethersproject/abi': 5.8.0
@@ -12116,7 +12116,7 @@ snapshots:
       uuid: 8.3.2
       ws: 7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
-      ts-node: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3)
+      ts-node: 10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
       - bufferutil
@@ -12799,7 +12799,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jiti@2.6.1:
+  jiti@2.7.0:
     optional: true
 
   joycon@3.1.1: {}
@@ -13395,11 +13395,11 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-load-config@6.0.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2):
+  postcss-load-config@6.0.1(jiti@2.7.0)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
-      jiti: 2.6.1
+      jiti: 2.7.0
       postcss: 8.5.6
       tsx: 4.21.0
       yaml: 2.8.2
@@ -14222,14 +14222,14 @@ snapshots:
       esbuild: 0.27.2
       jest-util: 30.0.5
 
-  ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@22.19.1)(typescript@6.0.3):
+  ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@24.13.3)(typescript@6.0.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.9
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 22.19.1
+      '@types/node': 24.13.3
       acorn: 8.16.0
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -14271,7 +14271,7 @@ snapshots:
 
   tsort@0.0.1: {}
 
-  tsup@8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2):
+  tsup@8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(jiti@2.7.0)(postcss@8.5.6)(supports-color@8.1.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.2):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.2)
       cac: 6.7.14
@@ -14282,7 +14282,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2)
+      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2)
       resolve-from: 5.0.0
       rollup: 4.59.0
       source-map: 0.7.6
@@ -14379,7 +14379,7 @@ snapshots:
 
   undici-types@6.19.8: {}
 
-  undici-types@6.21.0: {}
+  undici-types@7.18.2: {}
 
   undici-types@7.24.6: {}
 
@@ -14424,7 +14424,7 @@ snapshots:
 
   validator@13.15.26: {}
 
-  vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
+  vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
@@ -14433,15 +14433,15 @@ snapshots:
       rollup: 4.59.0
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 22.19.1
+      '@types/node': 24.13.3
       fsevents: 2.3.3
-      jiti: 2.6.1
+      jiti: 2.7.0
       lightningcss: 1.30.1
       terser: 5.44.1
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
+  vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
@@ -14452,16 +14452,16 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.9.5
       fsevents: 2.3.3
-      jiti: 2.6.1
+      jiti: 2.7.0
       lightningcss: 1.30.1
       terser: 5.44.1
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@22.19.1)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)):
+  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/mocker': 4.1.10(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -14478,21 +14478,21 @@ snapshots:
       tinyexec: 1.0.4
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.1
-      vite: 6.4.3(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
-      '@types/node': 22.19.1
+      '@types/node': 24.13.3
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
       '@vitest/ui': 4.1.10(vitest@4.1.10)
       jsdom: 25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)):
+  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/mocker': 4.1.10(vite@6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -14509,7 +14509,7 @@ snapshots:
       tinyexec: 1.0.4
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.1
-      vite: 6.4.3(@types/node@25.9.5)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 6.4.3(@types/node@25.9.5)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1

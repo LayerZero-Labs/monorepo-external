@@ -61,6 +61,14 @@ export enum OneSigCantonCallTag {
     SetMinFee = 'OpSetMinFee',
     SetProtocolLedgerTimeValidityPeriod = 'OpSetProtocolLedgerTimeValidityPeriod',
     SetOneSigLedgerTimeValidityPeriod = 'OpSetOneSigLedgerTimeValidityPeriod',
+    SetMinPayoutValue = 'OpSetMinPayoutValue',
+    Skip = 'OpSkip',
+    Burn = 'OpBurn',
+    Clear = 'OpClear',
+    Nilify = 'OpNilify',
+    ProposeDefaultAdmin = 'OpProposeDefaultAdmin',
+    CancelProposeDefaultAdmin = 'OpCancelProposeDefaultAdmin',
+    AcceptDefaultAdmin = 'OpAcceptDefaultAdmin',
 }
 
 /**
@@ -97,6 +105,16 @@ export const CantonOAppIdSchema = z.object({
     id: z.string(),
 });
 export type CantonOAppId = z.infer<typeof CantonOAppIdSchema>;
+
+/**
+ * LayerZero packet origin, mirroring DAML `Types.Origin` (srcEid, sender, nonce).
+ */
+export const CantonOriginSchema = z.object({
+    srcEid: IntLikeSchema,
+    sender: z.string(),
+    nonce: IntLikeSchema,
+});
+export type CantonOrigin = z.infer<typeof CantonOriginSchema>;
 
 /**
  * A rate-limiter config entry (DAML `RateLimitConfigEntry`): the four enable
@@ -287,6 +305,48 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
         dso: CantonPartyIdSchema,
     }),
     z.object({
+        tag: z.literal(OneSigCantonCallTag.Skip),
+        oappId: CantonOAppIdSchema,
+        srcEid: IntLikeSchema,
+        sender: z.string(),
+        nonce: IntLikeSchema,
+        requestObservers: z.array(CantonPartyIdSchema),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.Burn),
+        oappId: CantonOAppIdSchema,
+        srcEid: IntLikeSchema,
+        sender: z.string(),
+        nonce: IntLikeSchema,
+        payloadHash: z.string(),
+        requestObservers: z.array(CantonPartyIdSchema),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.Clear),
+        oappId: CantonOAppIdSchema,
+        origin: CantonOriginSchema,
+        guid: z.string(),
+        lzMessage: z.string(),
+        requestObservers: z.array(CantonPartyIdSchema),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.Nilify),
+        oappId: CantonOAppIdSchema,
+        srcEid: IntLikeSchema,
+        sender: z.string(),
+        nonce: IntLikeSchema,
+        payloadHash: z.string(),
+        requestObservers: z.array(CantonPartyIdSchema),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
+    }),
+    z.object({
         tag: z.literal(OneSigCantonCallTag.RateLimiterSetDefault),
         oappId: CantonOAppIdSchema,
         newDefaultConfig: RateLimitConfigEntrySchema,
@@ -423,6 +483,27 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
     z.object({
         tag: z.literal(OneSigCantonCallTag.SetOneSigLedgerTimeValidityPeriod),
         newLedgerTimeValidityPeriod: CantonMicrosSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.SetMinPayoutValue),
+        scope: CantonScopeSchema,
+        newMinPayoutValue: DecimalLikeSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.ProposeDefaultAdmin),
+        scope: CantonScopeSchema,
+        assignee: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.CancelProposeDefaultAdmin),
+        scope: CantonScopeSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.AcceptDefaultAdmin),
+        scope: CantonScopeSchema,
+        endpointAddress: z.string(),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
     }),
 ]);
 export type OneSigCantonCall = z.infer<typeof oneSigCantonCallSchema>;

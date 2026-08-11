@@ -97,3 +97,6 @@ terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
 .terraform
+
+# local vercel connection data, not build artifacts
+.vercel

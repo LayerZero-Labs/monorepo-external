@@ -66,8 +66,13 @@
 
                 // solana, stellar, starknet
                 "target/**",
-                "!target/incremental/**",
-                "!target/*/incremental/**",
+                "!target/**/incremental/**",
+                "!target/**/.fingerprint/**",
+                "!target/**/*.sierra.json",
+
+                // starknet: scarb compiles tests under the dev profile, so only the
+                // release profile holds build artifacts
+                "!target/dev/**",
 
                 // sui, iota, ton, aptos
                 "build/**",
