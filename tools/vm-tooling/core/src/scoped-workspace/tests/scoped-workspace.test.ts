@@ -160,29 +160,29 @@ describe(resolveWorkspaceDependencyGraph, () => {
         const repo = createRepo('nested-current');
         const current = join(repo, 'packages', 'onesig', 'onesig-starknet');
         const contracts = join(current, 'contracts');
-        const dep = join(repo, 'packages', 'protocol-starknet-v2');
+        const dep = join(repo, 'packages', 'protocol-v2-starknet-contracts');
 
         createPackage(current, '@layerzerolabs/onesig-starknet', {
             'contracts/Scarb.toml': '[package]\nname = "onesig"\n',
         });
-        createPackage(dep, '@layerzerolabs/protocol-starknet-v2');
+        createPackage(dep, '@layerzerolabs/protocol-v2-starknet-contracts');
         mkdirSync(contracts, { recursive: true });
         writeLockfile(
             repo,
             `
   packages/onesig/onesig-starknet:
     devDependencies:
-      '@layerzerolabs/protocol-starknet-v2':
+      '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../protocol-starknet-v2
+        version: link:../../protocol-v2-starknet-contracts
 
   .:
     devDependencies:
-      '@layerzerolabs/protocol-starknet-v2':
+      '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:packages/protocol-starknet-v2
+        version: link:packages/protocol-v2-starknet-contracts
 
-  packages/protocol-starknet-v2:
+  packages/protocol-v2-starknet-contracts:
     devDependencies: {}
 `,
         );
@@ -198,9 +198,9 @@ describe(resolveWorkspaceDependencyGraph, () => {
             dependencyGraph.includedWorkspaceDependencies.map(
                 (dependency) => dependency.relativePath,
             ),
-        ).toEqual(['packages/protocol-starknet-v2']);
+        ).toEqual(['packages/protocol-v2-starknet-contracts']);
         expect(dependencyGraph.rootNodeModulesDependencyNames).toEqual([
-            '@layerzerolabs/protocol-starknet-v2',
+            '@layerzerolabs/protocol-v2-starknet-contracts',
         ]);
     });
 

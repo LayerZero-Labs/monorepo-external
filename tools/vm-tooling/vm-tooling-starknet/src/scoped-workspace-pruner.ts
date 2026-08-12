@@ -38,8 +38,9 @@ export const createStarknetScopedWorkspacePruner = (): ScopedWorkspacePruner => 
         const includedPackageCount = Object.keys(packagePatterns).length;
 
         // Starknet contracts use Scarb path dependencies into node_modules. For example, the OFT
-        // Scarb.toml imports @layerzerolabs/protocol-starknet-v2/layerzero. Keep the Scarb packages
-        // behind those paths through packagePatterns, and skip every other workspace dependency.
+        // Scarb.toml imports @layerzerolabs/protocol-v2-starknet-contracts/layerzero. Keep the
+        // Scarb packages behind those paths through packagePatterns, and skip every other
+        // workspace dependency.
         return {
             patterns: ['!**/**'],
             packagePatterns,

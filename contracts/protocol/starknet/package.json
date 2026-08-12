@@ -1,5 +1,5 @@
 {
-    "name": "@layerzerolabs/protocol-starknet-v2",
+    "name": "@layerzerolabs/protocol-v2-starknet-contracts",
     "version": "0.0.0",
     "private": false,
     "description": "Starknet implementation of LayerZero protocol v2",

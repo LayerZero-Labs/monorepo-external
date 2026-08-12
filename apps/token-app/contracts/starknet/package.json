@@ -32,7 +32,7 @@
         "test": "lz-tool scarb test"
     },
     "dependencies": {
-        "@layerzerolabs/protocol-starknet-v2": "workspace:*"
+        "@layerzerolabs/protocol-v2-starknet-contracts": "workspace:*"
     },
     "devDependencies": {
         "@layerzerolabs/build-utils-starknet": "workspace:*",
@@ -46,6 +46,6 @@
         "registry": "https://registry.npmjs.org/"
     },
     "implicitDependencies": {
-        "@layerzerolabs/protocol-starknet-v2": "workspace:*"
+        "@layerzerolabs/protocol-v2-starknet-contracts": "workspace:*"
     }
 }
