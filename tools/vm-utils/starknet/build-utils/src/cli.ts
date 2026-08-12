@@ -2,9 +2,9 @@
 /**
  * CLI for generating Starknet contract verification artifact at build time
  *
- * Usage: generate-starknet-verification --package <package> [--package <package>...] --path <output-dir>
+ * Usage: generate-starknet-verification --scarb-package <package> --path <output-dir>
  *
- * Example: generate-starknet-verification --package oft --package oft_adapter --package oft_mint_burn --path src/generated/verification
+ * Example: generate-starknet-verification --scarb-package oft_adapter --path src/generated/verification
  */
 
 import * as fs from 'fs/promises';
@@ -21,22 +21,20 @@ import {
 } from './starknetSourceCollector';
 
 const ArgsSchema = z.object({
-    package: z
-        .array(z.string().min(1, 'Package name cannot be empty'))
-        .min(1, 'At least one package is required'),
+    'scarb-package': z.string().min(1, 'Scarb package name cannot be empty'),
     path: z.string().min(1, 'Output path cannot be empty'),
 });
 
+type VerificationCliArgs = z.infer<typeof ArgsSchema>;
+
 const main = async (): Promise<void> => {
-    const args = parse({
+    const args = parse<VerificationCliArgs>({
         header: 'Generate Starknet Verification Artifact',
         description: 'Generate contract verification artifact for Starknet packages at build time',
         args: {
-            package: {
+            'scarb-package': {
                 type: String,
-                alias: 'p',
-                multiple: true,
-                description: 'Scarb package name(s) to generate verification artifact for',
+                description: 'Scarb package name to generate verification artifact for',
             },
             path: {
                 type: String,
@@ -47,84 +45,55 @@ const main = async (): Promise<void> => {
 
     const validationResult = ArgsSchema.safeParse(args);
     if (!validationResult.success) {
-        console.error('Validation error:');
-        for (const issue of validationResult.error.issues) {
-            console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
-        }
-        process.exit(1);
+        throw new Error(`Invalid arguments:\n${z.prettifyError(validationResult.error)}`);
     }
 
-    const { package: requestedPackages, path: outputDir } = validationResult.data;
+    const { 'scarb-package': scarbPackage, path: outputDir } = validationResult.data;
 
-    const rootDir = process.cwd();
-    const availablePackages = await findScarbPackages(rootDir);
+    const scarbWorkspaceRoot = process.cwd();
+    const availablePackages = await findScarbPackages(scarbWorkspaceRoot);
+    const packagePath = availablePackages.get(scarbPackage);
 
-    console.log(`Generating verification artifact for packages: ${requestedPackages.join(', ')}`);
-    console.log(`Root directory: ${rootDir}`);
+    if (!packagePath) {
+        throw new Error(
+            `Scarb package "${scarbPackage}" not found in ${scarbWorkspaceRoot}. ` +
+                `Available: ${[...availablePackages.keys()].join(', ')}`,
+        );
+    }
+
+    console.log(`Generating verification artifact for Scarb package: ${scarbPackage}`);
+    console.log(`Scarb workspace root: ${scarbWorkspaceRoot}`);
+    console.log(`Package path: ${packagePath}`);
     console.log(`Output directory: ${outputDir}`);
-    console.log(`Available packages: ${[...availablePackages.keys()].join(', ')}`);
 
-    const absoluteOutputDir = path.resolve(rootDir, outputDir);
+    const absoluteOutputDir = path.resolve(scarbWorkspaceRoot, outputDir);
     await fs.mkdir(absoluteOutputDir, { recursive: true });
 
-    const processedPackages: string[] = [];
+    const outputPath = path.join(absoluteOutputDir, `${scarbPackage}.ts`);
 
-    for (const packageName of requestedPackages) {
-        console.log(`\nProcessing package: ${packageName}`);
+    try {
+        const snapshot = await prepareContractVerificationArtifact({
+            packagePath,
+            workspaceRoot: scarbWorkspaceRoot,
+        });
 
-        const packagePath = availablePackages.get(packageName);
-        if (!packagePath) {
-            console.error(
-                `  ✗ Package "${packageName}" not found. Available: ${[...availablePackages.keys()].join(', ')}`,
-            );
-            process.exit(1);
-        }
-
-        console.log(`  Package path: ${packagePath}`);
-
-        try {
-            const snapshot = await prepareContractVerificationArtifact({
-                packagePath,
-                workspaceRoot: rootDir,
-            });
-
-            const outputFileName = generateVerificationFileName(packageName);
-            const outputPath = path.join(absoluteOutputDir, outputFileName);
-
-            await fs.writeFile(outputPath, generateTypedExport(snapshot));
-            console.log(`  ✓ Generated: ${outputPath}`);
-            console.log(`    Sources collected: ${Object.keys(snapshot.sources).length}`);
-            console.log(`    Compiler version: ${snapshot.compilerVersion}`);
-
-            processedPackages.push(packageName);
-        } catch (error) {
-            console.error(`  ✗ Failed to process ${packageName}:`, error);
-            process.exit(1);
-        }
+        await fs.writeFile(outputPath, generateTypedExport(snapshot));
+        console.log(`\n✓ Generated: ${outputPath}`);
+        console.log(`  Sources collected: ${Object.keys(snapshot.sources).length}`);
+        console.log(`  Compiler version: ${snapshot.compilerVersion}`);
+    } catch (cause) {
+        throw new Error(`Failed to process Scarb package "${scarbPackage}"`, { cause });
     }
 
+    const exportName = `${generatePackageName(scarbPackage.replace(/_/g, '-'), PackageNameCaseOption.CAMEL)}VerificationArtifact`;
     const tsBarrelPath = path.join(absoluteOutputDir, 'index.ts');
-    const tsBarrelContent = processedPackages
-        .map((packageName) => {
-            const pkgFileName = generateVerificationFileName(packageName);
-            const baseName = pkgFileName.replace(/\.ts$/, '');
-            const exportName = `${generatePackageName(packageName.replace(/_/g, '-'), PackageNameCaseOption.CAMEL)}VerificationArtifact`;
-            return `export { default as ${exportName} } from './${baseName}';`;
-        })
-        .join('\n');
 
-    await fs.writeFile(tsBarrelPath, tsBarrelContent + '\n');
+    await fs.writeFile(
+        tsBarrelPath,
+        `export { default as ${exportName} } from './${scarbPackage}';\n`,
+    );
     console.log(`\n✓ Generated TypeScript barrel: ${tsBarrelPath}`);
     console.log('\nVerification info generation complete!');
-};
-
-main().catch((error) => {
-    console.error('Fatal error:', error);
-    process.exit(1);
-});
-
-const generateVerificationFileName = (packageName: string): string => {
-    return `${packageName}.ts`;
 };
 
 const generateTypedExport = (snapshot: StarknetSourceSnapshot): string => {
@@ -135,3 +104,8 @@ const verificationArtifact: StarknetSourceSnapshot = ${JSON.stringify(snapshot, 
 export default verificationArtifact;
 `;
 };
+
+main().catch((error) => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+});

@@ -8,13 +8,19 @@ export { createStarknetScopedWorkspacePruner } from './scoped-workspace-pruner';
 export const main = (): Promise<void> =>
     runCli({ tools, images, versionCombinations }, (program) => {
         const extra = program.command('extra').description('Extra commands for VM tooling');
+        const starknet = extra.command('starknet');
 
-        extra
-            .command('starknet')
+        starknet
             .command('build-typescript-sdk')
             .description('Generate TypeScript SDK for Starknet')
-            .argument('<package-name>', 'Scarb package name')
+            .argument('<scarb-package>', 'Scarb package name')
             .argument('<target-directory>', 'Scarb target directory')
             .argument('<src-directory>', 'TypeScript source directory')
-            .action(starknetCommands.buildTypescriptSdk);
+            .action((scarbPackage: string, targetDirectory: string, srcDirectory: string) =>
+                starknetCommands.buildTypescriptSdk({
+                    scarbPackage,
+                    targetDirectory,
+                    srcDirectory,
+                }),
+            );
     });

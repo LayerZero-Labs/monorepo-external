@@ -249,8 +249,8 @@ overrides:
   '@types/react': 19.2.6
   '@types/react-dom': 19.2.3
   adm-zip: ^0.6.0
-  axios@^0: ^0.32.0
-  axios@^1: ^1.16.0
+  axios@^0: ^0.33.0
+  axios@^1: ^1.18.0
   cmdk>@types/react: 19.2.6
   elliptic: ^6.6.1
   ethers@^5: ^5.8.0
@@ -265,7 +265,7 @@ overrides:
   handlebars: 4.7.9
   hardhat: 2.27.0
   hardhat-deploy: ^0.12.4
-  immutable@^4: ^4.3.8
+  immutable@^4: ^4.3.9
   lodash: ^4.18.0
   lucide-react>@types/react: 19.2.6
   minimatch@^3: ^3.1.4
