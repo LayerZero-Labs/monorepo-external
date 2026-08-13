@@ -225,7 +225,6 @@ catalogs:
     zod: ^3.25.76
   ui-monorepo-default:
     '@types/node': 18.0.0
-    ethers: ^5.7.0
 allowBuilds:
   '@stellar/stellar-sdk': false
   '@swc/core': true

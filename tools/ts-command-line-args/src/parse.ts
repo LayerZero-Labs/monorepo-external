@@ -132,7 +132,8 @@ function resolveExitCode<T>(
         case 'function':
             return options.processExitCode(reason, passedArgs, missingArgs as any);
         default:
-            return 0;
+            // Requesting the usage guide is a success; missing arguments are a usage error.
+            return reason === 'usageGuide' ? 0 : 1;
     }
 }
 

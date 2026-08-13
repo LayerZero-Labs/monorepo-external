@@ -213,7 +213,7 @@ export interface ArgsParseOptions<T> extends UsageGuideOptions {
 
     /**
      * sets the exit code of the process when exiting early due to missing args or showing usage guide
-     * 0 will be used for an exit code if this is not specified.
+     * If this is not specified, showing the usage guide exits with 0 and missing args exit with 1.
      */
     processExitCode?: number | ProcessExitCodeFunction<T>;
 
