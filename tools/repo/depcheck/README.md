@@ -135,6 +135,9 @@ pnpm --filter @layerzerolabs/depcheck run depcheck catalogize \
 | `--only <name>`         | Check only specific package(s) | `--only @layerzerolabs/vm-tooling`  |
 | `--dependencies <deps>` | Only catalogize specific deps  | `--dependencies "react,typescript"` |
 
+A package whose exact version pins are deliberate opts out with `catalogize` in its
+`.depcheckrc`, see below.
+
 ---
 
 ### `export` - Export to External Repo
@@ -232,6 +235,25 @@ pnpm --filter @layerzerolabs/depcheck run depcheck analyze-imports \
 | `--ignore <pattern>`              | Ignore packages                | `--ignore test-packages`           |
 | `--no-regex`                      | Disable regex pattern matching | `--no-regex`                       |
 | `--ignore-patterns <patterns...>` | Glob patterns to ignore        | `--ignore-patterns "docker/**"`    |
+
+---
+
+## Per-Package Configuration
+
+A package configures depcheck through a `.depcheckrc` file next to its `package.json`:
+
+```json
+{
+    "ignores": ["@ui-internal/*"],
+    "catalogize": false
+}
+```
+
+| Key          | Default | Description                                                                      |
+| ------------ | ------- | -------------------------------------------------------------------------------- |
+| `ignores`    | `[]`    | Dependencies to hide from the unused and missing analysis                        |
+| `catalogize` | `true`  | Set to `false` to keep every version specifier of the package out of the catalog |
+| `_comment`   | —       | Free text explaining the entries above, since JSON carries no comments           |
 
 ---
 

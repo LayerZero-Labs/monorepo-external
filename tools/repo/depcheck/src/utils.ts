@@ -5,7 +5,14 @@ import path from 'path';
 import util from 'util';
 
 import type { Graph } from './graph';
-import type { Catalog, PackageJson, PnpmPackageObject, PnpmWorkspace } from './types';
+import type {
+    Catalog,
+    DepcheckConfig,
+    PackageJson,
+    PnpmPackageObject,
+    PnpmWorkspace,
+} from './types';
+import { depcheckConfig } from './types';
 
 let cachedPnpmLs: {
     pnpmLs: PnpmPackageObject[];
@@ -126,6 +133,14 @@ export const getPnpmWorkspace = async () => {
         await fs.promises.readFile(path.join(rootPackage.path, 'pnpm-workspace.yaml'), 'utf-8'),
     ) as PnpmWorkspace;
     return pnpmWorkspace;
+};
+
+export const getDepcheckConfig = async (packagePath: string): Promise<DepcheckConfig> => {
+    const configPath = path.join(packagePath, '.depcheckrc');
+
+    return (await fs.promises.stat(configPath).catch(() => null))
+        ? depcheckConfig.parse(JSON.parse(await fs.promises.readFile(configPath, 'utf-8')))
+        : {};
 };
 
 /**

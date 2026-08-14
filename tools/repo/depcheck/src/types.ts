@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export interface PackageJson {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
@@ -14,6 +16,14 @@ export interface PnpmPackageObject {
     name: string;
     path: string;
 }
+
+export const depcheckConfig = z.strictObject({
+    ignores: z.array(z.string()).optional(),
+    catalogize: z.boolean().optional(),
+    _comment: z.string().optional(),
+});
+
+export type DepcheckConfig = z.infer<typeof depcheckConfig>;
 
 export type VersionType = 'major' | 'minor' | 'patch' | 'none';
 export type Catalog = Record<string, string>;

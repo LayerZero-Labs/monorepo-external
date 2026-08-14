@@ -17,6 +17,7 @@ vi.mock('../src/utils', () => ({
     getCachedCatalog: vi.fn(),
     getPnpmLs: vi.fn(),
     execPromise: vi.fn(),
+    getDepcheckConfig: vi.fn().mockResolvedValue({}),
 }));
 
 // Mock depcheck

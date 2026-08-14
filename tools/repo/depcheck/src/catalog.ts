@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import type { Catalog, PackageJson, PnpmPackageObject } from './types';
-import { getCatalog, writeCatalog } from './utils';
+import { getCatalog, getDepcheckConfig, writeCatalog } from './utils';
 
 export const catalogize = async (
     packageObject: PnpmPackageObject,
@@ -12,6 +12,11 @@ export const catalogize = async (
     const packageJson = JSON.parse(
         await fs.readFile(path.join(packageObject.path, 'package.json'), 'utf-8'),
     ) as PackageJson;
+
+    if ((await getDepcheckConfig(packageObject.path)).catalogize === false) {
+        return { throwError: false, changed: false, resultPackageJson: packageJson };
+    }
+
     const deps = packageJson.dependencies || {};
     const devDeps = packageJson.devDependencies || {};
     const implicitDeps = packageJson.implicitDependencies || {};

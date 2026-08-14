@@ -7,7 +7,7 @@ import { catalogize } from './catalog';
 import { runPackagesInWorkers, shouldUseWorkers } from './parallel';
 import { safeRegexMatch } from './safeRegex';
 import type { Catalog, PackageJson, PnpmPackageObject } from './types';
-import { execPromise, getCachedCatalog, getCatalog, getPnpmLs } from './utils';
+import { execPromise, getCachedCatalog, getCatalog, getDepcheckConfig, getPnpmLs } from './utils';
 
 const CONCURRENCY_LIMIT = 20;
 const LAYERZERO_PACKAGE_PREFIX = '@layerzerolabs/';
@@ -46,7 +46,7 @@ export const validateCatalog = async (only?: string) => {
     // Catalog validation reads each package.json from disk (see catalogize), so
     // it only needs the shallow workspace listing, not the resolved dep tree.
     const { pnpmLs, pnpmLsObject } = await getPnpmLs({ workspacePackagesOnly: true });
-    const packages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root' && !isLegacyPackage(x));
+    const packages = pnpmLs.map((p) => p.name).filter((x) => x !== 'root');
     const targets = only
         ? packages.filter((n) => n === only || safeRegexMatch({ str: n, pattern: only }))
         : packages;
@@ -537,24 +537,13 @@ export const processPackageDependencies = async (params: {
         patterns.push(...ignorePatterns.map((s: string) => s.trim()).filter(Boolean));
     }
 
-    // Read .depcheckrc if it exists to get ignoreMatches
-    let ignoreMatches: string[] = [];
-    const depcheckrcPath = path.join(packagePath, '.depcheckrc');
-    try {
-        const rcContent = await fs.readFile(depcheckrcPath, 'utf-8');
-        const rcConfig = JSON.parse(rcContent) as { ignores?: string[] };
-        if (rcConfig.ignores && Array.isArray(rcConfig.ignores)) {
-            ignoreMatches = rcConfig.ignores;
-        }
-    } catch {
-        // .depcheckrc doesn't exist or is invalid, continue without it
-    }
+    const { ignores } = await getDepcheckConfig(packagePath);
 
     let depcheckResults;
     try {
         depcheckResults = await depcheck(packagePath, {
             ignorePatterns: patterns,
-            ignoreMatches,
+            ignoreMatches: ignores ?? [],
         });
     } catch (error) {
         throw new Error(

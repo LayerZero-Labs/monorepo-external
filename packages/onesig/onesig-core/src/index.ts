@@ -116,7 +116,7 @@ export function compareAddresses(a: string, b: string): number {
     }
 }
 
-// XXX:TODO At some point this should be moved away
+// TODO: consider refactoring to a common package.
 type SignatureLike = Buffer | string | Signature | HexString;
 
 export class Signature {

@@ -12,6 +12,7 @@ const baseConfig: Partial<Options> = {
     sourcemap: true,
 
     // Build optimization options
+    outExtension: () => ({ js: '.js' }),
     clean: false,
     splitting: true,
     treeshake: true,

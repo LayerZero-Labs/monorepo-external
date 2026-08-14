@@ -1,4 +1,5 @@
 export * from './calls';
+export * from './onesig-bundle';
 export * from './onesig-entity';
 export * from './onesig-leaf';
 export * from './onesig-metadata';
