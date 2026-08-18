@@ -100,3 +100,5 @@ terraform.tfstate.backup
 
 # local vercel connection data, not build artifacts
 .vercel
+.workflow-bundle
+.workflow-bundle-*

@@ -65,7 +65,16 @@ const verifyVolumes: readonly VolumeMapping[] = [
 // cargo defaults `--jobs` to core count, but turbo already builds crates in
 // parallel — uncapped rustc stacks up and OOMs into flaky `E0463: can't find
 // crate`. Cap jobs to bound memory; see PRO-3664.
-const defaultEnv: readonly EnvironmentVariable[] = [{ name: 'CARGO_BUILD_JOBS', value: '4' }];
+const defaultEnv: readonly EnvironmentVariable[] = [
+    { name: 'CARGO_BUILD_JOBS', value: '4' },
+    // rustc incremental session locks are owner-only (0600 Linux / 0700 macOS).
+    // Solana lz-tool runs Docker as root with no LOCAL_UID entrypoint, so on
+    // Linux CI they are root-owned and `turbo prune --use-gitignore=false`
+    // EACCES-copies host `target/`. Disable incremental so they are never
+    // created. Unchanged crates are still skipped via cargo fingerprints.
+    // Override with `--env CARGO_INCREMENTAL=1` for rustc incremental locally.
+    { name: 'CARGO_INCREMENTAL', value: '0' },
+];
 
 // Solana contract builds copy workspace Rust dependencies into the current package's dependencies/
 // directory before lz-tool runs. Surfpool only reads package-local artifacts such as
