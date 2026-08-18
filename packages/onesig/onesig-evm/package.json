@@ -17,7 +17,7 @@
         "compile:zksync": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"Node16\",\"moduleResolution\":\"node16\",\"rootDir\":\"/\"}' hardhat compile --config ./hardhat.config.ts --network zksync",
         "forge:build": "pnpm lz-tool forge build",
         "forge:test": "pnpm lz-tool forge test",
-        "hardhat:test": "TS_NODE_PROJECT=tsconfig.hardhat.json pnpm hardhat test --config ./hardhat.config.ts",
+        "hardhat:test": "pnpm lz-tool --env TS_NODE_COMPILER_OPTIONS='{\"module\":\"Node16\",\"moduleResolution\":\"node16\",\"rootDir\":\"/\"}' hardhat test --config ./hardhat.config.ts",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
         "lint:sol": "solhint 'contracts/**/*.sol'",
         "test": "pnpm forge:test && pnpm hardhat:test"
