@@ -1,4 +1,5 @@
-import { mkdirSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'fs';
+import os from 'os';
 import { join } from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -11,7 +12,9 @@ import {
 } from '../../src/resolve/discover';
 import { collectFiles } from '../../src/resolve/io';
 
-const TMP = join(__dirname, '__tmp_discover__');
+// Unique per run so concurrent runs (other checkouts, worktrees) can't delete each other's fixtures.
+// realpath'd because resolve/ looks paths up by their real path — macOS /var/folders is a symlink.
+const TMP = realpathSync(mkdtempSync(join(os.tmpdir(), 'build-utils-discover-')));
 
 const createFile = (path: string, content = '') => {
     mkdirSync(join(path, '..'), { recursive: true });

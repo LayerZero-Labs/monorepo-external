@@ -33,7 +33,9 @@ FROM rust:$RUST_VERSION-$OS_VERSION AS anchor_build
 RUN apt-get -y update --fix-missing && apt-get -y install --no-install-recommends libudev-dev pkg-config && rm -rf /var/lib/apt/lists/*
 
 ARG ANCHOR_VERSION=0.31.1
-RUN cargo install --locked --root /opt/solana --git https://github.com/solana-foundation/anchor --tag v$ANCHOR_VERSION anchor-cli
+# Anchor 1.1.2 sets workspace `lto = true` + `codegen-units = 1`. rustc 1.92 on aarch64
+# SIGTRAPs while LTO-linking that binary (`signal: 5`). Tooling does not need fat LTO.
+RUN cargo install --locked --root /opt/solana --git https://github.com/solana-foundation/anchor --tag v$ANCHOR_VERSION --config 'profile.release.lto=false' anchor-cli
 
 FROM rust:$RUST_VERSION-$OS_VERSION AS cargo_expand_build
 

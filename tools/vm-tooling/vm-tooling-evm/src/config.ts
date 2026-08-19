@@ -58,6 +58,15 @@ export const images = {
         patch: 4,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['evm:forge-1.3.6-hardhat-2.26.3-patch-5']: {
+        name: 'evm',
+        versions: {
+            forge: '1.3.6',
+            hardhat: '2.26.3',
+        },
+        patch: 5,
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
 } satisfies Record<string, Image>;
 
 export type ImageId = keyof typeof images;
@@ -66,8 +75,8 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
     [
         {
             images: {
-                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-4',
-                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-4',
+                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-5',
+                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-5',
             },
             stable: true,
         },

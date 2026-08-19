@@ -1,4 +1,5 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'fs';
+import os from 'os';
 import { join } from 'path';
 import { parse } from 'smol-toml';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -8,7 +9,9 @@ import type { RewriteContext } from '../../src/resolve/rewrite';
 import { rewriteCargoToml, rewriteCargoTomls } from '../../src/resolve/rewrite';
 import { fixture } from './fixtures';
 
-const TMP = join(__dirname, '__tmp_rewrite__');
+// Unique per run so concurrent runs (other checkouts, worktrees) can't delete each other's fixtures.
+// realpath'd because resolve/ looks paths up by their real path — macOS /var/folders is a symlink.
+const TMP = realpathSync(mkdtempSync(join(os.tmpdir(), 'build-utils-rewrite-')));
 
 const writeToml = (path: string, content: string) => {
     mkdirSync(join(path, '..'), { recursive: true });

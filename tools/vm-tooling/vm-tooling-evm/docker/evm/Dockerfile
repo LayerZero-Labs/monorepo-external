@@ -87,7 +87,6 @@ RUN <<-EOF
   unset HARDHAT_VERSION
   cd /hardhat
   hardhat download:all
-  hardhat download:all --network tron-mainnet
 EOF
 
 ENV PATH=/root/.foundry/bin:$PATH

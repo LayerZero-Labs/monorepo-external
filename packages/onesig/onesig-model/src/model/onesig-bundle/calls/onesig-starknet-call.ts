@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
+// Match the backend's Calldata validation exactly: plain string arrays pass,
+// and arrays with starknet.js' __compiled__: true marker also pass.
+// z.array().and(z.object()) intersections don't work in Zod, so we use z.custom.
+const isCalldata = (value: unknown): value is string[] & { __compiled__?: true } =>
+    Array.isArray(value) &&
+    value.every((item) => typeof item === 'string') &&
+    ((value as { __compiled__?: unknown }).__compiled__ ?? true) === true;
+
 const starknetCallDataSchema = z
-    .array(z.string())
-    .and(
-        z.object({
-            __compiled__: z.literal(true).optional(),
-        }),
-    )
+    .custom<string[] & { __compiled__?: true }>(isCalldata)
     .describe('Calldata for the transaction');
 
 export const oneSigStarknetCallSchema = z.object({

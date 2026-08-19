@@ -13,6 +13,8 @@ const settings = {
     },
 };
 
+const defaultSolc = ['0.8.20', '0.8.22', '0.8.23'];
+
 module.exports = {
     networks: {
         'zksync-mainnet': {
@@ -39,20 +41,20 @@ module.exports = {
         runOnCompile: true,
     },
     solidity: {
-        compilers: compilerVersions.solc.solc.map((version) => ({
+        compilers: defaultSolc.map((version) => ({
             version,
             eraVersion: compilerVersions.solc.era,
             settings,
         })),
     },
     zksolc: {
-        version: compilerVersions.zksolc,
+        version: compilerVersions.zksolc[0],
         compilerSource: 'binary',
         settings,
     },
     tronSolc: {
         enable: true,
-        compilers: compilerVersions.solc.solc.map((version) => ({
+        compilers: defaultSolc.map((version) => ({
             version,
             settings,
         })),
