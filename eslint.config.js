@@ -4,6 +4,13 @@ import baseConfig from '@layerzerolabs/eslint-configuration/base';
 export default [
     ...baseConfig,
     {
+        // Docker-only (not a pnpm package). `pr:lint` diffs these .ts files and
+        // type-aware lint uses `parserOptions.project: true`. SDK types live in
+        // gitignored `docker/node_modules` (host `alarm-investigator:ide-install` or
+        // image `npm ci`), not `pnpm i`, so a clean `pr:lint` still fails.
+        ignores: ['tools/alarm-investigator/**'],
+    },
+    {
         files: [
             'tools/truesight/src/**/*.{ts,tsx}',
             // The legacy truesight is a Create React App tool whose components are
