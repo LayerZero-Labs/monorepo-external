@@ -1,8 +1,11 @@
-# TODO: figure out how to use relative path to the current folder. node_modules based method can lead to large package
 # Reads the verifiable wasm built by the sibling contract package
 # (@layerzerolabs/protocol-stellar-v2 → .artifacts/) and writes the generated
 # TypeScript bindings into this SDK package.
-wasm_dir = "../contracts/.artifacts"
+#
+# Resolved through the declared workspace dependency instead of a relative path that escapes this
+# package. pnpm links the contract package into this package's node_modules, so the lookup stays
+# inside the package tree and the dependency edge stays explicit in package.json.
+wasm_dir = "node_modules/@layerzerolabs/protocol-stellar-v2/.artifacts"
 output_dir = "src/generated"
 
 # Protocol contracts

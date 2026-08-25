@@ -74,6 +74,9 @@ turbo-cache-report-*.json
 **/coverage/
 **/coverage.json
 
+# prettier
+.prettiercache
+
 # pnpm error
 **/pnpm-error.log
 

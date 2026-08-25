@@ -1,0 +1,13 @@
+# Reads the verifiable wasm built by the contract package
+# (@layerzerolabs/onesig-stellar-contracts → .artifacts/) and writes the generated
+# TypeScript bindings into this SDK package.
+#
+# Resolved through the declared workspace dependency instead of a relative path that escapes this
+# package. pnpm links the contract package into this package's node_modules, so the lookup stays
+# inside the package tree and the dependency edge stays explicit in package.json.
+wasm_dir = "node_modules/@layerzerolabs/onesig-stellar-contracts/.artifacts"
+output_dir = "src/generated"
+
+[[contracts]]
+wasm_name = "onesig"
+output_name = "index.ts"

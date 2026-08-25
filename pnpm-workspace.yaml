@@ -1,7 +1,6 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
-  - '@temporalio/*'
 verifyDepsBeforeRun: false
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true
@@ -45,7 +44,7 @@ packages:
   - '!**/debug_info/**'
   - '!**/src/daml/**'
   - '!**/.next/**'
-  - '!tools/alarm-investigator/**'
+  - '!tools/alarm-investigator/docker/**'
 catalogs:
   console:
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168

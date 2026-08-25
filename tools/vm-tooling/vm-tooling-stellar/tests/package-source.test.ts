@@ -67,7 +67,7 @@ describe('makeSourcePredicate — include-only defaults', () => {
         `${ROOT}/.envrc`,
         `${ROOT}/.gitignore`,
         `${ROOT}/notes.txt`,
-        `${ROOT}/ts-bindings-gen.toml`,
+        `${ROOT}/bindings.toml`,
         `${ROOT}/secrets.toml`,
         `${ROOT}/dependencies/dep-a/rust-toolchain.toml`,
         `${ROOT}/dependencies/dep-a/rustfmt.toml`,

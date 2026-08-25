@@ -115,6 +115,9 @@ export default [
             '**/generated-*/**',
             '**/generated_artifacts/**',
             '**/contracts/target/**', // Cairo/Scarb build artifacts
+            '**/playwright/.cache/**',
+            '**/playwright-report/**',
+            '**/test-results/**',
         ],
     },
 

@@ -19,7 +19,7 @@
     "scripts": {
         "build": "pnpm gen:bindings && tsup",
         "clean": "rm -rf dist .turbo src/generated",
-        "gen:bindings": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
+        "gen:bindings": "stellar-ts-bindings-gen --config bindings.toml",
         "start:stellar": "tsx scripts/start-validator.ts",
         "stop:stellar": "docker stop onesig-stellar-service && docker rm onesig-stellar-service",
         "test": "vitest --run --pass-with-no-tests --typecheck --exclude test/integration.test.ts --exclude test/offchainWorkflow.test.ts",

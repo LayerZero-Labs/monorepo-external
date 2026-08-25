@@ -15,7 +15,7 @@
     "scripts": {
         "build": "pnpm gen:bindings && tsc",
         "clean": "rm -rf ./dist ./src/generated ./node_modules",
-        "gen:bindings": "stellar-ts-bindings-gen --config ts-bindings-gen.toml",
+        "gen:bindings": "stellar-ts-bindings-gen --config bindings.toml",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
         "test": "vitest --run --pass-with-no-tests --typecheck"
     },

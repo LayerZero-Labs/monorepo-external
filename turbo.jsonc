@@ -86,7 +86,7 @@
             "outputLogs": "new-only"
         },
         "typecheck": {
-            "cache": false,
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
             "outputs": [],
             "dependsOn": ["build"],
             "outputLogs": "new-only"
