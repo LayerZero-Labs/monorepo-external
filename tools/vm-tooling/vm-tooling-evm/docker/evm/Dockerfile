@@ -71,7 +71,7 @@ RUN <<-EOF
   done
 EOF
 
-COPY ./hardhat.config.cjs ./tasks.cjs ./compiler-versions.json /hardhat/
+COPY ./hardhat.config.cjs ./tasks.cjs ./compiler-versions.json ./offline-zksync.cjs /hardhat/
 RUN ln -s /hardhat/hardhat.config.cjs /hardhat/hardhat.default.config.js
 
 COPY ./flatten.sh ./flatten_dir.sh ./sol_merger.sh /usr/local/bin/
@@ -81,6 +81,8 @@ ENV HARDHAT_DISABLE_TELEMETRY_PROMPT=true
 ENV HARDHAT_EXPERIMENTAL_ALLOW_NON_LOCAL_INSTALLATION=true
 ENV NODE_PATH=/usr/local/lib/node_modules
 ENV ZKSYNC_DISABLE_TELEMETRY=1
+# Metadata only: stub zksolc GitHub /releases/latest. Binary fetches are unchanged.
+ENV NODE_OPTIONS=--require=/hardhat/offline-zksync.cjs
 
 RUN <<-EOF
   set -e

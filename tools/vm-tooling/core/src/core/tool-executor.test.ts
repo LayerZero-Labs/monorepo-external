@@ -1,8 +1,10 @@
+import os from 'node:os';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import type { EnvironmentVariable, VolumeMapping } from '../config';
 import { CARGO_TARGET_CACHE_PATH } from '../config';
-import { mergeToolEnv, resolveCargoCacheEnv } from './tool-executor';
+import { dockerPlatformProbeStampPath, mergeToolEnv, resolveCargoCacheEnv } from './tool-executor';
 
 const cacheVolume: VolumeMapping = {
     type: 'isolate',
@@ -128,6 +130,25 @@ describe(resolveCargoCacheEnv, () => {
         expect(resolveCargoCacheEnv('cargo test', renamed)).toEqual([
             { name: 'CARGO_TARGET_DIR', value: CARGO_TARGET_CACHE_PATH },
         ]);
+    });
+});
+
+describe(dockerPlatformProbeStampPath, () => {
+    it('stamps image URI and platform under ~/.cache/vm-tooling/probe', () => {
+        expect(
+            dockerPlatformProbeStampPath(
+                '438003944538.dkr.ecr.us-east-1.amazonaws.com/layerzerolabs/vm-tooling-evm:tag',
+                'linux/amd64',
+            ),
+        ).toBe(
+            path.join(
+                os.homedir(),
+                '.cache',
+                'vm-tooling',
+                'probe',
+                '438003944538.dkr.ecr.us-east-1.amazonaws.com_layerzerolabs_vm-tooling-evm_tag_linux_amd64',
+            ),
+        );
     });
 });
 

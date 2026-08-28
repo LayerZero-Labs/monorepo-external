@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 
 import {
+    findUnsortedDependencies,
     isLegacyPackage,
     MOVE_TO_DEV_DEFAULT_PATTERN,
     moveToDev,
@@ -61,8 +62,19 @@ const validateMissingDependencies = async (options: {
         });
     }
 
-    // If packageResult has any entries, it means changes would be made
+    // If any step above would make changes, fail fast — the sort check adds nothing
     if (Object.keys(packageResult).length > 0) {
+        throw new Error('Dependency issues found: run `pnpm fixdeps` to fix');
+    }
+
+    // Dependency key ordering: the sort step of `pnpm fixdeps`, in read-only mode
+    const unsorted = await findUnsortedDependencies({
+        packages: targets,
+        packageResult,
+        pnpmLsObject,
+    });
+
+    if (unsorted.length > 0) {
         throw new Error('Dependency issues found: run `pnpm fixdeps` to fix');
     }
 };

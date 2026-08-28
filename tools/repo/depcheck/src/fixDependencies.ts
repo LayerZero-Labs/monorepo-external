@@ -4,11 +4,14 @@ import path from 'path';
 import { runCatalogizeAll } from './catalog';
 import {
     filterPackages,
+    isLegacyPackage,
     MOVE_TO_DEV_DEFAULT_PATTERN,
     moveToDev,
     removeDuplicates,
     sortDependencies,
+    SORTED_DEPENDENCY_SECTIONS,
     updateDeps,
+    validateNoLegacyOrgDependencies,
 } from './deps';
 import type { FixDependenciesParams, PackageJson } from './types';
 import { getPnpmLs } from './utils';
@@ -44,12 +47,22 @@ async function _fixDeps(options: FixDependenciesParams) {
     // We want to check duplicates when the flag is explicitly passed (dups === false)
     const shouldCheckDups = dups === false;
     const { pnpmLs, pnpmLsObject } = await getPnpmLs({ workspacePackagesOnly: true });
-    let packages: string[] = pnpmLs.map((p) => p.name).filter((x) => x !== 'root');
+    // Exclude legacy packages like `depcheck validate` does (validate.ts): depcheck
+    // cannot accurately scan them (e.g. CLI-only deps like react-scripts), so fixdeps
+    // rewriting them only dirtied the tree on every local `pnpm pr:check`.
+    let packages: string[] = pnpmLs
+        .map((p) => p.name)
+        .filter((x) => x !== 'root' && !isLegacyPackage(x));
 
     // Filter packages using the unified filtering function
     packages = filterPackages({ packages, only, ignore, regex });
 
     console.log(`Matched ${packages.length} package(s)`);
+
+    // Same legacy-org ban as `depcheck validate`. It is not autofixable (fixdeps cannot
+    // know which dep to remove), so the fixer still reports it — fix what's fixable,
+    // fail on the rest, same contract as `eslint --fix`.
+    await validateNoLegacyOrgDependencies(packages, pnpmLsObject);
 
     // Update dependencies for the filtered packages
     const packageResult = await updateDeps({
@@ -87,27 +100,13 @@ async function _fixDeps(options: FixDependenciesParams) {
                     ) as PackageJson;
                 }
 
-                const sortedDependencies = sortDependencies(
-                    packageResult[packageJsonPath].dependencies || {},
-                );
-                packageResult[packageJsonPath].dependencies =
-                    Object.keys(sortedDependencies).length > 0 ? sortedDependencies : undefined;
-
-                const sortedDevDependencies = sortDependencies(
-                    packageResult[packageJsonPath].devDependencies || {},
-                );
-                packageResult[packageJsonPath].devDependencies =
-                    Object.keys(sortedDevDependencies).length > 0
-                        ? sortedDevDependencies
-                        : undefined;
-
-                const sortedImplicitDependencies = sortDependencies(
-                    packageResult[packageJsonPath].implicitDependencies || {},
-                );
-                packageResult[packageJsonPath].implicitDependencies =
-                    Object.keys(sortedImplicitDependencies).length > 0
-                        ? sortedImplicitDependencies
-                        : undefined;
+                for (const section of SORTED_DEPENDENCY_SECTIONS) {
+                    const sortedSection = sortDependencies(
+                        packageResult[packageJsonPath][section] || {},
+                    );
+                    packageResult[packageJsonPath][section] =
+                        Object.keys(sortedSection).length > 0 ? sortedSection : undefined;
+                }
             }),
         );
     }

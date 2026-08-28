@@ -1,5 +1,5 @@
 import { uniqBy } from 'es-toolkit';
-import { realpath } from 'node:fs/promises';
+import { access, mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
@@ -125,6 +125,48 @@ const formatDockerArgForDisplay = (arg: string): string =>
 const formatDockerVolumeArgs = (volumeArgs: readonly (readonly string[])[]): string[] =>
     volumeArgs.map((args) => args.map(formatDockerArgForDisplay).join(' '));
 
+const toProbeStampToken = (value: string): string => value.replace(/[/:]/g, '_');
+
+/** Path of a successful platform probe stamp. Later lz-tool calls in this job skip create/rm if it exists. */
+export const dockerPlatformProbeStampPath = (imageUri: string, platformValue: string): string =>
+    path.join(
+        os.homedir(),
+        '.cache',
+        'vm-tooling',
+        'probe',
+        `${toProbeStampToken(imageUri)}_${toProbeStampToken(platformValue)}`,
+    );
+
+const hasDockerPlatformProbeStamp = async (stampPath: string): Promise<boolean> => {
+    try {
+        await access(stampPath);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+const writeDockerPlatformProbeStamp = async (stampPath: string): Promise<void> => {
+    try {
+        await mkdir(path.dirname(stampPath), { recursive: true });
+        await writeFile(stampPath, '');
+    } catch (error) {
+        console.warn(
+            `⚠️  Failed to write Docker platform probe stamp ${stampPath}: ${stringifyError(error)}`,
+        );
+    }
+};
+
+const clearDockerPlatformProbeStamp = async (stampPath: string): Promise<void> => {
+    try {
+        await rm(stampPath, { force: true });
+    } catch (error) {
+        console.warn(
+            `⚠️  Failed to clear Docker platform probe stamp ${stampPath}: ${stringifyError(error)}`,
+        );
+    }
+};
+
 const resolveWorkspaceContainerCwd = async ({
     cwd,
     workspaceRoot,
@@ -186,6 +228,19 @@ const ensureDockerImage = async (
         await docker$`docker container rm ${containerId}`.nothrow().quiet();
     };
 
+    const probeAndStampDockerPlatform = async (expectedPlatform: DockerPlatform): Promise<void> => {
+        const stampPath = dockerPlatformProbeStampPath(imageUri, expectedPlatform.value);
+        if (await hasDockerPlatformProbeStamp(stampPath)) {
+            console.info(
+                `✅ Reusing Docker platform probe for ${imageUri} (${expectedPlatform.value})`,
+            );
+            return;
+        }
+
+        await probeDockerPlatformContainerCreation(expectedPlatform);
+        await writeDockerPlatformProbeStamp(stampPath);
+    };
+
     // NOTE: `docker image ls <ref>` prints repository/tag in separate columns, so
     // `stdout.includes(<full-ref>)` is not reliable. Use `inspect` instead: exitCode=0
     // means the image exists locally.
@@ -210,7 +265,7 @@ const ensureDockerImage = async (
         if (cachedArch === expectedArchitecture) {
             // A pinned platform still needs the container probe because tag-level
             // Architecture can disagree with Docker's actual --platform resolution.
-            await probeDockerPlatformContainerCreation(platform);
+            await probeAndStampDockerPlatform(platform);
             console.info(`✅ Using cached Docker image: ${imageUri} (${platform.value})`);
             return;
         }
@@ -246,8 +301,11 @@ const ensureDockerImage = async (
     }
 
     // After pulling, verify the same platform resolution path used by `docker run`.
+    // Drop any stamp from an older digest first: a failed probe must not leave
+    // that stamp for a later cached-image call to skip.
     if (platform) {
-        await probeDockerPlatformContainerCreation(platform);
+        await clearDockerPlatformProbeStamp(dockerPlatformProbeStampPath(imageUri, platform.value));
+        await probeAndStampDockerPlatform(platform);
     }
 
     console.info(`✅ Successfully pulled: ${imageUri}`);

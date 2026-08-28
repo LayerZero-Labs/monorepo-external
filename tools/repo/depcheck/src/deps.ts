@@ -19,6 +19,16 @@ const DEPENDENCY_SECTIONS = [
     'optionalDependencies',
     'implicitDependencies',
 ] as const;
+
+/**
+ * The dependency sections whose key order the fix path sorts and the validate path
+ * checks. Single source of truth so the two paths cannot drift.
+ */
+export const SORTED_DEPENDENCY_SECTIONS = [
+    'dependencies',
+    'devDependencies',
+    'implicitDependencies',
+] as const;
 export const isLegacyPackage = (packageName: string) =>
     LEGACY_PACKAGE_ORGS.some((org) => packageName.startsWith(`${org}/`));
 
@@ -615,6 +625,68 @@ export const sortDependencies = (obj: Record<string, string>): Record<string, st
             },
             {} as Record<string, string>,
         );
+};
+
+/**
+ * Read-only counterpart of the sort step in `fixDependencies`: reports every package
+ * whose SORTED_DEPENDENCY_SECTIONS keys are not in the order `sortDependencies` would
+ * produce, without writing anything. Used by `depcheck validate` so the check command
+ * enforces the same sorting rule the fixer applies.
+ */
+export const findUnsortedDependencies = async (params: {
+    packages: string[];
+    packageResult: { [key: string]: PackageJson };
+    pnpmLsObject: { [key: string]: PnpmPackageObject };
+}): Promise<string[]> => {
+    const { packages, packageResult, pnpmLsObject } = params;
+    const violations: string[] = [];
+    // Limit concurrency to prevent file system bottleneck
+    const limit = pLimit(CONCURRENCY_LIMIT * 3);
+    await Promise.all(
+        packages.map((packageName) =>
+            limit(async () => {
+                const packageInfo = pnpmLsObject[packageName];
+                if (!packageInfo) {
+                    throw new Error(`Package ${packageName} not found in pnpmLsObject`);
+                }
+
+                const packageJsonPath = path.join(packageInfo.path, 'package.json');
+                // Prefer the already-computed result so violations reflect the state
+                // fixdeps would write (e.g. after an unused dep was removed).
+                let packageJson = packageResult[packageJsonPath];
+
+                if (!packageJson) {
+                    try {
+                        const fileContent = await fs.readFile(packageJsonPath, 'utf-8');
+                        packageJson = JSON.parse(fileContent) as PackageJson;
+                    } catch (error) {
+                        throw new Error(
+                            `Failed to read package.json for ${packageName} at ${packageJsonPath}: ${
+                                error instanceof Error ? error.message : String(error)
+                            }`,
+                        );
+                    }
+                }
+
+                for (const section of SORTED_DEPENDENCY_SECTIONS) {
+                    const deps = packageJson[section];
+                    if (!deps) {
+                        continue;
+                    }
+                    const keys = Object.keys(deps);
+                    const sortedKeys = Object.keys(sortDependencies(deps));
+                    if (keys.some((key, index) => key !== sortedKeys[index])) {
+                        violations.push(`${packageName} (${section})`);
+                        console.log(
+                            `-----------------${packageName}-----------------------\n` +
+                                `Unsorted ${section}\n`,
+                        );
+                    }
+                }
+            }),
+        ),
+    );
+    return violations;
 };
 
 export const filterPackages = (params: {

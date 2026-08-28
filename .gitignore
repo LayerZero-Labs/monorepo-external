@@ -105,3 +105,6 @@ terraform.tfstate.backup
 .vercel
 .workflow-bundle
 .workflow-bundle-*
+
+# generated design-token audit artifacts
+color-tokens-reference.csv

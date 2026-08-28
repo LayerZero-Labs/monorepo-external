@@ -64,7 +64,6 @@ export const testTools = (
                             const version = await runCommand('docker', [
                                 'run',
                                 '--rm',
-                                '--privileged',
                                 imageUri,
                                 ...versionCommands[tool],
                             ]);

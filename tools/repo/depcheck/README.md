@@ -99,13 +99,13 @@ pnpm --filter @layerzerolabs/depcheck run depcheck validate \
 
 **Options:**
 
-| Option                            | Description                           | Example                            |
-| --------------------------------- | ------------------------------------- | ---------------------------------- |
-| `--missing-dependencies`          | Check for missing/unused dependencies | `--missing-dependencies`           |
-| `--catalog`                       | Validate catalog is up to date        | `--catalog`                        |
-| `--only <name>`                   | Check only specific package(s)        | `--only @layerzerolabs/vm-tooling` |
-| `--no-dups`                       | Check for duplicates                  | `--no-dups`                        |
-| `--ignore-patterns <patterns...>` | Glob patterns to ignore               | `--ignore-patterns "docker/**"`    |
+| Option                            | Description                                                       | Example                            |
+| --------------------------------- | ----------------------------------------------------------------- | ---------------------------------- |
+| `--missing-dependencies`          | Check for missing/unused dependencies and dependency key ordering | `--missing-dependencies`           |
+| `--catalog`                       | Validate catalog is up to date                                    | `--catalog`                        |
+| `--only <name>`                   | Check only specific package(s)                                    | `--only @layerzerolabs/vm-tooling` |
+| `--no-dups`                       | Check for duplicates                                              | `--no-dups`                        |
+| `--ignore-patterns <patterns...>` | Glob patterns to ignore                                           | `--ignore-patterns "docker/**"`    |
 
 ---
 
