@@ -280,6 +280,8 @@ overrides:
   minimatch@^9: ^9.0.7
   minimatch@9.0.5: ^9.0.7
   minimatch@^10: ^10.2.3
+  nanoid@3: ^3.3.18
+  nanoid@5: ^5.1.16
   path-to-regexp@~0.1: 0.1.13
   path-to-regexp@^8: ^8.4.0
   picomatch@^2: ^2.3.2
