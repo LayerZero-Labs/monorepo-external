@@ -1,6 +1,7 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
+  - '@stargatefinance/*'
 verifyDepsBeforeRun: false
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true

@@ -69,6 +69,7 @@ export enum OneSigCantonCallTag {
     ProposeDefaultAdmin = 'OpProposeDefaultAdmin',
     CancelProposeDefaultAdmin = 'OpCancelProposeDefaultAdmin',
     AcceptDefaultAdmin = 'OpAcceptDefaultAdmin',
+    SetDiscoveryUrl = 'OpSetDiscoveryUrl',
 }
 
 /**
@@ -502,6 +503,13 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
         tag: z.literal(OneSigCantonCallTag.AcceptDefaultAdmin),
         scope: CantonScopeSchema,
         endpointAddress: z.string(),
+        feeAmount: DecimalLikeSchema,
+        dso: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.SetDiscoveryUrl),
+        oappId: CantonOAppIdSchema,
+        url: z.string(),
         feeAmount: DecimalLikeSchema,
         dso: CantonPartyIdSchema,
     }),
