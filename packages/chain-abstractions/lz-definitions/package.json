@@ -1,8 +1,9 @@
 {
-    "name": "@layerzerolabs/onesig-model",
+    "name": "@layerzerolabs/layerzero-definitions",
     "version": "0.0.0",
     "private": false,
     "license": "MIT",
+    "sideEffects": false,
     "type": "module",
     "exports": {
         "types": "./dist/index.d.ts",
@@ -12,13 +13,18 @@
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
     "scripts": {
         "build": "tsup",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
         "test": "vitest --run --pass-with-no-tests --typecheck"
     },
     "dependencies": {
-        "@layerzerolabs/layerzero-definitions": "workspace:*",
+        "@layerzerolabs/context-node": "workspace:*",
+        "@layerzerolabs/typescript-utils": "workspace:*",
+        "@layerzerolabs/zod-utils": "workspace:*",
         "zod": "catalog:"
     },
     "devDependencies": {

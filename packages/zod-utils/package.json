@@ -1,5 +1,5 @@
 {
-    "name": "@layerzerolabs/onesig-model",
+    "name": "@layerzerolabs/zod-utils",
     "version": "0.0.0",
     "private": false,
     "license": "MIT",
@@ -12,20 +12,21 @@
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
     "scripts": {
         "build": "tsup",
-        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
-        "test": "vitest --run --pass-with-no-tests --typecheck"
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
     },
     "dependencies": {
-        "@layerzerolabs/layerzero-definitions": "workspace:*",
+        "@layerzerolabs/function-pointer": "workspace:*",
         "zod": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
-        "tsup": "catalog:",
-        "vitest": "catalog:"
+        "tsup": "catalog:"
     },
     "publishConfig": {
         "access": "public",

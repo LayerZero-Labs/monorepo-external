@@ -2,6 +2,7 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
   - '@stargatefinance/*'
+  - '@solana/web3.js'
 verifyDepsBeforeRun: false
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true
@@ -83,7 +84,7 @@ catalogs:
     '@nomiclabs/hardhat-ethers': ^2.2.3
     '@openzeppelin/contracts': ^5.0.2
     '@openzeppelin/contracts-upgradeable': ^5.0.2
-    '@solana/web3.js': 1.98.4
+    '@solana/web3.js': 1.99.0-beta.0
     '@stellar/stellar-sdk': ^16.0.1
     '@types/chai': ^4.3.16
     '@types/command-line-args': ^5.0.0
@@ -245,7 +246,7 @@ overrides:
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@react-spring/animated>@types/react': 19.2.6
   '@react-spring/web>@types/react': 19.2.6
-  '@solana/web3.js': 1.98.4
+  '@solana/web3.js': 1.99.0-beta.0
   '@storybook/react>@types/react': 19.2.6
   '@storybook/types>@types/react': 19.2.6
   '@ton/test-utils>chai': 5.3.3

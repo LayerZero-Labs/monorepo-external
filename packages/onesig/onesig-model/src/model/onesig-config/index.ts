@@ -16,3 +16,4 @@ export const oneSigConfigApiResponseSchema = z.object({
  * @deprecated Prefer {@link ListOneSigInstancesResponse}.
  */
 export type OneSigConfigApiResponse = z.infer<typeof oneSigConfigApiResponseSchema>;
+export * from './solana-program-ids';
