@@ -29,7 +29,7 @@ enum OFTStorage {
 // OFT Contract
 // =========================================================================
 
-#[lz_contract]
+#[lz_contract(upgradeable(no_migration, rbac))]
 #[oapp]
 pub struct OFT;
 

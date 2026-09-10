@@ -2,7 +2,6 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@layerzerolabs/*'
   - '@stargatefinance/*'
-  - '@solana/web3.js'
 verifyDepsBeforeRun: false
 cleanupUnusedCatalogs: true
 disallowWorkspaceCycles: true

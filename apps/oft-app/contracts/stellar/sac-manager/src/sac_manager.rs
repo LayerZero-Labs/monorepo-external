@@ -43,7 +43,7 @@ const CLAWBACK_ROLE: &str = "CLAWBACK_ROLE";
 ///
 /// Manages a SAC as its admin, forwarding token actions to
 /// the underlying SAC while enforcing access control.
-#[lz_contract]
+#[lz_contract(upgradeable(no_migration, rbac))]
 pub struct SACManager;
 
 #[contract_impl]

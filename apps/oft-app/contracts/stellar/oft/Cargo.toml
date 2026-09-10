@@ -42,3 +42,4 @@ simple-message-lib = { path = "dependencies/protocol-stellar-v2/message-libs/sim
 message-lib-common = { path = "dependencies/protocol-stellar-v2/message-libs/message-lib-common", features = ["testutils"] }
 endpoint-v2 = { path = "dependencies/protocol-stellar-v2/endpoint-v2", features = ["testutils"] }
 utils = { path = "dependencies/common-utils-stellar-contracts", features = ["testutils"] }
+upgrader = { path = "dependencies/protocol-stellar-v2/upgrader" }
