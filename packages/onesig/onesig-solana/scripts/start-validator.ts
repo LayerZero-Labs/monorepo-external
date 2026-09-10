@@ -74,7 +74,7 @@ const startValidator = async () => {
             `-p 127.0.0.1:${HOST_WS_PORT}:${CONTAINER_WS_PORT}`,
             `--label com.container.type=chain-node`,
             image,
-            `surfpool start --offline -o 0.0.0.0 -p ${CONTAINER_RPC_PORT} -w ${CONTAINER_WS_PORT} --no-tui --log-path /tmp/surfpool`,
+            `surfpool start --offline --no-deploy -o 0.0.0.0 -p ${CONTAINER_RPC_PORT} -w ${CONTAINER_WS_PORT} --no-tui --log-path /tmp/surfpool`,
         ].join(' '),
     );
 

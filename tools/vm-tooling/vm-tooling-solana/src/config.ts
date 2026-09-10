@@ -19,7 +19,13 @@ import { parseAnchorTomlVersion } from './utility';
  * so a bump lands in one place. (The image-id key still embeds the version literally; keep it in
  * step on a bump.)
  */
-export const SURFPOOL_VERSION = '1.3.1';
+export const SURFPOOL_VERSION = '1.5.0';
+
+/** Commit to build: no release carries #780, which enables the full transaction-v1 feature set. */
+export const SURFPOOL_REV = '30242a4fe3b87557f3d6f1629f548e2515718242';
+
+/** Short form of {@link SURFPOOL_REV}; see the image's `patch`. */
+const SURFPOOL_REV_SHORT = SURFPOOL_REV.slice(0, 7);
 
 const defaultVolumes: readonly VolumeMapping[] = [
     {
@@ -223,18 +229,20 @@ export const images = {
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
     // Standalone surfpool runtime image, built from `docker/surfpool/Dockerfile`.
-    ['surfpool:surfpool-1.3.1']: {
+    // Key must equal the tag getImageTag derives; the Docker image IDs test enforces it.
+    ['surfpool:surfpool-1.5.0-patch-30242a4']: {
         name: 'surfpool',
         versions: {
             // What `surfpool --version` reports (asserted by the Tool-versions test), not the rev.
             surfpool: SURFPOOL_VERSION,
         },
+        // Puts the rev in the tag: dependencies do not affect it, so a rev bump would otherwise
+        // reuse the published image (the publisher skips tags that already exist).
+        patch: SURFPOOL_REV_SHORT,
         dependencies: {
-            // No surfpool release tag carries #686 (finalized-slot) + #687 (snapshot-program-CPI);
-            // build from this commit.
-            'surfpool-rev': 'c83f9b7104bb205ce0cb6ab1a1eed96183589433',
-            // surfpool's rust-toolchain.toml pins 1.89.0.
-            rust: '1.89.0',
+            'surfpool-rev': SURFPOOL_REV,
+            // surfpool's rust-toolchain pins 1.95.0 at this rev.
+            rust: '1.95.0',
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
@@ -288,7 +296,7 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
         {
             // Not index 0 (the anchor/solana default); selected via `--surfpool-version`.
             images: {
-                surfpool: 'surfpool:surfpool-1.3.1',
+                surfpool: 'surfpool:surfpool-1.5.0-patch-30242a4',
             },
             description: 'Surfpool runtime engine (solana-test-validator replacement)',
         },

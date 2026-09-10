@@ -11,7 +11,7 @@ import { Environment } from '@layerzerolabs/layerzero-definitions';
  */
 const programIdPerEnvironment: Partial<Record<Environment, string>> = {
     // Solana devnet, which is what the wallet `testnet` stage points at.
-    [Environment.TESTNET]: '7TUHBxnQRmRTAu3E2o1up6Vgk5aKTtTwUFAMwpKzUHnn',
+    [Environment.TESTNET]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
 };
 
 const isEnvironment = (value: string): value is Environment =>

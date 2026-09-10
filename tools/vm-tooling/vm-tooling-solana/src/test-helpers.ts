@@ -63,6 +63,37 @@ export const allocatePorts = async (
     );
 };
 
+// ── lossless JSON ──────────────────────────────────────────────────────────────
+
+/** A JSON integer token, as it appeared in the source. Excludes floats and exponents. */
+const INTEGER_LITERAL = /^-?\d+$/;
+
+/** Splices pre-serialized text into `JSON.stringify` output. Postdates the TypeScript lib. */
+const { rawJSON } = JSON as typeof JSON & { rawJSON: (text: string) => unknown };
+
+/**
+ * `JSON.parse` keeping integers a JS number cannot hold: a `u64` such as `rentEpoch` otherwise
+ * rounds to a value no u64 parser accepts. Only those out-of-range integers become bigints.
+ */
+export const parseLosslessJson = (text: string): unknown =>
+    JSON.parse(text, function (_key, value, context?: { source?: string }) {
+        const source = context?.source;
+        return typeof value === 'number' &&
+            !Number.isSafeInteger(value) &&
+            source !== undefined &&
+            INTEGER_LITERAL.test(source)
+            ? BigInt(source)
+            : value;
+    });
+
+/** `parseLosslessJson` counterpart: writes bigints back as unquoted integers. */
+export const stringifyLosslessJson = (value: unknown, space?: number): string =>
+    JSON.stringify(
+        value,
+        (_key, item) => (typeof item === 'bigint' ? rawJSON(`${item}`) : item),
+        space,
+    );
+
 // ── surfpool RPC ───────────────────────────────────────────────────────────────
 
 /** Minimal JSON-RPC call to a surfpool container. */
@@ -89,8 +120,11 @@ export const rpcCall = async ({
             `${method}: HTTP ${res.status} ${res.statusText}${body ? `, ${body.slice(0, 200)}` : ''}`,
         );
     }
-    const json = (await res.json()) as { result?: unknown; error?: unknown };
-    if (json.error) throw new Error(`${method}: ${JSON.stringify(json.error)}`);
+    // res.json() would silently round any u64 in the response.
+    const json = parseLosslessJson(await res.text()) as { result?: unknown; error?: unknown };
+    // stringifyLosslessJson, not JSON.stringify: a bigint from parseLosslessJson would throw here
+    // and mask the RPC error with a TypeError.
+    if (json.error) throw new Error(`${method}: ${stringifyLosslessJson(json.error)}`);
     return json.result;
 };
 

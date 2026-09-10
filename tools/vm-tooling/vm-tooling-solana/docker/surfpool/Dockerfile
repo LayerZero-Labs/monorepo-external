@@ -7,20 +7,20 @@
 # with the package versions below to pick up security fixes.
 #
 # Build args from the lz-tool build matrix (config.ts):
-#   SURFPOOL_VERSION      <- versions.surfpool          (release line the binary reports, e.g. 1.3.1)
+#   SURFPOOL_VERSION      <- versions.surfpool          (release line the binary reports, e.g. 1.5.0)
 #   SURFPOOL_REV_VERSION  <- dependencies.surfpool-rev  (exact git rev to build)
 #   RUST_VERSION          <- dependencies.rust
 
-ARG RUST_VERSION=1.89.0
+ARG RUST_VERSION=1.95.0
 ARG OS_VERSION=bookworm
 ARG DEBIAN_SNAPSHOT=20260531T000000Z
 
 # rust:${RUST_VERSION}-${OS_VERSION}, via public.ecr.aws (dodges Docker Hub rate limits) + digest.
-FROM public.ecr.aws/docker/library/rust:${RUST_VERSION}-${OS_VERSION}@sha256:948f9b08a66e7fe01b03a98ef1c7568292e07ec2e4fe90d88c07bb14563c84ff AS surfpool_build
+FROM public.ecr.aws/docker/library/rust:${RUST_VERSION}-${OS_VERSION}@sha256:6258907abe69656e41cd992e0b705cdcfabcbbe3db374f92ed2d47121282d4a1 AS surfpool_build
 
 ARG OS_VERSION
 ARG DEBIAN_SNAPSHOT
-ARG SURFPOOL_REV_VERSION=c83f9b7104bb205ce0cb6ab1a1eed96183589433
+ARG SURFPOOL_REV_VERSION=30242a4fe3b87557f3d6f1629f548e2515718242
 
 RUN rm -f /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.list
 RUN cat > /etc/apt/sources.list.d/debian.sources <<EOF

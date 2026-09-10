@@ -132,7 +132,8 @@ export interface Image {
     name: string;
     versions: Record<string, string>;
     dependencies?: Record<string, string>;
-    patch?: number;
+    /** Appended to the tag as `-patch-<value>`: a rebuild counter, or an id such as a source rev. */
+    patch?: number | string;
     mirrorRegistries?: DockerRegistryMirror[];
 }
 
