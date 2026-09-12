@@ -3918,6 +3918,14 @@ export const CHAIN_KEY_ALIAS_CONFIG = {
             },
         ],
     },
+    [ChainKey.ONEMONEY]: {
+        aliases: [
+            {
+                environment: Environment.MAINNET,
+                name: ChainName.ONEMONEY,
+            },
+        ],
+    },
     [ChainKey.ONEMONEY_TESTNET]: {
         aliases: [
             {

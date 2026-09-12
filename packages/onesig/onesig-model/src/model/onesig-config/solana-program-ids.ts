@@ -10,6 +10,7 @@ import { Environment } from '@layerzerolabs/layerzero-definitions';
  * away with the client and backend model unification.
  */
 const programIdPerEnvironment: Partial<Record<Environment, string>> = {
+    [Environment.MAINNET]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
     // Solana devnet, which is what the wallet `testnet` stage points at.
     [Environment.TESTNET]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
 };

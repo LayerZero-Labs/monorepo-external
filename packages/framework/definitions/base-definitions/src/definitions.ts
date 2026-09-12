@@ -1,4 +1,5 @@
 import type { z } from 'zod';
+import type { $ZodType } from 'zod/v4/core';
 
 import type { Dependencies } from '@layerzerolabs/dependency-graph';
 import { DependencyNode } from '@layerzerolabs/dependency-graph';
@@ -14,8 +15,8 @@ import type {
 import type { IsAny } from '@layerzerolabs/typescript-utils';
 
 export type DimensionToSchemaMap<DimConstraint extends object = object> = {
-    byDimension?: AdvancedRecord<DimConstraint, z.ZodType>;
-    base: z.ZodType;
+    byDimension?: AdvancedRecord<DimConstraint, $ZodType>;
+    base: $ZodType;
 };
 
 export type FactorySpecialization<DMap extends DimensionToSchemaMap = DimensionToSchemaMap> = {
@@ -172,7 +173,7 @@ export class FactoryDefinition<
  */
 export abstract class ObjectDefinition<
     Name extends string,
-    Schema extends z.ZodSchema,
+    Schema extends $ZodType,
     _Dependencies extends Dependencies,
 > extends DependencyNode<Name, _Dependencies> {
     public readonly schema: Schema;

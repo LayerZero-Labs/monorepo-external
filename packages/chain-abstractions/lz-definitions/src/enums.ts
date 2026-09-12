@@ -1053,7 +1053,8 @@ export enum ChainKey {
     ADIRI_TESTNET = 'adiri-testnet',
     // moninet - no mainnet for now
     MONINET_TESTNET = 'moninet-testnet',
-    // onemoney - no mainnet for now
+    // onemoney
+    ONEMONEY = 'onemoney',
     ONEMONEY_TESTNET = 'onemoney-testnet',
     // ritual
     RITUAL_TESTNET = 'ritual-testnet',

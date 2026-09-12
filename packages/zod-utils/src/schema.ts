@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import type { $ZodType } from 'zod/v4/core';
 
 import type { FunctionPointer } from '@layerzerolabs/function-pointer';
 
-export type InferredArray<T extends z.ZodType[], Output extends any[] = []> = T extends []
+export type InferredArray<T extends $ZodType[], Output extends any[] = []> = T extends []
     ? Output
-    : T extends [infer Head, ...infer Tail extends z.ZodType[]]
+    : T extends [infer Head, ...infer Tail extends $ZodType[]]
       ? InferredArray<Tail, [...Output, z.infer<Head>]>
       : never;
 
@@ -20,7 +21,7 @@ const _check: true = null as any as keyof z.ZodType<string> extends infer U
     : false;
 
 // This essentially replicates the functionality of z.function in zod v3
-export const functionSchema = <Input extends z.ZodTuple, Output extends z.ZodType>({
+export const functionSchema = <Input extends z.ZodTuple, Output extends $ZodType>({
     input,
     output,
 }: {
@@ -29,7 +30,7 @@ export const functionSchema = <Input extends z.ZodTuple, Output extends z.ZodTyp
 }) => {
     const obj = z.object({
         input,
-        output,
+        output: output as unknown as z.ZodType,
     });
     Object.defineProperty(obj, functionSchemaTag, { value: true, writable: false });
     (obj as any).input = input;
@@ -59,20 +60,20 @@ export const functionSchema = <Input extends z.ZodTuple, Output extends z.ZodTyp
 
 // takes the z.infer of the schema, except for any top-level function schemata,
 // which are introspected to extract their input's output type
-export type InferSchemaOutputWithInvertedFunctionSchemata<T extends z.ZodType> =
+export type InferSchemaOutputWithInvertedFunctionSchemata<T extends $ZodType> =
     T extends z.ZodObject
         ? z.infer<
               z.ZodObject<{
                   [K in keyof T['shape']]: T['shape'][K] extends {
                       input: z.ZodTuple;
-                      output: z.ZodType;
+                      output: $ZodType;
                   }
                       ? z.ZodType<
                             (
                                 ...args: z.infer<T['shape'][K]['input']>
                             ) => z.infer<T['shape'][K]['output']>
                         >
-                      : T['shape'][K] extends z.ZodType
+                      : T['shape'][K] extends $ZodType
                         ? T['shape'][K]
                         : never;
               }>
@@ -80,7 +81,7 @@ export type InferSchemaOutputWithInvertedFunctionSchemata<T extends z.ZodType> =
         : z.infer<T>;
 
 export const schemaIsFunctionSchema = (
-    schema: z.ZodType,
+    schema: $ZodType,
 ): schema is ReturnType<typeof functionSchema> => {
     return Object.hasOwn(schema, functionSchemaTag);
 };
@@ -103,7 +104,7 @@ export type BuildZodObject<T extends object> = z.ZodObject<
 const brandedSchemaPropertyKey = '__BRANDED_SCHEMA_NAME' as const;
 
 /** Unavoidably, this mutates the underlying schema. Use with caution. */
-export const brandSchema = <Schema extends z.ZodType>(schema: Schema, name: string): Schema =>
+export const brandSchema = <Schema extends $ZodType>(schema: Schema, name: string): Schema =>
     Object.defineProperty(schema, brandedSchemaPropertyKey, {
         enumerable: false,
         configurable: false,
@@ -111,9 +112,9 @@ export const brandSchema = <Schema extends z.ZodType>(schema: Schema, name: stri
         value: name,
     });
 
-export const isBrandedWith = <Branded extends z.ZodType>(
+export const isBrandedWith = <Branded extends $ZodType>(
     expected: Branded,
-    schema: z.ZodType,
+    schema: $ZodType,
 ): schema is Branded => {
     if (!(brandedSchemaPropertyKey in expected)) {
         throw new Error('Branded model is not itself branded');

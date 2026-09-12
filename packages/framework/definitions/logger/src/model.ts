@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { $ZodType } from 'zod/v4/core';
 
 import { ObjectDefinition } from '@layerzerolabs/base-definitions';
 import type { Identity } from '@layerzerolabs/typescript-utils';
@@ -27,7 +28,7 @@ export interface Logger {
 /**
  * <!-- anchor:LoggerDefinition -->
  */
-export const LoggerDefinition = class extends ObjectDefinition<'Logger', z.ZodSchema<Logger>, {}> {
+export const LoggerDefinition = class extends ObjectDefinition<'Logger', $ZodType<Logger>, {}> {
     constructor() {
         super({ name: 'Logger', schema: z.custom<Logger>(), dependencies: {} });
     }
