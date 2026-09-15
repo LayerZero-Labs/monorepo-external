@@ -11,13 +11,14 @@
         "clippy.toml"
     ],
     "scripts": {
-        "build": "pnpm resolve-dependencies && pnpm exec lz-tool stellar contract build --package sac-manager",
+        "build": "pnpm package:source && pnpm exec lz-tool extra stellar verifiable-build --stellar-version 25.1.0 --archive .artifacts/.incoming/contracts-source.zip --package sac-manager:Cargo.toml",
         "build:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native stellar contract build --package sac-manager",
-        "clean": "rm -rf ./dependencies ./target ./node_modules",
+        "clean": "rm -rf ./dependencies ./target ./node_modules ./.artifacts*",
         "format": "pnpm exec lz-tool --script \"cargo fmt\" stellar",
         "format:check": "pnpm exec lz-tool --script \"cargo fmt -- --check\" stellar",
         "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -- -D warnings\" stellar",
         "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
+        "package:source": "pnpm resolve-dependencies && pnpm exec lz-tool extra stellar package-source --output .artifacts/.incoming/contracts-source.zip --exclude 'src/tests/**'",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run\" stellar"
     },

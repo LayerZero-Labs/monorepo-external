@@ -3,7 +3,7 @@
     "tasks": {
         "build": {
             "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!src/tests/**"],
-            "outputs": ["dependencies/**", "target/wasm32v1-none/release/*.wasm"]
+            "outputs": ["dependencies/**", ".artifacts/*.wasm", ".artifacts/*.zip"]
         },
         "test": {
             "dependsOn": ["build", "lint"]

@@ -22,7 +22,8 @@
         "build": "tsup",
         "generate-github-matrix": "tsx src/scripts/generate-github-matrix.ts",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
-        "test": "vitest"
+        "test": "vitest --run && pnpm run test:idl-script",
+        "test:idl-script": "bash docker/solana/run-tests.sh"
     },
     "dependencies": {
         "@layerzerolabs/vm-tooling": "workspace:*"
