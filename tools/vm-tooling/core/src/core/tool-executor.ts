@@ -127,7 +127,7 @@ const formatDockerVolumeArgs = (volumeArgs: readonly (readonly string[])[]): str
 
 const toProbeStampToken = (value: string): string => value.replace(/[/:]/g, '_');
 
-/** Path of a successful platform probe stamp. Later lz-tool calls in this job skip create/rm if it exists. */
+/** Path of a successful platform probe stamp. Later lz-tool calls in this job skip create/rm */
 export const dockerPlatformProbeStampPath = (imageUri: string, platformValue: string): string =>
     path.join(
         os.homedir(),
@@ -301,8 +301,7 @@ const ensureDockerImage = async (
     }
 
     // After pulling, verify the same platform resolution path used by `docker run`.
-    // Drop any stamp from an older digest first: a failed probe must not leave
-    // that stamp for a later cached-image call to skip.
+    // Drop any stamp from an older digest first. A failed probe must not leave that stamp
     if (platform) {
         await clearDockerPlatformProbeStamp(dockerPlatformProbeStampPath(imageUri, platform.value));
         await probeAndStampDockerPlatform(platform);

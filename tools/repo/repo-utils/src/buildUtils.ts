@@ -37,7 +37,7 @@ const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
     const relativePath = relative(fromPath, absolutePath).split(sep).join('/');
 
     // `./path/**` matches every workspace package located under `./path/`.
-    // Same-directory scope leaves an empty relative path; keep it `./**`, not `.//**`.
+    // Same-directory scope leaves an empty relative path. Keep it `./**`, not `.//**`
     return relativePath ? `./${relativePath}/**` : './**';
 };
 
@@ -104,29 +104,18 @@ export const runCodeFormatters = async (
 
 export type InstallDependenciesOptions = {
     /**
-     * Dedupe the lockfile. Defaults to off under CI so generator CI does not re-resolve the
-     * workspace. Local generation keeps it on so committed lockfiles pass `pnpm dedupe --check`.
+     * Dedupe the lockfile. Off under CI so generator CI does not re-resolve the workspace
      */
     dedupe?: boolean;
     /**
-     * Limit install to workspace packages under these package-directory paths (plus their
-     * dependencies). Used after scaffolding so CI does not reinstall the entire monorepo.
-     * When omitted under the CI install path, defaults to `packagePath` itself.
+     * Limit install to workspace packages under these paths. Defaults to `packagePath` under CI
      */
     directories?: string[];
 };
 
 /**
- * Links packages created after the caller's initial install (e.g. generator scaffolding).
- *
- * Under CI (`dedupe` defaults to false) this runs a scoped `pnpm install --no-frozen-lockfile`
- * so newly scaffolded importers can link. That updates the working-tree lockfile for the job
- * only — those changes are not committed, and the sanity `dedupe` / lockfile-sync gates still
- * protect the committed lockfile on real PRs. Locally it runs `pnpm dedupe`, which also links
- * new packages and keeps the committed lockfile clean.
- *
- * When `dedupe` is false and `directories` is omitted, the install is scoped to `packagePath`
- * itself — never a full-workspace unfiltered install.
+ * Links packages created after the caller's initial install.
+ * Under CI this is a scoped `pnpm install --no-frozen-lockfile`
  *
  * @param packagePath - The path to the package directory.
  * @param options - Optional install configuration.
@@ -141,16 +130,14 @@ export const installDependencies = async (
     if (dedupe) {
         await runPnpm(['dedupe'], packagePath, false);
     } else {
-        // Always scope: an empty filter set would reinstall the whole workspace and rewrite the
-        // lockfile under CI. Callers should pass directories; fall back to the cwd package.
+        // Always scope. An empty filter set would reinstall the whole workspace under CI
         const scopeDirectories = directories?.length ? directories : [packagePath];
         const filters = scopeDirectories.flatMap((directory) => [
             '--filter',
-            // Braces scope the directory glob; the suffix includes workspace dependencies.
+            // Braces scope the directory glob. The suffix includes workspace dependencies
             `{${toPnpmFilterPath(directory, packagePath)}}...`,
         ]);
-        // pnpm freezes the lockfile when CI=true; scaffolding adds importers that are not in
-        // the committed lockfile yet, so this path must allow a working-tree lockfile update.
+        // pnpm freezes the lockfile when CI=true. Scaffolding adds importers not in the committed lockfile yet
         await runPnpm(['install', '--no-frozen-lockfile', ...filters], packagePath, false);
     }
     console.log(`✅ Dependencies installed successfully`);
@@ -176,14 +163,7 @@ export const runConfigChecker = async (packagePath: string): Promise<void> => {
 
 export type RunBuildOptions = {
     /**
-     * Limit the build to these workspace packages plus their dependencies. Each entry is a
-     * filesystem path to a package directory (or a directory of packages); it is turned into a
-     * path-based `--filter` glob. Turbo also accepts package names as filters, but this helper
-     * always builds path selectors from the given directories.
-     *
-     * Omit for a package-local build: `pnpm build` inside a package runs that package's own script,
-     * which is what `finalizePackage` relies on. From the workspace root the same command resolves
-     * to the root script instead, which builds every non-migrated package.
+     * Limit the build to these workspace packages plus their dependencies
      */
     directories?: string[];
 };
@@ -203,12 +183,10 @@ export const runBuild = async (
     const filters =
         directories?.flatMap((directory) => [
             '--filter',
-            // Braces scope the directory glob; the suffix includes workspace dependencies.
+            // Braces scope the directory glob. The suffix includes workspace dependencies
             `{${toPnpmFilterPath(directory, packagePath)}}...`,
         ]) ?? [];
-    // Call turbo:run directly when scoping. `pnpm build -- --filter` forwards a literal `--`
-    // into turbo (pnpm 11), which treats post-`--` args as task passthrough instead of filters.
-    // Unscoped `pnpm build` stays package-local for finalizePackage.
+    // Call turbo:run directly when scoping. `pnpm build -- --filter` forwards a literal `--` into turbo
     const args = filters.length > 0 ? ['turbo:run', 'build', ...filters] : ['build'];
     try {
         // Verbosely log stdout so that we can inspect cache misses.
@@ -241,9 +219,7 @@ export const generateContractsSnapshot = async (
             toPnpmFilterPath(directory, repoDirectory),
         ]) ?? [];
     try {
-        // Verbose (inherit): `turbo-run.sh` merges task failure details onto stdout (`2>&1 | tee`).
-        // Non-verbose mode discards stdout, so snapshot failures collapsed to "exited with code 1".
-        // Same pattern as `runBuild` above.
+        // Verbose so turbo-run.sh failure details are not discarded
         await runPnpm(
             ['turbo:run', 'test:snapshot:update', '--continue', ...filters],
             repoDirectory,

@@ -73,12 +73,10 @@ const verifyVolumes: readonly VolumeMapping[] = [
 // crate`. Cap jobs to bound memory; see PRO-3664.
 const defaultEnv: readonly EnvironmentVariable[] = [
     { name: 'CARGO_BUILD_JOBS', value: '4' },
-    // rustc incremental session locks are owner-only (0600 Linux / 0700 macOS).
-    // Solana lz-tool runs Docker as root with no LOCAL_UID entrypoint, so on
-    // Linux CI they are root-owned and `turbo prune --use-gitignore=false`
-    // EACCES-copies host `target/`. Disable incremental so they are never
-    // created. Unchanged crates are still skipped via cargo fingerprints.
-    // Override with `--env CARGO_INCREMENTAL=1` for rustc incremental locally.
+    // rustc incremental session locks are owner-only.
+    // Solana lz-tool runs Docker as root, so CI copies EACCES host `target/`.
+    // Disable incremental. Unchanged crates still skip via cargo fingerprints.
+    // Override with `--env CARGO_INCREMENTAL=1` locally
     { name: 'CARGO_INCREMENTAL', value: '0' },
 ];
 
@@ -199,20 +197,6 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
-    ['solana:anchor-1.0.2-solana-3.1.10']: {
-        name: 'solana',
-        versions: {
-            anchor: '1.0.2',
-            solana: '3.1.10',
-        },
-        dependencies: {
-            rust: '1.89.0',
-            'platform-tools': '1.52',
-            'platform-tools-rust': '1.89.0',
-            'rust-nightly': 'nightly-2025-06-01',
-        },
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
     ['solana:anchor-1.0.2-solana-3.1.10-patch-1']: {
         name: 'solana',
         versions: {
@@ -222,21 +206,6 @@ export const images = {
         patch: 1,
         dependencies: {
             rust: '1.89.0',
-            'platform-tools': '1.52',
-            'platform-tools-rust': '1.89.0',
-            'rust-nightly': 'nightly-2025-06-01',
-        },
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['solana:anchor-1.1.2-solana-3.1.10']: {
-        name: 'solana',
-        versions: {
-            anchor: '1.1.2',
-            solana: '3.1.10',
-        },
-        dependencies: {
-            // Host rustc for compiling anchor-cli. 1.1.2 lockfile pins cargo-platform 0.3.3 (MSRV 1.91).
-            rust: '1.92.0',
             'platform-tools': '1.52',
             'platform-tools-rust': '1.89.0',
             'rust-nightly': 'nightly-2025-06-01',
