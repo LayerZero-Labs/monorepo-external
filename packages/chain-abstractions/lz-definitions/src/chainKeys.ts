@@ -3934,6 +3934,14 @@ export const CHAIN_KEY_ALIAS_CONFIG = {
             },
         ],
     },
+    [ChainKey.RITUAL]: {
+        aliases: [
+            {
+                environment: Environment.MAINNET,
+                name: ChainName.RITUAL,
+            },
+        ],
+    },
     [ChainKey.RITUAL_TESTNET]: {
         aliases: [
             {

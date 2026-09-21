@@ -1057,6 +1057,7 @@ export enum ChainKey {
     ONEMONEY = 'onemoney',
     ONEMONEY_TESTNET = 'onemoney-testnet',
     // ritual
+    RITUAL = 'ritual',
     RITUAL_TESTNET = 'ritual-testnet',
     // opn
     //anubis
