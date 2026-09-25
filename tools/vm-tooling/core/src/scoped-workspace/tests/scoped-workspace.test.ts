@@ -777,7 +777,7 @@ describe(copyRootNodeModulesSymlinks, () => {
     it('copies only selected root dependency symlinks without copying dependency contents', async () => {
         const repo = createRepo('node-modules-symlinks');
         const scopedRoot = join(TMP, 'scoped-node-modules-symlinks');
-        const dep = join(repo, 'apps', 'oapp-app', 'contracts', 'solana');
+        const dep = join(repo, 'apps', 'project-types', 'oapp-app', 'contracts', 'solana');
 
         createPackage(dep, '@layerzerolabs/oapp-solana-contracts');
         mkdirSync(join(repo, 'node_modules', '.pnpm'), { recursive: true });
@@ -785,7 +785,9 @@ describe(copyRootNodeModulesSymlinks, () => {
         mkdirSync(join(repo, 'node_modules', '@types'), { recursive: true });
         mkdirSync(join(repo, 'node_modules', '@layerzerolabs'), { recursive: true });
         writeFileSync(join(repo, 'node_modules', '.bin', 'real-file'), 'do not copy');
-        mkdirSync(join(scopedRoot, 'apps', 'oapp-app', 'contracts', 'solana'), { recursive: true });
+        mkdirSync(join(scopedRoot, 'apps', 'project-types', 'oapp-app', 'contracts', 'solana'), {
+            recursive: true,
+        });
         symlinkSync('.pnpm/eslint@1.0.0/node_modules/eslint', join(repo, 'node_modules', 'eslint'));
         symlinkSync(
             '../.pnpm/typescript@1.0.0/node_modules/typescript/bin/tsc',
@@ -796,7 +798,7 @@ describe(copyRootNodeModulesSymlinks, () => {
             join(repo, 'node_modules', '@types', 'node'),
         );
         symlinkSync(
-            '../../apps/oapp-app/contracts/solana',
+            '../../apps/project-types/oapp-app/contracts/solana',
             join(repo, 'node_modules', '@layerzerolabs', 'oapp-solana-contracts'),
         );
         symlinkSync('../..', join(repo, 'node_modules', '@layerzerolabs', 'whole-repo-link'));
@@ -831,7 +833,7 @@ describe(copyRootNodeModulesSymlinks, () => {
             readlinkSync(
                 join(scopedRoot, 'node_modules', '@layerzerolabs', 'oapp-solana-contracts'),
             ),
-        ).toBe('../../apps/oapp-app/contracts/solana');
+        ).toBe('../../apps/project-types/oapp-app/contracts/solana');
         expect(
             existsSync(join(scopedRoot, 'node_modules', '@layerzerolabs', 'whole-repo-link')),
         ).toBe(false);

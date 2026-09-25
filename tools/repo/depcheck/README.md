@@ -43,6 +43,13 @@ Output: `graph.html` (interactive visualization)
 
 Detect missing and unused dependencies, auto-fix `package.json` files.
 
+Packages referenced by the emitted declarations in `dist/**/*.d.ts` also count as used, even when
+the source never imports them. Consumers resolve those references from the emitting package, so
+each one must be in `dependencies`, `peerDependencies` or `optionalDependencies`; `devDependencies`
+only satisfies it for dev-only tools matched by the to-dev pattern (`@types/*`, `tsup`, ...). An
+undeclared reference silently becomes `any` for consumers. Build the package first: without
+`dist`, declaration-only dependencies look unused and are removed.
+
 ```bash
 pnpm --filter @layerzerolabs/depcheck run depcheck deps [options]
 ```
@@ -99,13 +106,13 @@ pnpm --filter @layerzerolabs/depcheck run depcheck validate \
 
 **Options:**
 
-| Option                            | Description                                                       | Example                            |
-| --------------------------------- | ----------------------------------------------------------------- | ---------------------------------- |
-| `--missing-dependencies`          | Check for missing/unused dependencies and dependency key ordering | `--missing-dependencies`           |
-| `--catalog`                       | Validate catalog is up to date                                    | `--catalog`                        |
-| `--only <name>`                   | Check only specific package(s)                                    | `--only @layerzerolabs/vm-tooling` |
-| `--no-dups`                       | Check for duplicates                                              | `--no-dups`                        |
-| `--ignore-patterns <patterns...>` | Glob patterns to ignore                                           | `--ignore-patterns "docker/**"`    |
+| Option                            | Description                                                                                    | Example                            |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `--missing-dependencies`          | Check for missing/unused dependencies (source and emitted `.d.ts`) and dependency key ordering | `--missing-dependencies`           |
+| `--catalog`                       | Validate catalog is up to date                                                                 | `--catalog`                        |
+| `--only <name>`                   | Check only specific package(s)                                                                 | `--only @layerzerolabs/vm-tooling` |
+| `--no-dups`                       | Check for duplicates                                                                           | `--no-dups`                        |
+| `--ignore-patterns <patterns...>` | Glob patterns to ignore                                                                        | `--ignore-patterns "docker/**"`    |
 
 ---
 
@@ -260,7 +267,8 @@ A package configures depcheck through a `.depcheckrc` file next to its `package.
 ## Common Workflows
 
 ```bash
-# 1. Check dependencies before commit
+# 1. Check dependencies before commit (build first so emitted declarations are checked)
+pnpm build --filter <package>
 pnpm --filter @layerzerolabs/depcheck run depcheck deps
 
 # 2. Fix all dependency issues

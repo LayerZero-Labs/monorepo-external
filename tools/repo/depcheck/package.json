@@ -33,6 +33,7 @@
         "js-yaml": "catalog:",
         "p-limit": "catalog:",
         "tinypool": "catalog:",
+        "typescript": "catalog:",
         "zod": "catalog:"
     },
     "devDependencies": {
@@ -41,7 +42,6 @@
         "@types/js-yaml": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
-        "typescript": "catalog:",
         "vitest": "catalog:"
     },
     "publishConfig": {

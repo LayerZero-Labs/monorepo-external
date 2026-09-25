@@ -35,8 +35,8 @@
         "lint:rs": "pnpm exec lz-tool --script 'cargo clippy -- -D warnings' anchor",
         "start:solana": "tsx scripts/start-validator.ts",
         "stop:solana": "docker stop onesig-solana-validator && docker rm onesig-solana-validator",
-        "test": "pnpm test:js && pnpm test:rs && pnpm test:integration",
-        "test:integration": "pnpm start:solana && vitest run && pnpm stop:solana",
+        "test": "pnpm test:js && pnpm test:rs && pnpm test:full",
+        "test:full": "pnpm start:solana && vitest run && pnpm stop:solana",
         "test:js": "vitest --run --pass-with-no-tests --typecheck --dir src",
         "test:rs": "pnpm exec lz-tool --script 'cargo test --package onesig -- tests --nocapture' anchor"
     },

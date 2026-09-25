@@ -42,14 +42,14 @@ Contract-specific errors auto-increment from 1 and are scoped to each contract.
 
 Libraries shared across contracts use reserved ranges for global uniqueness.
 
-| Range     | Category     | Library            | Location                                                    |
-| --------- | ------------ | ------------------ | ----------------------------------------------------------- |
-| 1000-1099 | Protocol Lib | utils              | `contracts/common/utils/stellar/common-utils/src/errors.rs` |
-| 1100-1199 | Protocol Lib | message-lib-common | `message-libs/message-lib-common/src/errors.rs`             |
-| 1200-1299 | Protocol Lib | worker             | `workers/worker/src/errors.rs`                              |
-| 1300-1999 | Protocol Lib | (reserved)         | Future protocol libs                                        |
-| 2000-2099 | OApp Lib     | oapp               | `apps/oapp-app/contracts/stellar/contracts/src/errors.rs`   |
-| 2100-2999 | OApp Lib     | (reserved)         | Future OApp libs                                            |
-| 3000-3099 | OFT Lib      | oft-core           | `apps/oft-app/contracts/stellar/oft-core/src/errors.rs`     |
-| 3100-3199 | OFT Lib      | oft (extensions)   | `apps/oft-app/contracts/stellar/oft/src/extensions/`        |
-| 3200-3999 | OFT Lib      | (reserved)         | Future OFT libs                                             |
+| Range     | Category     | Library            | Location                                                                |
+| --------- | ------------ | ------------------ | ----------------------------------------------------------------------- |
+| 1000-1099 | Protocol Lib | utils              | `contracts/common/utils/stellar/common-utils/src/errors.rs`             |
+| 1100-1199 | Protocol Lib | message-lib-common | `message-libs/message-lib-common/src/errors.rs`                         |
+| 1200-1299 | Protocol Lib | worker             | `workers/worker/src/errors.rs`                                          |
+| 1300-1999 | Protocol Lib | (reserved)         | Future protocol libs                                                    |
+| 2000-2099 | OApp Lib     | oapp               | `apps/project-types/oapp-app/contracts/stellar/contracts/src/errors.rs` |
+| 2100-2999 | OApp Lib     | (reserved)         | Future OApp libs                                                        |
+| 3000-3099 | OFT Lib      | oft-core           | `apps/oft-app/contracts/stellar/oft-core/src/errors.rs`                 |
+| 3100-3199 | OFT Lib      | oft (extensions)   | `apps/oft-app/contracts/stellar/oft/src/extensions/`                    |
+| 3200-3999 | OFT Lib      | (reserved)         | Future OFT libs                                                         |

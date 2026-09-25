@@ -35,12 +35,4 @@ export enum ProtocolContracts {
     OAPP = 'OApp',
     OMNI_COUNTER = 'OmniCounter',
     BLOCKED_MESSAGE_LIB = 'BlockedMessageLib',
-    /** Canton EndpointV2 artifact subkey — not a top-level deployable contract. */
-    REQUEST_FACTORY_CONFIG = 'requestFactoryConfig',
-    /** Canton EndpointV2 artifact subkey — not a top-level deployable contract. */
-    DISCOVERY_REGISTRY = 'discoveryRegistry',
-    /** Canton EndpointV2 artifact subkey — not a top-level deployable contract. */
-    REQUEST_FACTORY_ACCESS_CONTROL = 'requestFactoryAccessControl',
-    /** Canton EndpointV2 artifact subkey — not a top-level deployable contract. */
-    DISCOVERY_REGISTRY_ACCESS_CONTROL = 'discoveryRegistryAccessControl',
 }

@@ -123,7 +123,7 @@ Executes verified messages on the destination chain.
 
 Base framework for building cross-chain applications.
 
-**Location**: `apps/oapp-app/contracts/stellar/`
+**Location**: `apps/project-types/oapp-app/contracts/stellar/`
 
 **Key traits**:
 
@@ -498,7 +498,7 @@ Executor auth ──► OApp.lz_receive() ──► Endpoint.clear()
 
 ## Building OApps and OFTs
 
-- [OApp guide](../../../../../apps/oapp-app/contracts/stellar/docs/oapp-guide.md) —
+- [OApp guide](../../../../../apps/project-types/oapp-app/contracts/stellar/docs/oapp-guide.md) —
   Building Omnichain Applications using the OApp framework, macros, and traits
   (stub: [oapp-guide.md](oapp-guide.md))
 - [OFT guide](../../../../../apps/oft-app/contracts/stellar/docs/oft-guide.md) —

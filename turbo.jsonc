@@ -27,12 +27,19 @@
         "VM_TOOLING_IMAGE_DIRECTORY",
         "VM_TOOLING_LOCAL",
         "DOCKER_DEFAULT_PLATFORM",
+        "TMPDIR",
         "VITEST",
         "VERCEL",
         "VERCEL_*"
     ],
     "tasks": {
         "test": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "outputs": [],
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
+        "test:integration": {
             "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
             "outputs": [],
             "dependsOn": ["build"],
@@ -48,7 +55,15 @@
             "outputLogs": "new-only"
         },
         "build": {
-            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!**/*.test.ts",
+                "!**/*.spec.ts",
+                "!**/*.test.tsx",
+                "!**/*.t.sol"
+            ],
             "outputs": [
                 // ts build output
                 "dist/**",
@@ -91,7 +106,7 @@
             "dependsOn": ["build"],
             "outputLogs": "new-only"
         },
-        "test:integration": {
+        "test:integration:migrated": {
             "outputs": ["coverage/**"],
             "dependsOn": ["build"],
             "outputLogs": "new-only",

@@ -4,6 +4,7 @@ import pLimit from 'p-limit';
 import path from 'path';
 
 import { catalogize } from './catalog';
+import { findDeclarationImports } from './declarationImports';
 import { runPackagesInWorkers, shouldUseWorkers } from './parallel';
 import { safeRegexMatch } from './safeRegex';
 import type { Catalog, PackageJson, PnpmPackageObject } from './types';
@@ -517,6 +518,20 @@ export const removeUnusedDependencies = (
     return log;
 };
 
+const toTypesPackageName = (dep: string) => `@types/${dep.replace(/^@/, '').replace('/', '__')}`;
+
+const isAvailableToConsumers = (packageJson: PackageJson, dep: string) =>
+    [dep, toTypesPackageName(dep)].some(
+        (name) =>
+            packageJson.dependencies?.[name] ||
+            packageJson.peerDependencies?.[name] ||
+            packageJson.optionalDependencies?.[name] ||
+            (packageJson.devDependencies?.[name] &&
+                MOVE_TO_DEV_DEFAULT_PATTERN.split(',').some((pattern) =>
+                    safeRegexMatch({ str: name, pattern }),
+                )),
+    );
+
 export const processPackageDependencies = async (params: {
     packageName: string;
     allDeps: { [key: string]: Set<string> };
@@ -574,6 +589,20 @@ export const processPackageDependencies = async (params: {
             }`,
         );
     }
+
+    const declarationImports = await findDeclarationImports(packagePath);
+    depcheckResults.dependencies = depcheckResults.dependencies.filter(
+        (dep) => !declarationImports.has(dep),
+    );
+    for (const [dep, files] of declarationImports) {
+        if (
+            !isAvailableToConsumers(packageJson, dep) &&
+            !ignores?.some((pattern) => path.matchesGlob(dep, pattern))
+        ) {
+            depcheckResults.missing[dep] ??= files;
+        }
+    }
+
     let makeChanges = false;
     let addLog = '';
     let removeLog = '';
