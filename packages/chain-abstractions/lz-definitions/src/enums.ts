@@ -293,6 +293,7 @@ export enum ChainName {
     HASHKEY = 'hashkey',
     MEMECORE = 'memecore',
     OPN = 'opn',
+    ALPEN = 'alpen',
 }
 
 export enum ChainKey {
@@ -1059,7 +1060,6 @@ export enum ChainKey {
     // ritual
     RITUAL = 'ritual',
     RITUAL_TESTNET = 'ritual-testnet',
-    // opn
     //anubis
     ANUBIS = 'anubis',
     ANUBIS_TESTNET = 'anubis-testnet',
@@ -1069,8 +1069,11 @@ export enum ChainKey {
     //memecore
     MEMECORE = 'memecore',
     MEMECORE_TESTNET = 'memecore-testnet',
+    // opn
     OPN = 'opn',
     OPN_TESTNET = 'opn-testnet',
+    //alpen
+    ALPEN_TESTNET = 'alpen-testnet',
 }
 
 export enum ChainType {
@@ -1382,6 +1385,7 @@ export const CHAIN_NAME_TO_CHAIN_TYPE = {
     hashkey: ChainType.EVM,
     memecore: ChainType.EVM,
     opn: ChainType.EVM,
+    alpen: ChainType.EVM,
 } as const satisfies Record<ChainName, ChainType>;
 
 export const CHAIN_TYPE_TO_CHAIN_NAME = Object.entries(CHAIN_NAME_TO_CHAIN_TYPE).reduce(

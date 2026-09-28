@@ -4014,6 +4014,14 @@ export const CHAIN_KEY_ALIAS_CONFIG = {
             },
         ],
     },
+    [ChainKey.ALPEN_TESTNET]: {
+        aliases: [
+            {
+                environment: Environment.TESTNET,
+                name: ChainName.ALPEN,
+            },
+        ],
+    },
 } as const satisfies Record<ChainKey, { aliases: { name: ChainName; environment: Environment }[] }>;
 
 export const resolveChainKey = (chainName: ChainName, environment: Environment): ChainKey => {
