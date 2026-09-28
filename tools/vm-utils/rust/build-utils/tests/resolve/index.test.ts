@@ -37,22 +37,22 @@ describe('resolveDependencies — single crate mode', () => {
 
         createCrate(root, fixture('program-with-deps.toml'));
 
-        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'rbac-solana-contracts');
         createCrate(rbacSource, fixture('minimal.toml'));
         writeFileSync(join(rbacSource, 'package.json'), '{}');
 
         await resolveDependencies({ cwd: root });
 
-        expect(existsSync(join(root, 'dependencies', 'utils-solana-rbac', 'Cargo.toml'))).toBe(
+        expect(existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'Cargo.toml'))).toBe(
             true,
         );
-        expect(existsSync(join(root, 'dependencies', 'utils-solana-rbac', 'src', 'lib.rs'))).toBe(
-            true,
-        );
+        expect(
+            existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'src', 'lib.rs')),
+        ).toBe(true);
         // package.json should NOT be copied
-        expect(existsSync(join(root, 'dependencies', 'utils-solana-rbac', 'package.json'))).toBe(
-            false,
-        );
+        expect(
+            existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'package.json')),
+        ).toBe(false);
     });
 });
 
@@ -65,13 +65,13 @@ describe('resolveDependencies — workspace mode ([workspace] members)', () => {
         const programDir = join(root, 'programs', 'my_program');
         createCrate(programDir, fixture('program-workspace-member.toml'));
 
-        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'rbac-solana-contracts');
         createCrate(rbacSource, fixture('minimal.toml'));
         writeFileSync(join(rbacSource, 'package.json'), '{}');
 
         await resolveDependencies({ cwd: root });
 
-        expect(existsSync(join(root, 'dependencies', 'utils-solana-rbac', 'Cargo.toml'))).toBe(
+        expect(existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'Cargo.toml'))).toBe(
             true,
         );
         expect(existsSync(join(programDir, 'dependencies'))).toBe(false);
@@ -89,7 +89,12 @@ describe('resolveDependencies — transitive dep rewriting', () => {
         createCrate(oappSource, fixture('oapp-with-stale-deps.toml'));
         writeFileSync(join(oappSource, 'package.json'), '{}');
 
-        const rbacSource = join(oappSource, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        const rbacSource = join(
+            oappSource,
+            'node_modules',
+            '@layerzerolabs',
+            'rbac-solana-contracts',
+        );
         createCrate(rbacSource, fixture('minimal.toml'));
         writeFileSync(join(rbacSource, 'package.json'), '{}');
 
@@ -98,7 +103,7 @@ describe('resolveDependencies — transitive dep rewriting', () => {
         const copiedOappToml = readToml(
             join(root, 'dependencies', 'oapp-solana-contracts', 'Cargo.toml'),
         );
-        expect(copiedOappToml).toContain('path = "../utils-solana-rbac"');
+        expect(copiedOappToml).toContain('path = "../rbac-solana-contracts"');
     });
 
     it('strips root-only Cargo tables from copied dependency manifests', async () => {
@@ -397,7 +402,7 @@ describe('resolveDependencies — excludes integration test dirs from vendored c
         const root = join(TMP, 'exclude-integration-tests');
         createCrate(root, fixture('program-with-deps.toml'));
 
-        const dep = join(root, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        const dep = join(root, 'node_modules', '@layerzerolabs', 'rbac-solana-contracts');
         createCrate(dep, fixture('minimal.toml'));
         writeFileSync(join(dep, 'package.json'), '{}');
         // Both spellings are used across the stellar contracts (hyphen: oft/oft-core;
@@ -409,7 +414,7 @@ describe('resolveDependencies — excludes integration test dirs from vendored c
 
         await resolveDependencies({ cwd: root });
 
-        const vendored = join(root, 'dependencies', 'utils-solana-rbac');
+        const vendored = join(root, 'dependencies', 'rbac-solana-contracts');
         expect(existsSync(join(vendored, 'src', 'lib.rs'))).toBe(true);
         expect(existsSync(join(vendored, 'integration-tests'))).toBe(false);
         expect(existsSync(join(vendored, 'integration_tests'))).toBe(false);
@@ -421,13 +426,13 @@ describe('resolveDependencies — single-crate consumer (no [workspace])', () =>
         const root = join(TMP, 'leaf-consumer');
         createCrate(root, fixture('program-with-deps.toml')); // bare [package], no [workspace]
 
-        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'utils-solana-rbac');
+        const rbacSource = join(root, 'node_modules', '@layerzerolabs', 'rbac-solana-contracts');
         createCrate(rbacSource, fixture('minimal.toml'));
         writeFileSync(join(rbacSource, 'package.json'), '{}');
 
         await resolveDependencies({ cwd: root });
 
-        expect(existsSync(join(root, 'dependencies', 'utils-solana-rbac', 'Cargo.toml'))).toBe(
+        expect(existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'Cargo.toml'))).toBe(
             true,
         );
     });

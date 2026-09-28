@@ -2,4 +2,4 @@
 name = "oapp"
 
 [dependencies]
-rbac = { path = "dependencies/utils-solana-rbac" }
+rbac = { path = "dependencies/rbac-solana-contracts" }

@@ -151,13 +151,13 @@ describe('buildDependenciesPathMap', () => {
         createCrate(rbac);
         createCrate(oapp);
         const targets = [
-            await toTarget('utils-solana-rbac', rbac, depsDir),
+            await toTarget('rbac-solana-contracts', rbac, depsDir),
             await toTarget('oapp-solana-contracts', oapp, depsDir),
         ];
 
         const pathMap = buildDependenciesPathMap(targets);
 
-        expect(pathMap.get(rbac)).toBe(join(depsDir, 'utils-solana-rbac'));
+        expect(pathMap.get(rbac)).toBe(join(depsDir, 'rbac-solana-contracts'));
         expect(pathMap.get(oapp)).toBe(join(depsDir, 'oapp-solana-contracts'));
     });
 

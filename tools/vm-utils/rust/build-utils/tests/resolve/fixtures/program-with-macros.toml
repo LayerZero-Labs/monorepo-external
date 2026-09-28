@@ -2,5 +2,5 @@
 name = "my-program"
 
 [dependencies]
-rbac = { path = "../../dependencies/utils-solana-rbac" }
-rbac-macros = { path = "../../dependencies/utils-solana-rbac/macros" }
+rbac = { path = "../../dependencies/rbac-solana-contracts" }
+rbac-macros = { path = "../../dependencies/rbac-solana-contracts/macros" }

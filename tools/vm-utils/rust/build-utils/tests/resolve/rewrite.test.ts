@@ -41,14 +41,14 @@ describe('rewriteCargoToml', () => {
         writeToml(cargoToml, fixture('mixed-deps.toml'));
 
         const ctx: RewriteContext = {
-            pathMap: new Map([['/real/rbac', join(depsDir, 'utils-solana-rbac')]]),
-            discovered: new Map([['utils-solana-rbac', '/real/rbac']]),
+            pathMap: new Map([['/real/rbac', join(depsDir, 'rbac-solana-contracts')]]),
+            discovered: new Map([['rbac-solana-contracts', '/real/rbac']]),
         };
 
         await rewriteCargoToml(crateDir, cargoToml, ctx);
         const result = readToml(cargoToml);
 
-        expect(result).toContain('rbac = { path = "../../dependencies/utils-solana-rbac" }');
+        expect(result).toContain('rbac = { path = "../../dependencies/rbac-solana-contracts" }');
         expect(result).toContain('anchor-lang = { version = "0.32.1" }');
         expect(result).toContain('num_enum = { version = "0.7" }');
     });
@@ -62,17 +62,17 @@ describe('rewriteCargoToml', () => {
 
         const ctx: RewriteContext = {
             pathMap: new Map([
-                ['/real/rbac', join(depsDir, 'utils-solana-rbac')],
-                ['/real/rbac/macros', join(depsDir, 'utils-solana-rbac', 'macros')],
+                ['/real/rbac', join(depsDir, 'rbac-solana-contracts')],
+                ['/real/rbac/macros', join(depsDir, 'rbac-solana-contracts', 'macros')],
             ]),
-            discovered: new Map([['utils-solana-rbac', '/real/rbac']]),
+            discovered: new Map([['rbac-solana-contracts', '/real/rbac']]),
         };
 
         await rewriteCargoToml(crateDir, cargoToml, ctx);
         const result = readToml(cargoToml);
 
         expect(result).toContain(
-            'rbac-macros = { path = "../../dependencies/utils-solana-rbac/macros" }',
+            'rbac-macros = { path = "../../dependencies/rbac-solana-contracts/macros" }',
         );
     });
 
@@ -167,15 +167,15 @@ describe('rewriteCargoToml', () => {
         writeToml(cargoToml, fixture('with-features.toml'));
 
         const ctx: RewriteContext = {
-            pathMap: new Map([['/real/rbac', join(depsDir, 'utils-solana-rbac')]]),
-            discovered: new Map([['utils-solana-rbac', '/real/rbac']]),
+            pathMap: new Map([['/real/rbac', join(depsDir, 'rbac-solana-contracts')]]),
+            discovered: new Map([['rbac-solana-contracts', '/real/rbac']]),
         };
 
         await rewriteCargoToml(TMP, cargoToml, ctx);
         const result = readToml(cargoToml);
 
         expect(result).toContain('features = ["idl-build"]');
-        expect(result).toContain('path = "dependencies/utils-solana-rbac"');
+        expect(result).toContain('path = "dependencies/rbac-solana-contracts"');
     });
 
     it('does not modify file when no path deps match and no workspace', async () => {
@@ -240,15 +240,15 @@ describe('rewriteCargoToml', () => {
         writeToml(cargoToml, fixture('workspace-with-path-deps.toml'));
 
         const ctx: RewriteContext = {
-            pathMap: new Map([['/real/rbac', join(depsDir, 'utils-solana-rbac')]]),
-            discovered: new Map([['utils-solana-rbac', '/real/rbac']]),
+            pathMap: new Map([['/real/rbac', join(depsDir, 'rbac-solana-contracts')]]),
+            discovered: new Map([['rbac-solana-contracts', '/real/rbac']]),
         };
 
         await rewriteCargoToml(TMP, cargoToml, ctx);
         const result = readToml(cargoToml);
 
         expect(result).not.toContain('[workspace]');
-        expect(result).toContain('path = "dependencies/utils-solana-rbac"');
+        expect(result).toContain('path = "dependencies/rbac-solana-contracts"');
         expect(result).toContain('name = "oapp"');
     });
 
@@ -274,17 +274,17 @@ describe('rewriteCargoToml — path dep syntax variants', () => {
         const cargoToml = join(TMP, 'Cargo.toml');
         writeToml(
             cargoToml,
-            '[package]\nname = "x"\n\n[dependencies.rbac]\npath = "dependencies/utils-solana-rbac"\n',
+            '[package]\nname = "x"\n\n[dependencies.rbac]\npath = "dependencies/rbac-solana-contracts"\n',
         );
 
         const ctx: RewriteContext = {
-            pathMap: new Map([['/real/rbac', join(TMP, 'deps', 'utils-solana-rbac')]]),
-            discovered: new Map([['utils-solana-rbac', '/real/rbac']]),
+            pathMap: new Map([['/real/rbac', join(TMP, 'deps', 'rbac-solana-contracts')]]),
+            discovered: new Map([['rbac-solana-contracts', '/real/rbac']]),
         };
 
         await rewriteCargoToml(TMP, cargoToml, ctx);
         expect(depPath(readParsed(cargoToml), 'dependencies', 'rbac')).toBe(
-            join('deps', 'utils-solana-rbac'),
+            join('deps', 'rbac-solana-contracts'),
         );
     });
 
