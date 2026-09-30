@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
-import { relative, sep } from 'path';
+import { existsSync } from 'node:fs';
+import { dirname, join, relative, sep } from 'path';
 
 const runPnpm = (args: string[], cwd: string, verbose: boolean): Promise<void> =>
     new Promise((resolve, reject) => {
@@ -31,6 +32,13 @@ const runPnpm = (args: string[], cwd: string, verbose: boolean): Promise<void> =
 export type RunCodeFormattersOptions = {
     skipFormatting?: boolean;
     skipLint?: boolean;
+};
+
+const findWorkspaceRoot = (fromPath: string): string => {
+    for (let dir = fromPath; ; dir = dirname(dir)) {
+        if (existsSync(join(dir, 'pnpm-workspace.yaml'))) return dir;
+        if (dirname(dir) === dir) return fromPath;
+    }
 };
 
 const toPnpmFilterPath = (absolutePath: string, fromPath: string): string => {
@@ -137,6 +145,10 @@ export const installDependencies = async (
             // Braces scope the directory glob. The suffix includes workspace dependencies
             `{${toPnpmFilterPath(directory, packagePath)}}...`,
         ]);
+        // Scaffolded packages run bins the workspace root provides (e.g. `turbo-snapshot`). pnpm 12
+        // no longer installs the root's workspace dependencies unless the filter selects the root
+        const rootPath = relative(packagePath, findWorkspaceRoot(packagePath)).split(sep).join('/');
+        filters.push('--filter', `{${rootPath || '.'}}...`);
         // pnpm freezes the lockfile when CI=true. Scaffolding adds importers not in the committed lockfile yet
         await runPnpm(['install', '--no-frozen-lockfile', ...filters], packagePath, false);
     }

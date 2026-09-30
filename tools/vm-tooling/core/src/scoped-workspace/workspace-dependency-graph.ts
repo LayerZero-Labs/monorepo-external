@@ -1,6 +1,6 @@
 import { lstat, open, realpath } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { parse } from 'yaml';
+import { parseAllDocuments } from 'yaml';
 
 import { findFileInParentDirectory } from '../utils';
 import { isInside } from '../utils/fs';
@@ -137,7 +137,10 @@ const readLockfileImporters = async (repoRoot: string): Promise<LockfileImporter
             return cached.importers;
         }
 
-        const lockfile = parse(await handle.readFile('utf-8')) as PnpmLockfile | null;
+        // pnpm 12 prepends a document pinning its own binaries; the workspace lockfile is the last one.
+        const lockfile = parseAllDocuments(await handle.readFile('utf-8'))
+            .at(-1)
+            ?.toJS() as PnpmLockfile | null | undefined;
 
         if (!lockfile?.importers) {
             throw new Error(`Could not read pnpm-lock.yaml from ${repoRoot}`);

@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
+import { existsSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { installDependencies, runBuild } from '../src/buildUtils';
@@ -8,7 +9,12 @@ vi.mock('node:child_process', () => ({
     spawn: vi.fn(),
 }));
 
+vi.mock('node:fs', () => ({
+    existsSync: vi.fn(),
+}));
+
 const spawnMock = vi.mocked(spawn);
+const existsSyncMock = vi.mocked(existsSync);
 const originalCI = process.env.CI;
 
 const mockSuccessfulCommands = (): void => {
@@ -24,6 +30,7 @@ describe('build utilities', () => {
     beforeEach(() => {
         spawnMock.mockReset();
         mockSuccessfulCommands();
+        existsSyncMock.mockImplementation((file) => file === '/repo/pnpm-workspace.yaml');
         vi.spyOn(console, 'log').mockImplementation(() => undefined);
     });
 
@@ -62,7 +69,14 @@ describe('build utilities', () => {
         expect(spawnMock).toHaveBeenCalledTimes(1);
         expect(spawnMock).toHaveBeenCalledWith(
             'pnpm',
-            ['install', '--no-frozen-lockfile', '--filter', '{./apps/projects/example/**}...'],
+            [
+                'install',
+                '--no-frozen-lockfile',
+                '--filter',
+                '{./apps/projects/example/**}...',
+                '--filter',
+                '{.}...',
+            ],
             { cwd: '/repo', stdio: ['ignore', 'ignore', 'pipe'] },
         );
 
@@ -84,7 +98,7 @@ describe('build utilities', () => {
         expect(spawnMock).toHaveBeenCalledTimes(1);
         expect(spawnMock).toHaveBeenCalledWith(
             'pnpm',
-            ['install', '--no-frozen-lockfile', '--filter', '{./**}...'],
+            ['install', '--no-frozen-lockfile', '--filter', '{./**}...', '--filter', '{../..}...'],
             { cwd: '/repo/packages/example', stdio: ['ignore', 'ignore', 'pipe'] },
         );
     });
