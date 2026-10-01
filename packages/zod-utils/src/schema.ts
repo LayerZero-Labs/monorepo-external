@@ -89,10 +89,6 @@ export const schemaIsFunctionSchema = (
 export const customSchema = <T>(validate?: (data: any) => T) =>
     z.custom<T>(validate) as z.ZodType<T, T>;
 
-export const createFunctionPointerSchema = <T extends FunctionPointer>() =>
-    // TODO: replace with a concrete zod schema
-    customSchema<T>();
-
 export type BuildZodObject<T extends object> = z.ZodObject<
     {
         [K in keyof T]: z.ZodType<T[K]>;
@@ -103,26 +99,86 @@ export type BuildZodObject<T extends object> = z.ZodObject<
 // utils for branding schemata with names
 const brandedSchemaPropertyKey = '__BRANDED_SCHEMA_NAME' as const;
 
-/** Unavoidably, this mutates the underlying schema. Use with caution. */
-export const brandSchema = <Schema extends $ZodType>(schema: Schema, name: string): Schema =>
-    Object.defineProperty(schema, brandedSchemaPropertyKey, {
+const reshapingMethods = [
+    'extend',
+    'safeExtend',
+    'merge',
+    'pick',
+    'omit',
+    'partial',
+    'required',
+    'catchall',
+    'passthrough',
+    'loose',
+    'strict',
+    'strip',
+    'rest',
+    'extract',
+    'exclude',
+] as const;
+
+const getBrand = (schema: $ZodType): string | undefined =>
+    (schema._zod.def as { [brandedSchemaPropertyKey]?: string })[brandedSchemaPropertyKey];
+
+const guardBrandedSchema = (schema: $ZodType) => {
+    const inst = schema as unknown as Record<string, unknown>;
+    for (const method of reshapingMethods) {
+        if (typeof inst[method] !== 'function') continue;
+        inst[method] = () => {
+            throw new Error(`Cannot "${method}" a branded schema ${getBrand(schema)}`);
+        };
+    }
+
+    // override the clone so that the cloned schemata are guarded
+    if (typeof inst.clone === 'function') {
+        const clone = inst.clone as (...args: unknown[]) => $ZodType;
+        inst.clone = (...args: unknown[]) => {
+            const cloned = clone(...args);
+            if (getBrand(cloned) !== undefined) {
+                guardBrandedSchema(cloned);
+            }
+
+            return cloned;
+        };
+    }
+};
+
+/**
+ * Unavoidably, this mutates the underlying schema. Use with caution. In particular:
+ * - `.describe()` and `.meta()` share their definition with the schema they were called on, so
+ *   branding `x.describe('...')` brands `x` too.
+ * - The brand cannot be replaced, so branding a schema derived from a branded one (e.g.
+ *   `brandSchema(chainNameSchema.describe('...'), 'Other')`) throws.
+ *
+ * Branded schemata cannot be `extend`ed, `pick`ed, etc, but they can be `describe`d.
+ */
+export const brandSchema = <Schema extends $ZodType>(schema: Schema, name: string): Schema => {
+    Object.defineProperty(schema._zod.def, brandedSchemaPropertyKey, {
         enumerable: false,
         configurable: false,
         writable: false,
         value: name,
     });
 
+    guardBrandedSchema(schema);
+
+    return schema;
+};
+
 export const isBrandedWith = <Branded extends $ZodType>(
     expected: Branded,
     schema: $ZodType,
 ): schema is Branded => {
-    if (!(brandedSchemaPropertyKey in expected)) {
+    const expectedBrand = getBrand(expected);
+    if (expectedBrand === undefined) {
         throw new Error('Branded model is not itself branded');
     }
 
-    if (!(brandedSchemaPropertyKey in schema)) {
-        return false;
-    }
-
-    return schema[brandedSchemaPropertyKey] === expected[brandedSchemaPropertyKey];
+    return getBrand(schema) === expectedBrand;
 };
+
+export const createFunctionPointerSchema = <T extends FunctionPointer>() =>
+    // TODO: replace with a concrete zod schema
+    brandSchema(customSchema<T>(), 'FunctionPointerSchema');
+
+export const functionPointerSchema = createFunctionPointerSchema();
