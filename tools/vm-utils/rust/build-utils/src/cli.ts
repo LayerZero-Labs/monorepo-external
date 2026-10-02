@@ -1,4 +1,3 @@
-#!/usr/bin/env tsx
 import { Command } from 'commander';
 
 import { logger, parseLogLevel, setLogLevel } from './logger';

@@ -13,8 +13,12 @@
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "bin": {
-        "build-utils-rust": "./src/cli.ts"
+        "build-utils-rust": "./bin/build-utils-rust.js"
     },
+    "files": [
+        "dist/**/*",
+        "bin/**/*"
+    ],
     "scripts": {
         "build": "tsup",
         "clean": "rm -rf ./.turbo ./dist ./node_modules",
@@ -31,7 +35,6 @@
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@types/node": "catalog:",
         "tsup": "catalog:",
-        "tsx": "catalog:",
         "vitest": "catalog:"
     },
     "publishConfig": {
