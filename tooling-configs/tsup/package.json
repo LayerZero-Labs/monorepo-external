@@ -10,6 +10,9 @@
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
     "scripts": {
         "build": "tsup ./index.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
         "clean": "rm -rf dist",

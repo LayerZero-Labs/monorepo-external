@@ -15,6 +15,10 @@
     "bin": {
         "generate-starknet-verification": "./src/cli.ts"
     },
+    "files": [
+        "dist/**/*",
+        "src/**/*"
+    ],
     "scripts": {
         "build": "tsup",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",

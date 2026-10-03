@@ -5,9 +5,12 @@
     "license": "GPL-3.0-only",
     "files": [
         "contracts/**/*.sol",
-        "artifacts/contracts/**/!(*.dbg).json",
-        "artifacts-zk/contracts/**/!(*.dbg).json",
-        "artifacts-tron/contracts/**/!(*.dbg).json"
+        "artifacts/contracts/**/*.json",
+        "!artifacts/contracts/**/*.dbg.json",
+        "artifacts-zk/contracts/**/*.json",
+        "!artifacts-zk/contracts/**/*.dbg.json",
+        "artifacts-tron/contracts/**/*.json",
+        "!artifacts-tron/contracts/**/*.dbg.json"
     ],
     "scripts": {
         "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm forge:build",

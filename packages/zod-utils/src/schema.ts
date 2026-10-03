@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { $ZodType } from 'zod/v4/core';
 
 import type { FunctionPointer } from '@layerzerolabs/function-pointer';
+import { isFunctionPointer } from '@layerzerolabs/function-pointer';
 
 export type InferredArray<T extends $ZodType[], Output extends any[] = []> = T extends []
     ? Output
@@ -178,7 +179,12 @@ export const isBrandedWith = <Branded extends $ZodType>(
 };
 
 export const createFunctionPointerSchema = <T extends FunctionPointer>() =>
-    // TODO: replace with a concrete zod schema
-    brandSchema(customSchema<T>(), 'FunctionPointerSchema');
+    brandSchema(
+        z.custom<T>((data) => isFunctionPointer(data), 'Expected a function pointer') as z.ZodType<
+            T,
+            T
+        >,
+        'FunctionPointerSchema',
+    );
 
 export const functionPointerSchema = createFunctionPointerSchema();

@@ -1,5 +1,6 @@
 {
     "name": "@layerzerolabs/vm-tooling-solana",
+    "version": "0.0.0",
     "private": false,
     "license": "MIT",
     "type": "module",

@@ -4,9 +4,13 @@ import { type TuplePrefixUnion } from '@layerzerolabs/typescript-utils';
 const fpSym = Symbol('_fp_tag');
 const dimSym = Symbol('_dim_tag');
 
+// this is the runtime equivalent of the `fpSym` brand, it's exported so that it can be used for runtime validation
+export const FUNCTION_POINTER_MARKER = '__IS_FUNCTION_POINTER' as const;
+
 export type FunctionPointer<
     Fn extends (...args: any[]) => Promise<any> = (...args: any[]) => Promise<any>,
 > = {
+    [FUNCTION_POINTER_MARKER]: true;
     factoryName: string;
     dimKey: string;
     methodName: string;
@@ -22,6 +26,7 @@ export type DimensionlessFunctionPointer<
     Fn extends (...args: any[]) => Promise<any> = (...args: any[]) => Promise<any>,
     Dim = any,
 > = {
+    [FUNCTION_POINTER_MARKER]: true;
     factoryName: string;
     methodName: string;
     args: any[];
@@ -70,8 +75,95 @@ export const partiallyApplyDimensionlessFunctionPointer =
             ) => FunctionPointerOutput<Pointer>
         >;
 
-export const isFunctionPointer = (o: any): o is FunctionPointer =>
-    o.args && o.dimKey && o.factoryName && o.methodName;
+export const createFunctionPointer = <
+    Fn extends (...args: any[]) => Promise<any> = (...args: any[]) => Promise<any>,
+>({
+    factoryName,
+    dimKey,
+    methodName,
+    args = [],
+}: {
+    factoryName: string;
+    dimKey: string;
+    methodName: string;
+    args?: any[];
+}): FunctionPointer<Fn> =>
+    ({
+        [FUNCTION_POINTER_MARKER]: true,
+        factoryName,
+        dimKey,
+        methodName,
+        args,
+    }) as FunctionPointer<Fn>;
+
+export const isFunctionPointer = (o: unknown): o is FunctionPointer => {
+    if (typeof o !== 'object' || o === null) return false;
+    const {
+        [FUNCTION_POINTER_MARKER]: marker,
+        factoryName,
+        dimKey,
+        methodName,
+        args,
+    } = o as Record<string, unknown>;
+    return (
+        marker === true &&
+        typeof factoryName === 'string' &&
+        typeof dimKey === 'string' &&
+        typeof methodName === 'string' &&
+        Array.isArray(args)
+    );
+};
+
+const describeValue = (o: unknown) => {
+    try {
+        return JSON.stringify(o).slice(0, 200);
+    } catch {
+        return String(o);
+    }
+};
+
+export function assertFunctionPointer(o: unknown): asserts o is FunctionPointer {
+    if (!isFunctionPointer(o)) {
+        throw new Error(`Expected a function pointer, got ${describeValue(o)}`);
+    }
+}
+
+const MAX_FUNCTION_POINTER_SEARCH_DEPTH = 64;
+
+/**
+ * Finds every function pointer in POD, including pointers partially applied
+ * @throws on malformed pointers, or the value is cyclic or too deep
+ */
+export const findFunctionPointers = (value: unknown): FunctionPointer[] => {
+    const pointers: FunctionPointer[] = [];
+    const ancestors = new Set<object>();
+
+    const visit = (v: unknown, depth: number) => {
+        if (typeof v !== 'object' || v === null) return;
+        if (depth > MAX_FUNCTION_POINTER_SEARCH_DEPTH) {
+            throw new Error(
+                `Exceeded depth ${MAX_FUNCTION_POINTER_SEARCH_DEPTH} while searching for function pointers`,
+            );
+        }
+        if (ancestors.has(v)) {
+            throw new Error('Cannot search a cyclic value for function pointers');
+        }
+
+        if (FUNCTION_POINTER_MARKER in v) {
+            assertFunctionPointer(v);
+            pointers.push(v);
+        }
+
+        ancestors.add(v);
+        for (const child of Object.values(v)) {
+            visit(child, depth + 1);
+        }
+        ancestors.delete(v);
+    };
+
+    visit(value, 0);
+    return pointers;
+};
 
 export type DeepFunctionPointers<
     Fn extends (...args: any[]) => Promise<any> = (...args: any[]) => Promise<any>,

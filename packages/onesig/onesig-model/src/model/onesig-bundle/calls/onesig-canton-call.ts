@@ -70,6 +70,10 @@ export enum OneSigCantonCallTag {
     CancelProposeDefaultAdmin = 'OpCancelProposeDefaultAdmin',
     AcceptDefaultAdmin = 'OpAcceptDefaultAdmin',
     SetDiscoveryUrl = 'OpSetDiscoveryUrl',
+    Transfer = 'OpTransfer',
+    AcceptTransferInstruction = 'OpAcceptTransferInstruction',
+    RejectTransferInstruction = 'OpRejectTransferInstruction',
+    WithdrawTransferInstruction = 'OpWithdrawTransferInstruction',
 }
 
 /**
@@ -106,6 +110,43 @@ export const CantonOAppIdSchema = z.object({
     id: z.string(),
 });
 export type CantonOAppId = z.infer<typeof CantonOAppIdSchema>;
+
+/**
+ * CIP-56 instrument identity (DAML `Holding.InstrumentId`): issuer admin + id
+ * text. Same shape as {@link CantonOAppId}; kept distinct so call sites stay
+ * explicit about OApp vs token instrument.
+ */
+export const CantonInstrumentIdSchema = CantonOAppIdSchema;
+
+/**
+ * CIP-56 metadata is a string-keyed map. Metadata can alter provider behavior,
+ * so lifecycle calls sign it as part of the stable business-view equivalence
+ * class they authorize.
+ */
+export const CantonMetadataSchema = z.object({
+    values: z.record(z.string(), z.string()),
+});
+export type CantonMetadata = z.infer<typeof CantonMetadataSchema>;
+
+/**
+ * Signed stable business view and metadata equivalence class of a CIP-56
+ * transfer instruction. The volatile contract id is supplied in the execution
+ * context; times here are whole microseconds since the unix epoch, matching
+ * DAML `Time`.
+ */
+const CantonTransferIntentShape = {
+    sender: CantonPartyIdSchema,
+    receiver: CantonPartyIdSchema,
+    amount: DecimalLikeSchema,
+    instrumentId: CantonInstrumentIdSchema,
+    requestedAt: CantonMicrosSchema,
+    executeBefore: CantonMicrosSchema,
+    transferMeta: CantonMetadataSchema,
+    instructionMeta: CantonMetadataSchema,
+    extraArgsMeta: CantonMetadataSchema,
+};
+
+export type CantonTransferIntent = z.infer<z.ZodObject<typeof CantonTransferIntentShape>>;
 
 /**
  * LayerZero packet origin, mirroring DAML `Types.Origin` (srcEid, sender, nonce).
@@ -512,6 +553,26 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
         url: z.string(),
         feeAmount: DecimalLikeSchema,
         dso: CantonPartyIdSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.Transfer),
+        receiver: CantonPartyIdSchema,
+        amount: DecimalLikeSchema,
+        instrumentId: CantonInstrumentIdSchema,
+        /** Pending-instruction lifetime (µs): `executeBefore = requestedAt + instructionExpiry`. */
+        instructionExpiry: CantonMicrosSchema,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.AcceptTransferInstruction),
+        ...CantonTransferIntentShape,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.RejectTransferInstruction),
+        ...CantonTransferIntentShape,
+    }),
+    z.object({
+        tag: z.literal(OneSigCantonCallTag.WithdrawTransferInstruction),
+        ...CantonTransferIntentShape,
     }),
 ]);
 export type OneSigCantonCall = z.infer<typeof oneSigCantonCallSchema>;

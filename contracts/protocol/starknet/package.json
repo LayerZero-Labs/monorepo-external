@@ -16,6 +16,13 @@
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "layerzero/**/*",
+        "libs/**/*",
+        "Scarb.toml",
+        "Scarb.lock"
+    ],
     "scripts": {
         "build": "lz-tool scarb --release build && pnpm build:abi && pnpm build:verification && tsup",
         "build:abi": "lz-tool extra starknet build-typescript-sdk layerzero target src/generated",
