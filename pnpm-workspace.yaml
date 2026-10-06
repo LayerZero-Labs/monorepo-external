@@ -71,6 +71,7 @@ catalogs:
     '@aws-crypto/sha256-js': ^5.2.0
     '@aws-sdk/client-apigatewayv2': 3.879.0
     '@aws-sdk/client-cloudformation': 3.879.0
+    '@aws-sdk/client-cloudfront': 3.879.0
     '@aws-sdk/client-cloudtrail': 3.879.0
     '@aws-sdk/client-cloudwatch': 3.974.0
     '@aws-sdk/client-cloudwatch-logs': 3.879.0
@@ -116,6 +117,7 @@ catalogs:
     '@dnd-kit/modifiers': 9.0.0
     '@dnd-kit/sortable': 10.0.0
     '@dnd-kit/utilities': 3.2.2
+    '@duckdb/duckdb-wasm': 1.29.0
     '@duckdb/node-api': 1.5.5-r.4
     '@elastic/elasticsearch': ^8.19.1
     '@electric-sql/pglite': ^0.4.3
