@@ -8,7 +8,7 @@ FROM rust:$RUST_VERSION-$OS_VERSION AS solana_build
 RUN <<-EOF
   set -e
   apt-get -y update --fix-missing
-  apt-get -y install build-essential cmake libclang-dev libssl-dev libudev-dev llvm protobuf-compiler
+  apt-get -y install build-essential cmake jq libclang-dev libssl-dev libudev-dev llvm protobuf-compiler
 EOF
 
 ARG SOLANA_VERSION
@@ -26,14 +26,24 @@ RUN <<-EOF
   fi
   curl -fsSL https://github.com/$REPO/archive/refs/tags/v$SOLANA_VERSION.tar.gz | tar xz --strip-components 1
 EOF
-RUN scripts/cargo-install-all.sh /opt/solana
+# Agave 4.x leaves `cargoBuildSbfVersion` empty, so the install script would take crates.io's latest
+# cargo-build-sbf. CARGO_BUILD_SBF_VERSION (config.ts dependencies) pins it.
+ARG CARGO_BUILD_SBF_VERSION
+RUN <<-EOF
+  set -e
+  if [ -n "$CARGO_BUILD_SBF_VERSION" ]; then
+    sed -i "s/^cargoBuildSbfVersion=.*/cargoBuildSbfVersion=$CARGO_BUILD_SBF_VERSION/" scripts/cargo-build-sbf-version.sh
+    grep -qx "cargoBuildSbfVersion=$CARGO_BUILD_SBF_VERSION" scripts/cargo-build-sbf-version.sh
+  fi
+  scripts/cargo-install-all.sh /opt/solana
+EOF
 
 FROM rust:$RUST_VERSION-$OS_VERSION AS anchor_build
 
 RUN apt-get -y update --fix-missing && apt-get -y install --no-install-recommends libudev-dev pkg-config && rm -rf /var/lib/apt/lists/*
 
 ARG ANCHOR_VERSION=0.31.1
-# Anchor 1.1.2 sets workspace `lto = true` + `codegen-units = 1`. rustc 1.92 on aarch64
+# Anchor 1.1.2+ sets workspace `lto = true` + `codegen-units = 1`. rustc 1.92 on aarch64
 # SIGTRAPs while LTO-linking that binary (`signal: 5`). Tooling does not need fat LTO.
 RUN cargo install --locked --root /opt/solana --git https://github.com/solana-foundation/anchor --tag v$ANCHOR_VERSION --config 'profile.release.lto=false' anchor-cli
 
@@ -130,8 +140,11 @@ RUN <<-EOF
     SBF_SDK_REPO="solana-labs/solana"
   fi
 
+  # Agave 4.x releases no longer ship sbf-sdk.tar.bz2, and cargo-build-sbf 4.x ignores --sbf-sdk.
+  if [ "$MAJOR_VERSION" -ge 4 ]; then
+    echo "Skipping sbf-sdk install: not used by Solana $SOLANA_VERSION"
   # Solana 1.x platform-tools only ship x86_64 binaries; skip on arm64
-  if [ "$MAJOR_VERSION" -lt 2 ] && [ "$TARGETARCH" = "arm64" ]; then
+  elif [ "$MAJOR_VERSION" -lt 2 ] && [ "$TARGETARCH" = "arm64" ]; then
     echo "Skipping sbf-sdk install: Solana 1.x platform-tools not available for arm64"
   else
     curl -fsSL https://github.com/$SBF_SDK_REPO/releases/download/v$SOLANA_VERSION/sbf-sdk.tar.bz2 | tar jx
@@ -218,6 +231,10 @@ COPY --from=solana_verify_build /opt/solana /usr/local
 # /usr/local/cargo is mounted as a volume for caching
 RUN find /usr/local/cargo/bin -maxdepth 1 -type f -exec cp {} /usr/local/bin/ \;
 
+# Contract workspaces pin the host channel in rust-toolchain.toml with rustfmt and clippy; install
+# them here so the first cargo command does not fetch them at runtime (or fail offline).
+RUN rustup component add rustfmt clippy
+
 # Install pinned nightly toolchain for rustfmt (unstable formatting options)
 # Version passed via --build-arg RUST_NIGHTLY_VERSION from config.ts dependencies
 ARG RUST_NIGHTLY_VERSION
@@ -228,13 +245,20 @@ RUN if [ -n "$RUST_NIGHTLY_VERSION" ]; then \
 
 # Verify installation
 ARG SOLANA_VERIFY_VERSION
+ARG CARGO_BUILD_SBF_VERSION
 RUN <<-EOF
   set -e
   anchor --version
   cargo-expand --version
   rustup toolchain list -v
+  cargo fmt --version
+  cargo clippy --version
   if [ -n "$RUST_NIGHTLY_VERSION" ]; then cargo +${RUST_NIGHTLY_VERSION} fmt --version; fi
   solana --version
+  if [ -n "$CARGO_BUILD_SBF_VERSION" ]; then
+    cargo-build-sbf --version
+    cargo-build-sbf --version | grep -q "^cargo-build-sbf $CARGO_BUILD_SBF_VERSION\$"
+  fi
   if [ -n "$SOLANA_VERIFY_VERSION" ]; then solana-verify --version; fi
   docker --version
   which add_address_to_idl.py

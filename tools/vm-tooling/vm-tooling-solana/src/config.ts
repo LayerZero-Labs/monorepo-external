@@ -228,6 +228,61 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.2.1-solana-3.1.10']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.2.1',
+            solana: '3.1.10',
+        },
+        dependencies: {
+            // Host rustc for compiling anchor-cli. 1.2.1's lockfile adds solana-sbpf 0.23.0, which
+            // calls `Layout::dangling_ptr` (stable since 1.95.0) without declaring a rust-version.
+            rust: '1.95.0',
+            'platform-tools': '1.52',
+            'platform-tools-rust': '1.89.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
+    ['solana:anchor-1.2.1-solana-3.1.10-patch-1']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.2.1',
+            solana: '3.1.10',
+        },
+        patch: 1,
+        dependencies: {
+            // Host rustc for anchor-cli (1.2.1's solana-sbpf 0.23.0 needs 1.95+) and for host-side
+            // tests: Mollusk 0.16's Agave 4.3 crates declare rust-version 1.97.1.
+            rust: '1.97.1',
+            // `anchor build` 1.2.x passes `--tools-version v1.57` by default (cli/src/lib.rs
+            // DEFAULT_TOOLS_VERSION), so pre-populate that cache instead of 1.52. Prebuilt for
+            // x86_64 and aarch64, so the from-source branch (and its Rust) is not used.
+            'platform-tools': '1.57',
+            'platform-tools-rust': '1.95.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
+    ['solana:anchor-1.2.1-solana-4.3.0']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.2.1',
+            solana: '4.3.0',
+        },
+        dependencies: {
+            // Agave v4.3.0's rust-toolchain.toml; Mollusk 0.16's Agave 4.3 crates need 1.97.1.
+            rust: '1.97.1',
+            // Agave v4.3.0 leaves cargo-build-sbf unpinned (crates.io latest at build time). Pin the
+            // version the official v4.3.0 release tarball ships.
+            'cargo-build-sbf': '4.3.0',
+            // `anchor build` 1.2.x passes `--tools-version v1.57 --arch v3`; pre-populate that cache.
+            'platform-tools': '1.57',
+            'platform-tools-rust': '1.95.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
     // Standalone surfpool runtime image, built from `docker/surfpool/Dockerfile`.
     // Key must equal the tag getImageTag derives; the Docker image IDs test enforces it.
     ['surfpool:surfpool-1.5.0-patch-30242a4']: {
@@ -284,6 +339,14 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
             },
             description:
                 'Anchor 1.1.2 on Solana 3.1.10 with host Rust 1.92.0, platform-tools 1.52 (rustc 1.89.0)',
+        },
+        {
+            images: {
+                anchor: 'solana:anchor-1.2.1-solana-4.3.0',
+                solana: 'solana:anchor-1.2.1-solana-4.3.0',
+            },
+            description:
+                'Anchor 1.2.1 on Solana 4.3.0 (cargo-build-sbf 4.3.0) with host Rust 1.97.1, platform-tools 1.57 (rustc 1.95.0)',
         },
         {
             images: {
