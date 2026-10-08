@@ -38,6 +38,7 @@
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vitest-configuration": "workspace:*",
         "@types/jest": "catalog:",
+        "@types/node": "catalog:",
         "@types/semver": "catalog:",
         "jest": "catalog:",
         "ts-jest": "catalog:",

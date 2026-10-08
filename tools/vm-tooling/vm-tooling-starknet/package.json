@@ -35,6 +35,7 @@
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vitest-configuration": "workspace:*",
+        "@types/node": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
         "typescript": "catalog:",
