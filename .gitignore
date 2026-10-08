@@ -39,6 +39,8 @@ next-env.d.ts
 
 workflow-wrapper.js
 cache/
+# Go services keep source packages named `cache`, which `cache/` would otherwise drop from git
+!migrated/offchain-monorepo/data/services/**/cache/
 .cursor
 .claude/**
 !.claude/skills/
