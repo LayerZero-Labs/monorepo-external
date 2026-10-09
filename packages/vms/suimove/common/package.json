@@ -1,0 +1,48 @@
+{
+    "name": "@layerzerolabs/common-suimove",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./events": {
+            "types": "./dist/events.d.ts",
+            "import": "./dist/events.js",
+            "default": "./dist/events.js"
+        }
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "@iota/iota-sdk": "catalog:",
+        "@layerzerolabs/common-chain-model": "workspace:*",
+        "@layerzerolabs/layerzero-definitions": "workspace:*",
+        "@layerzerolabs/typescript-utils": "workspace:*",
+        "@mysten/sui": "catalog:",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

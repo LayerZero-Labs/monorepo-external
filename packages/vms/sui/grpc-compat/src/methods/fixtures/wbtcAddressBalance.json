@@ -1,0 +1,130 @@
+{
+    "chainId": "4btiuiMPvEENsttpZC7CZ53DruC3MAgfznDbASZ7DR6S",
+    "epoch": "1265",
+    "accumulator": {
+        "objectId": "0xa07f0e1099e115f0abfe0ec75631494dc7d75fa09d1fd93c9e71f0a20d6cf27b",
+        "version": "850771936",
+        "objectType": "0x0000000000000000000000000000000000000000000000000000000000000002::dynamic_field::Field<0x0000000000000000000000000000000000000000000000000000000000000002::accumulator::Key<0x0000000000000000000000000000000000000000000000000000000000000002::balance::Balance<0x0041f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC>>,0x0000000000000000000000000000000000000000000000000000000000000002::accumulator::U128>",
+        "json": {
+            "kind": {
+                "oneofKind": "structValue",
+                "structValue": {
+                    "fields": {
+                        "id": {
+                            "kind": {
+                                "oneofKind": "stringValue",
+                                "stringValue": "0xa07f0e1099e115f0abfe0ec75631494dc7d75fa09d1fd93c9e71f0a20d6cf27b"
+                            }
+                        },
+                        "name": {
+                            "kind": {
+                                "oneofKind": "structValue",
+                                "structValue": {
+                                    "fields": {
+                                        "address": {
+                                            "kind": {
+                                                "oneofKind": "stringValue",
+                                                "stringValue": "0x87918614cf0e6d20170da7dcaa358370f977985e91525dd05373057793160e56"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "kind": {
+                                "oneofKind": "structValue",
+                                "structValue": {
+                                    "fields": {
+                                        "value": {
+                                            "kind": {
+                                                "oneofKind": "stringValue",
+                                                "stringValue": "1061"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "reservation": {
+        "objectId": "0x95fc449a589db17f1ab4c63eca2680ca803e0270ef8b777d3a1ac8804bc8bbe0",
+        "version": "850771936",
+        "digest": "3VVd6t1qqFJRyzd8Mi2EaG5z1frah2UxqKYTQDQq6EUK",
+        "type": "0x2::coin::Coin<0x0041f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC>",
+        "owner": {
+            "AddressOwner": "0x87918614cf0e6d20170da7dcaa358370f977985e91525dd05373057793160e56"
+        },
+        "previousTransaction": "C63wrjgACbkzXntv9Drdajnh5iFJo5cE7oBQ4gA88t4g",
+        "storageRebate": "0",
+        "content": {
+            "dataType": "moveObject",
+            "type": "0x2::coin::Coin<0x0041f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC>",
+            "hasPublicTransfer": true,
+            "fields": {
+                "balance": "1061",
+                "id": {
+                    "id": "0x95fc449a589db17f1ab4c63eca2680ca803e0270ef8b777d3a1ac8804bc8bbe0"
+                }
+            }
+        }
+    },
+    "legacyGetCoins": {
+        "data": [
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0x3abf77ac7e79ea9b23ed3a1c1890fbe97ff1ae95bf98ddec07ffda1ae0b8ac3d",
+                "version": "1013877853",
+                "digest": "91uB9oyJp6yAR4A6NEUhSRXjA7Zpq9XggWZLD4DpaBqZ",
+                "balance": "0",
+                "previousTransaction": "CqAPXYJaiUbazaDBAmMH2BuiCjABnGvZ2JwrdRkKkCUe"
+            },
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0x95fc449a589db17f1ab4c63eca2680ca803e0270ef8b777d3a1ac8804bc8bbe0",
+                "version": "850771936",
+                "digest": "3VVd6t1qqFJRyzd8Mi2EaG5z1frah2UxqKYTQDQq6EUK",
+                "balance": "1061",
+                "previousTransaction": "C63wrjgACbkzXntv9Drdajnh5iFJo5cE7oBQ4gA88t4g"
+            },
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0x7659ebeed5998e97b7c3902bc5fc0f46b0dde5432465caeecc6bcafc0d3e19f2",
+                "version": "1013768224",
+                "digest": "6EVEeAecAREWTvU8n3Z8oxSxQ1ptTMmRZY8QgU5mstZJ",
+                "balance": "0",
+                "previousTransaction": "3r2qgm7CXEk3WLzs6qAEiuNjrUQ57QDUZVbTwt45SJet"
+            },
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0xd0fa0c8b5e0a4f3e7da1c605077b2a8a5223238cccd6204db35aae6b1242a4f1",
+                "version": "1015425396",
+                "digest": "AixVoqsXKH66KWRBMvp6JkF5SRpiFM1d4x876f5M8YEQ",
+                "balance": "0",
+                "previousTransaction": "pNvMNyEwLg1UBfvzD9QE6VJ6kzxpNifYSdQmsNCXeRt"
+            },
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0xefdeab4f1cf1002bf10fc7c7fcd97e515183af0c78a1ef0972245d1090cbe924",
+                "version": "1015425405",
+                "digest": "8WJ5vXT79MB5MFjj5JM6VoP5ydZo19j3fSxbjXx1uAsc",
+                "balance": "0",
+                "previousTransaction": "5c1N1dZMRQsS9EK9a1LZkQ2ZTyTjZN4rEYD3TwTnwDXo"
+            },
+            {
+                "coinType": "0x41f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+                "coinObjectId": "0xffbef36438083fc0f68884402f750f201303a40d17d75e8d693babfbf527e9b6",
+                "version": "1016776140",
+                "digest": "EkEdu652NPAZDvD8nxXf5aTSaVoDpsvpKfa6B5Zc1JQW",
+                "balance": "0",
+                "previousTransaction": "4t1yWSAYxCrwRtMGc69mEFh6sdmWNXLw6PvmJWY7iUaH"
+            }
+        ],
+        "nextCursor": null,
+        "hasNextPage": false
+    }
+}
