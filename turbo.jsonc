@@ -27,6 +27,7 @@
         "VM_TOOLING_IMAGE_DIRECTORY",
         "VM_TOOLING_LOCAL",
         "DOCKER_DEFAULT_PLATFORM",
+        "PATCHLENS_LOG_LEVEL",
         "TMPDIR",
         "VITEST",
         "VERCEL",
