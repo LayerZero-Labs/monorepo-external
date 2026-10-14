@@ -1,0 +1,9 @@
+error: RoleType enums must mark exactly one variant with `#[default]`
+  --> tests/ui/fail_role_type_missing_default.rs:8:1
+   |
+ 8 | / #[repr(u8)]
+ 9 | | pub enum NoDefaultRoleType {
+10 | |     Admin = 0,
+11 | |     Pauser = 1,
+12 | | }
+   | |_^

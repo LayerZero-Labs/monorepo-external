@@ -15,6 +15,8 @@ export {
     DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION,
     DOCKER_PLATFORM_VALUES,
     DockerRegistryMirror,
+    getImageDirectory,
+    getRegistry,
     isDockerPlatformOverride,
 } from './config';
 export type * from './context';

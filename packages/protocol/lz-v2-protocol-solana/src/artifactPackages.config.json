@@ -1,0 +1,17 @@
+{
+    "config": {
+        "byChainName": ["solana"]
+    },
+    "contracts": {
+        "@layerzerolabs/layerzero-v2-solana": [
+            { "name": "endpoint" },
+            { "name": "executor" },
+            { "name": "worker_interface" },
+            { "name": "pricefeed" },
+            { "name": "simple_messagelib" },
+            { "name": "uln" },
+            { "name": "blocked_messagelib" },
+            { "name": "dvn" }
+        ]
+    }
+}

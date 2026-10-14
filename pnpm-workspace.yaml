@@ -942,11 +942,14 @@ catalogs:
 allowBuilds:
   '@stellar/stellar-sdk': false
   '@swc/core': true
+  bigint-buffer: false
   bufferutil: true
   cpu-features: false
+  es5-ext: false
   esbuild: true
   keccak: true
   protobufjs: true
+  secp256k1: true
   ssh2: false
   utf-8-validate: true
 overrides:
@@ -955,6 +958,7 @@ overrides:
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.4
   '@iota/iota-sdk': 1.10.1
+  '@layerzerolabs/lz-definitions': 3.1.15
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@mysten/sui': 1.45.2
   '@react-spring/animated>@types/react': 19.2.6
@@ -962,7 +966,10 @@ overrides:
   '@solana/web3.js': 1.99.0
   '@storybook/react>@types/react': 19.2.6
   '@storybook/types>@types/react': 19.2.6
+  '@ton/core': 0.59.1
+  '@ton/crypto': 3.3.0
   '@ton/test-utils>chai': 5.3.3
+  '@ton/ton': npm:@layerzerolabs/ton@15.1.0-rc.11
   '@types/react': 19.2.6
   '@types/react-dom': 19.2.3
   '@vitest/mocker>vite': 7.3.6

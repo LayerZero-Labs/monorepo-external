@@ -1,0 +1,48 @@
+{
+    "name": "@layerzerolabs/heap-allocator-solana-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "files": [
+        "lib",
+        "example",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml"
+    ],
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "build": "pnpm build:lib && pnpm build:example && pnpm allow-read-write",
+        "build:example": "pnpm exec lz-tool --script 'anchor build --no-idl --ignore-keys && mkdir -p target/idl && anchor idl build -p demo -o target/idl/demo.json' anchor",
+        "build:example:native": "pnpm exec lz-tool --docker-platform native --script 'anchor build --no-idl --ignore-keys && mkdir -p target/idl && anchor idl build -p demo -o target/idl/demo.json' anchor",
+        "build:lib": "pnpm exec lz-tool --script 'cargo build -p heap-allocator' anchor",
+        "build:lib:native": "pnpm exec lz-tool --docker-platform native --script 'cargo build -p heap-allocator' anchor",
+        "build:native": "pnpm build:lib:native && pnpm build:example:native && pnpm allow-read-write",
+        "check": "pnpm exec lz-tool --script 'cargo check --workspace' anchor",
+        "clean": "rm -rf target",
+        "format": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all' anchor",
+        "format:check": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all --check' anchor",
+        "lint": "pnpm format:check && pnpm lint:rs && (eslint . --ignore-pattern 'target/**' --max-warnings 0 || (eslint . --ignore-pattern 'target/**' --fix --max-warnings 0 && false))",
+        "lint:rs": "pnpm exec lz-tool --script 'cargo clippy --workspace --all-targets -- -D warnings' anchor",
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "@coral-xyz/anchor": "catalog:",
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/common-solana": "workspace:*",
+        "@layerzerolabs/eslint-configuration": "workspace:*",
+        "@layerzerolabs/test-utils-solana": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-solana": "workspace:*",
+        "@solana/web3.js": "catalog:",
+        "@types/node": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

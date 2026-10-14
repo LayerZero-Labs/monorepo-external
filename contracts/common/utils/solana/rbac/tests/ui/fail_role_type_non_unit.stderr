@@ -1,0 +1,5 @@
+error: RoleType variants must be unit variants (no fields)
+  --> tests/ui/fail_role_type_non_unit.rs:10:5
+   |
+10 |     Custom(u8) = 1, // Not a unit variant
+   |     ^^^^^^^^^^^^^^

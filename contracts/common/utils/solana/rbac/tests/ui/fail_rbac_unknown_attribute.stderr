@@ -1,0 +1,5 @@
+error: Unknown field: `invalid_attr`
+  --> tests/ui/fail_rbac_unknown_attribute.rs:32:58
+   |
+32 | #[rbac::rbac(state = ProgramState, role_type = RoleType, invalid_attr = Foo)]
+   |                                                          ^^^^^^^^^^^^

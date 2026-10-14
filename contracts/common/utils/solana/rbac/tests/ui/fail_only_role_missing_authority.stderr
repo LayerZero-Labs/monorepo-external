@@ -1,0 +1,7 @@
+error: Missing field `authority`
+ --> tests/ui/fail_only_role_missing_authority.rs:7:1
+  |
+7 | #[only_role(role = TestRoleType::Manager, state = store)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `only_role` (in Nightly builds, run with -Z macro-backtrace for more info)

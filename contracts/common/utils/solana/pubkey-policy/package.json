@@ -1,0 +1,35 @@
+{
+    "name": "@layerzerolabs/pubkey-policy-solana-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "build": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'sh scripts/build.sh' anchor && pnpm allow-read-write",
+        "format": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all' anchor",
+        "format:check": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all -- --check' anchor",
+        "lint": "pnpm resolve-dependencies && pnpm format:check && pnpm exec lz-tool --script 'cargo clippy --workspace --all-targets --locked -- -D warnings' anchor",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
+        "test": "pnpm test:rust",
+        "test:mollusk": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'sh scripts/test-mollusk.sh' anchor",
+        "test:rust": "pnpm test:unit && pnpm test:mollusk",
+        "test:unit": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --workspace --exclude pubkey-policy-integration-tests --locked' anchor"
+    },
+    "dependencies": {
+        "@layerzerolabs/program-id-solana-contracts": "workspace:*",
+        "@layerzerolabs/rbac-solana-contracts": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/vm-tooling-solana": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/program-id-solana-contracts": "workspace:*",
+        "@layerzerolabs/rbac-solana-contracts": "workspace:*"
+    }
+}

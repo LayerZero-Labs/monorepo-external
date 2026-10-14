@@ -1,0 +1,5 @@
+error: expected named fields
+ --> tests/ui/fail_init_default_admin_tuple_struct.rs:8:12
+  |
+8 | pub struct Initialize(u8);
+  |            ^^^^^^^^^^

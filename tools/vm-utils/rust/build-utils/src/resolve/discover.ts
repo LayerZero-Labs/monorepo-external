@@ -1,7 +1,7 @@
 /** Discovery — walk node_modules/@layerzerolabs/ to find all @layerzerolabs Cargo crates. */
 
 import { access, readFile, stat } from 'fs/promises';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { parse } from 'smol-toml';
 
 import { logger } from '../logger';
@@ -63,7 +63,8 @@ export const isWorkspaceRoot = async (crateRoot: string): Promise<boolean> => {
 // ─── Main Functions ───
 
 /**
- * Recursively discover all @layerzerolabs Cargo packages reachable from `dir`'s node_modules.
+ * Recursively discover all @layerzerolabs Cargo packages reachable from `dir`: everything in its
+ * node_modules, plus the @layerzerolabs packages its package.json declares as dependencies.
  * Resolves pnpm symlinks to canonical paths; `visited` prevents re-walking shared deps.
  */
 export const discoverPackages = async (
@@ -76,18 +77,59 @@ export const discoverPackages = async (
     visited.add(realDir);
 
     const nodeModulesDir = join(dir, 'node_modules', LZ_SCOPE);
-
     for (const pkgName of await tryReaddir(nodeModulesDir)) {
-        // Resolve pnpm symlink to canonical path (deduplicates across dep chains)
-        const realPath = await tryRealpath(join(nodeModulesDir, pkgName));
-        const isValidCratePath = realPath && (await isCrate(realPath));
-        if (!isValidCratePath) continue;
+        await addCrate(
+            pkgName,
+            await tryRealpath(join(nodeModulesDir, pkgName)),
+            discovered,
+            visited,
+        );
+    }
 
-        if (!discovered.has(pkgName)) {
-            discovered.set(pkgName, realPath);
-        }
+    // Outside a workspace (e.g. pnpm's default layout for registry installs), a package's own
+    // dependencies are not in its node_modules but beside it, so look them up the way Node does.
+    for (const name of await declaredDependencies(realDir)) {
+        await addCrate(name, await findInstalled(realDir, name), discovered, visited);
+    }
+};
 
-        // Walk this package's own node_modules for transitive Cargo deps
-        await discoverPackages(realPath, discovered, visited);
+const addCrate = async (
+    pkgName: string,
+    realPath: string | undefined,
+    discovered: Map<string, string>,
+    visited: Set<string>,
+): Promise<void> => {
+    if (!realPath || !(await isCrate(realPath))) return;
+    const existing = discovered.get(pkgName);
+    if (existing === undefined) {
+        discovered.set(pkgName, realPath);
+    } else if (existing !== realPath) {
+        // Crates are vendored by name, so only one copy can win.
+        logger.warn(
+            `${LZ_SCOPE}/${pkgName} is installed at two paths; using ${existing}, ignoring ${realPath}`,
+        );
+    }
+    await discoverPackages(realPath, discovered, visited);
+};
+
+/** Unscoped names of the @layerzerolabs packages in `dir`'s package.json `dependencies`. */
+const declaredDependencies = async (dir: string): Promise<string[]> => {
+    try {
+        const { dependencies = {} } = JSON.parse(
+            await readFile(join(dir, 'package.json'), 'utf-8'),
+        );
+        return Object.keys(dependencies)
+            .filter((name) => name.startsWith(`${LZ_SCOPE}/`))
+            .map((name) => name.slice(LZ_SCOPE.length + 1));
+    } catch {
+        return [];
+    }
+};
+
+/** Node module resolution: the first `node_modules/@layerzerolabs/<pkgName>` from `dir` upwards. */
+const findInstalled = async (dir: string, pkgName: string): Promise<string | undefined> => {
+    for (let current = dir; ; current = dirname(current)) {
+        const found = await tryRealpath(join(current, 'node_modules', LZ_SCOPE, pkgName));
+        if (found || dirname(current) === current) return found;
     }
 };

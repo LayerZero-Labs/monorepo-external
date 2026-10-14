@@ -8,7 +8,8 @@ export interface CreateStellarTestEnvOptions {
     /** Host port mapped to the localnet container's RPC port. */
     hostPort: number;
     /**
-     * Optional localnet image override. Defaults to the versioned LayerZero ECR snapshot.
+     * Optional localnet image override. Defaults to the versioned LayerZero snapshot, pulled from the
+     * same registry as vm-tooling's images (see getDefaultStellarLocalnetImage).
      * Useful for testing a locally built image or a pinned public image (e.g. stellar/quickstart@sha256:…).
      */
     dockerImage?: string;

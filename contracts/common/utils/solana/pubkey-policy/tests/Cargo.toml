@@ -1,0 +1,26 @@
+[package]
+name = "pubkey-policy-integration-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+autotests = false
+description = "Host-only SBF scenarios for the pubkey-policy program"
+
+[[test]]
+name = "policy"
+path = "policy.rs"
+
+[dev-dependencies]
+anchor-lang.workspace = true
+rbac.workspace = true
+pubkey-policy.workspace = true
+pubkey-policy-interface.workspace = true
+mollusk-svm.workspace = true
+mollusk-svm-result.workspace = true
+solana-account.workspace = true
+solana-instruction.workspace = true
+solana-program-error.workspace = true
+solana-pubkey.workspace = true
+
+[lints]
+workspace = true

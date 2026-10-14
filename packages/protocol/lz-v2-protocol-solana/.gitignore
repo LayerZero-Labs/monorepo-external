@@ -1,0 +1,11 @@
+target/
+
+artifacts
+
+.anchor
+
+src/generated*/**
+
+test-ledger
+
+features-status.json

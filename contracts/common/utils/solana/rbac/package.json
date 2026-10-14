@@ -1,0 +1,50 @@
+{
+    "name": "@layerzerolabs/rbac-solana-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "files": [
+        "src",
+        "macros",
+        "tests",
+        "examples",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml"
+    ],
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "build": "pnpm resolve-dependencies && pnpm build:lib && pnpm build:example && pnpm allow-read-write",
+        "build:example": "pnpm exec lz-tool --script 'anchor build --no-idl --ignore-keys' anchor",
+        "build:example:native": "pnpm exec lz-tool --docker-platform native --script 'anchor build --no-idl --ignore-keys' anchor",
+        "build:lib": "pnpm exec lz-tool --script 'cargo build' anchor",
+        "build:lib:native": "pnpm exec lz-tool --docker-platform native --script 'cargo build' anchor",
+        "build:native": "pnpm resolve-dependencies && pnpm build:lib:native && pnpm build:example:native && pnpm allow-read-write",
+        "check": "pnpm exec lz-tool --script 'cargo check' anchor",
+        "clean": "rm -rf dependencies target",
+        "format": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt' anchor",
+        "format:check": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt -- --check' anchor",
+        "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt -- --check && cargo clippy --all-targets -- -D warnings' anchor",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
+        "test": "pnpm test:rust && pnpm test:example",
+        "test:example": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --manifest-path macros/examples/vault/Cargo.toml --lib --tests' anchor",
+        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p rbac --lib --tests' anchor"
+    },
+    "dependencies": {
+        "@layerzerolabs/framework-solana-anchor-trait": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-solana": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/framework-solana-anchor-trait": "workspace:*"
+    }
+}

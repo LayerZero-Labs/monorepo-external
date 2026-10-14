@@ -1,0 +1,15 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!programs/**/tests/**",
+                "!libs/**/tests/**"
+            ],
+            "outputs": ["target/deploy/*.so", "target/idl/**", "target/types/**"]
+        }
+    }
+}

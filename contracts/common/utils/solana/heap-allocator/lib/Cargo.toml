@@ -1,0 +1,12 @@
+[package]
+name = "heap-allocator"
+version = "0.1.0"
+description = "Mango-derived bump allocator declaration macro for Solana programs"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["lib"]
+name = "heap_allocator"
+
+[dependencies]

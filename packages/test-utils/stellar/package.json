@@ -23,6 +23,7 @@
         "test": "vitest --run --pass-with-no-tests --typecheck"
     },
     "dependencies": {
+        "@layerzerolabs/vm-tooling": "workspace:*",
         "@noble/hashes": "catalog:",
         "@noble/secp256k1": "catalog:",
         "@stellar/stellar-sdk": "catalog:"

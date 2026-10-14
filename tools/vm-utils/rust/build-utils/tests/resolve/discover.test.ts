@@ -1,8 +1,9 @@
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'fs';
 import os from 'os';
 import { join } from 'path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { logger } from '../../src/logger';
 import { buildDependenciesPathMap } from '../../src/resolve';
 import {
     discoverPackages,
@@ -87,6 +88,44 @@ describe('discoverPackages', () => {
         expect(discovered.size).toBe(2);
         expect(discovered.has('pkg-a')).toBe(true);
         expect(discovered.has('pkg-b')).toBe(true);
+    });
+
+    it('discovers declared deps installed beside the package (pnpm registry layout)', async () => {
+        // node_modules/@layerzerolabs/pkg-a -> .pnpm/pkg-a/node_modules/@layerzerolabs/pkg-a,
+        // and pkg-a's dependency pkg-b is its sibling in .pnpm/pkg-a/node_modules
+        const store = join(TMP, 'node_modules', '.pnpm', 'pkg-a', 'node_modules', '@layerzerolabs');
+        createCrate(join(store, 'pkg-a'));
+        createFile(
+            join(store, 'pkg-a', 'package.json'),
+            JSON.stringify({ dependencies: { '@layerzerolabs/pkg-b': '1.0.0' } }),
+        );
+        createCrate(join(store, 'pkg-b'));
+        mkdirSync(join(TMP, 'node_modules', '@layerzerolabs'), { recursive: true });
+        symlinkSync(join(store, 'pkg-a'), join(TMP, 'node_modules', '@layerzerolabs', 'pkg-a'));
+
+        const discovered = new Map<string, string>();
+        await discoverPackages(TMP, discovered, new Set());
+
+        expect([...discovered.keys()].sort()).toEqual(['pkg-a', 'pkg-b']);
+    });
+
+    it('warns when one crate name is installed at two paths', async () => {
+        const nm = (pkg: string) => join(TMP, 'node_modules', '@layerzerolabs', pkg);
+        createCrate(nm('pkg-a'));
+        createCrate(nm('pkg-b'));
+        createCrate(join(nm('pkg-a'), 'node_modules', '@layerzerolabs', 'shared'));
+        createCrate(join(nm('pkg-b'), 'node_modules', '@layerzerolabs', 'shared'));
+        const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        const discovered = new Map<string, string>();
+        await discoverPackages(TMP, discovered, new Set());
+
+        expect(discovered.get('shared')).toBe(
+            join(nm('pkg-a'), 'node_modules', '@layerzerolabs', 'shared'),
+        );
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn.mock.calls[0][0]).toContain('@layerzerolabs/shared');
+        warn.mockRestore();
     });
 
     it('deduplicates packages seen through multiple paths', async () => {

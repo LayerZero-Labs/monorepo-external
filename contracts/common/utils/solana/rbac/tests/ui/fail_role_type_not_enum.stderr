@@ -1,0 +1,15 @@
+error: expected `enum`
+ --> tests/ui/fail_role_type_not_enum.rs:8:5
+  |
+8 | pub struct BadRoleType {
+  |     ^^^^^^
+
+error[E0517]: attribute should be applied to an enum
+  --> tests/ui/fail_role_type_not_enum.rs:7:8
+   |
+ 7 |   #[repr(u8)]
+   |          ^^
+ 8 | / pub struct BadRoleType {
+ 9 | |     value: u8,
+10 | | }
+   | |_- not an enum

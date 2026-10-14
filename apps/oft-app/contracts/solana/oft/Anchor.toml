@@ -1,0 +1,7 @@
+[toolchain]
+anchor_version = "1.2.1"
+solana_version = "4.3.0"
+
+[provider]
+cluster = "Localnet"
+wallet = "/dev/null"

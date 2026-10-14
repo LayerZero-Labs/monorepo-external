@@ -1,0 +1,5 @@
+error[E0080]: evaluation panicked: RoleType `#[default]` variant must have discriminant 0
+  --> tests/ui/fail_role_type_default_nonzero.rs:17:5
+   |
+17 |     RoleType,
+   |     ^^^^^^^^ evaluation of `_` failed here

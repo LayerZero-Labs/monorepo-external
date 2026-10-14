@@ -1,0 +1,103 @@
+{
+    "timestamp": "2025-11-25T00:11:22.132Z",
+    "source": "https://solana-rpc.publicnode.com",
+    "totalFeatures": 180,
+    "inactiveFeatures": [
+        {
+            "description": "enable the redelegate stake instruction #26294",
+            "id": "2KKG3C6RBnxQo9jVVrbzsoSh41TDXLK7gBc9gduyxSzW",
+            "status": "inactive"
+        },
+        {
+            "description": "use timeliness of votes in determining credits to award",
+            "id": "2oXpeh141pPZCTCFHBsvCwG2BtaHZZAtrVhwaxSy6brS",
+            "status": "inactive"
+        },
+        {
+            "description": "enable partitioned rewards at epoch boundary #32166",
+            "id": "41tVp5qR1XwWRt5WifvtSQyuxtqQWJgEK8w91AtBqSwP",
+            "status": "inactive"
+        },
+        {
+            "description": "enable the remaining_compute_units syscall",
+            "id": "5TuppMutoyzhUSfuYdhgzD47F92GL1g89KpCZQKqedxP",
+            "status": "inactive"
+        },
+        {
+            "description": "fail libsec256k1_verify if count appears wrong",
+            "id": "8aXvSuopd1PUj7UhehfXJRg6619RHp8ZvwTyyJHdUYsj",
+            "status": "inactive"
+        },
+        {
+            "description": "Enable Program-Runtime-v2 and Loader-v4 #33293",
+            "id": "8oBxsYqnCvUTGzgEpxPcnVf7MLbWWPYddE33PftFeBBd",
+            "status": "inactive"
+        },
+        {
+            "description": "increase tx account lock limit to 128 #27241",
+            "id": "9LZdXeKGeBV6hRLdxS1rHbHoEUsKqesCC2ZAPTPKJAbK",
+            "status": "inactive"
+        },
+        {
+            "description": "Raise minimum stake delegation to 1.0 SOL #24357",
+            "id": "9onWzzvCzNC2jfhxxeqRgs5q7nFAAKpCUvkj6T6GJK9i",
+            "status": "inactive"
+        },
+        {
+            "description": "full inflation on devnet and testnet",
+            "id": "DT4n6ABDqs6w4bnfwrXT9rsprcPf6cdDga1egctaPkLC",
+            "status": "inactive"
+        },
+        {
+            "description": "add big_mod_exp syscall #28503",
+            "id": "EBq48m8irRKuE7ZnMTLvLg2UuGSqhe8s8oMqnmja1fJw",
+            "status": "inactive"
+        },
+        {
+            "description": "include transaction loaded accounts data size in base fee calculation #30657",
+            "id": "EaQpmC6GtRssaZ3PCUM5YksGqUdMLeZ46BQXYtHYakDS",
+            "status": "inactive"
+        },
+        {
+            "description": "use memory regions to map account data into the rbpf vm instead of copying the data",
+            "id": "EenyoWx9UMXYKpR8mW5Jmfmy2fRjzUtM7NduYMY8bx33",
+            "status": "inactive"
+        },
+        {
+            "description": "stakes must be at least the minimum delegation to earn rewards",
+            "id": "G6ANXD6ptCSyNd9znZm7j4dEczAJCfx7Cy43oBx3rKHJ",
+            "status": "inactive"
+        },
+        {
+            "description": "disable turbine fanout experiments #29393",
+            "id": "Gz1aLrbeQ4Q6PTSafCZcGWZXz91yVRi7ASFzFEr1U4sa",
+            "status": "inactive"
+        },
+        {
+            "description": "blake3 syscall",
+            "id": "HTW2pSyErTj4BV6KBM9NZ9VBUJVxt7sacNWcf76wtzb3",
+            "status": "inactive"
+        },
+        {
+            "description": "cap the accounts data len",
+            "id": "capRxUrBjNkkCpjrJxPGfPaWijB7q3JoDfsWXAnt46r",
+            "status": "inactive"
+        },
+        {
+            "description": "cap the accounts data size per block #25517",
+            "id": "qywiJyZmqTKspFg2LeuUHqcA5nNvBgobqb9UprywS9N",
+            "status": "inactive"
+        },
+        {
+            "description": "enable Zk Token proof program and syscalls",
+            "id": "zk1snxsc6Fh3wsGNbbHAJNHiJoYgF29mMnTSusGx5EJ",
+            "status": "inactive"
+        },
+        {
+            "description": "enable Zk Token proof program transfer with fee",
+            "id": "zkNLP7EQALfC1TYeB3biDU7akDckj8iPkvh9y2Mt2K3",
+            "status": "inactive"
+        }
+    ],
+    "inactiveCount": 19
+}

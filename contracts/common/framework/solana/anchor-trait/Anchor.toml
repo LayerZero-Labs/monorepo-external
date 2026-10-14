@@ -1,0 +1,21 @@
+[toolchain]
+anchor_version = "1.2.1"
+solana_version = "4.3.0"
+
+[features]
+skip-lint = false
+resolution = false
+
+[programs.localnet]
+shapes_triangle = "Tri1111111111111111111111111111111111111111"
+shapes_ellipse = "ELp1111111111111111111111111111111111111111"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[workspace]
+members = [
+    "examples/shapes/programs/ellipse",
+    "examples/shapes/programs/triangle",
+]

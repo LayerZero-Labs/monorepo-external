@@ -1,0 +1,46 @@
+[package]
+name = "console-oft-integration-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+autotests = false
+
+[[test]]
+name = "integration"
+path = "main.rs"
+
+[dev-dependencies]
+console-oft = { path = "../../programs/console_oft", features = ["no-entrypoint"] }
+token-manager = { workspace = true, features = ["no-entrypoint"] }
+pubkey-policy-hook.workspace = true
+pubkey-policy.workspace = true
+token-acl-client = { git = "https://github.com/solana-foundation/token-acl", rev = "bfbaf589662631ca84f3462514620a499405c6d7" }
+token-acl-interface = { git = "https://github.com/solana-foundation/token-acl", rev = "bfbaf589662631ca84f3462514620a499405c6d7" }
+anchor-lang.workspace = true
+token-manager-interface.workspace = true
+pubkey-policy-interface.workspace = true
+rbac.workspace = true
+oapp.workspace = true
+oft.workspace = true
+borsh.workspace = true
+mollusk-svm = { workspace = true, features = ["inner-instructions"] }
+mollusk-svm-result = { workspace = true, features = ["inner-instructions"] }
+mollusk-svm-programs-token = { workspace = true, features = ["token", "token-2022", "associated-token"] }
+solana-account.workspace = true
+solana-instruction.workspace = true
+solana-pubkey.workspace = true
+solana-program-error.workspace = true
+solana-program-option.workspace = true
+solana-program-pack.workspace = true
+solana-keccak-hasher.workspace = true
+solana-system-interface = { version = "3.0", features = ["bincode"] }
+spl-token-2022.workspace = true
+spl-tlv-account-resolution.workspace = true
+spl-transfer-hook-interface.workspace = true
+spl-token-2022-interface = "=3.1.1"
+spl-associated-token-account-interface = "2.0.0"
+forwarding-composer = { path = "../programs/forwarding_composer", features = ["no-entrypoint"] }
+multihop-composer = { path = "../programs/multihop_composer", features = ["no-entrypoint"] }
+transfer-hook-fixture = { path = "../programs/transfer_hook_fixture", features = ["no-entrypoint"] }
+futures = "0.3"
+serde_json = "1"

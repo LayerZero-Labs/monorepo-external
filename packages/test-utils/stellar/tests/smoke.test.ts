@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
+import { getImageDirectory, getRegistry } from '@layerzerolabs/vm-tooling';
+
 import { createStellarTestEnv } from '../src/env.js';
 import {
     accountExists,
     buildDockerRunArgs,
-    DEFAULT_STELLAR_LOCALNET_IMAGE,
     FUNDING_RETRY_INTERVAL_MS,
+    getDefaultStellarLocalnetImage,
     getNamedContainerRemovalPolicy,
     pauseBeforeFundingRetry,
     startStellarLocalnet,
@@ -59,7 +61,7 @@ describe('Docker localnet arguments', () => {
     it('binds the RPC port to loopback and labels the owned container', () => {
         const env = createStellarTestEnv({ containerName: 'stellar-localnet', hostPort: 8096 });
 
-        expect(buildDockerRunArgs(env)).toEqual([
+        expect(buildDockerRunArgs(env, 'registry.example.com/stellar:default')).toEqual([
             'run',
             '-d',
             '--name',
@@ -68,7 +70,7 @@ describe('Docker localnet arguments', () => {
             STELLAR_LOCALNET_OWNER_LABEL,
             '-p',
             '127.0.0.1:8096:8000',
-            DEFAULT_STELLAR_LOCALNET_IMAGE,
+            'registry.example.com/stellar:default',
         ]);
     });
 
@@ -203,5 +205,13 @@ describe('funding retry backoff', () => {
             slept.push(ms);
         });
         expect(slept).toEqual([]);
+    });
+});
+
+describe('getDefaultStellarLocalnetImage', () => {
+    it('pulls the snapshot from the vm-tooling registry', async () => {
+        expect(await getDefaultStellarLocalnetImage()).toBe(
+            `${await getRegistry()}/${await getImageDirectory()}/stellar:2026-03-02`,
+        );
     });
 });

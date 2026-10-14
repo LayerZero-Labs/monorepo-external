@@ -1,0 +1,7 @@
+error: Missing field `state`
+  --> tests/ui/fail_missing_program_state.rs:26:1
+   |
+26 | #[rbac::rbac(role_type = RoleType)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `rbac::rbac` (in Nightly builds, run with -Z macro-backtrace for more info)

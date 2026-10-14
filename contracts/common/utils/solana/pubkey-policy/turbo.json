@@ -1,0 +1,10 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!programs/**/tests/**", "!tests/**"],
+            "outputs": ["dependencies/**", "target/deploy/*.so", "target/idl/**", "target/types/**"]
+        },
+        "test": { "dependsOn": ["build", "lint"] }
+    }
+}

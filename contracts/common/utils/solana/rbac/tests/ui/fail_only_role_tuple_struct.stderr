@@ -1,0 +1,5 @@
+error: expected named fields
+ --> tests/ui/fail_only_role_tuple_struct.rs:8:12
+  |
+8 | pub struct Protected(u8);
+  |            ^^^^^^^^^

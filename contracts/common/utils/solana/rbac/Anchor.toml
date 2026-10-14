@@ -1,0 +1,19 @@
+[toolchain]
+anchor_version = "1.2.1"
+solana_version = "4.3.0"
+
+[features]
+skip-lint = false
+resolution = false
+
+[programs.localnet]
+vault = "Vau1111111111111111111111111111111111111111"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[workspace]
+members = [
+    "macros/examples/vault",
+]

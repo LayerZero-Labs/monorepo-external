@@ -1,0 +1,36 @@
+[package]
+name = "oft"
+version = "0.1.0"
+description = "Reusable OFT crate for Anchor programs"
+edition = "2021"
+
+[workspace]
+resolver = "2"
+members = ["macros"]
+exclude = ["dependencies"]
+
+[lib]
+crate-type = ["lib"]
+name = "oft"
+
+[profile.release]
+overflow-checks = true
+
+[features]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    "cfg(feature, values(\"anchor-debug\"))",
+] }
+
+[dependencies]
+anchor-lang = { version = "1.2.1", default-features = false, features = ["event-cpi", "solana-v4"] }
+anchor-spl = { version = "1.2.1", default-features = false, features = ["associated_token", "mint", "token", "token_2022", "token_2022_extensions", "solana-v4"] }
+oft-macros = { path = "macros" }
+spl-type-length-value = { version = "0.9.1", features = ["derive"] }
+spl-discriminator = "0.5.2"
+
+[dev-dependencies]
+oapp = { path = "dependencies/oapp-solana-contracts" }

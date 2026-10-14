@@ -1,0 +1,37 @@
+[package]
+name = "forwarding-composer"
+version = "0.0.1"
+# ⚠️ NOT AUDITED. Test fixture only — never deploy this to any public cluster.
+description = "NOT AUDITED, test fixture only: Composer that forwards received OFT tokens to a final recipient, for integration tests"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "forwarding_composer"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "oapp/idl-build", "token-manager-interface/idl-build"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    "cfg(feature, values(\"anchor-debug\"))",
+    "cfg(target_os, values(\"solana\"))",
+] }
+
+[dependencies]
+spl-transfer-hook-interface.workspace = true
+anchor-lang = { workspace = true, features = ["init-if-needed"] }
+anchor-spl = { workspace = true }
+console-oft = { path = "../../../programs/console_oft", features = ["no-entrypoint"] }
+oapp = { workspace = true }
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }
+token-manager-interface.workspace = true
+pubkey-policy-interface = { workspace = true }

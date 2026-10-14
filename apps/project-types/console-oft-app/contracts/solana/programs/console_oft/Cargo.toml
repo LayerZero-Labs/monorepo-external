@@ -1,0 +1,62 @@
+[package]
+name = "console-oft"
+version = "0.1.0"
+description = "Console OFT program for Solana"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "console_oft"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = ["custom-heap"]
+idl-build = [
+    "anchor-lang/idl-build",
+    "anchor-spl/idl-build",
+    "oapp/idl-build",
+    "token-manager-interface/idl-build",
+    "rbac/idl-build",
+]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    "cfg(feature, values(\"custom-heap\", \"custom-panic\", \"anchor-debug\"))",
+] }
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["event-cpi", "init-if-needed"] }
+anchor-spl = { workspace = true }
+heap-allocator = { workspace = true }
+oapp = { workspace = true }
+oft = { workspace = true }
+token-manager-interface.workspace = true
+pubkey-policy-interface = { workspace = true }
+program-id = { workspace = true }
+rbac = { workspace = true }
+borsh = { workspace = true, features = ["derive"] }
+num_enum = { workspace = true }
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }
+spl-token-2022-interface.workspace = true
+spl-tlv-account-resolution = { workspace = true }
+spl-transfer-hook-interface = { workspace = true }
+spl-discriminator = { workspace = true }
+spl-type-length-value = { workspace = true }
+
+[dev-dependencies]
+mollusk-svm = { workspace = true, features = ["inner-instructions"] }
+mollusk-svm-programs-token = { workspace = true, features = ["token-2022", "associated-token"] }
+mollusk-svm-result = { workspace = true, features = ["inner-instructions"] }
+solana-account = { workspace = true }
+solana-instruction = { workspace = true }
+solana-program-error = { workspace = true }
+solana-program-option = { workspace = true }
+solana-program-pack = { workspace = true }
+solana-pubkey = { workspace = true }
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }

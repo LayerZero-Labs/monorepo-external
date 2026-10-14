@@ -1,0 +1,30 @@
+[package]
+name = "oapp"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+resolver = "2"
+members = [
+    "macros",
+    "macros/examples/counter",
+]
+exclude = ["dependencies"]
+
+[features]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "oapp-macros/idl-build"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
+
+[dependencies]
+anchor-lang = { version = "1.2.1", default-features = false, features = ["solana-v4"] }
+anchor-spl = { version = "1.2.1", default-features = false, features = ["associated_token", "mint", "token", "token_2022", "token_2022_extensions", "solana-v4"] }
+oapp-macros = { path = "macros" }
+solana-keccak-hasher = "3.1.0"
+spl-type-length-value = { version = "0.9.1", features = ["derive"] }
+spl-discriminator = "0.5.2"
+
+[profile.release]
+overflow-checks = true

@@ -1,0 +1,87 @@
+[package]
+name = "token-app-integration-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+autotests = false
+description = "Host-only SBF integration scenarios spanning token-app programs"
+
+[[test]]
+name = "acl"
+path = "acl.rs"
+
+[[test]]
+name = "permissioned_burn"
+path = "permissioned_burn.rs"
+
+[[test]]
+name = "hook"
+path = "hook.rs"
+
+[[test]]
+name = "manager_authority"
+path = "manager_authority.rs"
+
+[[test]]
+name = "default_admin_governance"
+path = "default_admin_governance.rs"
+
+[[test]]
+name = "policy_modes"
+path = "policy_modes.rs"
+
+[[test]]
+name = "acl_admin"
+path = "acl_admin.rs"
+
+[[test]]
+name = "activation_extensions"
+path = "activation_extensions.rs"
+
+[[test]]
+name = "pubkey_policy_binding"
+path = "pubkey_policy_binding.rs"
+
+[[test]]
+name = "native_authority"
+path = "native_authority.rs"
+
+[[test]]
+name = "permanent_delegate"
+path = "permanent_delegate.rs"
+
+[[test]]
+name = "pause"
+path = "pause.rs"
+
+[[test]]
+name = "mint"
+path = "mint.rs"
+
+[dev-dependencies]
+anchor-lang.workspace = true
+rbac.workspace = true
+token-manager-interface.workspace = true
+pubkey-policy-interface.workspace = true
+pubkey-policy.workspace = true
+token-manager.workspace = true
+pubkey-policy-hook.workspace = true
+token-acl-client.workspace = true
+token-acl-interface.workspace = true
+spl-associated-token-account-interface.workspace = true
+spl-token-2022.workspace = true
+spl-token-2022-interface.workspace = true
+spl-transfer-hook-interface.workspace = true
+mollusk-svm.workspace = true
+mollusk-svm-programs-token.workspace = true
+mollusk-svm-result.workspace = true
+solana-account.workspace = true
+solana-instruction.workspace = true
+solana-pubkey.workspace = true
+solana-program-error.workspace = true
+solana-program-pack.workspace = true
+solana-system-interface.workspace = true
+futures.workspace = true
+
+[lints]
+workspace = true

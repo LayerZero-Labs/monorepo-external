@@ -1,0 +1,17 @@
+[package]
+name = "pubkey-policy-interface"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+anchor-lang.workspace = true
+program-id.workspace = true
+rbac.workspace = true
+
+[features]
+default = []
+idl-build = ["anchor-lang/idl-build", "rbac/idl-build"]
+
+[lints]
+workspace = true

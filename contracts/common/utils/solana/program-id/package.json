@@ -1,0 +1,36 @@
+{
+    "name": "@layerzerolabs/program-id-solana-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "files": [
+        "lib",
+        "Anchor.toml",
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "rustfmt.toml"
+    ],
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "build": "pnpm exec lz-tool --script 'cargo build --locked -p program-id' anchor && pnpm allow-read-write",
+        "build:native": "pnpm exec lz-tool --docker-platform native --script 'cargo build --locked -p program-id' anchor && pnpm allow-read-write",
+        "check": "pnpm exec lz-tool --script 'cargo check --workspace --locked' anchor",
+        "clean": "rm -rf target",
+        "format": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all' anchor",
+        "format:check": "pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all --check' anchor",
+        "lint": "pnpm format:check && pnpm lint:rs",
+        "lint:rs": "pnpm exec lz-tool --script 'cargo clippy --workspace --all-targets --locked -- -D warnings' anchor",
+        "test": "pnpm test:unit && pnpm test:rebuild && pnpm test:idl-shape",
+        "test:idl-shape": "pnpm exec lz-tool --script './tests/assert-idl-shape.sh' anchor",
+        "test:rebuild": "pnpm exec lz-tool --script './tests/assert-rebuild.sh' anchor",
+        "test:unit": "pnpm exec lz-tool --script 'cargo test --locked -p program-id --lib' anchor"
+    },
+    "devDependencies": {
+        "@layerzerolabs/vm-tooling-solana": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

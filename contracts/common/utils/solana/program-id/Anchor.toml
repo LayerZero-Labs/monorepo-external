@@ -1,0 +1,5 @@
+# This package ships no Anchor program; the [toolchain] section exists only so lz-tool selects the
+# same image the Solana contract tree builds with, instead of falling back to its default.
+[toolchain]
+anchor_version = "1.1.2"
+solana_version = "3.1.10"

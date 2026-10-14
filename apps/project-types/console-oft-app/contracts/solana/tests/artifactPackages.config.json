@@ -1,0 +1,23 @@
+{
+    "config": {
+        "byChainName": ["solana"]
+    },
+    "contracts": {
+        "@layerzerolabs/pubkey-policy-hook-solana-contracts": [
+            {
+                "name": "pubkey_policy_hook"
+            }
+        ],
+        "@layerzerolabs/token-manager-solana-contracts": [
+            {
+                "name": "token_manager"
+            }
+        ],
+        "@layerzerolabs/pubkey-policy-solana-contracts": [
+            {
+                "name": "pubkey_policy"
+            }
+        ]
+    },
+    "directories": {}
+}

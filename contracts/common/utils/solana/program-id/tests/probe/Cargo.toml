@@ -1,0 +1,10 @@
+[package]
+name = "probe"
+version = "0.1.0"
+description = "Exercises declare_program_id! against a real anchor declare_id!; fixture for the tests/ assertions"
+edition = "2021"
+publish = false
+
+[dependencies]
+anchor-lang = "1"
+program-id = { path = "../../lib" }

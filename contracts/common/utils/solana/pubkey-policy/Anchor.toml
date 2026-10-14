@@ -1,0 +1,17 @@
+[toolchain]
+anchor_version = "1.2.1"
+solana_version = "4.3.0"
+
+[features]
+resolution = false
+skip-lint = false
+
+[workspace]
+members = ["programs/pubkey_policy"]
+
+[programs.localnet]
+pubkey_policy = "AbtWNPXHcppLsNV6Y2uZYmqD5uAN8BBPKGngqvniFu3U"
+
+[provider]
+cluster = "Localnet"
+wallet = "/dev/null"

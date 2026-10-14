@@ -1,0 +1,41 @@
+[toolchain]
+anchor_version = "0.29.0"
+solana_version = "1.17.31"
+
+[features]
+seeds = false
+skip-lint = false
+
+[workspace]
+members = [
+    "../contracts/programs/blocked-messagelib",
+    "../contracts/programs/dvn",
+    "../contracts/programs/endpoint",
+    "../contracts/programs/executor",
+    "../contracts/programs/messagelib-interface",
+    "../contracts/programs/oft",
+    "../contracts/programs/pricefeed",
+    "../contracts/programs/simple-messagelib",
+    "../contracts/programs/uln",
+    "../contracts/programs/worker-interface",
+]
+
+[programs.localnet]
+blocked_messagelib = "2XrYqmhBMPJgDsb4SVbjV1PnJBprurd5bzRCkHwiFCJB"
+dvn = "HtEYV4xB4wvsj5fgTkcfuChYpvGYzgzwvNhgDZQNh7wW"
+endpoint = "76y77prsiCMvXMjuoZ5VRrhG5qYBrUMYTE5WgHqgjEn6"
+executor = "6doghB248px58JSSwG4qejQ46kFMW4AMj7vzJnWZHNZn"
+worker_interface = "2iENutMTfTfxdFEjEQSbFCBstZqakXFZQCLZLLk4Ti58"
+messagelib_interface = "J8tfaWEsewRGacgvAeQsXLTRTuUQz5FGyUuqDW2TpiTJ"
+pricefeed = "8ahPGPjEbpgGaZx2NV1iG5Shj7TDwvsjkEDcGWjt94TP"
+simple_messagelib = "6GsmxMTHAAiFKfemuM4zBjumTjNSX5CAiw4xSSXM2Toy"
+uln = "7a4WjyR8VZ7yZz5XJAKm39BUGn5iT9CKcv2pmG9tdXVH"
+oft = "9UovNrJD8pQyBLheeHNayuG1wJSEAoxkmM14vw5gcsTT"
+oft202 = "3ThC8DDzimnnrt4mvJSKFpWQA3UvnbzKM3mT6SHoNQKu"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"

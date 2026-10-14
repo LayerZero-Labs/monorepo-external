@@ -1,0 +1,5 @@
+error: `fn grant_role(...)` conflicts with RBAC instruction `grant_role`: use #[rbac_instruction] to override it
+  --> tests/ui/fail_program_rbac_existing_bad_signature.rs:37:12
+   |
+37 |     pub fn grant_role(_ctx: Context<ProgramState>) -> Result<()> {
+   |            ^^^^^^^^^^

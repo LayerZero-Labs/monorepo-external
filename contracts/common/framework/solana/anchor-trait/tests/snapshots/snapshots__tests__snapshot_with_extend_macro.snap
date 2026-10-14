@@ -1,0 +1,85 @@
+---
+source: crates/anchor-trait/tests/snapshots.rs
+expression: output
+---
+#[derive(Accounts)]
+pub struct StdSetPeer<'info> {
+    pub placeholder: UncheckedAccount<'info>,
+}
+impl StdSetPeer<'_> {
+    pub fn apply(_ctx: &mut Context<Self>, _params: &SetPeerParams) -> Result<()> {
+        unimplemented!()
+    }
+}
+#[derive(Accounts)]
+pub struct StdGetPeer<'info> {
+    pub placeholder: UncheckedAccount<'info>,
+}
+impl StdGetPeer<'_> {
+    pub fn apply(_ctx: &Context<Self>, _params: &GetPeerParams) -> Result<[u8; 32]> {
+        unimplemented!()
+    }
+}
+#[derive(Accounts)]
+pub struct StdToken<'info> {
+    pub placeholder: UncheckedAccount<'info>,
+}
+impl StdToken<'_> {
+    pub fn apply(_ctx: &Context<Self>) -> Result<Pubkey> {
+        unimplemented!()
+    }
+}
+#[allow(unused_macros)]
+macro_rules! test_extend_accounts {
+    (set_peer, $name:ident, { $($extra:tt)* }) => {
+        #[derive(Accounts)] pub struct $name < 'info > { pub placeholder :
+        UncheckedAccount < 'info >, $($extra)* } impl $name < '_ > { pub fn apply(_ctx :
+        & mut Context < Self >, _params : & SetPeerParams) -> Result < () > {
+        unimplemented!() } }
+    };
+    (get_peer, $name:ident, { $($extra:tt)* }) => {
+        #[derive(Accounts)] pub struct $name < 'info > { pub placeholder :
+        UncheckedAccount < 'info >, $($extra)* } impl $name < '_ > { pub fn apply(_ctx :
+        & Context < Self >, _params : & GetPeerParams) -> Result < [u8; 32] > {
+        unimplemented!() } }
+    };
+    (token, $name:ident, { $($extra:tt)* }) => {
+        #[derive(Accounts)] pub struct $name < 'info > { pub placeholder :
+        UncheckedAccount < 'info >, $($extra)* } impl $name < '_ > { pub fn apply(_ctx :
+        & Context < Self >) -> Result < Pubkey > { unimplemented!() } }
+    };
+}
+#[program]
+pub mod my_program {
+    use super::*;
+    mod __test_instruction__lz_receive_handler {
+        use super::*;
+        pub fn lz_receive(
+            ctx: &mut Context<MyReceive>,
+            params: &LzReceiveParams,
+        ) -> Result<()> {
+            Ok(())
+        }
+    }
+    pub fn set_peer(
+        mut ctx: Context<StdSetPeer>,
+        params: SetPeerParams,
+    ) -> ::anchor_lang::Result<()> {
+        StdSetPeer::apply(&mut ctx, &params)
+    }
+    pub fn get_peer(
+        ctx: Context<StdGetPeer>,
+        params: GetPeerParams,
+    ) -> ::anchor_lang::Result<[u8; 32]> {
+        StdGetPeer::apply(&ctx, &params)
+    }
+    pub fn lz_receive(
+        mut ctx: Context<MyReceive>,
+        params: LzReceiveParams,
+    ) -> ::anchor_lang::Result<()> {
+        __test_instruction__lz_receive_handler::lz_receive(&mut ctx, &params)
+    }
+    pub fn token(ctx: Context<StdToken>) -> ::anchor_lang::Result<Pubkey> {
+        StdToken::apply(&ctx)
+    }
+}

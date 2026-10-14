@@ -1,0 +1,19 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!programs/**/tests/**",
+                "!tests/**/*.rs",
+                "!turbo-snapshot.lock.json"
+            ],
+            "outputs": ["dependencies/**", "target/deploy/*.so", "target/idl/**", "target/types/**"]
+        },
+        "test": {
+            "dependsOn": ["build", "lint"]
+        }
+    }
+}

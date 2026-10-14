@@ -1,0 +1,23 @@
+[package]
+name = "oapp-macros"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+proc-macro = true
+
+[features]
+default = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "1.2.1", default-features = false, features = ["solana-v4"] }
+anchor-trait = { path = "../dependencies/framework-solana-anchor-trait" }
+syn = { version = "2.0", features = ["full", "parsing", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+darling = "0.20"
+sha2 = "0.10"
+
+[dev-dependencies]
+trybuild = "1.0"

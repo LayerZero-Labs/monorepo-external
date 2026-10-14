@@ -1,0 +1,17 @@
+[package]
+name = "shapes-macros"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+proc-macro = true
+
+[features]
+idl-build = ["anchor-trait/idl-build"]
+
+[dependencies]
+anchor-trait = { workspace = true }
+syn = { version = "2.0", features = ["full", "parsing"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+darling = "0.20"

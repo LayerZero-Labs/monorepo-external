@@ -1,0 +1,32 @@
+[package]
+name = "pubkey-policy"
+version = "0.1.0"
+authors = ["LayerZero Labs", "Shankar (@shankars99)"]
+edition = "2021"
+license = "MIT"
+description = "Permissionless pubkey-policy oracle bound by OFT, ACL gate and hook consumers"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pubkey_policy"
+
+[features]
+default = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+idl-build = ["anchor-lang/idl-build", "pubkey-policy-interface/idl-build", "rbac/idl-build"]
+
+[dependencies]
+anchor-lang.workspace = true
+num_enum.workspace = true
+program-id.workspace = true
+pubkey-policy-interface.workspace = true
+rbac.workspace = true
+
+[lints]
+workspace = true

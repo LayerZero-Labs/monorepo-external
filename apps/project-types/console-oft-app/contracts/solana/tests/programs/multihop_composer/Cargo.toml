@@ -1,0 +1,37 @@
+[package]
+name = "multihop-composer"
+version = "0.0.1"
+# ⚠️ NOT AUDITED. Test fixture only — never deploy this to any public cluster.
+description = "NOT AUDITED, test fixture only: Composer that re-sends received OFT tokens onto a second hop, for account-budget research"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "multihop_composer"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "oapp/idl-build"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    "cfg(feature, values(\"anchor-debug\"))",
+    "cfg(target_os, values(\"solana\"))",
+] }
+
+[dependencies]
+spl-transfer-hook-interface.workspace = true
+anchor-lang = { workspace = true, features = ["init-if-needed"] }
+anchor-spl = { workspace = true }
+console-oft = { path = "../../../programs/console_oft", features = ["cpi"] }
+oapp = { workspace = true }
+oft = { workspace = true }
+rbac = { workspace = true }
+token-manager = { workspace = true }

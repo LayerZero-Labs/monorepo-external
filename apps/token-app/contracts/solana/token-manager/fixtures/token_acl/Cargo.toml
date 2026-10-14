@@ -1,0 +1,26 @@
+[package]
+name = "token-acl-fixture"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Test-only SBF build target for the pinned upstream Token ACL program"
+
+[lib]
+name = "token_acl_fixture"
+crate-type = ["cdylib"]
+test = false
+doctest = false
+
+[dependencies]
+token-acl = { git = "https://github.com/solana-foundation/token-acl", rev = "bfbaf589662631ca84f3462514620a499405c6d7" }
+# Upstream Token-2022 10 uses OptionalNonZeroPubkey; 0.7.2 changed that
+# transitive ABI to MaybeNull. Match ACL's upstream lockfile without a fork.
+spl-token-group-interface = "=0.7.1"
+
+# Test-build isolation only: upstream ACL uses Token-2022 10 whereas the
+# production workspace uses 11 and needs the incompatible group-interface 0.7.2.
+[workspace]
+resolver = "2"
+
+[profile.release]
+overflow-checks = true

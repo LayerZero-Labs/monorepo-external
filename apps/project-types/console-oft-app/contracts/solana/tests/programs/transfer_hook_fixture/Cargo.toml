@@ -1,0 +1,24 @@
+[package]
+name = "transfer-hook-fixture"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "transfer_hook_fixture"
+
+[features]
+no-entrypoint = []
+default = []
+
+[dependencies]
+anchor-lang.workspace = true
+anchor-spl.workspace = true
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }
+spl-transfer-hook-interface.workspace = true
+spl-tlv-account-resolution.workspace = true
+spl-discriminator.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "allow" }

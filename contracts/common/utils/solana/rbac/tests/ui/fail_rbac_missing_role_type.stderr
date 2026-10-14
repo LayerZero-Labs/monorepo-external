@@ -1,0 +1,7 @@
+error: Missing field `role_type`
+  --> tests/ui/fail_rbac_missing_role_type.rs:11:1
+   |
+11 | #[rbac::rbac(state = ProgramState)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `rbac::rbac` (in Nightly builds, run with -Z macro-backtrace for more info)

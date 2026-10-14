@@ -1,0 +1,4 @@
+{
+    "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
+    "include": ["tests/**/*.ts", "vitest.config.ts"]
+}

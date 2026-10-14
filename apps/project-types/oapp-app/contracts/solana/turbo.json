@@ -1,0 +1,18 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!tests/**",
+                "!macros/examples/counter/tests/**"
+            ],
+            "outputs": ["dependencies/**", "target/deploy/*.so"]
+        },
+        "test": {
+            "dependsOn": ["build", "lint"]
+        }
+    }
+}

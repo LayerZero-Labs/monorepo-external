@@ -1,11 +1,21 @@
 import { BASE_FEE, Operation, rpc, TransactionBuilder } from '@stellar/stellar-sdk';
 import { spawnSync } from 'node:child_process';
+import { posix } from 'node:path';
+
+import { getImageDirectory, getRegistry } from '@layerzerolabs/vm-tooling';
 
 import { deployNativeSac, deployZroToken } from './deploy.js';
 import type { StellarTestEnv } from './env.js';
 
-export const DEFAULT_STELLAR_LOCALNET_IMAGE =
-    '438003944538.dkr.ecr.us-east-1.amazonaws.com/layerzerolabs/stellar:2026-03-02';
+/**
+ * The LayerZero Stellar localnet snapshot, pulled from the same registry as vm-tooling's images:
+ * ECR in this repo, LayerZero's public mirror in the external repos, or `VM_TOOLING_REGISTRY` /
+ * `VM_TOOLING_IMAGE_DIRECTORY` when both are set.
+ */
+export async function getDefaultStellarLocalnetImage(): Promise<string> {
+    return posix.join(await getRegistry(), await getImageDirectory(), 'stellar:2026-03-02');
+}
+
 const CONTAINER_PORT = 8000;
 export const STELLAR_LOCALNET_OWNER_LABEL = 'com.layerzerolabs.test-utils-stellar=1';
 const STELLAR_LOCALNET_OWNER_LABEL_KEY = STELLAR_LOCALNET_OWNER_LABEL.split('=')[0];
@@ -45,9 +55,8 @@ export function assertDockerArgs(env: StellarTestEnv): void {
     if (!Number.isInteger(env.HOST_PORT) || env.HOST_PORT < 1 || env.HOST_PORT > 65535) {
         throw new Error(`Invalid docker host port: ${env.HOST_PORT}`);
     }
-    const dockerImage = env.DOCKER_IMAGE ?? DEFAULT_STELLAR_LOCALNET_IMAGE;
-    if (!DOCKER_IMAGE_RE.test(dockerImage)) {
-        throw new Error(`Invalid docker image: ${JSON.stringify(dockerImage)}`);
+    if (env.DOCKER_IMAGE !== undefined && !DOCKER_IMAGE_RE.test(env.DOCKER_IMAGE)) {
+        throw new Error(`Invalid docker image: ${JSON.stringify(env.DOCKER_IMAGE)}`);
     }
     for (const arg of env.DOCKER_COMMAND ?? []) {
         if (!DOCKER_COMMAND_ARG_RE.test(arg)) {
@@ -56,8 +65,13 @@ export function assertDockerArgs(env: StellarTestEnv): void {
     }
 }
 
-export function buildDockerRunArgs(env: StellarTestEnv): string[] {
+/** `dockerImage` is the image to run when the env has no override (see getDefaultStellarLocalnetImage). */
+export function buildDockerRunArgs(env: StellarTestEnv, dockerImage?: string): string[] {
     assertDockerArgs(env);
+    const image = env.DOCKER_IMAGE ?? dockerImage;
+    if (image === undefined) {
+        throw new Error('No docker image: set dockerImage or pass the default image');
+    }
     return [
         'run',
         '-d',
@@ -67,7 +81,7 @@ export function buildDockerRunArgs(env: StellarTestEnv): string[] {
         STELLAR_LOCALNET_OWNER_LABEL,
         '-p',
         `127.0.0.1:${env.HOST_PORT}:${CONTAINER_PORT}`,
-        env.DOCKER_IMAGE ?? DEFAULT_STELLAR_LOCALNET_IMAGE,
+        image,
         ...(env.DOCKER_COMMAND ?? []),
     ];
 }
@@ -157,8 +171,12 @@ function removeOwnedContainerIfPresent(
     );
 }
 
-function dockerRunLocalnet(env: StellarTestEnv, commandRunner: DockerCommandRunner): void {
-    runDockerOrThrow(commandRunner, buildDockerRunArgs(env), 'localnet start');
+async function dockerRunLocalnet(
+    env: StellarTestEnv,
+    commandRunner: DockerCommandRunner,
+): Promise<void> {
+    const dockerImage = env.DOCKER_IMAGE ?? (await getDefaultStellarLocalnetImage());
+    runDockerOrThrow(commandRunner, buildDockerRunArgs(env, dockerImage), 'localnet start');
 }
 
 export async function startStellarLocalnet({
@@ -169,7 +187,7 @@ export async function startStellarLocalnet({
     console.log('🚀 Starting Stellar localnet...');
 
     removeOwnedContainerIfPresent(env, commandRunner);
-    dockerRunLocalnet(env, commandRunner);
+    await dockerRunLocalnet(env, commandRunner);
 
     // Container is up; if any startup step fails, tear it down before rethrowing.
     // globalSetup only registers its teardown once startup fully succeeds, so
