@@ -21,7 +21,7 @@ export interface VendorTarget {
     pkgName: string;
     /** canonical source path (realpath through pnpm symlinks). */
     npmPkgDir: string;
-    /** vendored location: dependencies/<pkgName>. */
+    /** where the package is assembled: <staging root>/<pkgName>, synced to dependencies/<pkgName>. */
     depsPkgDir: string;
     /** included file/dir tree (excluded subtrees already pruned). */
     tree: CollectedTree;

@@ -19,10 +19,13 @@ export const oneSigLeafSchema = z.object({
 });
 
 export enum OneSigTransactionStatus {
+    PENDING = 'PENDING',
     EXECUTING = 'EXECUTING',
     EXECUTED = 'EXECUTED',
     SUCCESS = 'SUCCESS',
     FAILED = 'FAILED',
+    NOT_EXECUTED = 'NOT_EXECUTED',
+    UNKNOWN = 'UNKNOWN',
 }
 
 export const oneSigTransactionSchema = z.object({
@@ -30,7 +33,7 @@ export const oneSigTransactionSchema = z.object({
     bundleId: z.string(),
     chainName: z.string(),
     nonce: z.number(),
-    minedTransactionHash: z.string(),
+    minedTransactionHash: z.string().optional(),
     errorMessage: z.string().optional(),
     merkleProof: z.array(z.string()),
     status: z.enum(OneSigTransactionStatus),

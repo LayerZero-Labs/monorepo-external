@@ -4,7 +4,8 @@
  * without the rest of the monorepo.
  */
 
-import { copyFile, mkdir, rm } from 'fs/promises';
+import { copyFile, mkdir, mkdtemp, rm } from 'fs/promises';
+import { tmpdir } from 'os';
 import { join, relative, resolve } from 'path';
 
 import { logger } from '../logger';
@@ -13,6 +14,7 @@ import type { CollectedTree } from './io';
 import { collectFiles } from './io';
 import type { RewriteContext } from './rewrite';
 import { rewriteCargoTomls } from './rewrite';
+import { syncTree } from './sync';
 
 // ─── Path Map ───
 
@@ -87,34 +89,40 @@ export const resolveDependencies = async ({
         return;
     }
 
-    // Rebuild dependencies/ from scratch each run.
-    await rm(depsRoot, { recursive: true, force: true });
-    await mkdir(depsRoot, { recursive: true });
+    // Assemble dependencies/ in a staging dir, then sync it over the real one so unchanged files
+    // keep their mtimes (see syncTree). Rewritten path deps are relative between vendored crates,
+    // so the staging location doesn't leak into the output.
+    const stagingRoot = await mkdtemp(join(tmpdir(), 'build-utils-rust-resolve-'));
+    try {
+        // Collect each package's tree once — copy, path map, and rewrite all reuse it.
+        const targets: VendorTarget[] = await Promise.all(
+            Array.from(discovered, async ([pkgName, npmPkgDir]) => {
+                const tree = await collectFiles(npmPkgDir);
+                logger.debug(
+                    `${pkgName}: collected ${tree.files.length} files, ${tree.dirs.length} dirs`,
+                );
+                return { pkgName, npmPkgDir, depsPkgDir: join(stagingRoot, pkgName), tree };
+            }),
+        );
 
-    // Collect each package's tree once — copy, path map, and rewrite all reuse it.
-    const targets: VendorTarget[] = await Promise.all(
-        Array.from(discovered, async ([pkgName, npmPkgDir]) => {
-            const tree = await collectFiles(npmPkgDir);
-            logger.debug(
-                `${pkgName}: collected ${tree.files.length} files, ${tree.dirs.length} dirs`,
-            );
-            return { pkgName, npmPkgDir, depsPkgDir: join(depsRoot, pkgName), tree };
-        }),
-    );
+        const ctx: RewriteContext = {
+            pathMap: buildDependenciesPathMap(targets),
+            discovered,
+        };
+        logger.debug(`path map: ${ctx.pathMap.size} entries`);
 
-    const ctx: RewriteContext = {
-        pathMap: buildDependenciesPathMap(targets),
-        discovered,
-    };
-    logger.debug(`path map: ${ctx.pathMap.size} entries`);
+        await Promise.all(
+            targets.map(async ({ pkgName, npmPkgDir, depsPkgDir, tree }) => {
+                await copyCollected(npmPkgDir, depsPkgDir, tree);
+                await rewriteCargoTomls(npmPkgDir, depsPkgDir, tree, ctx);
+                logger.debug(`  ${pkgName} -> ${npmPkgDir}`);
+            }),
+        );
 
-    await Promise.all(
-        targets.map(async ({ pkgName, npmPkgDir, depsPkgDir, tree }) => {
-            await copyCollected(npmPkgDir, depsPkgDir, tree);
-            await rewriteCargoTomls(npmPkgDir, depsPkgDir, tree, ctx);
-            logger.debug(`  ${pkgName} -> ${npmPkgDir}`);
-        }),
-    );
+        await syncTree(stagingRoot, depsRoot);
+    } finally {
+        await rm(stagingRoot, { recursive: true, force: true });
+    }
 
     logger.info(
         `Resolved ${discovered.size} Cargo dependencies into ${relative(packageRoot, depsRoot) || './dependencies/'}`,

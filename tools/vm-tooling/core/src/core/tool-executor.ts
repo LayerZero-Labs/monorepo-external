@@ -1,4 +1,5 @@
 import { uniqBy } from 'es-toolkit';
+import { createHash } from 'node:crypto';
 import { access, mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -56,35 +57,32 @@ const mergeVolumes = (
 
 /**
  * Merge env layers, highest precedence first. On a name collision the earlier layer wins — so the
- * cache redirect (passed last) can never clobber a user --env or a tool default for the same var.
+ * cargo cache env (passed last) can never clobber a user --env or a tool default for the same var.
  */
 export const mergeToolEnv = (
     ...layers: readonly (readonly EnvironmentVariable[])[]
 ): EnvironmentVariable[] => uniqBy(layers.flat(), ({ name }) => name);
 
-// test/nextest/check/clippy, the `t`/`c` aliases, and `cargo test-*`, with an optional +toolchain.
-const CACHE_SAFE_CARGO_RE =
-    /\bcargo\s+(?:\+\S+\s+)?(?:test|nextest|check|clippy|t|c)(?:\s|$)|\bcargo\s+(?:\+\S+\s+)?test-\S+/;
-// Anything that emits host artifacts: cargo build/b, rustc, sbf/bpf (incl. the dashed `cargo-*-sbf`
-// binaries the space-anchored branch would miss), and anchor build / idl build / test (anchor test
-// compiles the program + IDL before running). `(?![\w-])` ends on a non-word boundary so a
-// separator-glued build (`cargo build;`) still trips it.
-const CARGO_BUILD_RE =
-    /\banchor\s+(?:idl\s+build|build|test)\b|\bcargo-(?:build|test)-(?:sbf|bpf)\b|\bcargo\s+(?:\+\S+\s+)?(?:build(?:-sbf|-bpf)?|b|rustc|test-(?:sbf|bpf))(?![\w-])/;
-
 /**
- * Redirect a cache-safe cargo `--script` to the shared `/cargo-target` mount via CARGO_TARGET_DIR.
- * Skips scripts containing a build (CARGO_BUILD_RE): a build's .so/IDL must reach the host-mounted
- * target/, not the cache. No-ops for tools that don't mount the cache.
+ * Point cargo's build-dir (intermediate artifacts) into the tool's `/cargo-target` cache volume,
+ * one subtree per host checkout and cargo workspace. Final artifacts (`.so`, IDL, keypairs) land in
+ * the package's host-mounted `target/`. No-ops for tools that don't mount the cache.
+ *
+ * Build-script `OUT_DIR`s live in the build-dir, outside the cwd that cargo-build-sbf remaps. A
+ * program that embeds an `OUT_DIR` path (e.g. a panic inside
+ * `include!(concat!(env!("OUT_DIR"), ...))`) gets a per-checkout path in its bytecode.
+ *
+ * Per checkout because every checkout mounts a package at the same `/workspace/<rel>` path, and
+ * cargo keys path crates by name, version and workspace-relative path: two checkouts (or two
+ * packages with a same-named crate at the same relative path) sharing one dir silently reuse each
+ * other's artifacts. `{workspace-path-hash}` separates workspaces within a checkout.
+ *
+ * Cargo versions without build-dir support ignore both variables and build in `target/`.
  */
-export const resolveCargoCacheEnv = (
-    script: string | undefined,
+export const resolveCargoBuildDirEnv = (
     volumes: readonly VolumeMapping[],
+    checkoutRoot: string,
 ): EnvironmentVariable[] => {
-    if (!script || !CACHE_SAFE_CARGO_RE.test(script) || CARGO_BUILD_RE.test(script)) {
-        return [];
-    }
-
     const cacheVolume = volumes.find(
         (volume) => volume.type === 'isolate' && volume.containerPath === CARGO_TARGET_CACHE_PATH,
     );
@@ -92,7 +90,16 @@ export const resolveCargoCacheEnv = (
         return [];
     }
 
-    return [{ name: 'CARGO_TARGET_DIR', value: cacheVolume.containerPath }];
+    const checkoutKey = createHash('sha256').update(checkoutRoot).digest('hex').slice(0, 16);
+
+    return [
+        {
+            name: 'CARGO_BUILD_BUILD_DIR',
+            value: path.posix.join(cacheVolume.containerPath, checkoutKey, '{workspace-path-hash}'),
+        },
+        // build-dir is stable from cargo 1.91; the platform-tools v1.52 cargo (1.89-dev) needs the opt-in.
+        { name: 'CARGO_UNSTABLE_BUILD_DIR', value: 'true' },
+    ];
 };
 
 /**
@@ -501,8 +508,8 @@ export async function executeToolCommand<TImageId extends string>(
               ]
             : [];
 
-        // Lowest precedence (passed last) so a user --env or tool default for CARGO_TARGET_DIR wins.
-        const cargoCacheEnv = resolveCargoCacheEnv(script, resolvedVolumes);
+        // Lowest precedence (passed last) so a user --env or tool default for the same var wins.
+        const cargoCacheEnv = resolveCargoBuildDirEnv(resolvedVolumes, workspaceRoot);
 
         const envArgs = mergeToolEnv(
             customEnvVars,
@@ -512,7 +519,7 @@ export async function executeToolCommand<TImageId extends string>(
         ).flatMap(({ name, value }) => ['-e', `${name}=${value}`]);
 
         if (cargoCacheEnv.length > 0) {
-            console.info(`🗃️  Sharing cargo target cache at ${CARGO_TARGET_CACHE_PATH}`);
+            console.info(`🗃️  Cargo build-dir in cache volume at ${CARGO_TARGET_CACHE_PATH}`);
         }
 
         // Add host user UID/GID for permission matching on Linux/macOS

@@ -588,7 +588,7 @@ overrides:
   js-yaml@3: 3.15.2
   js-yaml@4: 4.3.2
   '@ethereumjs/util@10>@noble/curves': 1.9.7
-  '@grpc/grpc-js': ^1.14.4
+  '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
   '@layerzerolabs/lz-definitions': 3.1.15
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
@@ -666,7 +666,7 @@ overrides:
   ws@^8: ^8.21.0
   zod@^4: 4.3.5
 
-packageExtensionsChecksum: sha256-IHkiSEWR62tI/6C15xNUKXwPK5TqypQ51ZnVtXHcfKs=
+packageExtensionsChecksum: sha256-uHzDOecf6WkjFcDZQJZS/Sg9QI63aqpPMvG7AdyzF60=
 
 importers:
 
@@ -2604,8 +2604,8 @@ importers:
   packages/vms/sui/grpc-compat:
     dependencies:
       '@grpc/grpc-js':
-        specifier: ^1.14.4
-        version: 1.14.4
+        specifier: ^1.14.5
+        version: 1.14.5
       '@layerzerolabs/common-suimove':
         specifier: workspace:*
         version: link:../../suimove/common
@@ -2617,7 +2617,7 @@ importers:
         version: '@mysten/sui@2.26.2(typescript@6.0.3)'
       '@protobuf-ts/grpc-transport':
         specifier: 'catalog:'
-        version: 2.11.1(@grpc/grpc-js@1.14.4)
+        version: 2.11.1(@grpc/grpc-js@1.14.5)
       '@protobuf-ts/runtime-rpc':
         specifier: 'catalog:'
         version: 2.11.1
@@ -4320,8 +4320,8 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@grpc/grpc-js@1.14.4':
-    resolution: {integrity: sha512-k9Dj3DV/itK9D06Y8f190Qgop7/Ui+D0njFV3LHMPwPT75DpXLQohE9Wmz0QElrJnzsjB7KPWiKJbOl7IPDArQ==}
+  '@grpc/grpc-js@1.14.5':
+    resolution: {integrity: sha512-7VZM+SVdEcUUqSQeNI3zM8Qs/BhQKZndPo2h5VkYkAM8Iz0wJIa8mKV5ekQGqG8UUsnkQ0NMxIxwkIHYvj0qOw==}
     engines: {node: '>=12.10.0'}
 
   '@grpc/proto-loader@0.7.15':
@@ -5108,7 +5108,7 @@ packages:
   '@protobuf-ts/grpc-transport@2.11.1':
     resolution: {integrity: sha512-l6wrcFffY+tuNnuyrNCkRM8hDIsAZVLA8Mn7PKdVyYxITosYh60qW663p9kL6TWXYuDCL3oxH8ih3vLKTDyhtg==}
     peerDependencies:
-      '@grpc/grpc-js': ^1.14.4
+      '@grpc/grpc-js': ^1.14.5
 
   '@protobuf-ts/grpcweb-transport@2.11.1':
     resolution: {integrity: sha512-1W4utDdvOB+RHMFQ0soL4JdnxjXV+ddeGIUg08DvZrA8Ms6k5NN6GBFU2oHZdTOcJVpPrDJ02RJlqtaoCMNBtw==}
@@ -11699,7 +11699,7 @@ snapshots:
     dependencies:
       graphql: 17.0.2
 
-  '@grpc/grpc-js@1.14.4':
+  '@grpc/grpc-js@1.14.5':
     dependencies:
       '@grpc/proto-loader': 0.8.0
       '@js-sdsl/ordered-map': 4.4.2
@@ -13022,9 +13022,9 @@ snapshots:
   '@polka/url@1.0.0-next.29':
     optional: true
 
-  '@protobuf-ts/grpc-transport@2.11.1(@grpc/grpc-js@1.14.4)':
+  '@protobuf-ts/grpc-transport@2.11.1(@grpc/grpc-js@1.14.5)':
     dependencies:
-      '@grpc/grpc-js': 1.14.4
+      '@grpc/grpc-js': 1.14.5
       '@protobuf-ts/runtime': 2.11.1
       '@protobuf-ts/runtime-rpc': 2.11.1
 
@@ -15502,7 +15502,7 @@ snapshots:
   dockerode@4.0.9(supports-color@8.1.1):
     dependencies:
       '@balena/dockerignore': 1.0.2
-      '@grpc/grpc-js': 1.14.4
+      '@grpc/grpc-js': 1.14.5
       '@grpc/proto-loader': 0.7.15
       docker-modem: 5.0.7(supports-color@8.1.1)
       protobufjs: 7.6.1

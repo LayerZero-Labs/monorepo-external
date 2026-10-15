@@ -1,4 +1,5 @@
-import { readdir, realpath, stat } from 'fs/promises';
+import type { Stats } from 'fs';
+import { lstat, readdir, realpath, stat } from 'fs/promises';
 import { basename, dirname, extname, join } from 'path';
 
 import { logger } from '../logger';
@@ -17,6 +18,14 @@ export const tryIsDirectory = async (path: string): Promise<boolean> => {
         return (await stat(path)).isDirectory();
     } catch {
         return false;
+    }
+};
+
+export const tryLstat = async (path: string): Promise<Stats | undefined> => {
+    try {
+        return await lstat(path);
+    } catch {
+        return undefined;
     }
 };
 

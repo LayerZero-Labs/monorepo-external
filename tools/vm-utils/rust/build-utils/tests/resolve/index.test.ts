@@ -1,10 +1,15 @@
 import {
+    chmodSync,
     existsSync,
+    lstatSync,
     mkdirSync,
     mkdtempSync,
     readFileSync,
     realpathSync,
     rmSync,
+    statSync,
+    symlinkSync,
+    utimesSync,
     writeFileSync,
 } from 'fs';
 import os from 'os';
@@ -435,6 +440,119 @@ describe('resolveDependencies — single-crate consumer (no [workspace])', () =>
         expect(existsSync(join(root, 'dependencies', 'rbac-solana-contracts', 'Cargo.toml'))).toBe(
             true,
         );
+    });
+});
+
+describe('resolveDependencies — re-resolving an existing dependencies/', () => {
+    // Cargo rebuilds a path crate when a source file's mtime is newer than its last build, so
+    // re-resolving must leave unchanged files untouched.
+    const OLD = new Date('2000-01-01T00:00:00Z');
+
+    const setup = (name: string) => {
+        const root = join(TMP, name);
+        createCrate(root, fixture('program-with-deps.toml'));
+
+        const oappSource = join(root, 'node_modules', '@layerzerolabs', 'oapp-solana-contracts');
+        createCrate(oappSource, fixture('oapp-with-stale-deps.toml'));
+        writeFileSync(join(oappSource, 'package.json'), '{}');
+
+        const rbacSource = join(
+            oappSource,
+            'node_modules',
+            '@layerzerolabs',
+            'rbac-solana-contracts',
+        );
+        createCrate(rbacSource, fixture('minimal.toml'));
+        writeFileSync(join(rbacSource, 'package.json'), '{}');
+
+        const deps = join(root, 'dependencies');
+        const rbacSrc = join(rbacSource, 'src');
+        return { root, deps, rbacSrc, lib: join(deps, 'rbac-solana-contracts', 'src', 'lib.rs') };
+    };
+
+    const age = (path: string) => utimesSync(path, OLD, OLD);
+    const isOld = (path: string) => statSync(path).mtimeMs === OLD.getTime();
+
+    it('keeps the mtime of unchanged copied and rewritten files', async () => {
+        const { root, deps, lib } = setup('reresolve-unchanged');
+        await resolveDependencies({ cwd: root });
+
+        const rewritten = join(deps, 'oapp-solana-contracts', 'Cargo.toml');
+        age(lib);
+        age(rewritten);
+
+        await resolveDependencies({ cwd: root });
+
+        expect(isOld(lib)).toBe(true);
+        expect(isOld(rewritten)).toBe(true);
+        expect(readToml(rewritten)).toContain('path = "../rbac-solana-contracts"');
+    });
+
+    it('replaces a (read-only) copy whose source changed', async () => {
+        const { root, rbacSrc, lib } = setup('reresolve-changed');
+        await resolveDependencies({ cwd: root });
+
+        age(lib);
+        chmodSync(lib, 0o444);
+        writeFileSync(join(rbacSrc, 'lib.rs'), '// changed');
+
+        await resolveDependencies({ cwd: root });
+
+        expect(readFileSync(lib, 'utf-8')).toBe('// changed');
+        expect(isOld(lib)).toBe(false);
+    });
+
+    it('removes files and packages that are no longer vendored', async () => {
+        const { root, deps, rbacSrc, lib } = setup('reresolve-stale');
+        writeFileSync(join(rbacSrc, 'extra.rs'), '// extra');
+        await resolveDependencies({ cwd: root });
+        expect(existsSync(join(deps, 'rbac-solana-contracts', 'src', 'extra.rs'))).toBe(true);
+
+        rmSync(join(rbacSrc, 'extra.rs'));
+        mkdirSync(join(deps, 'removed-package', 'src'), { recursive: true });
+        writeFileSync(join(deps, 'removed-package', 'Cargo.toml'), '[package]\nname = "gone"');
+        writeFileSync(join(deps, 'oapp-solana-contracts', 'notes.txt'), 'not vendored');
+
+        await resolveDependencies({ cwd: root });
+
+        expect(existsSync(join(deps, 'rbac-solana-contracts', 'src', 'extra.rs'))).toBe(false);
+        expect(existsSync(join(deps, 'removed-package'))).toBe(false);
+        expect(existsSync(join(deps, 'oapp-solana-contracts', 'notes.txt'))).toBe(false);
+        expect(existsSync(lib)).toBe(true);
+    });
+
+    it('replaces a symlink or a type change instead of writing through it', async () => {
+        const { root, deps, lib } = setup('reresolve-types');
+        await resolveDependencies({ cwd: root });
+
+        const outside = join(TMP, 'reresolve-types-outside.rs');
+        writeFileSync(outside, '// outside');
+        rmSync(lib);
+        symlinkSync(outside, lib);
+        const src = join(deps, 'oapp-solana-contracts', 'src');
+        rmSync(src, { recursive: true });
+        writeFileSync(src, 'a file where a directory belongs');
+
+        await resolveDependencies({ cwd: root });
+
+        expect(lstatSync(lib).isSymbolicLink()).toBe(false);
+        expect(readFileSync(lib, 'utf-8')).toBe('// placeholder');
+        expect(readFileSync(outside, 'utf-8')).toBe('// outside');
+        expect(statSync(src).isDirectory()).toBe(true);
+    });
+
+    it('replaces a symlinked dependencies/ without touching the link target', async () => {
+        const { root, deps, lib } = setup('reresolve-symlinked-root');
+        const outside = join(TMP, 'reresolve-symlinked-root-outside');
+        mkdirSync(outside, { recursive: true });
+        writeFileSync(join(outside, 'precious.txt'), 'keep me');
+        symlinkSync(outside, deps);
+
+        await resolveDependencies({ cwd: root });
+
+        expect(lstatSync(deps).isSymbolicLink()).toBe(false);
+        expect(existsSync(lib)).toBe(true);
+        expect(readFileSync(join(outside, 'precious.txt'), 'utf-8')).toBe('keep me');
     });
 });
 

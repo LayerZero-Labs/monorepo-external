@@ -39,9 +39,9 @@ const getRegistryConfig = async (): Promise<RegistryConfig> => {
     return registryConfigCache!;
 };
 
-// Container path for the shared cargo build-artifact cache. A VM mounts its toolchain `target/`
-// cache at this path; resolveCargoCacheEnv keys on it to inject CARGO_TARGET_DIR. Single source so
-// the helper's lookup and each VM config's containerPath can't drift apart.
+// Container path for the cargo build-dir cache volume. A VM mounts its toolchain cache volume at
+// this path; resolveCargoBuildDirEnv keys on it to point cargo's build-dir into it. Single source
+// so the helper's lookup and each VM config's containerPath can't drift apart.
 export const CARGO_TARGET_CACHE_PATH = '/cargo-target';
 
 const volumeMappingBaseSchema = z.object({

@@ -40,12 +40,13 @@ const defaultVolumes: readonly VolumeMapping[] = [
         containerPath: '/usr/local/rustup',
         name: 'solana-rustup',
         toolchainKeyed: true,
-        // Locked like solana-target: each shared cache guards its own concurrency rather than
-        // relying on solana-cargo's lock, which a user --volume override of /usr/local/cargo drops.
+        // Written on every build: cargo-build-sbf's strip.sh sources the SDK's install.sh, which
+        // re-links the platform-tools toolchain because the image never ran it. Locked in its own
+        // right rather than relying on solana-cargo's lock, which a user --volume override drops.
         locked: true,
     },
-    // Compiled-artifact cache. lz-tool points CARGO_TARGET_DIR here for cache-safe cargo commands
-    // (test/check/clippy) but not builds, so build .so still land in the host target/.
+    // Cargo build-dir cache; see resolveCargoBuildDirEnv. Nothing prunes subtrees of deleted
+    // checkouts.
     {
         type: 'isolate',
         containerPath: CARGO_TARGET_CACHE_PATH,
@@ -53,7 +54,7 @@ const defaultVolumes: readonly VolumeMapping[] = [
         toolchainKeyed: true,
         // Locked in its own right: same-toolchain runs already serialize on solana-cargo, but a
         // user `--volume` override of /usr/local/cargo could drop that lock, so don't make this
-        // shared target's concurrency safety depend on another volume's lock surviving.
+        // shared cache's concurrency safety depend on another volume's lock surviving.
         locked: true,
     },
 ];
