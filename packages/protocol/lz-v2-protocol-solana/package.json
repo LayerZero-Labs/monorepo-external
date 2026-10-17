@@ -44,6 +44,7 @@
         "@layerzerolabs/lz-foundation": "catalog:",
         "@layerzerolabs/lz-serdes": "catalog:",
         "@layerzerolabs/lz-utilities": "catalog:",
+        "@layerzerolabs/lz-v2-protocol-solana-v3": "workspace:*",
         "@layerzerolabs/lz-v2-utilities": "catalog:",
         "@metaplex-foundation/mpl-toolbox": "catalog:",
         "@metaplex-foundation/umi": "catalog:",

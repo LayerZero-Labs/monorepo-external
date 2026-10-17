@@ -1,7 +1,7 @@
+import ts from '@typescript/typescript6';
 import { Command } from 'commander';
 import fs from 'fs/promises';
 import path from 'path';
-import ts from 'typescript';
 
 import { findConfigsInDir } from '../find';
 import { Trie } from '../trie';

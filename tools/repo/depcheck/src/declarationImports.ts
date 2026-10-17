@@ -1,7 +1,7 @@
+import ts from '@typescript/typescript6';
 import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import path from 'path';
-import ts from 'typescript';
 
 const DECLARATION_FILE_PATTERN = /\.d\.[cm]?ts$/;
 

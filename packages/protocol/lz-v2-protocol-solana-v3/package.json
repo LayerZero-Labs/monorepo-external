@@ -1,0 +1,42 @@
+{
+    "name": "@layerzerolabs/lz-v2-protocol-solana-v3",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Executor V3 discovery (LzReceiveTypes / LzComposeTypes V3) and Solana Transaction V1 helpers, without the Anchor build or generated program code",
+    "license": "COPYRIGHT",
+    "sideEffects": null,
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "src/**/*"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
+    },
+    "dependencies": {
+        "@layerzerolabs/lz-foundation": "catalog:",
+        "@metaplex-foundation/umi": "catalog:",
+        "@metaplex-foundation/umi-eddsa-web3js": "catalog:",
+        "@metaplex-foundation/umi-web3js-adapters": "catalog:",
+        "@solana/kit": "catalog:",
+        "@solana/web3.js": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

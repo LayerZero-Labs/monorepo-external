@@ -564,16 +564,6 @@ export async function buildVersionedTransaction(
 }
 
 /**
- * Generates an instruction discriminator.
- *
- * @param {string} method - The method name.
- * @returns {Buffer} The instruction discriminator.
- */
-export function instructionDiscriminator(method: string): Buffer {
-    return Buffer.from(sha2_256(Buffer.from(`global:${method}`))).subarray(0, 8);
-}
-
-/**
  * Simulates a transaction.
  *
  * @param {string | web3.Connection | RpcInterface} _connection - The connection to the Solana cluster.
@@ -673,3 +663,5 @@ export function toWeb3Connection(rpc: RpcInterface | web3.Connection): web3.Conn
         throw new Error('Invalid connection');
     }
 }
+
+export { instructionDiscriminator } from '@layerzerolabs/lz-v2-protocol-solana-v3';

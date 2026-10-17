@@ -6,15 +6,24 @@ import { oneSigBundleSizeOverrideSchema } from './onesig-overrides';
 import { proposerSignatureSchema } from './onesig-proposer-signature';
 import { signerSignatureSchema } from './onesig-signer-signature';
 
+/**
+ * Bundle expiry is a Unix timestamp in seconds. Bundles stored before the switch from
+ * milliseconds, and bundles from outdated proposers, hold millisecond values; any expiry above
+ * this bound is one of those.
+ */
+export const MAX_BUNDLE_EXPIRY_SECONDS = 1e11;
+
+/** Bundle expiry in milliseconds. Accepts legacy millisecond values (see above). */
+export const bundleExpiryToMs = (expiry: number): number =>
+    expiry > MAX_BUNDLE_EXPIRY_SECONDS ? expiry : expiry * 1000;
+
 export const oneSigEntitySchema = z.object({
     id: z.uuid().describe('Client generated id for the batch of transactions'),
     oneSigName: z.string().describe('Canonical name of the OneSig'),
     expiry: z
         .number()
         .optional()
-        .describe(
-            'unix timestamp in milliseconds, after which the OneSig transactions fail to execute',
-        ),
+        .describe('unix timestamp in seconds, after which the OneSig transactions fail to execute'),
 
     seed: z.string().optional().describe('Seed for the OneSig'),
     signatures: z

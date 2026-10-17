@@ -42,7 +42,8 @@ export const MOVE_TO_DEV_DEFAULT_PATTERN = [
     '@layerzerolabs/evm-abi-generator',
     '@layerzerolabs/evm-ts-artifacts-generator',
     '@layerzerolabs/tsup-configuration',
-    '@types',
+    // Trailing slash so it doesn't match `@typescript/*` packages.
+    '@types/',
     'eslint',
     'prettier',
     'tsup',
