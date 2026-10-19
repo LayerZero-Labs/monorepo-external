@@ -6,6 +6,7 @@ import { MerkleTree } from 'merkletreejs';
 import {
     bigIntToBytes,
     bytesToHexPrefixed,
+    ensure0xPrefixed,
     hexToBytes,
 } from '@layerzerolabs/common-encoding-utils';
 import type { HexString } from '@layerzerolabs/typescript-utils';
@@ -278,6 +279,29 @@ export const getOneSigTypedDataPrimaryTypes = (): Record<string, TypedDataField[
     return ONE_SIG_TYPED_DATA_PRIMARY_TYPES;
 };
 
+/**
+ * Normalizes a 32-byte `SignMerkleRoot` word (`seed` / `merkleRoot`) to the
+ * `0x`-prefixed lowercase hex that EIP-712 `bytes32` encoding requires.
+ *
+ * Chains disagree on the prefix: Canton keeps hex bare on the ledger (its
+ * `OneSigConfig` enforces `seed == stripAndLowerHex seed`), so a Canton seed
+ * reaches us as 64 raw hex chars. ethers' `arrayify` rejects unprefixed input
+ * outright and viem's `size` misreads it as a 64-byte array, so every producer
+ * of this payload has to normalize or the digest cannot be computed at all.
+ */
+export const toOneSigWord = (value: string | Uint8Array, field: string): HexString => {
+    // Lowercasing first also folds a `0X` prefix into the form trim0x expects.
+    const hex = ensure0xPrefixed(
+        typeof value === 'string' ? value.toLowerCase() : bytesToHexPrefixed(value),
+    );
+
+    if (!/^0x[0-9a-f]{64}$/.test(hex)) {
+        throw new Error(`Expected ${field} to be a 32-byte hex value, received "${String(value)}"`);
+    }
+
+    return hex;
+};
+
 export const getSigningData = (
     tree: MerkleTree,
     { seed, expiry }: SigningOptions,
@@ -286,9 +310,9 @@ export const getSigningData = (
         getOneSigTypedDataDomain(),
         getOneSigTypedDataPrimaryTypes(),
         {
-            seed: seed,
+            seed: toOneSigWord(seed, 'seed'),
             expiry: expiry,
-            merkleRoot: tree.getHexRoot(),
+            merkleRoot: toOneSigWord(tree.getHexRoot(), 'merkleRoot'),
         },
     ];
 };

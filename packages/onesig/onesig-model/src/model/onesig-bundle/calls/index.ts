@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { oneSigCantonCallSchema } from './onesig-canton-call';
+import { wrappedOneSigCantonCallSchema } from './onesig-canton-call';
 import { oneSigEVMCallSchema } from './onesig-evm-call';
 import { oneSigSolanaCallSchema } from './onesig-solana-call';
 import { oneSigStarknetCallSchema } from './onesig-starknet-call';
@@ -13,7 +13,7 @@ export const oneSigCallSchema = z.union([
     oneSigStarknetCallSchema,
     oneSigStellarCallSchema,
     oneSigTONCallSchema,
-    oneSigCantonCallSchema,
+    wrappedOneSigCantonCallSchema,
 ]);
 
 export type OneSigCall = z.infer<typeof oneSigCallSchema>;

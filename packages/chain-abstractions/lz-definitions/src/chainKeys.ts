@@ -4022,6 +4022,30 @@ export const CHAIN_KEY_ALIAS_CONFIG = {
             },
         ],
     },
+    [ChainKey.ZEROINTEROP_TESTNET]: {
+        aliases: [
+            {
+                environment: Environment.TESTNET,
+                name: ChainName.ZEROINTEROP,
+            },
+        ],
+    },
+    [ChainKey.ZEROSYSTEM_TESTNET]: {
+        aliases: [
+            {
+                environment: Environment.TESTNET,
+                name: ChainName.ZEROSYSTEM,
+            },
+        ],
+    },
+    [ChainKey.ZEROATLAS_TESTNET]: {
+        aliases: [
+            {
+                environment: Environment.TESTNET,
+                name: ChainName.ZEROATLAS,
+            },
+        ],
+    },
 } as const satisfies Record<ChainKey, { aliases: { name: ChainName; environment: Environment }[] }>;
 
 export const resolveChainKey = (chainName: ChainName, environment: Environment): ChainKey => {

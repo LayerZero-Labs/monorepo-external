@@ -576,3 +576,15 @@ export const oneSigCantonCallSchema = z.discriminatedUnion('tag', [
     }),
 ]);
 export type OneSigCantonCall = z.infer<typeof oneSigCantonCallSchema>;
+
+// TODO-CANTON: Rename wrappedOneSigCantonCallSchema to oneSigCantonCallSchema, and the current
+// oneSigCantonCallSchema to oneSigCantonCallDataSchema.
+export const wrappedOneSigCantonCallSchema = z.object({
+    data: oneSigCantonCallSchema,
+    metadata: z
+        .record(z.any(), z.any())
+        .optional()
+        .describe('Metadata for the call, e.g. Human readable description of the call'),
+});
+
+export type WrappedOneSigCantonCall = z.infer<typeof wrappedOneSigCantonCallSchema>;

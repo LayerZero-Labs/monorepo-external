@@ -156,11 +156,11 @@ catalogs:
     '@layerzerolabs/lz-aptos-sdk-v1': 3.0.168
     '@layerzerolabs/lz-aptos-sdk-v2': 3.0.168
     '@layerzerolabs/lz-corekit-solana': 3.0.168
-    '@layerzerolabs/lz-definitions': 3.1.15
+    '@layerzerolabs/lz-definitions': 3.1.17
     '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
     '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
-    '@layerzerolabs/lz-evm-sdk-v1': 3.1.15
-    '@layerzerolabs/lz-evm-sdk-v2': 3.1.15
+    '@layerzerolabs/lz-evm-sdk-v1': 3.1.17
+    '@layerzerolabs/lz-evm-sdk-v2': 3.1.17
     '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
     '@layerzerolabs/lz-foundation': 3.0.168
     '@layerzerolabs/lz-initia-sdk-v2': 3.0.168
@@ -961,7 +961,7 @@ overrides:
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
-  '@layerzerolabs/lz-definitions': 3.1.15
+  '@layerzerolabs/lz-definitions': 3.1.17
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@mysten/sui': 1.45.2
   '@react-spring/animated>@types/react': 19.2.6

@@ -11,6 +11,39 @@ export const oneSigExecutorConfigSchema = z.object({
 
 export type OneSigExecutorConfig = z.infer<typeof oneSigExecutorConfigSchema>;
 
+/** Canton key fingerprint (multihash hex): `1220` + 64 hex chars (sha256). */
+export const cantonKeyFingerprintSchema = z
+    .string()
+    .regex(/^1220[0-9a-fA-F]{64}$/, 'Expected a Canton key fingerprint (1220 + 64 hex chars)');
+
+/**
+ * Post-deploy ownership transfer configuration for a specific chain type.
+ *
+ * Only the CANTON chain type is supported. For Canton this transfers the OneSig admin party's
+ * decentralized namespace (DND) and its signing keys (PartyToKeyMapping, PTK) from the LayerZero
+ * wallet key to `newOwners` with `threshold`. The workflow only *proposes* the change (signed by
+ * the wallet key); the new owners co-sign both out of band with one signature.
+ */
+export const oneSigOwnershipTransferConfigSchema = z
+    .object({
+        // What an owner is depends on the chain. Only Canton is supported, whose owners are
+        // namespace key fingerprints; checked here so a bad request fails before any deploy.
+        newOwners: z.array(cantonKeyFingerprintSchema).min(1),
+        threshold: z.number().int().positive(),
+    })
+    .refine(
+        ({ newOwners }) =>
+            new Set(newOwners.map((owner) => owner.toLowerCase())).size === newOwners.length,
+        { message: 'newOwners must not contain duplicates (case-insensitive)' },
+    )
+    .refine(
+        ({ newOwners, threshold }) =>
+            threshold <= new Set(newOwners.map((owner) => owner.toLowerCase())).size,
+        { message: 'threshold must not exceed the number of new owners' },
+    );
+
+export type OneSigOwnershipTransferConfig = z.infer<typeof oneSigOwnershipTransferConfigSchema>;
+
 export const oneSigOnchainConfigSchema = z.object({
     signers: z.array(z.string()),
     threshold: z.number(),
