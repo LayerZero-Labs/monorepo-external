@@ -30,18 +30,21 @@ describe('Upgrader Contract Testing', async () => {
     const repoRoot = await getFullyQualifiedRepoRootPath();
     const upgraderWasmDir = path.join(
         repoRoot,
+        'apps',
+        'project-types',
+        'deploy-wire-protocol-app',
         'contracts',
-        'protocol',
         'stellar',
         'contracts',
         '.artifacts',
     );
     const testDataDir = path.join(
         repoRoot,
-        'contracts',
-        'protocol',
-        'stellar',
-        'sdk',
+        'apps',
+        'project-types',
+        'deploy-wire-protocol-app',
+        'packages',
+        'lz-v2-stellar-sdk',
         'test',
         'test_data',
     );

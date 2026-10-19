@@ -3,7 +3,6 @@ anchor_version = "0.29.0"
 solana_version = "1.17.31"
 
 [features]
-seeds = false
 skip-lint = false
 
 [programs.localnet]
@@ -16,9 +15,6 @@ messagelib_interface = "J8tfaWEsewRGacgvAeQsXLTRTuUQz5FGyUuqDW2TpiTJ"
 pricefeed = "8ahPGPjEbpgGaZx2NV1iG5Shj7TDwvsjkEDcGWjt94TP"
 simple_messagelib = "6GsmxMTHAAiFKfemuM4zBjumTjNSX5CAiw4xSSXM2Toy"
 uln = "7a4WjyR8VZ7yZz5XJAKm39BUGn5iT9CKcv2pmG9tdXVH"
-
-[registry]
-url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"

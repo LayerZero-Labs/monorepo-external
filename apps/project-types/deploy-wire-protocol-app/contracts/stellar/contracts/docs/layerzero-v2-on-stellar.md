@@ -498,10 +498,10 @@ Executor auth ──► OApp.lz_receive() ──► Endpoint.clear()
 
 ## Building OApps and OFTs
 
-- [OApp guide](../../../../../apps/project-types/oapp-app/contracts/stellar/docs/oapp-guide.md) —
+- [OApp guide](../../../../../oapp-app/contracts/stellar/docs/oapp-guide.md) —
   Building Omnichain Applications using the OApp framework, macros, and traits
   (stub: [oapp-guide.md](oapp-guide.md))
-- [OFT guide](../../../../../apps/oft-app/contracts/stellar/docs/oft-guide.md) —
+- [OFT guide](../../../../../../oft-app/contracts/stellar/docs/oft-guide.md) —
   Building Omnichain Fungible Tokens with MintBurn/LockUnlock strategies and extensions
   (stub: [oft-guide.md](oft-guide.md))
 

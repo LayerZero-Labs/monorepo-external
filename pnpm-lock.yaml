@@ -866,7 +866,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../../../contracts/protocol/starknet
+        version: link:../../../../project-types/deploy-wire-protocol-app/contracts/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -888,7 +888,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../../../contracts/protocol/starknet
+        version: link:../../../../project-types/deploy-wire-protocol-app/contracts/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -925,7 +925,7 @@ importers:
         version: link:../oft-core
       '@layerzerolabs/protocol-stellar-v2':
         specifier: workspace:*
-        version: link:../../../../../contracts/protocol/stellar/contracts
+        version: link:../../../../project-types/deploy-wire-protocol-app/contracts/stellar/contracts
     devDependencies:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
@@ -950,7 +950,7 @@ importers:
         version: link:../../../../project-types/oapp-app/contracts/stellar/contracts
       '@layerzerolabs/protocol-stellar-v2':
         specifier: workspace:*
-        version: link:../../../../../contracts/protocol/stellar/contracts
+        version: link:../../../../project-types/deploy-wire-protocol-app/contracts/stellar/contracts
     devDependencies:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
@@ -1200,6 +1200,86 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
+  apps/project-types/deploy-wire-protocol-app/contracts/solana:
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/typescript
+      '@layerzerolabs/vm-tooling-solana':
+        specifier: workspace:*
+        version: link:../../../../../tools/vm-tooling/vm-tooling-solana
+
+  apps/project-types/deploy-wire-protocol-app/contracts/starknet:
+    devDependencies:
+      '@layerzerolabs/build-utils-starknet':
+        specifier: workspace:*
+        version: link:../../../../../tools/vm-utils/starknet/build-utils
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/typescript
+      '@layerzerolabs/vm-tooling-starknet':
+        specifier: workspace:*
+        version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+
+  apps/project-types/deploy-wire-protocol-app/contracts/stellar/contracts:
+    dependencies:
+      '@layerzerolabs/common-utils-macros-stellar-contracts':
+        specifier: workspace:*
+        version: link:../../../../../../contracts/common/utils/stellar/common-utils-macros
+      '@layerzerolabs/common-utils-stellar-contracts':
+        specifier: workspace:*
+        version: link:../../../../../../contracts/common/utils/stellar/common-utils
+    devDependencies:
+      '@layerzerolabs/build-utils-rust':
+        specifier: workspace:*
+        version: link:../../../../../../tools/vm-utils/rust/build-utils
+      '@layerzerolabs/vm-tooling-stellar':
+        specifier: workspace:*
+        version: link:../../../../../../tools/vm-tooling/vm-tooling-stellar
+
+  apps/project-types/deploy-wire-protocol-app/packages/lz-v2-stellar-sdk:
+    dependencies:
+      '@stellar/stellar-sdk':
+        specifier: 'catalog:'
+        version: 16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      buffer:
+        specifier: 'catalog:'
+        version: 6.0.3
+    devDependencies:
+      '@layerzerolabs/common-node-utils':
+        specifier: workspace:*
+        version: link:../../../../../packages/common/common-node-utils
+      '@layerzerolabs/protocol-stellar-v2':
+        specifier: workspace:*
+        version: link:../../contracts/stellar/contracts
+      '@layerzerolabs/stellar-ts-bindings-gen':
+        specifier: workspace:*
+        version: link:../../../../../packages/vms/stellar/ts-bindings-gen
+      '@layerzerolabs/test-utils-stellar':
+        specifier: workspace:*
+        version: link:../../../../../packages/test-utils/stellar
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../../../tooling-configs/vitest
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   apps/project-types/nexus-app/contracts/evm:
     devDependencies:
       '@layerzerolabs/contract-sizes-evm':
@@ -1391,7 +1471,7 @@ importers:
         version: link:../macros
       '@layerzerolabs/protocol-stellar-v2':
         specifier: workspace:*
-        version: link:../../../../../../contracts/protocol/stellar/contracts
+        version: link:../../../../deploy-wire-protocol-app/contracts/stellar/contracts
     devDependencies:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
@@ -1422,7 +1502,7 @@ importers:
         version: link:../../../oapp-app/contracts/stellar/contracts
       '@layerzerolabs/protocol-stellar-v2':
         specifier: workspace:*
-        version: link:../../../../../contracts/protocol/stellar/contracts
+        version: link:../../../deploy-wire-protocol-app/contracts/stellar/contracts
     devDependencies:
       '@layerzerolabs/build-utils-rust':
         specifier: workspace:*
@@ -1500,7 +1580,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../../contracts/protocol/starknet
+        version: link:../../../project-types/deploy-wire-protocol-app/contracts/starknet
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -1719,86 +1799,6 @@ importers:
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-stellar
-
-  contracts/protocol/solana/contracts:
-    devDependencies:
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/typescript
-      '@layerzerolabs/vm-tooling-solana':
-        specifier: workspace:*
-        version: link:../../../../tools/vm-tooling/vm-tooling-solana
-
-  contracts/protocol/starknet:
-    devDependencies:
-      '@layerzerolabs/build-utils-starknet':
-        specifier: workspace:*
-        version: link:../../../tools/vm-utils/starknet/build-utils
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../tooling-configs/typescript
-      '@layerzerolabs/vm-tooling-starknet':
-        specifier: workspace:*
-        version: link:../../../tools/vm-tooling/vm-tooling-starknet
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
-
-  contracts/protocol/stellar/contracts:
-    dependencies:
-      '@layerzerolabs/common-utils-macros-stellar-contracts':
-        specifier: workspace:*
-        version: link:../../../common/utils/stellar/common-utils-macros
-      '@layerzerolabs/common-utils-stellar-contracts':
-        specifier: workspace:*
-        version: link:../../../common/utils/stellar/common-utils
-    devDependencies:
-      '@layerzerolabs/build-utils-rust':
-        specifier: workspace:*
-        version: link:../../../../tools/vm-utils/rust/build-utils
-      '@layerzerolabs/vm-tooling-stellar':
-        specifier: workspace:*
-        version: link:../../../../tools/vm-tooling/vm-tooling-stellar
-
-  contracts/protocol/stellar/sdk:
-    dependencies:
-      '@stellar/stellar-sdk':
-        specifier: 'catalog:'
-        version: 16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      buffer:
-        specifier: 'catalog:'
-        version: 6.0.3
-    devDependencies:
-      '@layerzerolabs/common-node-utils':
-        specifier: workspace:*
-        version: link:../../../../packages/common/common-node-utils
-      '@layerzerolabs/protocol-stellar-v2':
-        specifier: workspace:*
-        version: link:../contracts
-      '@layerzerolabs/stellar-ts-bindings-gen':
-        specifier: workspace:*
-        version: link:../../../../packages/vms/stellar/ts-bindings-gen
-      '@layerzerolabs/test-utils-stellar':
-        specifier: workspace:*
-        version: link:../../../../packages/test-utils/stellar
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/typescript
-      '@layerzerolabs/vitest-configuration':
-        specifier: workspace:*
-        version: link:../../../../tooling-configs/vitest
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
   packages/chain-abstractions/lz-definitions:
     dependencies:
@@ -2247,7 +2247,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
-  packages/onesig/onesig-solana:
+  packages/onesig/onesig-solana-archived:
     dependencies:
       '@ethersproject/bytes':
         specifier: 'catalog:'
@@ -2403,7 +2403,7 @@ importers:
         version: link:../../../tools/artifacts-copier
       '@layerzerolabs/layerzero-v2-solana':
         specifier: workspace:*
-        version: link:../../../contracts/protocol/solana/contracts
+        version: link:../../../apps/project-types/deploy-wire-protocol-app/contracts/solana
       '@layerzerolabs/repo-utils':
         specifier: workspace:*
         version: link:../../../tools/repo/repo-utils

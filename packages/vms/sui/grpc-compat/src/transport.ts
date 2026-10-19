@@ -99,6 +99,7 @@ export const createSuiCompatClients = (options: SuiCompatClientOptions): SuiComp
         ? new SuiGraphQLClient({
               network: options.network,
               url: options.graphqlUrl,
+              ...(options.graphqlHeaders && { headers: { ...options.graphqlHeaders } }),
           })
         : undefined,
 });

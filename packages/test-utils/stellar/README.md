@@ -59,7 +59,16 @@ export default createProtocolStackGlobalSetup(env, {
     wasmDir: async () => {
         const repoRoot = await getFullyQualifiedRepoRootPath();
         // Protocol verifiable build publishes WASMs to .artifacts/ (not cargo target/).
-        return path.join(repoRoot, 'contracts', 'protocol', 'stellar', 'contracts', '.artifacts');
+        return path.join(
+            repoRoot,
+            'apps',
+            'project-types',
+            'deploy-wire-protocol-app',
+            'contracts',
+            'stellar',
+            'contracts',
+            '.artifacts',
+        );
     },
 });
 ```

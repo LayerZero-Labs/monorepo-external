@@ -4,7 +4,7 @@ import { join } from 'path';
 import { getFullyQualifiedRepoRootPath } from '@layerzerolabs/common-node-utils';
 import { rpcCall, writeProgram } from '@layerzerolabs/vm-tooling-solana';
 
-const CONTAINER_NAME = 'onesig-solana-validator';
+const CONTAINER_NAME = 'onesig-solana-archived-validator';
 const HOST_RPC_PORT = 8799;
 const HOST_WS_PORT = 8800;
 // surfpool's fixed in-container RPC/WS ports; the host ports above publish to these.
@@ -52,7 +52,7 @@ const startValidator = async () => {
     // (packages/test-utils/solana/src/helpers/validator.ts): lz-tool spawn, allocatePorts(basePort)
     // from vm-tooling-solana, and killContainerByPort — no fixed container name or host ports.
     // This raw docker run + hand-rolled getImageUri was copied from an external repo and never
-    // regularized; onesig-solana-staged duplicated it (#5813), forcing manual port isolation (#5865).
+    // regularized; the canonical onesig-solana duplicated it (#5813), forcing manual port isolation (#5865).
     const image = await getImageUri();
 
     // Remove existing container if present

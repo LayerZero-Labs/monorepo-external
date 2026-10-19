@@ -166,7 +166,7 @@ impl Harness {
         )
         .0;
         // SimpleMessageLib's immutable/mutable fields in its upstream account
-        // layout (contracts/protocol/.../simple-messagelib/src/state/message_lib.rs).
+        // layout (apps/project-types/deploy-wire-protocol-app/contracts/solana/programs/simple-messagelib/src/state/message_lib.rs).
         let mut data = vec![141, 191, 244, 48, 52, 174, 199, 209]; // account:MessageLib
         data.extend(1u32.to_le_bytes());
         data.extend(info.to_bytes());

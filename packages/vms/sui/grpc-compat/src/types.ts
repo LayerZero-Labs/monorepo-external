@@ -14,7 +14,10 @@ export interface SuiCompatClientOptions {
     readonly network: SuiCompatNetwork;
     readonly grpcUrl: string;
     readonly graphqlUrl?: string;
+    /** Headers sent with gRPC requests (e.g. API-key auth for keyed gateways). */
     readonly headers?: Readonly<Record<string, string>>;
+    /** Headers sent with GraphQL requests; the GraphQL endpoint is configured separately. */
+    readonly graphqlHeaders?: Readonly<Record<string, string>>;
     readonly timeout?: number;
     /**
      * Replaces the default grpc-web-over-`fetch` transport. Pass

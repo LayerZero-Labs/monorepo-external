@@ -3,15 +3,11 @@ anchor_version = "1.1.2"
 solana_version = "3.1.10"
 
 [features]
-seeds = false
 skip-lint = false
 resolution = false
 
 [programs.localnet]
 demo = "2ow6zJCHwFMKASwLUEEPZJKr687q5yFtYthNXBTzaJFc"
-
-[registry]
-url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
