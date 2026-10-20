@@ -2,7 +2,7 @@ import { rmSync } from 'node:fs';
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, it } from 'vitest';
 
 import { DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS } from '@layerzerolabs/vm-tooling';
 
@@ -34,7 +34,9 @@ const createDependency = async (root: string, relativePath: string, hasScarbToml
 };
 
 describe(createStarknetScopedWorkspacePruner, () => {
-    it('preserves Scarb package inputs while ignoring other dependency sources', async () => {
+    it('preserves Scarb package inputs while ignoring other dependency sources', async ({
+        expect,
+    }) => {
         const repoRoot = await mkdtemp(join(tmpdir(), 'starknet-scoped-workspace-pruner-'));
         repoRoots.push(repoRoot);
         const scarbDependency = await createDependency(

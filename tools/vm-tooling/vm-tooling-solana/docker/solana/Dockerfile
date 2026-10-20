@@ -243,6 +243,9 @@ RUN if [ -n "$RUST_NIGHTLY_VERSION" ]; then \
       rustup component add rustfmt clippy --toolchain $RUST_NIGHTLY_VERSION; \
     fi
 
+COPY --chmod=755 sbf-guard/cargo /opt/sbf-guard/bin/cargo
+ENV PATH=/opt/sbf-guard/bin:$PATH
+
 # Verify installation
 ARG SOLANA_VERIFY_VERSION
 ARG CARGO_BUILD_SBF_VERSION
@@ -263,6 +266,7 @@ RUN <<-EOF
   docker --version
   which add_address_to_idl.py
   which cargo
+  test "$(command -v cargo)" = /opt/sbf-guard/bin/cargo
 EOF
 
 # No entrypoint needed - Docker socket is mounted from host

@@ -284,6 +284,22 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.2.1-solana-4.3.0-patch-1']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.2.1',
+            solana: '4.3.0',
+        },
+        patch: 1,
+        dependencies: {
+            rust: '1.97.1',
+            'cargo-build-sbf': '4.3.0',
+            'platform-tools': '1.57',
+            'platform-tools-rust': '1.95.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
     // Standalone surfpool runtime image, built from `docker/surfpool/Dockerfile`.
     // Key must equal the tag getImageTag derives; the Docker image IDs test enforces it.
     ['surfpool:surfpool-1.5.0-patch-30242a4']: {
@@ -343,8 +359,8 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
         },
         {
             images: {
-                anchor: 'solana:anchor-1.2.1-solana-4.3.0',
-                solana: 'solana:anchor-1.2.1-solana-4.3.0',
+                anchor: 'solana:anchor-1.2.1-solana-4.3.0-patch-1',
+                solana: 'solana:anchor-1.2.1-solana-4.3.0-patch-1',
             },
             description:
                 'Anchor 1.2.1 on Solana 4.3.0 (cargo-build-sbf 4.3.0) with host Rust 1.97.1, platform-tools 1.57 (rustc 1.95.0)',

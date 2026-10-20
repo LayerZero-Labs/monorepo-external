@@ -23,7 +23,8 @@
         "build": "tsup",
         "generate-github-matrix": "tsx src/scripts/generate-github-matrix.ts",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
-        "test": "vitest --run && pnpm run test:idl-script",
+        "test": "vitest --run && pnpm run test:guard && pnpm run test:idl-script",
+        "test:guard": "vitest --run --config vitest.guard.config.ts",
         "test:idl-script": "bash docker/solana/run-tests.sh"
     },
     "dependencies": {

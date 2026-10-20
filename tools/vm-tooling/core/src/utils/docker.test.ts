@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, it } from 'vitest';
 
 import type { VolumeMapping } from '../config';
 import { isDockerPlatformOverride } from '../config';
@@ -31,17 +31,20 @@ describe('Docker platform helpers', () => {
         }
     });
 
-    it.sequential('validates supported Docker platform overrides from one source of truth', () => {
-        expect(isDockerPlatformOverride('native')).toBe(true);
-        expect(isDockerPlatformOverride('linux/amd64')).toBe(true);
-        expect(isDockerPlatformOverride('linux/arm64')).toBe(true);
-        expect(isDockerPlatformOverride(null)).toBe(false);
-        expect(isDockerPlatformOverride(undefined)).toBe(false);
-        expect(isDockerPlatformOverride('')).toBe(false);
-        expect(isDockerPlatformOverride('linux/arm/v7')).toBe(false);
-    });
+    it.sequential(
+        'validates supported Docker platform overrides from one source of truth',
+        ({ expect }) => {
+            expect(isDockerPlatformOverride('native')).toBe(true);
+            expect(isDockerPlatformOverride('linux/amd64')).toBe(true);
+            expect(isDockerPlatformOverride('linux/arm64')).toBe(true);
+            expect(isDockerPlatformOverride(null)).toBe(false);
+            expect(isDockerPlatformOverride(undefined)).toBe(false);
+            expect(isDockerPlatformOverride('')).toBe(false);
+            expect(isDockerPlatformOverride('linux/arm/v7')).toBe(false);
+        },
+    );
 
-    it.sequential('resolves a Docker platform into Docker and cache-name forms', () => {
+    it.sequential('resolves a Docker platform into Docker and cache-name forms', ({ expect }) => {
         expect(resolveDockerPlatform('linux/amd64')).toEqual({
             value: 'linux/amd64',
             namespace: 'linux-amd64',
@@ -49,7 +52,7 @@ describe('Docker platform helpers', () => {
         });
     });
 
-    it.sequential('matches Docker arch parsing for multi-segment platform values', () => {
+    it.sequential('matches Docker arch parsing for multi-segment platform values', ({ expect }) => {
         expect(resolveDockerPlatform('linux/arm/v7')).toEqual({
             value: 'linux/arm/v7',
             namespace: 'linux-arm-v7',
@@ -57,7 +60,7 @@ describe('Docker platform helpers', () => {
         });
     });
 
-    it.sequential('resolves the effective platform with CLI override first', () => {
+    it.sequential('resolves the effective platform with CLI override first', ({ expect }) => {
         expect(
             resolveEffectiveDockerPlatformValue({
                 dockerPlatform: 'linux/arm64',
@@ -67,7 +70,7 @@ describe('Docker platform helpers', () => {
         ).toBe('linux/arm64');
     });
 
-    it.sequential('lets native override skip tool and env platform fallbacks', () => {
+    it.sequential('lets native override skip tool and env platform fallbacks', ({ expect }) => {
         expect(
             resolveEffectiveDockerPlatformValue({
                 dockerPlatform: 'native',
@@ -77,7 +80,7 @@ describe('Docker platform helpers', () => {
         ).toBeUndefined();
     });
 
-    it.sequential('uses the tool platform before the env fallback', () => {
+    it.sequential('uses the tool platform before the env fallback', ({ expect }) => {
         expect(
             resolveEffectiveDockerPlatformValue({
                 toolDockerPlatform: 'linux/amd64',
@@ -86,7 +89,7 @@ describe('Docker platform helpers', () => {
         ).toBe('linux/amd64');
     });
 
-    it.sequential('resolves native execution by clearing Docker default platform', () => {
+    it.sequential('resolves native execution by clearing Docker default platform', ({ expect }) => {
         process.env.DOCKER_DEFAULT_PLATFORM = 'linux/amd64';
 
         const execution = resolveDockerPlatformExecution({
@@ -100,7 +103,7 @@ describe('Docker platform helpers', () => {
         expect(execution.volumeNameOptions).toEqual({ dockerPlatform: undefined });
     });
 
-    it.sequential('resolves pinned execution into one platform context', () => {
+    it.sequential('resolves pinned execution into one platform context', ({ expect }) => {
         expect(
             resolveDockerPlatformExecution({
                 dockerPlatform: 'linux/arm64',
@@ -148,7 +151,7 @@ describe(qualifyVolumeName, () => {
 
     it.sequential(
         'leaves host volumes untouched even when cache and platform options are supplied',
-        () => {
+        ({ expect }) => {
             const volume: VolumeMapping = {
                 type: 'host',
                 containerPath: '/var/run/docker.sock',
@@ -160,7 +163,7 @@ describe(qualifyVolumeName, () => {
         },
     );
 
-    it.sequential('keeps shared volumes package-agnostic and toolchain-agnostic', () => {
+    it.sequential('keeps shared volumes package-agnostic and toolchain-agnostic', ({ expect }) => {
         const volume: VolumeMapping = {
             type: 'isolate',
             containerPath: '/home/app/.move',
@@ -173,18 +176,21 @@ describe(qualifyVolumeName, () => {
         );
     });
 
-    it.sequential('keys a toolchainKeyed volume by the toolchain tag, not the package', () => {
-        expect(
-            qualifiedName(
-                { ...isolateVolume, locked: true, toolchainKeyed: true },
-                { cacheKey: TAG },
-            ),
-        ).toBe(`lz-tooling-cache-solana-cargo-${TAG}`);
-    });
+    it.sequential(
+        'keys a toolchainKeyed volume by the toolchain tag, not the package',
+        ({ expect }) => {
+            expect(
+                qualifiedName(
+                    { ...isolateVolume, locked: true, toolchainKeyed: true },
+                    { cacheKey: TAG },
+                ),
+            ).toBe(`lz-tooling-cache-solana-cargo-${TAG}`);
+        },
+    );
 
     it.sequential(
         'keeps a non-opted-in volume package-private even when a cache key is available',
-        () => {
+        ({ expect }) => {
             const volume: VolumeMapping = {
                 type: 'isolate',
                 containerPath: '/root/.move',
@@ -199,54 +205,66 @@ describe(qualifyVolumeName, () => {
 
     it.sequential(
         'falls back to package-private when a toolchainKeyed volume has no cache key',
-        () => {
+        ({ expect }) => {
             expect(qualifiedName({ ...isolateVolume, toolchainKeyed: true })).toBe(
                 'lz-tooling-cache-solana-cargo-oft-solana',
             );
         },
     );
 
-    it.sequential('throws when no cache key is usable and the package name is absent', () => {
-        delete process.env.npm_package_name;
+    it.sequential(
+        'throws when no cache key is usable and the package name is absent',
+        ({ expect }) => {
+            delete process.env.npm_package_name;
 
-        expect(() => qualifyVolumeName(isolateVolume)).toThrow('npm_package_name');
-    });
+            expect(() => qualifyVolumeName(isolateVolume)).toThrow('npm_package_name');
+        },
+    );
 
-    it.sequential('preserves existing isolate volume names when no platform is pinned', () => {
-        expect(qualifyVolumeName(isolateVolume)).toMatchObject({
-            name: 'lz-tooling-cache-solana-cargo-oft-solana',
-        });
-    });
+    it.sequential(
+        'preserves existing isolate volume names when no platform is pinned',
+        ({ expect }) => {
+            expect(qualifyVolumeName(isolateVolume)).toMatchObject({
+                name: 'lz-tooling-cache-solana-cargo-oft-solana',
+            });
+        },
+    );
 
-    it.sequential('suffixes isolate volume names with the pinned amd64 platform', () => {
+    it.sequential('suffixes isolate volume names with the pinned amd64 platform', ({ expect }) => {
         expect(qualifyVolumeName(isolateVolume, { dockerPlatform: 'linux/amd64' })).toMatchObject({
             name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-amd64',
         });
     });
 
-    it.sequential('uses different isolate volume names for different pinned platforms', () => {
-        const amd64 = qualifyVolumeName(isolateVolume, { dockerPlatform: 'linux/amd64' });
-        const arm64 = qualifyVolumeName(isolateVolume, { dockerPlatform: 'linux/arm64' });
+    it.sequential(
+        'uses different isolate volume names for different pinned platforms',
+        ({ expect }) => {
+            const amd64 = qualifyVolumeName(isolateVolume, { dockerPlatform: 'linux/amd64' });
+            const arm64 = qualifyVolumeName(isolateVolume, { dockerPlatform: 'linux/arm64' });
 
-        expect(amd64).toMatchObject({
-            name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-amd64',
-        });
-        expect(arm64).toMatchObject({
-            name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-arm64',
-        });
-    });
+            expect(amd64).toMatchObject({
+                name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-amd64',
+            });
+            expect(arm64).toMatchObject({
+                name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-arm64',
+            });
+        },
+    );
 
-    it.sequential('uses DOCKER_DEFAULT_PLATFORM when no explicit platform is passed', () => {
-        process.env.DOCKER_DEFAULT_PLATFORM = 'linux/amd64';
+    it.sequential(
+        'uses DOCKER_DEFAULT_PLATFORM when no explicit platform is passed',
+        ({ expect }) => {
+            process.env.DOCKER_DEFAULT_PLATFORM = 'linux/amd64';
 
-        expect(qualifyVolumeName(isolateVolume)).toMatchObject({
-            name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-amd64',
-        });
-    });
+            expect(qualifyVolumeName(isolateVolume)).toMatchObject({
+                name: 'lz-tooling-cache-solana-cargo-oft-solana-linux-amd64',
+            });
+        },
+    );
 
     it.sequential(
         'does not use DOCKER_DEFAULT_PLATFORM when an explicit undefined platform is passed',
-        () => {
+        ({ expect }) => {
             process.env.DOCKER_DEFAULT_PLATFORM = 'linux/amd64';
 
             expect(qualifyVolumeName(isolateVolume, { dockerPlatform: undefined })).toMatchObject({
@@ -255,7 +273,7 @@ describe(qualifyVolumeName, () => {
         },
     );
 
-    it.sequential('keeps distinct ARM platform variants in distinct cache names', () => {
+    it.sequential('keeps distinct ARM platform variants in distinct cache names', ({ expect }) => {
         process.env.DOCKER_DEFAULT_PLATFORM = 'linux/arm/v6';
         const v6 = qualifyVolumeName({ ...isolateVolume, shared: true });
 
@@ -266,7 +284,7 @@ describe(qualifyVolumeName, () => {
         expect(v7).toMatchObject({ name: 'lz-tooling-cache-solana-cargo-linux-arm-v7' });
     });
 
-    it.sequential('does not suffix architecture-independent isolate volumes', () => {
+    it.sequential('does not suffix architecture-independent isolate volumes', ({ expect }) => {
         expect(
             qualifyVolumeName(
                 {
@@ -279,19 +297,24 @@ describe(qualifyVolumeName, () => {
         ).toMatchObject({ name: 'lz-tooling-cache-solana-cargo' });
     });
 
-    it.sequential('preserves shared volume naming while still platform-isolating it', () => {
-        const sharedVolume: VolumeMapping = {
-            type: 'isolate',
-            containerPath: '/shared',
-            name: 'shared-state',
-            shared: true,
-        };
+    it.sequential(
+        'preserves shared volume naming while still platform-isolating it',
+        ({ expect }) => {
+            const sharedVolume: VolumeMapping = {
+                type: 'isolate',
+                containerPath: '/shared',
+                name: 'shared-state',
+                shared: true,
+            };
 
-        expect(qualifyVolumeName(sharedVolume)).toMatchObject({
-            name: 'lz-tooling-cache-shared-state',
-        });
-        expect(qualifyVolumeName(sharedVolume, { dockerPlatform: 'linux/amd64' })).toMatchObject({
-            name: 'lz-tooling-cache-shared-state-linux-amd64',
-        });
-    });
+            expect(qualifyVolumeName(sharedVolume)).toMatchObject({
+                name: 'lz-tooling-cache-shared-state',
+            });
+            expect(
+                qualifyVolumeName(sharedVolume, { dockerPlatform: 'linux/amd64' }),
+            ).toMatchObject({
+                name: 'lz-tooling-cache-shared-state-linux-amd64',
+            });
+        },
+    );
 });

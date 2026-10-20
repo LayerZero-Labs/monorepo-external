@@ -233,11 +233,11 @@ export class RegistrarBuilder<_ReturnTypes> {
     public getPrehandler(): (node: DependencyNode) => DependencyNode {
         return (node) => {
             const nodeAlias = this.nodeAliases[node.name];
-            if (nodeAlias) return nodeAlias(node);
+            const aliased = nodeAlias ? nodeAlias(node) : node;
             for (const { fromNodeClass, getToNode } of this.classAliases) {
-                if (node instanceof fromNodeClass) return getToNode(node);
+                if (aliased instanceof fromNodeClass) return getToNode(aliased);
             }
-            return node;
+            return aliased;
         };
     }
 
@@ -263,21 +263,7 @@ export class RegistrarBuilder<_ReturnTypes> {
     }
 
     public build(): Registrar<_ReturnTypes> {
-        const mergedNodePrehandler = (node: DependencyNode) => {
-            // Check node aliases first (more specific)
-            const nodeAlias = this.nodeAliases[node.name];
-            if (nodeAlias) {
-                return nodeAlias(node);
-            }
-
-            // Then check class aliases
-            for (const { fromNodeClass, getToNode: toNode } of this.classAliases) {
-                if (node instanceof fromNodeClass) {
-                    return toNode(node);
-                }
-            }
-            return node;
-        };
+        const mergedNodePrehandler = this.getPrehandler();
 
         const mergedNodeHandler = async (node: DependencyNode, ancestry: DependencyNode[]) => {
             if (node.name === '_virtualEntrypoint') {

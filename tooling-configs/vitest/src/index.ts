@@ -3,7 +3,7 @@ import { defineConfig as defineVitestConfig, mergeConfig } from 'vitest/config';
 
 const typecheck = {
     enabled: true,
-    include: ['**/*.test.ts{,x}'],
+    include: ['**/*.test.ts{,x}', '**/*.test-d.ts{,x}'],
     tsconfig: 'tsconfig.test.json',
 };
 

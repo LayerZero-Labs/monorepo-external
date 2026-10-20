@@ -28,14 +28,14 @@ const ensureDockerImageExists = async (imageUri: string): Promise<void> => {
 };
 
 export const testTools = (
-    { describe, expect, it, beforeAll }: typeof vitest,
+    { describe, it, beforeAll }: typeof vitest,
     images: Record<string, Image>,
     _versionCombinations: VersionCombination<string>[],
     versionCommands: Record<string, string[]>,
 ): void => {
     describe('Docker image IDs', () => {
         for (const [name, image] of Object.entries(images)) {
-            it(`has an image ID of ${name}`, () => {
+            it(`has an image ID of ${name}`, ({ expect }) => {
                 expect([image.name, getImageTag(image)].join(':')).toBe(name);
             });
         }
@@ -56,7 +56,7 @@ export const testTools = (
                 for (const [tool, expectedVersion] of Object.entries(image.versions)) {
                     it(
                         `should have ${tool} of version ${expectedVersion}`,
-                        async () => {
+                        async ({ expect }) => {
                             if (!(versionCommands[tool] instanceof Array)) {
                                 throw new Error('Missing version command');
                             }

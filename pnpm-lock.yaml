@@ -2579,6 +2579,9 @@ importers:
       '@layerzerolabs/typescript-configuration':
         specifier: workspace:*
         version: link:../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../tooling-configs/vitest
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)

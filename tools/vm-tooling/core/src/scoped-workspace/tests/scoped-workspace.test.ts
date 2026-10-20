@@ -11,7 +11,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, it } from 'vitest';
 
 import {
     createScopedWorkspace,
@@ -75,7 +75,7 @@ afterAll(() => {
 });
 
 describe(resolveWorkspaceDependencyGraph, () => {
-    it('follows transitive workspace link deps', async () => {
+    it('follows transitive workspace link deps', async ({ expect }) => {
         const repo = createRepo('dependency-graph');
         const current = join(repo, 'apps', 'current');
         const depA = join(repo, 'packages', 'dep-a');
@@ -156,7 +156,9 @@ describe(resolveWorkspaceDependencyGraph, () => {
         );
     });
 
-    it('resolves nested command directories to their ancestor package importer', async () => {
+    it('resolves nested command directories to their ancestor package importer', async ({
+        expect,
+    }) => {
         const repo = createRepo('nested-current');
         const current = join(repo, 'packages', 'onesig', 'onesig-starknet');
         const contracts = join(current, 'contracts');
@@ -204,7 +206,7 @@ describe(resolveWorkspaceDependencyGraph, () => {
         ]);
     });
 
-    it('invalidates cached lockfile importers when the lockfile changes', async () => {
+    it('invalidates cached lockfile importers when the lockfile changes', async ({ expect }) => {
         const repo = createRepo('dependency-graph-cache-invalidation');
         const current = join(repo, 'apps', 'current');
         const depA = join(repo, 'packages', 'dep-a');
@@ -263,7 +265,9 @@ describe(resolveWorkspaceDependencyGraph, () => {
 });
 
 describe(copyWorkspaceSources, () => {
-    it('copies dependency sources and dist outputs while excluding the current package and heavyweight generated output directories', async () => {
+    it('copies dependency sources and dist outputs while excluding the current package and heavyweight generated output directories', async ({
+        expect,
+    }) => {
         const repo = createRepo('workspace-source-copy');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -331,7 +335,9 @@ describe(copyWorkspaceSources, () => {
         expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
     });
 
-    it('applies glob-compatible scoped-workspace prune patterns to dependency source copies', async () => {
+    it('applies glob-compatible scoped-workspace prune patterns to dependency source copies', async ({
+        expect,
+    }) => {
         const repo = createRepo('workspace-source-pattern-copy');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -403,7 +409,9 @@ describe(copyWorkspaceSources, () => {
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'target'))).toBe(false);
     });
 
-    it('tolerates identical package-local symlinks copied twice (nested workspace package layout)', async () => {
+    it('tolerates identical package-local symlinks copied twice (nested workspace package layout)', async ({
+        expect,
+    }) => {
         const repo = createRepo('workspace-source-duplicate-symlink');
         const current = join(repo, 'apps', 'current');
         const parent = join(repo, 'apps', 'parent');
@@ -467,7 +475,9 @@ describe(copyWorkspaceSources, () => {
         );
     });
 
-    it('falls back to default patterns when global prune patterns are empty', async () => {
+    it('falls back to default patterns when global prune patterns are empty', async ({
+        expect,
+    }) => {
         const repo = createRepo('workspace-source-package-pattern-copy');
         const current = join(repo, 'apps', 'current');
         const anchorDep = join(repo, 'packages', 'anchor-dep');
@@ -543,7 +553,9 @@ describe(copyWorkspaceSources, () => {
         );
     });
 
-    it('copies pruner-selected build outputs under otherwise-excluded directories', async () => {
+    it('copies pruner-selected build outputs under otherwise-excluded directories', async ({
+        expect,
+    }) => {
         const repo = createRepo('workspace-source-build-output-copy');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -597,7 +609,9 @@ describe(copyWorkspaceSources, () => {
 });
 
 describe(createScopedWorkspace, () => {
-    it('uses the unpruned source-copy fallback when no pruner is configured', async () => {
+    it('uses the unpruned source-copy fallback when no pruner is configured', async ({
+        expect,
+    }) => {
         const repo = createRepo('scoped-workspace-fallback');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -637,7 +651,7 @@ describe(createScopedWorkspace, () => {
         expect(existsSync(join(scopedRoot, 'apps', 'current'))).toBe(false);
     });
 
-    it('uses a configured pruner to filter dependency package copies', async () => {
+    it('uses a configured pruner to filter dependency package copies', async ({ expect }) => {
         const repo = createRepo('scoped-workspace-pruner');
         const current = join(repo, 'apps', 'current');
         const dep = join(repo, 'packages', 'dep');
@@ -711,7 +725,9 @@ describe(createScopedWorkspace, () => {
         expect(existsSync(join(scopedRoot, 'packages', 'dep', 'tests'))).toBe(false);
     });
 
-    it('uses default dependency copies for pruned packages without package-specific patterns', async () => {
+    it('uses default dependency copies for pruned packages without package-specific patterns', async ({
+        expect,
+    }) => {
         const repo = createRepo('scoped-workspace-empty-global-patterns');
         const current = join(repo, 'apps', 'current');
         const prunedDep = join(repo, 'packages', 'pruned-dep');
@@ -774,7 +790,9 @@ describe(createScopedWorkspace, () => {
 });
 
 describe(copyRootNodeModulesSymlinks, () => {
-    it('copies only selected root dependency symlinks without copying dependency contents', async () => {
+    it('copies only selected root dependency symlinks without copying dependency contents', async ({
+        expect,
+    }) => {
         const repo = createRepo('node-modules-symlinks');
         const scopedRoot = join(TMP, 'scoped-node-modules-symlinks');
         const dep = join(repo, 'apps', 'project-types', 'oapp-app', 'contracts', 'solana');
@@ -841,7 +859,9 @@ describe(copyRootNodeModulesSymlinks, () => {
 });
 
 describe(getPnpmVirtualStoreMount, () => {
-    it('describes a read-only .pnpm mount without requiring root node_modules copy', () => {
+    it('describes a read-only .pnpm mount without requiring root node_modules copy', ({
+        expect,
+    }) => {
         expect(getPnpmVirtualStoreMount('/repo')).toEqual({
             hostPath: '/repo/node_modules/.pnpm',
             containerPath: '/workspace/node_modules/.pnpm',

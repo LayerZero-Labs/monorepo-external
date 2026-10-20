@@ -1,5 +1,5 @@
 import process from 'node:process';
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 
 import type { Tool } from '../config';
 import { executeLocally } from './local-executor';
@@ -7,7 +7,7 @@ import { executeLocally } from './local-executor';
 describe(executeLocally, () => {
     const cwd = process.cwd();
 
-    it('throws when the tool does not support local execution', async () => {
+    it('throws when the tool does not support local execution', async ({ expect }) => {
         const tool: Tool = { name: 'forge' };
 
         await expect(
@@ -15,7 +15,7 @@ describe(executeLocally, () => {
         ).rejects.toThrowError(/not supported/);
     });
 
-    it('throws when the local version does not match', async () => {
+    it('throws when the local version does not match', async ({ expect }) => {
         const tool: Tool = { name: 'forge', getLocalVersion: async () => '1.0.0' };
 
         await expect(
@@ -23,7 +23,7 @@ describe(executeLocally, () => {
         ).rejects.toThrowError(/does not match the required version/);
     });
 
-    it('propagates the error raised while probing the local version', async () => {
+    it('propagates the error raised while probing the local version', async ({ expect }) => {
         const tool: Tool = {
             name: 'forge',
             getLocalVersion: async () => {
@@ -36,7 +36,7 @@ describe(executeLocally, () => {
         ).rejects.toThrowError(/not installed locally/);
     });
 
-    it('runs the host tool when the version matches', async () => {
+    it('runs the host tool when the version matches', async ({ expect }) => {
         const tool: Tool = { name: 'node', getLocalVersion: async () => '1.0.0' };
 
         const output = await executeLocally(tool, '1.0.0', {
@@ -49,7 +49,7 @@ describe(executeLocally, () => {
         expect(output.stdout).toContain('ran');
     });
 
-    it('passes custom environment variables to the host tool', async () => {
+    it('passes custom environment variables to the host tool', async ({ expect }) => {
         const tool: Tool = { name: 'node', getLocalVersion: async () => '1.0.0' };
 
         const output = await executeLocally(tool, '1.0.0', {
@@ -61,7 +61,7 @@ describe(executeLocally, () => {
         expect(output.stdout).toContain('present');
     });
 
-    it('runs a custom script via bash without prefixing the tool name', async () => {
+    it('runs a custom script via bash without prefixing the tool name', async ({ expect }) => {
         const tool: Tool = { name: 'node', getLocalVersion: async () => '1.0.0' };
 
         const output = await executeLocally(tool, '1.0.0', {
@@ -75,7 +75,7 @@ describe(executeLocally, () => {
         expect(output.stdout).toContain('scripted');
     });
 
-    it('throws when the host tool exits with a non-zero code', async () => {
+    it('throws when the host tool exits with a non-zero code', async ({ expect }) => {
         const tool: Tool = { name: 'node', getLocalVersion: async () => '1.0.0' };
 
         await expect(

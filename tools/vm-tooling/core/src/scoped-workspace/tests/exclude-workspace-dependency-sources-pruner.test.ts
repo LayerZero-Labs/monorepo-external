@@ -1,9 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 
 import { createExcludeWorkspaceDependencySourcesPruner } from '../exclude-workspace-dependency-sources-pruner';
 
 describe(createExcludeWorkspaceDependencySourcesPruner, () => {
-    it('excludes workspace dependency sources and reports the excluded package count', async () => {
+    it('excludes workspace dependency sources and reports the excluded package count', async ({
+        expect,
+    }) => {
         const pruner = createExcludeWorkspaceDependencySourcesPruner('test-vm');
 
         const plan = await pruner.createPrunePlan({

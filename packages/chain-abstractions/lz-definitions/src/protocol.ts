@@ -17,22 +17,3 @@ export enum EndpointVersion {
 }
 
 export const endpointVersionSchema = z.enum(EndpointVersion);
-
-export enum ProtocolContracts {
-    ENDPOINT_V2 = 'EndpointV2',
-    EXECUTOR = 'Executor',
-    EXECUTOR_FEELIB = 'ExecutorFeeLib',
-    DVN = 'DVN',
-    DVN_FEELIB = 'DVNFeeLib',
-    PRICE_FEED = 'PriceFeed',
-    SIMPLE_MESSAGE_LIB = 'SimpleMessageLib',
-    TREASURY = 'Treasury',
-    ULN_V301_SEND = 'UltraLightNodeV301Send',
-    ULN_V301_RECEIVE = 'UltraLightNodeV301Receive',
-    ULN_V302_SEND = 'UltraLightNodeV302Send',
-    ULN_V302_RECEIVE = 'UltraLightNodeV302Receive',
-    ULN_READ_V1002 = 'ReadLib1002',
-    OAPP = 'OApp',
-    OMNI_COUNTER = 'OmniCounter',
-    BLOCKED_MESSAGE_LIB = 'BlockedMessageLib',
-}

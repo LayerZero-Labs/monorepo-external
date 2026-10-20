@@ -1,0 +1,260 @@
+#!/usr/bin/env bash
+
+readonly overflow_pattern='overflows the maximum allowed frame space'
+readonly guard_message='error: a function overflows its 4 KiB SBF stack frame (see above); move large locals or CPI builders into an #[inline(never)] function or onto the heap'
+readonly unchecked_output_message='error: sbf-guard could not capture or read the build output, so it could not check the build for a stack-frame overflow'
+readonly metadata_failed_message='sbf-guard: could not find the program files of this build (cargo metadata failed); deleted nothing'
+readonly jq_failed_message='sbf-guard: could not find the program files of this build (jq could not read the cargo metadata output); deleted nothing'
+readonly newline_path_message='sbf-guard: could not find the program files of this build (a directory path contains a newline); deleted nothing'
+readonly first_guarded_major=1
+readonly first_guarded_minor=53
+
+guard_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+
+find_real_cargo() {
+    local dir
+    local -a path_dirs
+    IFS=: read -r -a path_dirs <<< "$PATH"
+    for dir in "${path_dirs[@]}"; do
+        [ -n "$dir" ] || continue
+        [ "$(cd "$dir" 2> /dev/null && pwd -P)" = "$guard_dir" ] && continue
+        if [ -f "$dir/cargo" ] && [ -x "$dir/cargo" ]; then
+            printf '%s\n' "$dir/cargo"
+            return 0
+        fi
+    done
+    return 1
+}
+
+tools_version_argument() {
+    local is_value_next=0 arg
+    for arg in "$@"; do
+        if [ "$is_value_next" = 1 ]; then
+            printf '%s\n' "$arg"
+            return 0
+        fi
+        case $arg in
+            --) return 1 ;;
+            --tools-version) is_value_next=1 ;;
+            --tools-version=*)
+                printf '%s\n' "${arg#--tools-version=}"
+                return 0
+                ;;
+        esac
+    done
+    return 1
+}
+
+default_tools_version() {
+    "$real_cargo" "$@" build-sbf --version 2> /dev/null | awk '$1 == "platform-tools" { print $2; found = 1; exit } END { exit !found }'
+}
+
+is_guarded_version() {
+    [[ $1 =~ ^v?([0-9]+)\.([0-9]+)(\.[0-9]+)?$ ]] || return 0
+    local major=$((10#${BASH_REMATCH[1]})) minor=$((10#${BASH_REMATCH[2]}))
+    [ "$major" -gt "$first_guarded_major" ] || { [ "$major" -eq "$first_guarded_major" ] && [ "$minor" -ge "$first_guarded_minor" ]; }
+}
+
+find_subcommand() {
+    local arg cluster
+    subcommand_index=0
+    build_dir=.
+    case ${args[0]-} in +*) subcommand_index=1 ;; esac
+    while [ "$subcommand_index" -lt "${#args[@]}" ]; do
+        arg=${args[$subcommand_index]}
+        case $arg in
+            --color | --config | --explain) subcommand_index=$((subcommand_index + 2)) ;;
+            --*) subcommand_index=$((subcommand_index + 1)) ;;
+            -?*)
+                cluster=${arg#-}
+                while [ -n "$cluster" ] && [ "${cluster#[vqhV]}" != "$cluster" ]; do
+                    cluster=${cluster#?}
+                done
+                case $cluster in
+                    C) build_dir=${args[$((subcommand_index + 1))]-.} ;;
+                    C?*) build_dir=${cluster#C} build_dir=${build_dir#=} ;;
+                esac
+                case $cluster in
+                    Z | C) subcommand_index=$((subcommand_index + 2)) ;;
+                    *) subcommand_index=$((subcommand_index + 1)) ;;
+                esac
+                ;;
+            *) return 0 ;;
+        esac
+    done
+}
+
+read_build_options() {
+    local index=$((subcommand_index + 1)) arg is_cargo_argument=0
+    manifest_path= sbf_out_dir=${SBF_OUT_PATH-} arch= is_workspace=0 is_sbf_workspace=0 packages=()
+    target_dir_argument= target_dir_form=
+    while [ "$index" -lt "${#args[@]}" ]; do
+        arg=${args[$index]}
+        index=$((index + 1))
+        case $is_cargo_argument:$arg in
+            0:--) is_cargo_argument=1 ;;
+            0:--manifest-path) manifest_path=${args[$index]-} index=$((index + 1)) ;;
+            0:--manifest-path=*) manifest_path=${arg#--manifest-path=} ;;
+            0:--sbf-out-dir) sbf_out_dir=${args[$index]-} index=$((index + 1)) ;;
+            0:--sbf-out-dir=*) sbf_out_dir=${arg#--sbf-out-dir=} ;;
+            0:--arch) arch=${args[$index]-} index=$((index + 1)) ;;
+            0:--arch=*) arch=${arg#--arch=} ;;
+            0:--workspace | 0:--all) is_workspace=1 is_sbf_workspace=1 ;;
+            1:--workspace | 1:--all) is_workspace=1 ;;
+            1:--target-dir)
+                [ "$target_dir_form" = separate ] || target_dir_form=separate target_dir_argument=${args[$index]-}
+                index=$((index + 1))
+                ;;
+            1:--target-dir=*) [ -n "$target_dir_form" ] || target_dir_form=joined target_dir_argument=${arg#--target-dir=} ;;
+            *:-p | *:--package) packages+=("${args[$index]-}") index=$((index + 1)) ;;
+            *:--package=*) packages+=("${arg#--package=}") ;;
+            *:-p?*) packages+=("${arg#-p}") ;;
+        esac
+    done
+}
+
+absolute_dir() {
+    local resolved base_dir=${2-$build_dir} dir=$1
+    case $base_dir in /*) ;; *) base_dir=./$base_dir ;; esac
+    case $dir in /*) ;; *) dir=./$dir ;; esac
+    resolved=$(cd -P "$base_dir" && cd -P "$dir" 2> /dev/null && pwd -P && echo x) && {
+        printf '%s/' "${resolved%$'\n'x}"
+        return 0
+    }
+    case $1 in
+        /*) printf '%s/' "$1" ;;
+        *)
+            resolved=$(cd -P "$base_dir" && pwd -P && echo x)
+            printf '%s/%s/' "${resolved%$'\n'x}" "$1"
+            ;;
+    esac
+}
+
+readonly program_files_jq='
+    (if $manifest == "" then null else [.packages[] | select(.manifest_path == $manifest)][0] end) as $root
+    | [.packages[] | select(.id | IN($members[]))] as $workspace
+    | (if ($packages | length) > 0 then [.packages[] | select(.name | IN($packages[]))]
+       elif $workspace_flag == "1" then $workspace
+       elif $root != null then [$root]
+       else $workspace end)
+    | .[].targets[] | select(any(.kind[]; . == "cdylib")) | .name | gsub("-"; "_") + ".so"'
+
+find_program_files() {
+    local metadata names release_dir out_dir manifest= name triple target_base_dir release_target_dir
+    local -a metadata_args=(metadata --no-deps --format-version 1 --offline) manifest_args=()
+    if [ -n "$manifest_path" ]; then
+        manifest_args=(--manifest-path "$manifest_path")
+        metadata_args+=("${manifest_args[@]}")
+    fi
+    manifest=$("$real_cargo" "${args[@]:0:$subcommand_index}" locate-project --message-format plain --offline "${manifest_args[@]}" 2> /dev/null) || manifest=
+    metadata=$("$real_cargo" "${args[@]:0:$subcommand_index}" "${metadata_args[@]}" 2> /dev/null) || return 1
+    target_dir=$(jq -er '.target_directory | strings + "/"' <<< "$metadata") || return 2
+    target_dir=${target_dir%/}
+    names=$(jq -r --arg manifest "$manifest" --arg workspace_flag "$is_workspace" \
+        --argjson packages "$(printf '%s\n' "${packages[@]}" | jq -R . | jq -s 'map(sub("@.*$"; "")) | map(select(. != ""))')" \
+        '.workspace_members as $members | '"$program_files_jq" <<< "$metadata") || return 2
+    case $arch in
+        "" | v0) triple=sbpf-solana-solana ;;
+        *) triple=sbpf$arch-solana-solana ;;
+    esac
+    case $target_dir_form in
+        separate)
+            target_dir=$(absolute_dir "$target_dir_argument")
+            target_dir=${target_dir%/}
+            release_target_dir=$target_dir
+            ;;
+        joined)
+            target_base_dir=$(jq -er --arg manifest "$manifest" --arg workspace_flag "$is_sbf_workspace" \
+                '(if $workspace_flag == "0" and any(.packages[]; .manifest_path == $manifest) then $manifest | sub("/[^/]*$"; "") else .workspace_root end) | strings + "/"' <<< "$metadata") || return 2
+            target_base_dir=${target_base_dir%/}
+            release_target_dir=$(absolute_dir "$target_dir_argument" "$target_base_dir")
+            release_target_dir=${release_target_dir%/}
+            ;;
+        *) release_target_dir=$target_dir ;;
+    esac
+    release_dir=$release_target_dir/$triple/release
+    if [ -n "$sbf_out_dir" ]; then
+        out_dir=$(absolute_dir "$sbf_out_dir")
+        out_dir=${out_dir%/}
+    else
+        out_dir=$target_dir/deploy
+    fi
+    case $target_dir_argument$sbf_out_dir$out_dir$release_dir in *$'\n'*) return 3 ;; esac
+    while IFS= read -r name; do
+        [ -n "$name" ] || continue
+        printf '%s\n' "$out_dir/$name" "$release_dir/$name"
+    done <<< "$names"
+}
+
+delete_program_files() {
+    local path
+    local files
+    files=$(find_program_files) || {
+        case $? in
+            1) echo "$metadata_failed_message" >&2 ;;
+            3) echo "$newline_path_message" >&2 ;;
+            *) echo "$jq_failed_message" >&2 ;;
+        esac
+        return 0
+    }
+    while IFS= read -r path; do
+        [ -n "$path" ] || continue
+        if [ -e "$path" ] || [ -L "$path" ]; then
+            rm -f -- "$path" && printf 'sbf-guard: deleted %s\n' "$path" >&2
+        fi
+    done <<< "$files"
+}
+
+run_build() {
+    is_output_captured=0
+    mkfifo "$work_dir/stdout" "$work_dir/stderr" || return 1
+    is_output_captured=1
+    tee "$work_dir/stdout.log" < "$work_dir/stdout" &
+    local stdout_tee=$!
+    tee "$work_dir/stderr.log" < "$work_dir/stderr" >&2 &
+    local stderr_tee=$!
+    "$real_cargo" "$@" > "$work_dir/stdout" 2> "$work_dir/stderr"
+    local status=$?
+    wait "$stdout_tee" || is_output_captured=0
+    wait "$stderr_tee" || is_output_captured=0
+    return "$status"
+}
+
+real_cargo=$(find_real_cargo) || {
+    echo 'cargo: command not found' >&2
+    exit 127
+}
+
+args=("$@")
+find_subcommand
+
+[ "${args[$subcommand_index]-}" = build-sbf ] || exec "$real_cargo" "$@"
+
+tools_version=$(tools_version_argument "${args[@]:$((subcommand_index + 1))}") || tools_version=$(default_tools_version "${args[@]:0:$subcommand_index}") || tools_version=
+if [ -n "$tools_version" ] && ! is_guarded_version "$tools_version"; then
+    exec "$real_cargo" "$@"
+fi
+
+work_dir=$(mktemp -d "${TMPDIR:-/tmp}/sbf-guard.XXXXXX") || exit 1
+trap 'rm -rf "$work_dir"' EXIT
+
+run_build "$@"
+status=$?
+
+overflow_match=2
+if [ "$is_output_captured" = 1 ]; then
+    grep -qF -e "$overflow_pattern" "$work_dir/stdout.log" "$work_dir/stderr.log"
+    overflow_match=$?
+fi
+[ "$overflow_match" -eq 1 ] && exit "$status"
+
+if [ "$overflow_match" -eq 0 ]; then
+    echo "$guard_message" >&2
+else
+    echo "$unchecked_output_message" >&2
+fi
+read_build_options
+delete_program_files
+
+[ "$status" -eq 0 ] && exit 1
+exit "$status"

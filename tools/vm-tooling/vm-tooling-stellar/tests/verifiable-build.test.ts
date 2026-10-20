@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, it, vi } from 'vitest';
 
 import {
     buildArchiveContractArgs,
@@ -56,7 +56,9 @@ const withTempDir = async (fn: (dir: string) => Promise<void>): Promise<void> =>
 };
 
 describe('officialImageTagRef', () => {
-    it('builds the <stellar>-rust<rust>-slim-bookworm tag from the pinned versions', () => {
+    it('builds the <stellar>-rust<rust>-slim-bookworm tag from the pinned versions', ({
+        expect,
+    }) => {
         expect(officialImageTagRef('25.1.0', '1.90.0')).toBe(
             'stellar/stellar-cli:25.1.0-rust1.90.0-slim-bookworm',
         );
@@ -64,11 +66,11 @@ describe('officialImageTagRef', () => {
 });
 
 describe('parseAmd64Digest', () => {
-    it('selects the linux/amd64 manifest digest', () => {
+    it('selects the linux/amd64 manifest digest', ({ expect }) => {
         expect(parseAmd64Digest(MANIFEST_INSPECT_JSON)).toBe(AMD64_DIGEST);
     });
 
-    it('throws when there is no linux/amd64 manifest', () => {
+    it('throws when there is no linux/amd64 manifest', ({ expect }) => {
         const json = JSON.stringify({
             manifests: [
                 { digest: 'sha256:aaaa', platform: { architecture: 'arm64', os: 'linux' } },
@@ -77,7 +79,7 @@ describe('parseAmd64Digest', () => {
         expect(() => parseAmd64Digest(json)).toThrow(/No linux\/amd64 manifest digest/);
     });
 
-    it('throws when the output is not a multi-arch index', () => {
+    it('throws when the output is not a multi-arch index', ({ expect }) => {
         expect(() => parseAmd64Digest(JSON.stringify({ mediaType: 'single' }))).toThrow(
             /multi-arch index/,
         );
@@ -85,22 +87,22 @@ describe('parseAmd64Digest', () => {
 });
 
 describe('resolveBuildDir', () => {
-    it('defaults to the cwd when no source dir is given', () => {
+    it('defaults to the cwd when no source dir is given', ({ expect }) => {
         expect(resolveBuildDir('/work/pkg')).toBe('/work/pkg');
     });
 
-    it('resolves a relative source dir against the cwd', () => {
+    it('resolves a relative source dir against the cwd', ({ expect }) => {
         expect(resolveBuildDir('/work/pkg', 'extracted')).toBe('/work/pkg/extracted');
         expect(resolveBuildDir('/work/pkg', './build/out')).toBe('/work/pkg/build/out');
     });
 
-    it('uses an absolute source dir as-is', () => {
+    it('uses an absolute source dir as-is', ({ expect }) => {
         expect(resolveBuildDir('/work/pkg', '/tmp/extracted-source')).toBe('/tmp/extracted-source');
     });
 });
 
 describe('canonicalizeMetaArgs', () => {
-    it('sorts injected + user --meta entries and keeps non-meta args first', () => {
+    it('sorts injected + user --meta entries and keeps non-meta args first', ({ expect }) => {
         expect(
             canonicalizeMetaArgs(
                 ['--package', 'x', '--meta', 'zzz=1', '--optimize', '--meta', 'aaa=2'],
@@ -119,13 +121,13 @@ describe('canonicalizeMetaArgs', () => {
         ]);
     });
 
-    it('is independent of the order the --meta flags were passed', () => {
+    it('is independent of the order the --meta flags were passed', ({ expect }) => {
         const a = canonicalizeMetaArgs(['--meta', 'b=2', '--meta', 'a=1'], ['bldimg=img']);
         const b = canonicalizeMetaArgs(['--meta', 'a=1', '--meta', 'b=2'], ['bldimg=img']);
         expect(a).toEqual(b);
     });
 
-    it('recognizes the --meta=k=v form', () => {
+    it('recognizes the --meta=k=v form', ({ expect }) => {
         expect(canonicalizeMetaArgs(['--meta=source_sha256=abc'], ['bldimg=img'])).toEqual([
             '--meta',
             'bldimg=img',
@@ -134,7 +136,7 @@ describe('canonicalizeMetaArgs', () => {
         ]);
     });
 
-    it('drops a dangling --meta with no value', () => {
+    it('drops a dangling --meta with no value', ({ expect }) => {
         expect(canonicalizeMetaArgs(['--package', 'x', '--meta'], ['bldimg=img'])).toEqual([
             '--package',
             'x',
@@ -143,7 +145,7 @@ describe('canonicalizeMetaArgs', () => {
         ]);
     });
 
-    it('drops a --meta immediately followed by another flag', () => {
+    it('drops a --meta immediately followed by another flag', ({ expect }) => {
         expect(canonicalizeMetaArgs(['--meta', '--optimize'], ['bldimg=img'])).toEqual([
             '--optimize',
             '--meta',
@@ -151,7 +153,7 @@ describe('canonicalizeMetaArgs', () => {
         ]);
     });
 
-    it('drops a caller --meta that collides with an injected (reserved) key', () => {
+    it('drops a caller --meta that collides with an injected (reserved) key', ({ expect }) => {
         expect(
             canonicalizeMetaArgs(
                 ['--meta', 'bldimg=evil', '--meta', 'source_sha256=ok'],
@@ -160,7 +162,7 @@ describe('canonicalizeMetaArgs', () => {
         ).toEqual(['--meta', 'bldimg=real', '--meta', 'source_sha256=ok']);
     });
 
-    it('drops a reserved-key collision in the --meta=k=v form too', () => {
+    it('drops a reserved-key collision in the --meta=k=v form too', ({ expect }) => {
         expect(canonicalizeMetaArgs(['--meta=bldimg=evil'], ['bldimg=real'])).toEqual([
             '--meta',
             'bldimg=real',
@@ -172,7 +174,7 @@ describe('buildVerifiableBuildDockerArgs', () => {
     const imageRef = `stellar/stellar-cli@${AMD64_DIGEST}`;
     const bldimg = `docker.io/stellar/stellar-cli@${AMD64_DIGEST}`;
 
-    it('mounts the self-contained source at /source and embeds the bldimg meta', () => {
+    it('mounts the self-contained source at /source and embeds the bldimg meta', ({ expect }) => {
         const args = buildVerifiableBuildDockerArgs({
             imageRef,
             sourceDir: '/tmp/extracted-source',
@@ -200,7 +202,9 @@ describe('buildVerifiableBuildDockerArgs', () => {
         ]);
     });
 
-    it('runs the image by digest and always appends the tool-injected bldimg meta', () => {
+    it('runs the image by digest and always appends the tool-injected bldimg meta', ({
+        expect,
+    }) => {
         const args = buildVerifiableBuildDockerArgs({
             imageRef,
             sourceDir: '/src',
@@ -213,7 +217,7 @@ describe('buildVerifiableBuildDockerArgs', () => {
         expect(args.slice(-2)).toEqual(['--meta', `bldimg=${bldimg}`]);
     });
 
-    it('sorts the caller --meta flags together with the injected bldimg meta', () => {
+    it('sorts the caller --meta flags together with the injected bldimg meta', ({ expect }) => {
         const args = buildVerifiableBuildDockerArgs({
             imageRef,
             sourceDir: '/src',
@@ -233,7 +237,7 @@ describe('buildVerifiableBuildDockerArgs', () => {
 });
 
 describe('buildPermissionRepairDockerArgs', () => {
-    it('uses the same pinned amd64 image as the verifiable build', () => {
+    it('uses the same pinned amd64 image as the verifiable build', ({ expect }) => {
         const imageRef = `stellar/stellar-cli@${AMD64_DIGEST}`;
 
         expect(buildPermissionRepairDockerArgs('/tmp/source', imageRef)).toEqual([
@@ -256,7 +260,7 @@ describe('buildPermissionRepairDockerArgs', () => {
 });
 
 describe('copyFileWithPermissionRepair', () => {
-    it('repairs Docker-owned permissions and retries the copy', async () => {
+    it('repairs Docker-owned permissions and retries the copy', async ({ expect }) => {
         const permissionError = Object.assign(new Error('permission denied'), { code: 'EACCES' });
         const copy = vi
             .fn()
@@ -275,7 +279,7 @@ describe('copyFileWithPermissionRepair', () => {
         expect(copy).toHaveBeenCalledTimes(2);
     });
 
-    it('does not mask non-permission copy failures', async () => {
+    it('does not mask non-permission copy failures', async ({ expect }) => {
         const copyError = Object.assign(new Error('disk failure'), { code: 'EIO' });
         const copy = vi.fn().mockRejectedValue(copyError);
         const repairPermissions = vi.fn().mockResolvedValue(undefined);
@@ -293,7 +297,7 @@ describe('copyFileWithPermissionRepair', () => {
 });
 
 describe('VerifiableBuildWrapper image resolution', () => {
-    it('resolves one digest per version pair', async () => {
+    it('resolves one digest per version pair', async ({ expect }) => {
         const resolveDigest = vi.fn().mockResolvedValue(AMD64_DIGEST);
         const wrapper = new VerifiableBuildWrapper(resolveDigest);
         const versions = { stellarVersion: '25.1.0', rustVersion: '1.90.0' };
@@ -314,34 +318,37 @@ describe('VerifiableBuildWrapper image resolution', () => {
 });
 
 describe('parsePackageSpec', () => {
-    it('parses a root manifest spec', () => {
+    it('parses a root manifest spec', ({ expect }) => {
         expect(parsePackageSpec('onesig:Cargo.toml')).toEqual({
             packageName: 'onesig',
             manifestPath: 'Cargo.toml',
         });
     });
 
-    it('parses a nested manifest spec', () => {
+    it('parses a nested manifest spec', ({ expect }) => {
         expect(parsePackageSpec('endpoint-v2:endpoint-v2/Cargo.toml')).toEqual({
             packageName: 'endpoint-v2',
             manifestPath: 'endpoint-v2/Cargo.toml',
         });
     });
 
-    it.each(['onesig', ':Cargo.toml', 'onesig:', ''])('rejects invalid spec %j', (spec) => {
-        expect(() => parsePackageSpec(spec)).toThrow();
-    });
+    it.for(['onesig', ':Cargo.toml', 'onesig:', ''])(
+        'rejects invalid spec %j',
+        (spec, { expect }) => {
+            expect(() => parsePackageSpec(spec)).toThrow();
+        },
+    );
 });
 
 describe('wasmArtifactName', () => {
-    it('hyphenates package names into wasm basenames', () => {
+    it('hyphenates package names into wasm basenames', ({ expect }) => {
         expect(wasmArtifactName('endpoint-v2')).toBe('endpoint_v2.wasm');
         expect(wasmArtifactName('onesig')).toBe('onesig.wasm');
     });
 });
 
 describe('resolveRustVersion', () => {
-    it('prefers the explicit flag over rust-toolchain.toml', async () => {
+    it('prefers the explicit flag over rust-toolchain.toml', async ({ expect }) => {
         const sourceDir = await mkdtemp(path.join(tmpdir(), 'lz-vb-rust-'));
         try {
             await writeFile(
@@ -354,7 +361,9 @@ describe('resolveRustVersion', () => {
         }
     });
 
-    it('reads the channel from rust-toolchain.toml when the flag is omitted', async () => {
+    it('reads the channel from rust-toolchain.toml when the flag is omitted', async ({
+        expect,
+    }) => {
         const sourceDir = await mkdtemp(path.join(tmpdir(), 'lz-vb-rust-'));
         try {
             await writeFile(
@@ -367,7 +376,7 @@ describe('resolveRustVersion', () => {
         }
     });
 
-    it('throws when neither a flag nor rust-toolchain.toml is available', async () => {
+    it('throws when neither a flag nor rust-toolchain.toml is available', async ({ expect }) => {
         const sourceDir = await mkdtemp(path.join(tmpdir(), 'lz-vb-rust-'));
         try {
             await mkdir(sourceDir, { recursive: true });
@@ -377,7 +386,7 @@ describe('resolveRustVersion', () => {
         }
     });
 
-    it('throws when toolchain.channel is empty', async () => {
+    it('throws when toolchain.channel is empty', async ({ expect }) => {
         const sourceDir = await mkdtemp(path.join(tmpdir(), 'lz-vb-rust-'));
         try {
             await writeFile(
@@ -392,7 +401,7 @@ describe('resolveRustVersion', () => {
 });
 
 describe('buildArchiveContractArgs', () => {
-    it('builds stellar contract build args with bldopt replay and source_sha256', () => {
+    it('builds stellar contract build args with bldopt replay and source_sha256', ({ expect }) => {
         const spec = { packageName: 'endpoint-v2', manifestPath: 'endpoint-v2/Cargo.toml' };
         const sha = 'abc123';
 
@@ -419,7 +428,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         vi.restoreAllMocks();
     });
 
-    it('requires at least one package', async () => {
+    it('requires at least one package', async ({ expect }) => {
         await expect(
             runVerifiableBuildFromArchive(
                 {
@@ -434,7 +443,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         ).rejects.toThrow('verifiable-build requires at least one --package');
     });
 
-    it('rejects package names that map to the same WASM artifact', async () => {
+    it('rejects package names that map to the same WASM artifact', async ({ expect }) => {
         await expect(
             runVerifiableBuildFromArchive(
                 {
@@ -452,7 +461,9 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         ).rejects.toThrow('Duplicate WASM artifact duplicate_name.wasm');
     });
 
-    it('builds packages from an archive and atomically publishes source plus wasm artifacts', async () => {
+    it('builds packages from an archive and atomically publishes source plus wasm artifacts', async ({
+        expect,
+    }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const outputDir = path.join(dir, 'artifacts');
@@ -510,7 +521,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('leaves existing output untouched when a package build fails', async () => {
+    it('leaves existing output untouched when a package build fails', async ({ expect }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const outputDir = path.join(dir, 'artifacts');
@@ -546,7 +557,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('leaves existing output untouched when a later package build fails', async () => {
+    it('leaves existing output untouched when a later package build fails', async ({ expect }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const outputDir = path.join(dir, 'artifacts');
@@ -592,7 +603,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('recovers a leftover backup before publishing the new artifact set', async () => {
+    it('recovers a leftover backup before publishing the new artifact set', async ({ expect }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const outputDir = path.join(dir, 'artifacts');
@@ -632,7 +643,9 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('uses rust-toolchain.toml from the extracted archive when no version is provided', async () => {
+    it('uses rust-toolchain.toml from the extracted archive when no version is provided', async ({
+        expect,
+    }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const outputDir = path.join(dir, 'artifacts');
@@ -669,7 +682,9 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('rejects archive entries outside the expected top-level source directory', async () => {
+    it('rejects archive entries outside the expected top-level source directory', async ({
+        expect,
+    }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const archive = path.join(dir, 'contracts-source.zip');
@@ -701,7 +716,9 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('rejects archive entries that normalize outside the expected source directory', async () => {
+    it('rejects archive entries that normalize outside the expected source directory', async ({
+        expect,
+    }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const archive = path.join(dir, 'contracts-source.zip');
@@ -733,7 +750,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('rejects an empty archive before creating output', async () => {
+    it('rejects an empty archive before creating output', async ({ expect }) => {
         await withTempDir(async (dir) => {
             const archive = path.join(dir, 'contracts-source.zip');
             await writeFile(archive, new Uint8Array());
@@ -754,7 +771,9 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('rejects an archive whose expected top-level path is not a directory', async () => {
+    it('rejects an archive whose expected top-level path is not a directory', async ({
+        expect,
+    }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const archive = path.join(dir, 'contracts-source.zip');
@@ -776,7 +795,7 @@ describe.sequential('runVerifiableBuildFromArchive', () => {
         });
     });
 
-    it('rejects archives that escape the extraction destination', async () => {
+    it('rejects archives that escape the extraction destination', async ({ expect }) => {
         await withTempDir(async (dir) => {
             const cwd = path.join(dir, 'project');
             const archive = path.join(dir, 'contracts-source.zip');

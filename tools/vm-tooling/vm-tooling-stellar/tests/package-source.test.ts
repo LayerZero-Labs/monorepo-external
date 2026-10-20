@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 
 import { ZipEntryType } from '@layerzerolabs/deterministic-zip';
 
@@ -20,26 +20,26 @@ const dir = (predicate: ReturnType<typeof makeSourcePredicate>, relPath: string)
 describe('makeSourcePredicate — include-only defaults', () => {
     const predicate = makeSourcePredicate({ rootDirName: ROOT });
 
-    it('keeps the crate root dir and descends ordinary source dirs', () => {
+    it('keeps the crate root dir and descends ordinary source dirs', ({ expect }) => {
         expect(dir(predicate, ROOT)).toBe(true);
         expect(dir(predicate, `${ROOT}/src`)).toBe(true);
         expect(dir(predicate, `${ROOT}/dependencies`)).toBe(true);
     });
 
-    it('prunes NON_SOURCE_DIRS under the crate root', () => {
+    it('prunes NON_SOURCE_DIRS under the crate root', ({ expect }) => {
         expect(dir(predicate, `${ROOT}/target`)).toBe(false);
         expect(dir(predicate, `${ROOT}/node_modules`)).toBe(false);
         expect(dir(predicate, `${ROOT}/.artifacts`)).toBe(false);
         expect(dir(predicate, `${ROOT}/.claude`)).toBe(false);
     });
 
-    it('drops sibling paths outside the crate root', () => {
+    it('drops sibling paths outside the crate root', ({ expect }) => {
         expect(dir(predicate, 'other-crate')).toBe(false);
         expect(file(predicate, 'other-crate/Cargo.toml')).toBe(false);
         expect(file(predicate, 'README.md')).toBe(false);
     });
 
-    it.each([
+    it.for([
         `${ROOT}/src/lib.rs`,
         `${ROOT}/Cargo.toml`,
         `${ROOT}/Cargo.lock`,
@@ -48,11 +48,11 @@ describe('makeSourcePredicate — include-only defaults', () => {
         `${ROOT}/clippy.toml`,
         `${ROOT}/dependencies/dep-a/Cargo.toml`,
         `${ROOT}/dependencies/dep-a/src/lib.rs`,
-    ])('includes source file %s', (relPath) => {
+    ])('includes source file %s', (relPath, { expect }) => {
         expect(file(predicate, relPath)).toBe(true);
     });
 
-    it.each([
+    it.for([
         `${ROOT}/.env`,
         `${ROOT}/config/.env.local`,
         `${ROOT}/.env.example`,
@@ -72,49 +72,49 @@ describe('makeSourcePredicate — include-only defaults', () => {
         `${ROOT}/dependencies/dep-a/rust-toolchain.toml`,
         `${ROOT}/dependencies/dep-a/rustfmt.toml`,
         `${ROOT}/dependencies/dep-a/clippy.toml`,
-    ])('drops non-source file %s (not on the allow-list)', (relPath) => {
+    ])('drops non-source file %s (not on the allow-list)', (relPath, { expect }) => {
         expect(file(predicate, relPath)).toBe(false);
     });
 });
 
 describe('makeSourcePredicate — user --include', () => {
-    it('matches bare patterns relative to the crate root', () => {
+    it('matches bare patterns relative to the crate root', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['app.json'] });
         expect(file(predicate, `${ROOT}/app.json`)).toBe(true);
         expect(file(predicate, `${ROOT}/config/app.json`)).toBe(false);
     });
 
-    it('supports native glob patterns', () => {
+    it('supports native glob patterns', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['assets/**'] });
         expect(file(predicate, `${ROOT}/assets/logo.png`)).toBe(true);
         expect(file(predicate, `${ROOT}/a/assets/logo.png`)).toBe(false);
     });
 
-    it('matches exact crate-relative paths', () => {
+    it('matches exact crate-relative paths', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['config/app.json'] });
         expect(file(predicate, `${ROOT}/config/app.json`)).toBe(true); // exact match
         expect(file(predicate, `${ROOT}/other/config/app.json`)).toBe(false); // not anchored at root
     });
 
-    it('preserves native trailing-slash semantics', () => {
+    it('preserves native trailing-slash semantics', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['assets/data/'] });
         expect(file(predicate, `${ROOT}/assets/data/x.bin`)).toBe(false);
     });
 
-    it('prefixes patterns with the crate root directory', () => {
+    it('prefixes patterns with the crate root directory', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['config/**'] });
         expect(file(predicate, `${ROOT}/config/app.json`)).toBe(true);
         expect(file(predicate, `${ROOT}/nested/config/app.json`)).toBe(false);
     });
 
-    it('does not disturb the default source allow-list', () => {
+    it('does not disturb the default source allow-list', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, include: ['app.json'] });
         expect(file(predicate, `${ROOT}/src/lib.rs`)).toBe(true);
     });
 });
 
 describe('makeSourcePredicate — user --exclude', () => {
-    it('drops allow-listed files matching a glob subtree', () => {
+    it('drops allow-listed files matching a glob subtree', ({ expect }) => {
         const predicate = makeSourcePredicate({ rootDirName: ROOT, exclude: ['tests/**'] });
         // `tests/**` does not match the directory entry itself (Node glob semantics)
         expect(dir(predicate, `${ROOT}/tests`)).toBe(true);
@@ -123,7 +123,7 @@ describe('makeSourcePredicate — user --exclude', () => {
         expect(file(predicate, `${ROOT}/src/lib.rs`)).toBe(true);
     });
 
-    it('matches exact crate-relative paths like --include', () => {
+    it('matches exact crate-relative paths like --include', ({ expect }) => {
         const predicate = makeSourcePredicate({
             rootDirName: ROOT,
             exclude: ['src/lib.rs'],
@@ -132,7 +132,7 @@ describe('makeSourcePredicate — user --exclude', () => {
         expect(file(predicate, `${ROOT}/Cargo.toml`)).toBe(true);
     });
 
-    it('always wins over --include', () => {
+    it('always wins over --include', ({ expect }) => {
         const predicate = makeSourcePredicate({
             rootDirName: ROOT,
             include: ['tests/**', 'README.md'],
@@ -199,7 +199,7 @@ describe('packageSource', () => {
             .filter((k) => !k.endsWith('/'))
             .map((k) => (k.startsWith(ROOT_PREFIX) ? k.slice(ROOT_PREFIX.length) : k));
 
-    it('packages only source files (allow-list) and keeps dependencies/', async () => {
+    it('packages only source files (allow-list) and keeps dependencies/', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await packageSource({}, { cwd: root });
@@ -234,7 +234,9 @@ describe('packageSource', () => {
         }
     });
 
-    it('wraps every entry under a single top-level folder named after the crate basename', async () => {
+    it('wraps every entry under a single top-level folder named after the crate basename', async ({
+        expect,
+    }) => {
         const root = await buildFixture();
         try {
             await packageSource({}, { cwd: root });
@@ -250,7 +252,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('is deterministic and idempotent across runs (identical sha256)', async () => {
+    it('is deterministic and idempotent across runs (identical sha256)', async ({ expect }) => {
         const root = await buildFixture();
         const zipPath = path.join(root, '.artifacts', `${ROOT}-source.zip`);
         const sha = async () =>
@@ -267,7 +269,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('--include opts in extra non-source files', async () => {
+    it('--include opts in extra non-source files', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await packageSource({ include: ['README.md', 'package.json'] }, { cwd: root });
@@ -282,7 +284,9 @@ describe('packageSource', () => {
         }
     });
 
-    it('--include accepts a crate-relative path with slashes (through the basename wrapper)', async () => {
+    it('--include accepts a crate-relative path with slashes (through the basename wrapper)', async ({
+        expect,
+    }) => {
         const root = await buildFixture();
         try {
             await packageSource({ include: ['config/app.json'] }, { cwd: root });
@@ -296,7 +300,9 @@ describe('packageSource', () => {
         }
     });
 
-    it('--exclude drops an allow-listed subtree (e.g. tests/) and wins over --include', async () => {
+    it('--exclude drops an allow-listed subtree (e.g. tests/) and wins over --include', async ({
+        expect,
+    }) => {
         const root = await buildFixture();
         try {
             await mkdir(path.join(root, 'tests'), { recursive: true });
@@ -320,7 +326,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('omits empty non-source directories (e.g. docs/) from the archive', async () => {
+    it('omits empty non-source directories (e.g. docs/) from the archive', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await mkdir(path.join(root, 'docs'), { recursive: true });
@@ -336,7 +342,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('rejects a custom --output nested inside the source tree', async () => {
+    it('rejects a custom --output nested inside the source tree', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await expect(packageSource({ output: 'out/pkg.zip' }, { cwd: root })).rejects.toThrow(
@@ -347,7 +353,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('rejects a custom --output written directly into the source dir', async () => {
+    it('rejects a custom --output written directly into the source dir', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await expect(packageSource({ output: 'pkg.zip' }, { cwd: root })).rejects.toThrow(
@@ -358,7 +364,9 @@ describe('packageSource', () => {
         }
     });
 
-    it('rejects --output .artifacts (would create a file, not a dir under .artifacts/)', async () => {
+    it('rejects --output .artifacts (would create a file, not a dir under .artifacts/)', async ({
+        expect,
+    }) => {
         const root = await buildFixture();
         try {
             await expect(packageSource({ output: '.artifacts' }, { cwd: root })).rejects.toThrow(
@@ -369,7 +377,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('allows a custom --output under .artifacts/', async () => {
+    it('allows a custom --output under .artifacts/', async ({ expect }) => {
         const root = await buildFixture();
         const outPath = path.join(root, '.artifacts', 'custom.zip');
         try {
@@ -381,7 +389,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('allows a custom --output outside the source tree', async () => {
+    it('allows a custom --output outside the source tree', async ({ expect }) => {
         const root = await buildFixture();
         const outDir = await mkdtemp(path.join(tmpdir(), 'lz-pkgsrc-out-'));
         const outPath = path.join(outDir, 'pkg.zip');
@@ -395,7 +403,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('throws when Cargo.toml is missing', async () => {
+    it('throws when Cargo.toml is missing', async ({ expect }) => {
         const parent = await mkdtemp(path.join(tmpdir(), 'lz-pkgsrc-no-toml-'));
         const root = path.join(parent, ROOT);
         await mkdir(path.join(root, 'src'), { recursive: true });
@@ -410,7 +418,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('throws when Cargo.lock is missing', async () => {
+    it('throws when Cargo.lock is missing', async ({ expect }) => {
         const parent = await mkdtemp(path.join(tmpdir(), 'lz-pkgsrc-no-lock-'));
         const root = path.join(parent, ROOT);
         await mkdir(path.join(root, 'src'), { recursive: true });
@@ -425,7 +433,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('throws when no source files match', async () => {
+    it('throws when no source files match', async ({ expect }) => {
         const parent = await mkdtemp(path.join(tmpdir(), 'lz-pkgsrc-empty-'));
         const root = path.join(parent, ROOT);
         await mkdir(path.join(root, 'docs'), { recursive: true });
@@ -441,7 +449,7 @@ describe('packageSource', () => {
         }
     });
 
-    it('fails when a symlink exists outside NON_SOURCE_DIRS', async () => {
+    it('fails when a symlink exists outside NON_SOURCE_DIRS', async ({ expect }) => {
         const root = await buildFixture();
         try {
             await symlink('lib.rs', path.join(root, 'src', 'alias.rs'));

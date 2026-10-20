@@ -12,15 +12,13 @@ testTools(vitest, images, versionCombinations, {
 });
 
 vitest.describe('defaultEnv', () => {
-    vitest.it.each(['anchor', 'solana'])(
+    vitest.it.for(['anchor', 'solana'])(
         '%s disables rustc incremental so turbo prune cannot EACCES session locks',
-        (name) => {
+        (name, { expect }) => {
             const tool = tools.find((candidate) => candidate.name === name);
-            vitest
-                .expect(tool?.defaultEnv)
-                .toEqual(
-                    vitest.expect.arrayContaining([{ name: 'CARGO_INCREMENTAL', value: '0' }]),
-                );
+            expect(tool?.defaultEnv).toEqual(
+                expect.arrayContaining([{ name: 'CARGO_INCREMENTAL', value: '0' }]),
+            );
         },
     );
 });

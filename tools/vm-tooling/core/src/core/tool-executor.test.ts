@@ -1,6 +1,6 @@
 import os from 'node:os';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 
 import type { EnvironmentVariable, VolumeMapping } from '../config';
 import { CARGO_TARGET_CACHE_PATH } from '../config';
@@ -20,7 +20,7 @@ const buildDirFor = (checkoutRoot: string, volumes = withCache) =>
     )?.value;
 
 describe(resolveCargoBuildDirEnv, () => {
-    it('points cargo build-dir into the cache volume, per checkout and workspace', () => {
+    it('points cargo build-dir into the cache volume, per checkout and workspace', ({ expect }) => {
         expect(buildDirFor('/repos/checkout-a')).toMatch(
             new RegExp(`^${CARGO_TARGET_CACHE_PATH}/[0-9a-f]{16}/\\{workspace-path-hash\\}$`),
         );
@@ -30,19 +30,19 @@ describe(resolveCargoBuildDirEnv, () => {
         });
     });
 
-    it('keys distinct checkouts apart and the same checkout identically', () => {
+    it('keys distinct checkouts apart and the same checkout identically', ({ expect }) => {
         expect(buildDirFor('/repos/checkout-a')).not.toBe(buildDirFor('/repos/checkout-b'));
         expect(buildDirFor('/repos/checkout-a')).toBe(buildDirFor('/repos/checkout-a'));
     });
 
-    it('does nothing when the tool mounts no /cargo-target cache volume', () => {
+    it('does nothing when the tool mounts no /cargo-target cache volume', ({ expect }) => {
         const otherVolumes: readonly VolumeMapping[] = [
             { type: 'isolate', containerPath: '/usr/local/cargo', name: 'solana-cargo' },
         ];
         expect(resolveCargoBuildDirEnv(otherVolumes, '/repos/checkout-a')).toEqual([]);
     });
 
-    it('finds the cache volume by containerPath, regardless of its name', () => {
+    it('finds the cache volume by containerPath, regardless of its name', ({ expect }) => {
         const renamed: readonly VolumeMapping[] = [
             { type: 'isolate', containerPath: CARGO_TARGET_CACHE_PATH, name: 'custom-target' },
         ];
@@ -51,7 +51,7 @@ describe(resolveCargoBuildDirEnv, () => {
 });
 
 describe(dockerPlatformProbeStampPath, () => {
-    it('stamps image URI and platform under ~/.cache/vm-tooling/probe', () => {
+    it('stamps image URI and platform under ~/.cache/vm-tooling/probe', ({ expect }) => {
         expect(
             dockerPlatformProbeStampPath(
                 '438003944538.dkr.ecr.us-east-1.amazonaws.com/layerzerolabs/vm-tooling-evm:tag',
@@ -74,7 +74,7 @@ describe(mergeToolEnv, () => {
         { name: 'CARGO_BUILD_BUILD_DIR', value: `${CARGO_TARGET_CACHE_PATH}/key` },
     ];
 
-    it('keeps the higher-precedence (earlier) layer on a name collision', () => {
+    it('keeps the higher-precedence (earlier) layer on a name collision', ({ expect }) => {
         const userEnv: EnvironmentVariable[] = [
             { name: 'CARGO_BUILD_BUILD_DIR', value: '/host/build' },
         ];
@@ -82,11 +82,11 @@ describe(mergeToolEnv, () => {
         expect(mergeToolEnv(userEnv, [], [], cacheEnv)).toEqual(userEnv);
     });
 
-    it('applies the cache env only when nothing upstream sets the var', () => {
+    it('applies the cache env only when nothing upstream sets the var', ({ expect }) => {
         expect(mergeToolEnv([], [], [], cacheEnv)).toEqual(cacheEnv);
     });
 
-    it('preserves order and de-dupes across layers', () => {
+    it('preserves order and de-dupes across layers', ({ expect }) => {
         expect(
             mergeToolEnv(
                 [{ name: 'A', value: '1' }],
