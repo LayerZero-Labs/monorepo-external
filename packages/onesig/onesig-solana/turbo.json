@@ -1,0 +1,21 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "build": {
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/LICENSE",
+                "!audits/**",
+                "!test/**",
+                "!tsconfig.json",
+                "!vitest.config.ts",
+                "!eslint.config.js"
+            ],
+            "outputs": ["dependencies/**", "target/deploy/*.so", "build/**"]
+        },
+        "test": {
+            "dependsOn": ["build", "lint"]
+        }
+    }
+}

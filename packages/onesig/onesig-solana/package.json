@@ -1,0 +1,50 @@
+{
+    "name": "@layerzerolabs/onesig-solana",
+    "version": "0.0.0",
+    "private": false,
+    "license": "GPL-3.0-only",
+    "files": [
+        "build/**/*"
+    ],
+    "scripts": {
+        "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
+        "build": "pnpm build:anchor && pnpm build:idl && pnpm allow-read-write",
+        "build:anchor": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
+        "build:anchor:heap-profiling": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3 -p onesig -- --features heap-profiling --sbf-out-dir ./target' anchor",
+        "build:anchor:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
+        "build:idl": "pnpm resolve-dependencies && mkdir -p build && pnpm exec lz-tool --script 'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor",
+        "build:idl:native": "pnpm resolve-dependencies && mkdir -p build && pnpm exec lz-tool --docker-platform native --script 'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor",
+        "build:native": "pnpm build:anchor:native && pnpm build:idl:native && pnpm allow-read-write",
+        "clean": "rm -rf ./node_modules .turbo ./build ./target ./dependencies",
+        "format": "pnpm format:rs",
+        "format:check": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all --check' anchor",
+        "format:rs": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt --all' anchor",
+        "lint": "pnpm format:check && pnpm lint:rs && pnpm lint:ts",
+        "lint:rs": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo clippy -- -D warnings' anchor",
+        "lint:ts": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "resolve-dependencies": "pnpm exec build-utils-rust resolve",
+        "test": "pnpm test:rs && pnpm test:js",
+        "test:js": "vitest run",
+        "test:rs": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --package onesig -- tests --nocapture' anchor"
+    },
+    "dependencies": {
+        "@layerzerolabs/heap-allocator-solana-contracts": "workspace:*",
+        "@layerzerolabs/program-id-solana-contracts": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/build-utils-rust": "workspace:*",
+        "@layerzerolabs/eslint-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-solana": "workspace:*",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/heap-allocator-solana-contracts": "workspace:*",
+        "@layerzerolabs/program-id-solana-contracts": "workspace:*"
+    }
+}

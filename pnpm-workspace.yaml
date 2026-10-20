@@ -201,7 +201,6 @@ catalogs:
     '@ledgerhq/hw-transport-node-hid': 6.29.14
     '@ledgerhq/hw-transport-webhid': 6.30.8
     '@linear/sdk': 43.0.0
-    '@lucid-evolution/lucid': 0.6.2
     '@matterlabs/hardhat-zksync-solc': ^1.4.0
     '@mdx-js/loader': ^3.1.1
     '@mdx-js/react': ^3.1.1

@@ -27,6 +27,7 @@
         "VM_TOOLING_IMAGE_DIRECTORY",
         "VM_TOOLING_LOCAL",
         "DOCKER_DEFAULT_PLATFORM",
+        "PATCHLENS_BOT_APP_SLUG",
         "PATCHLENS_LOG_LEVEL",
         "TMPDIR",
         "VITEST",
