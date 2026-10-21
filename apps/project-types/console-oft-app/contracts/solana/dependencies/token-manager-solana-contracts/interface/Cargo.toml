@@ -1,0 +1,21 @@
+[package]
+name = "token-manager-interface"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+anchor-lang.workspace = true
+program-id.workspace = true
+pubkey-policy-interface.workspace = true
+rbac.workspace = true
+spl-token-2022-interface.workspace = true
+spl-discriminator.workspace = true
+spl-tlv-account-resolution.workspace = true
+spl-type-length-value.workspace = true
+token-acl-client.workspace = true
+token-acl-interface.workspace = true
+
+[features]
+default = []
+idl-build = ["anchor-lang/idl-build", "pubkey-policy-interface/idl-build", "rbac/idl-build"]

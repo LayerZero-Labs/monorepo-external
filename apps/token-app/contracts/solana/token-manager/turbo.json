@@ -4,6 +4,7 @@
         "build": {
             "inputs": [
                 "$TURBO_DEFAULT$",
+                "!dependencies/**",
                 "!**/*.md",
                 "!**/LICENSE",
                 "!programs/**/tests/**",

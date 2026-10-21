@@ -1,0 +1,5 @@
+# The resolved Cargo dependencies are committed so this deployable program builds from a
+# plain clone (solana-verify). `pnpm build` regenerates them, so commit the result together
+# with any change to a vendored crate. Root ignore rules (keys, target, .anchor) still apply
+# inside the directory.
+!/dependencies/

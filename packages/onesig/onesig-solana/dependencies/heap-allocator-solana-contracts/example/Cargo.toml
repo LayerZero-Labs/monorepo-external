@@ -1,0 +1,30 @@
+[package]
+name = "demo"
+version = "0.0.1"
+description = "Minimal Anchor example demonstrating heap-allocator"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "demo"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = ["custom-heap"]
+idl-build = ["anchor-lang/idl-build"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    "cfg(feature, values(\"anchor-debug\"))",
+    "cfg(target_os, values(\"solana\"))",
+] }
+
+[dependencies]
+anchor-lang = { version = "1.1.2" }
+heap-allocator = { path = "../lib" }

@@ -1,0 +1,16 @@
+[package]
+name = "program-id"
+version = "0.1.0"
+description = "Cargo-tracked program IDs for Solana programs whose address is supplied at build time"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["lib"]
+name = "program_id"
+
+[dependencies]
+solana-helper = "0.1.0"
+
+[dev-dependencies]
+bs58 = "0.5.1"

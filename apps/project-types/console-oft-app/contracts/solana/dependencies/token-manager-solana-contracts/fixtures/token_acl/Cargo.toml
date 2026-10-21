@@ -1,0 +1,19 @@
+[package]
+name = "token-acl-fixture"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Test-only SBF build target for the pinned upstream Token ACL program"
+
+[lib]
+name = "token_acl_fixture"
+crate-type = [ "cdylib" ]
+test = false
+doctest = false
+
+[dependencies]
+spl-token-group-interface = "=0.7.1"
+
+[dependencies.token-acl]
+git = "https://github.com/solana-foundation/token-acl"
+rev = "bfbaf589662631ca84f3462514620a499405c6d7"

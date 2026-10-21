@@ -9,9 +9,9 @@
     "scripts": {
         "allow-read-write": "[ -z \"$CI\" ] || sudo chmod -R a+rwx ./target",
         "build": "pnpm build:anchor && pnpm build:idl && pnpm allow-read-write",
-        "build:anchor": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
-        "build:anchor:heap-profiling": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3 -p onesig -- --features heap-profiling --sbf-out-dir ./target' anchor",
-        "build:anchor:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
+        "build:anchor": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
+        "build:anchor:heap-profiling": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3 -p onesig -- --features heap-profiling --sbf-out-dir ./target' anchor",
+        "build:anchor:native": "pnpm resolve-dependencies && pnpm exec lz-tool --docker-platform native --script 'anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor",
         "build:idl": "pnpm resolve-dependencies && mkdir -p build && pnpm exec lz-tool --script 'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor",
         "build:idl:native": "pnpm resolve-dependencies && mkdir -p build && pnpm exec lz-tool --docker-platform native --script 'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor",
         "build:native": "pnpm build:anchor:native && pnpm build:idl:native && pnpm allow-read-write",

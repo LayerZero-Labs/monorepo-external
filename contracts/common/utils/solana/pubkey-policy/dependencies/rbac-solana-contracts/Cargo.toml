@@ -1,0 +1,40 @@
+[package]
+name = "rbac"
+version = "0.1.0"
+description = "Reusable RBAC (Role-Based Access Control) crate for Anchor programs"
+edition = "2021"
+
+[workspace]
+resolver = "2"
+members = [ "macros" ]
+exclude = [ "dependencies" ]
+
+[lib]
+crate-type = [ "lib" ]
+name = "rbac"
+
+[features]
+default = []
+idl-build = [ "anchor-lang/idl-build" ]
+
+[lints.rust.unexpected_cfgs]
+level = "allow"
+check-cfg = [ "cfg(feature, values(\"anchor-debug\"))" ]
+
+[dependencies.anchor-lang]
+version = "1.2.1"
+default-features = false
+features = [ "event-cpi", "solana-v4" ]
+
+[dependencies.rbac-macros]
+path = "macros"
+
+[dev-dependencies]
+trybuild = "1.0"
+
+[dev-dependencies.num_enum]
+version = "0.7"
+default-features = false
+
+[profile.release]
+overflow-checks = true

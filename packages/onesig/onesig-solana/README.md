@@ -20,9 +20,11 @@ platform-tools version do not depend on Anchor's defaults. `target/deploy/onesig
 
 SBPF v3 stack frames are a fixed 4 KiB with no guard gap, and the compiler only warns when a
 function overflows its frame. `build:anchor`, `build:anchor:native`, and
-`build:anchor:heap-profiling` run `anchor build` through `scripts/sbf-build.sh`, which fails the
-build when the output reports `overflows the maximum allowed frame space`.
-[`test/sbf-build-guard.test.ts`](test/sbf-build-guard.test.ts) checks the guard and this wiring.
+`build:anchor:heap-profiling` run `anchor build` in `lz-tool ... anchor`. The stack-frame guard
+is in the Solana VM tooling image: it fails the build when the output reports
+`overflows the maximum allowed frame space`. [`test/build-scripts.test.ts`](test/build-scripts.test.ts)
+checks that these scripts run `anchor build` in `lz-tool ... anchor` and that no package script calls
+`sbf-build.sh`, cargo by absolute path, or `cargo-build-sbf`.
 
 ## Program identity
 
@@ -38,7 +40,7 @@ build time.
 `ONESIG_STAGED_ID` and falls back to the literal above.
 
 ```sh
-pnpm exec lz-tool --env ONESIG_STAGED_ID=<pubkey> --script 'bash scripts/sbf-build.sh anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor
+pnpm exec lz-tool --env ONESIG_STAGED_ID=<pubkey> --script 'anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor
 pnpm exec lz-tool --env ONESIG_STAGED_ID=<pubkey> --script \
   'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor
 pnpm --filter @layerzerolabs/onesig-solana-sdk compile:sdk

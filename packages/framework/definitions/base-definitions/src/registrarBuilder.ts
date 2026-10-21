@@ -212,6 +212,8 @@ export class RegistrarBuilder<_ReturnTypes> {
      * Alias a specific named node, such that when encountered in the tree,
      * it will be transformed to a different node before processing.
      * The transformed node's dependencies will be traversed instead.
+     * The transformed node is then passed through the class aliases, so e.g. a replacement
+     * ActivityFactoryDefinition is still wrapped by registrar-specific class aliases.
      * This is useful for short-circuiting dependency traversal for specific nodes.
      *
      * @param nodeName name of the node to alias
@@ -227,6 +229,7 @@ export class RegistrarBuilder<_ReturnTypes> {
 
     /**
      * Returns a function that resolves node/class aliases registered on this builder.
+     * A node alias's result is passed through the class aliases too.
      * Useful for external traversals (e.g. CDK nodeExplorer) that need to follow
      * the same alias rules as the DFS built by {@link build}.
      */

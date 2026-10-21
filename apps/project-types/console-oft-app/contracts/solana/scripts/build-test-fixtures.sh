@@ -40,24 +40,24 @@ pnpm exec lz-tool --script '
     set -eu
 
     # The OFT program whose policy integration these fixtures exercise.
-    bash scripts/sbf-build.sh cargo build-sbf --tools-version v1.57 --arch v3 \
+    cargo build-sbf --tools-version v1.57 --arch v3 \
         --manifest-path programs/console_oft/Cargo.toml \
         --sbf-out-dir target/test-deploy -- --locked
 
     # Composer that forwards received tokens, proving a composer plans its own
     # create-and-thaw for a destination the OFT knows nothing about.
-    bash scripts/sbf-build.sh cargo build-sbf --tools-version v1.57 --arch v3 \
+    cargo build-sbf --tools-version v1.57 --arch v3 \
         --manifest-path tests/programs/forwarding_composer/Cargo.toml \
         --sbf-out-dir target/test-deploy -- --locked
 
     # Native hook contract variants: absent/empty manifests and destination-key/data seeds.
-    bash scripts/sbf-build.sh cargo build-sbf --tools-version v1.57 --arch v3 \
+    cargo build-sbf --tools-version v1.57 --arch v3 \
         --manifest-path tests/programs/transfer_hook_fixture/Cargo.toml \
         --sbf-out-dir target/test-deploy -- --locked
 
     # Composer that re-sends received tokens onto a second hop, for measuring how much
     # of the Transaction V1 64-address budget a compose-then-send plan consumes.
-    bash scripts/sbf-build.sh cargo build-sbf --tools-version v1.57 --arch v3 \
+    cargo build-sbf --tools-version v1.57 --arch v3 \
         --manifest-path tests/programs/multihop_composer/Cargo.toml \
         --sbf-out-dir target/test-deploy -- --locked
 ' anchor

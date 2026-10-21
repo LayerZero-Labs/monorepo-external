@@ -1,0 +1,36 @@
+[package]
+name = "pubkey-policy-hook"
+version = "0.1.0"
+authors = ["LayerZero Labs", "Shankar (@shankars99)"]
+edition = "2021"
+license = "MIT"
+description = "Optional Token-2022 hook enforcing a bound pubkey policy"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pubkey_policy_hook"
+
+[features]
+default = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "pubkey-policy-interface/idl-build"]
+
+[dependencies]
+anchor-lang.workspace = true
+anchor-spl.workspace = true
+pubkey-policy-interface.workspace = true
+program-id.workspace = true
+spl-discriminator.workspace = true
+spl-tlv-account-resolution.workspace = true
+spl-token-2022.workspace = true
+spl-token-2022-interface.workspace = true
+spl-transfer-hook-interface.workspace = true
+
+[lints]
+workspace = true

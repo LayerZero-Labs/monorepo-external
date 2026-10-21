@@ -1,0 +1,37 @@
+[workspace]
+resolver = "2"
+members = [ "programs/pubkey_policy_hook" ]
+exclude = [ "dependencies" ]
+
+[workspace.dependencies]
+spl-discriminator = "0.5.2"
+spl-tlv-account-resolution = "0.11.2"
+spl-token-2022-interface = "=3.1.1"
+spl-transfer-hook-interface = "2.1.0"
+
+[workspace.dependencies.anchor-lang]
+version = "=1.2.1"
+default-features = false
+features = [ "init-if-needed", "event-cpi", "solana-v4" ]
+
+[workspace.dependencies.anchor-spl]
+version = "=1.2.1"
+default-features = false
+features = [ "token", "token_2022", "associated_token", "solana-v4" ]
+
+[workspace.dependencies.program-id]
+path = "../program-id-solana-contracts/lib"
+
+[workspace.dependencies.pubkey-policy-interface]
+path = "../pubkey-policy-solana-contracts/interface"
+
+[workspace.dependencies.spl-token-2022]
+version = "=11.0.0"
+features = [ "no-entrypoint" ]
+
+[workspace.lints.rust.unexpected_cfgs]
+level = "allow"
+check-cfg = [ "cfg(target_os, values(\"solana\"))", "cfg(feature, values(\"anchor-debug\", \"custom-heap\", \"custom-panic\"))" ]
+
+[profile.release]
+overflow-checks = true
