@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { describe, expect, it } from 'vitest';
 
-const DEPLOYED_PROGRAM_PATH = resolve(__dirname, '..', 'target', 'deploy', 'onesig.so');
+const DEPLOYED_PROGRAM_PATH = resolve(__dirname, '..', 'target', 'deploy', 'onesig_solana.so');
 
 const ELF_MAGIC = [0x7f, 0x45, 0x4c, 0x46];
 const ELF_CLASS_OFFSET = 4;
@@ -49,7 +49,7 @@ const syntheticElfHeader = (flags: number): Uint8Array => {
 };
 
 describe('SBPF version of the deployable program', () => {
-    it('SBPF-1.S1: target/deploy/onesig.so is an SBPF v3 ELF', () => {
+    it('SBPF-1.S1: target/deploy/onesig_solana.so is an SBPF v3 ELF', () => {
         const elf = readFileSync(DEPLOYED_PROGRAM_PATH);
 
         expect(readElfFlags(elf)).toBe(SBPF_V3_E_FLAGS);

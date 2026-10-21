@@ -814,7 +814,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "945462a4b81e43c4e3ba96bd7b49d834c6f61198356aa858733bc4acf3cbe62e"
 
 [[package]]
-name = "onesig"
+name = "onesig-solana"
 version = "0.0.1"
 dependencies = [
  "anchor-lang",

@@ -6,7 +6,7 @@ solana_version = "4.3.0"
 skip-lint = false
 
 [programs.localnet]
-onesig = "6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr"
+onesig_solana = "6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr"
 
 [provider]
 cluster = "Localnet"

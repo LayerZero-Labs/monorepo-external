@@ -15,7 +15,7 @@ implementation is preserved in [`../onesig-solana-archived`](../onesig-solana-ar
 
 The program builds as SBPF v3 with Anchor 1.2.1 and Solana 4.3.0 (`Anchor.toml` `[toolchain]`).
 The build scripts pass `--tools-version v1.57 --arch v3` to `anchor build`, so the architecture and
-platform-tools version do not depend on Anchor's defaults. `target/deploy/onesig.so` has ELF
+platform-tools version do not depend on Anchor's defaults. `target/deploy/onesig_solana.so` has ELF
 `e_flags` = 3, and [`test/sbpf-version.test.ts`](test/sbpf-version.test.ts) checks it.
 
 SBPF v3 stack frames are a fixed 4 KiB with no guard gap, and the compiler only warns when a
@@ -31,7 +31,7 @@ checks that these scripts run `anchor build` in `lz-tool ... anchor` and that no
 The default deploy address is **`6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr`**, overridable at
 build time.
 
-`target/deploy/onesig-keypair.json` is an unrelated throwaway that `anchor build` generates and
+`target/deploy/onesig_solana-keypair.json` is an unrelated throwaway that `anchor build` generates and
 `--ignore-keys` never reconciles.
 
 ## Building with a different address
@@ -42,7 +42,7 @@ build time.
 ```sh
 pnpm exec lz-tool --env ONESIG_STAGED_ID=<pubkey> --script 'anchor build --ignore-keys --no-idl --tools-version v1.57 --arch v3' anchor
 pnpm exec lz-tool --env ONESIG_STAGED_ID=<pubkey> --script \
-  'anchor idl build -p onesig -o build/onesig.json && add_address_to_idl.py --idl-dir build' anchor
+  'anchor idl build -p onesig_solana -o build/onesig_solana.json && add_address_to_idl.py --idl-dir build && mv build/onesig_solana.json build/onesig.json' anchor
 pnpm --filter @layerzerolabs/onesig-solana-sdk compile:sdk
 ```
 
