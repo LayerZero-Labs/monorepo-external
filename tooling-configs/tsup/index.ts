@@ -1,6 +1,9 @@
 import { execSync } from 'node:child_process';
 import type { Options } from 'tsup';
 
+const isStringArray = (values: readonly unknown[]): values is string[] =>
+    values.every((value) => typeof value === 'string');
+
 const baseConfig: Partial<Options> = {
     entry: ['src/**/*.ts', 'src/**/*.tsx', '!**/*.{test,spec}.{ts,tsx}'],
     // Build output configuration
@@ -19,6 +22,9 @@ const baseConfig: Partial<Options> = {
     shims: true,
     esbuildOptions(opts) {
         opts.chunkNames = '[hash]';
+        if (Array.isArray(opts.entryPoints) && isStringArray(opts.entryPoints)) {
+            opts.entryPoints = opts.entryPoints.toSorted();
+        }
     },
 };
 

@@ -340,8 +340,8 @@ catalogs:
       specifier: ^0.4.13
       version: 0.4.13
     '@stellar/stellar-sdk':
-      specifier: ^16.0.1
-      version: 16.0.1
+      specifier: ^16.4.0
+      version: 16.4.0
     '@types/bn.js':
       specifier: ^5.1.6
       version: 5.2.0
@@ -593,7 +593,7 @@ overrides:
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
-  '@layerzerolabs/lz-definitions': 3.1.17
+  '@layerzerolabs/lz-definitions': 3.1.18
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@mysten/sui': 1.45.2
   '@react-spring/animated>@types/react': 19.2.6
@@ -1004,7 +1004,7 @@ importers:
         version: link:../../../../packages/onesig/onesig-model
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     devDependencies:
       '@layerzerolabs/onesig-stellar-contracts':
         specifier: workspace:*
@@ -1250,7 +1250,7 @@ importers:
     dependencies:
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       buffer:
         specifier: 'catalog:'
         version: 6.0.3
@@ -2360,8 +2360,8 @@ importers:
         specifier: 'catalog:'
         version: 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-definitions':
-        specifier: 3.1.17
-        version: 3.1.17
+        specifier: 3.1.18
+        version: 3.1.18
       '@layerzerolabs/lz-foundation':
         specifier: 'catalog:'
         version: 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
@@ -2553,7 +2553,7 @@ importers:
         version: 1.7.1
       '@stellar/stellar-sdk':
         specifier: 'catalog:'
-        version: 16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -4615,8 +4615,8 @@ packages:
   '@layerzerolabs/lz-corekit-solana@3.0.168':
     resolution: {integrity: sha512-tzas3P2LT8ZbUvduHaW03gt6Vri74+pPUmEcJL+Ld5A1rf8rYx4BeJ/EpQ2zqFx+hU0mUU99TvA9LT76gR89fQ==}
 
-  '@layerzerolabs/lz-definitions@3.1.17':
-    resolution: {integrity: sha512-MEpQGZ4Gs7VtlzppvuqLrHzDCqV0SbJHmd7+Ncd/22mYQaHP6Glw5T/IIlE9pA/qLM3AxXjVHn8i5y1S0P2ujQ==}
+  '@layerzerolabs/lz-definitions@3.1.18':
+    resolution: {integrity: sha512-77aRW1YkHQogtK22HnHzEULGunYcmO5WxQWkobY9e9pYmqWAJeaOIplBrEh8siqfI+UW61sf61Cn+95YIUAB3g==}
 
   '@layerzerolabs/lz-evm-messagelib-v2@3.0.168':
     resolution: {integrity: sha512-tNrpfDu9nhB+/onG3Qzby0PFqi21HpW9dI9oa4HulW5/VfiMQllj2gKOX+BEemokdq2JQhAHvj8dTkp0euXPPg==}
@@ -6026,8 +6026,8 @@ packages:
     resolution: {integrity: sha512-+NmNa7Tk5BI5XFdy/6xGTqAN4J9a9KgCrCGhj2uEUTCBhLkch0M+QbKzNH8zEnejWe0p8w+0q5hUVX6L3OzoVA==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
-  '@stellar/stellar-sdk@16.0.1':
-    resolution: {integrity: sha512-bxKohaiyKVqoudRhbOOHeHhHIaeYV5Zab4rCjxhP4Ty1h1ozTLBOv8lWFnZz9ilBzXG8Bb7usQI3rlEcfvUynA==}
+  '@stellar/stellar-sdk@16.4.0':
+    resolution: {integrity: sha512-BP4jT2Ae/3QnFGNGYWupVzMzugYSmiJrufzcGl3r+328N+0X3i/U8/RLh0udRVpdint1YbdYAjpHe3TkFpX3rQ==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
@@ -12367,7 +12367,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@layerzerolabs/lz-definitions@3.1.17':
+  '@layerzerolabs/lz-definitions@3.1.18':
     dependencies:
       tiny-invariant: 1.3.3
 
@@ -12410,7 +12410,7 @@ snapshots:
 
   '@layerzerolabs/lz-foundation@3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)':
     dependencies:
-      '@layerzerolabs/lz-definitions': 3.1.17
+      '@layerzerolabs/lz-definitions': 3.1.18
       '@layerzerolabs/lz-utilities': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@noble/ed25519': 1.7.5
       '@noble/hashes': 1.8.0
@@ -12455,7 +12455,7 @@ snapshots:
   '@layerzerolabs/lz-solana-sdk-v2@3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)':
     dependencies:
       '@layerzerolabs/lz-corekit-solana': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
-      '@layerzerolabs/lz-definitions': 3.1.17
+      '@layerzerolabs/lz-definitions': 3.1.18
       '@layerzerolabs/lz-foundation': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-serdes': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-utilities': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
@@ -12490,7 +12490,7 @@ snapshots:
       '@ethersproject/bytes': 5.8.0
       '@initia/initia.js': 1.0.4(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@iota/iota-sdk': 1.10.1(typescript@7.0.2)
-      '@layerzerolabs/lz-definitions': 3.1.17
+      '@layerzerolabs/lz-definitions': 3.1.18
       '@mysten/sui': 1.45.2(typescript@7.0.2)
       '@solana/web3.js': 1.99.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@ton/core': 0.59.1(@ton/crypto@3.3.0)
@@ -14209,7 +14209,7 @@ snapshots:
 
   '@stellar/js-xdr@4.0.0': {}
 
-  '@stellar/stellar-sdk@16.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@stellar/stellar-sdk@16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
       '@noble/ed25519': 3.1.0
       '@noble/hashes': 2.3.0

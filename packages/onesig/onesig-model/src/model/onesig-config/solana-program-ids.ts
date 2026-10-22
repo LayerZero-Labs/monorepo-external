@@ -18,9 +18,12 @@ const programIdPerEnvironment: Partial<Record<Environment, string>> = {
 const isEnvironment = (value: string): value is Environment =>
     (Object.values(Environment) as string[]).includes(value);
 
+export const findOneSigSolanaProgramAddress = (environment: string): string | undefined =>
+    isEnvironment(environment) ? programIdPerEnvironment[environment] : undefined;
+
 /** Takes a string because the wallet threads `environment` as one down to `BootstrapChainConfig`. */
 export function getOneSigSolanaProgramAddress(environment: string): string {
-    const programId = isEnvironment(environment) ? programIdPerEnvironment[environment] : undefined;
+    const programId = findOneSigSolanaProgramAddress(environment);
     if (!programId) {
         throw new Error(`Solana: OneSig program is not deployed for environment ${environment}`);
     }

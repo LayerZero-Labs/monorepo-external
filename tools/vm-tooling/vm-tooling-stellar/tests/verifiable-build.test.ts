@@ -70,6 +70,31 @@ describe('parseAmd64Digest', () => {
         expect(parseAmd64Digest(MANIFEST_INSPECT_JSON)).toBe(AMD64_DIGEST);
     });
 
+    it('selects the linux/amd64 digest when an attestation entry comes before it', ({ expect }) => {
+        const json = JSON.stringify({
+            schemaVersion: 2,
+            mediaType: 'application/vnd.oci.image.index.v1+json',
+            manifests: [
+                { digest: 'sha256:bbbb', platform: { architecture: 'unknown', os: 'unknown' } },
+                {
+                    digest: 'sha256:aaaa',
+                    platform: { architecture: 'arm64', os: 'linux', variant: 'v8' },
+                },
+                { digest: AMD64_DIGEST, platform: { architecture: 'amd64', os: 'linux' } },
+            ],
+        });
+        expect(parseAmd64Digest(json)).toBe(AMD64_DIGEST);
+    });
+
+    it('throws when the only entries are attestations', ({ expect }) => {
+        const json = JSON.stringify({
+            manifests: [
+                { digest: 'sha256:bbbb', platform: { architecture: 'unknown', os: 'unknown' } },
+            ],
+        });
+        expect(() => parseAmd64Digest(json)).toThrow(/No linux\/amd64 manifest digest/);
+    });
+
     it('throws when there is no linux/amd64 manifest', ({ expect }) => {
         const json = JSON.stringify({
             manifests: [

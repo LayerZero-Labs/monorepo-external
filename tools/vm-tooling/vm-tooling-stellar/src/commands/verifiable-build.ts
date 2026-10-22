@@ -19,6 +19,7 @@ import { promisify } from 'node:util';
 import { parse } from 'toml';
 
 import type { ToolCommandExecutionOptions } from '@layerzerolabs/vm-tooling';
+import { parseImageIndexPlatforms } from '@layerzerolabs/vm-tooling';
 
 const execFileAsync = promisify(execFile);
 
@@ -41,15 +42,6 @@ interface RustToolchainToml {
     toolchain?: {
         channel?: string;
     };
-}
-
-// The subset of `docker manifest inspect` output (an OCI image index) that we read.
-interface ManifestDescriptor {
-    digest?: string;
-    platform?: { os?: string; architecture?: string };
-}
-interface ManifestIndex {
-    manifests?: ManifestDescriptor[];
 }
 
 export interface PackageSpec {
@@ -89,17 +81,15 @@ export const officialImageTagRef = (stellarVersion: string, rustVersion: string)
  * the selection (skip the arm64 and the unknown/unknown attestation entries) is unit-testable.
  */
 export const parseAmd64Digest = (manifestInspectJson: string): string => {
-    const { manifests } = JSON.parse(manifestInspectJson) as ManifestIndex;
+    const platforms = parseImageIndexPlatforms(JSON.parse(manifestInspectJson));
 
-    if (!Array.isArray(manifests)) {
+    if (!platforms) {
         throw new Error(
             '`docker manifest inspect` did not return a multi-arch index (no `manifests` array)',
         );
     }
 
-    const digest = manifests.find(
-        ({ platform }) => platform?.os === 'linux' && platform?.architecture === 'amd64',
-    )?.digest;
+    const digest = platforms.find(({ platform }) => platform === VERIFIABLE_BUILD_PLATFORM)?.digest;
 
     if (typeof digest !== 'string' || !digest.startsWith('sha256:')) {
         throw new Error('No linux/amd64 manifest digest found in `docker manifest inspect` output');

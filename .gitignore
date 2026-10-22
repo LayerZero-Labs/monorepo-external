@@ -70,6 +70,7 @@ deployments/**/sandbox/**
 
 **/wiringplanner
 /gated-transaction-cache/
+/lz-workers-local-data/
 turbo-cache-report-*.json
 
 # unit test coverage scan result

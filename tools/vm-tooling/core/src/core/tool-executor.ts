@@ -1,6 +1,6 @@
 import { uniqBy } from 'es-toolkit';
 import { createHash } from 'node:crypto';
-import { access, mkdir, realpath, rm, writeFile } from 'node:fs/promises';
+import { realpath } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
@@ -12,17 +12,19 @@ import { CARGO_TARGET_CACHE_PATH } from '../config';
 import type { ChainContext } from '../context';
 import { createScopedWorkspace } from '../scoped-workspace';
 import {
-    type DockerPlatform,
-    type DockerPlatformExecution,
+    type DockerCommandRunner,
+    type DockerProcessEnv,
     findImageForTool,
     getImageTag,
     getImageUri,
     qualifyVolumeName,
-    resolveDockerPlatformExecution,
+    resolveDockerPlatform,
+    resolveRunDockerPlatform,
 } from '../utils/docker';
 import { stringifyError } from '../utils/error';
 import { findToolByName } from '../utils/finder';
 import { safeRemove } from '../utils/fs';
+import { ensureDockerImage } from './docker-image';
 import { executeLocally } from './local-executor';
 import { lockMany } from './lock';
 import { resolveTypeVersions } from './version-resolver';
@@ -132,48 +134,6 @@ const formatDockerArgForDisplay = (arg: string): string =>
 const formatDockerVolumeArgs = (volumeArgs: readonly (readonly string[])[]): string[] =>
     volumeArgs.map((args) => args.map(formatDockerArgForDisplay).join(' '));
 
-const toProbeStampToken = (value: string): string => value.replace(/[/:]/g, '_');
-
-/** Path of a successful platform probe stamp. Later lz-tool calls in this job skip create/rm */
-export const dockerPlatformProbeStampPath = (imageUri: string, platformValue: string): string =>
-    path.join(
-        os.homedir(),
-        '.cache',
-        'vm-tooling',
-        'probe',
-        `${toProbeStampToken(imageUri)}_${toProbeStampToken(platformValue)}`,
-    );
-
-const hasDockerPlatformProbeStamp = async (stampPath: string): Promise<boolean> => {
-    try {
-        await access(stampPath);
-        return true;
-    } catch {
-        return false;
-    }
-};
-
-const writeDockerPlatformProbeStamp = async (stampPath: string): Promise<void> => {
-    try {
-        await mkdir(path.dirname(stampPath), { recursive: true });
-        await writeFile(stampPath, '');
-    } catch (error) {
-        console.warn(
-            `⚠️  Failed to write Docker platform probe stamp ${stampPath}: ${stringifyError(error)}`,
-        );
-    }
-};
-
-const clearDockerPlatformProbeStamp = async (stampPath: string): Promise<void> => {
-    try {
-        await rm(stampPath, { force: true });
-    } catch (error) {
-        console.warn(
-            `⚠️  Failed to clear Docker platform probe stamp ${stampPath}: ${stringifyError(error)}`,
-        );
-    }
-};
-
 const resolveWorkspaceContainerCwd = async ({
     cwd,
     workspaceRoot,
@@ -187,135 +147,18 @@ const resolveWorkspaceContainerCwd = async ({
     return relativePath ? path.posix.join('/workspace', relativePath) : '/workspace';
 };
 
-const ensureDockerImage = async (
-    imageUri: string,
-    dockerPlatform: DockerPlatformExecution,
-): Promise<void> => {
-    const platform = dockerPlatform.platform;
-    const expectedArchitecture = platform?.arch;
-    const docker$ = dockerPlatform.processEnv ? $({ env: dockerPlatform.processEnv }) : $;
+const createDockerCommandRunner =
+    (processEnv?: DockerProcessEnv): DockerCommandRunner =>
+    async (args, { isQuiet = true } = {}) => {
+        const docker$ = $({
+            stdio: ['inherit', 'pipe', 'pipe'],
+            ...(processEnv ? { env: processEnv } : {}),
+        });
+        const command = docker$`docker ${[...args]}`.nothrow();
+        const { exitCode, stdout, stderr } = await (isQuiet ? command.quiet() : command);
 
-    // Probe Docker's runnable platform by creating a container with the requested
-    // platform. Docker uses this same platform resolution path for `docker run`.
-    //
-    // Do not inspect `.ImageManifestDescriptor.platform` here: Docker only added
-    // that field in API v1.48 and may still omit it when the daemon does not use a
-    // multi-platform image store. `docker image inspect` is also tag/cache-level
-    // metadata, not the run-path decision. A successful `container create` is the
-    // portable verification signal available without executing the tool command.
-    const probeDockerPlatformContainerCreation = async (
-        expectedPlatform: DockerPlatform,
-    ): Promise<void> => {
-        const container =
-            await docker$`docker container create --platform ${expectedPlatform.value} ${imageUri} true`
-                .nothrow()
-                .quiet();
-
-        if (container.exitCode) {
-            throw new Error(
-                [
-                    'Failed to create Docker platform probe container:',
-                    `  - Image: ${imageUri}`,
-                    `  - Platform: ${expectedPlatform.value}`,
-                ].join('\n'),
-            );
-        }
-
-        const containerId = container.stdout.trim();
-        if (!containerId) {
-            throw new Error(
-                [
-                    'Docker platform probe did not return a container id:',
-                    `  - Image: ${imageUri}`,
-                    `  - Platform: ${expectedPlatform.value}`,
-                ].join('\n'),
-            );
-        }
-
-        await docker$`docker container rm ${containerId}`.nothrow().quiet();
+        return { exitCode, stdout, stderr };
     };
-
-    const probeAndStampDockerPlatform = async (expectedPlatform: DockerPlatform): Promise<void> => {
-        const stampPath = dockerPlatformProbeStampPath(imageUri, expectedPlatform.value);
-        if (await hasDockerPlatformProbeStamp(stampPath)) {
-            console.info(
-                `✅ Reusing Docker platform probe for ${imageUri} (${expectedPlatform.value})`,
-            );
-            return;
-        }
-
-        await probeDockerPlatformContainerCreation(expectedPlatform);
-        await writeDockerPlatformProbeStamp(stampPath);
-    };
-
-    // NOTE: `docker image ls <ref>` prints repository/tag in separate columns, so
-    // `stdout.includes(<full-ref>)` is not reliable. Use `inspect` instead: exitCode=0
-    // means the image exists locally.
-    // Keep output minimal to avoid dumping full inspect JSON into CI logs.
-    //
-    // NOTE: Using `.quiet()` to avoid stderr being captured in the CI logs. If the image
-    // is not in the cache, the process prints "Error response from daemon: No such image: ..."
-    // which can confuse the uninitiated. It's just a cache miss, not an error.
-    const localImage = await docker$`docker image inspect --format {{.Architecture}} ${imageUri}`
-        .nothrow()
-        .quiet();
-    if (!localImage.exitCode) {
-        const cachedArch = localImage.stdout.trim();
-        if (!platform) {
-            // No platform was requested, so any locally cached image is acceptable.
-            console.info(
-                `✅ Using cached Docker image: ${imageUri}${cachedArch ? ` (${cachedArch})` : ''}`,
-            );
-            return;
-        }
-
-        if (cachedArch === expectedArchitecture) {
-            // A pinned platform still needs the container probe because tag-level
-            // Architecture can disagree with Docker's actual --platform resolution.
-            await probeAndStampDockerPlatform(platform);
-            console.info(`✅ Using cached Docker image: ${imageUri} (${platform.value})`);
-            return;
-        }
-
-        console.info(
-            `🔄 Cached Docker image does not include the requested platform (${platform.value}); re-pulling.`,
-        );
-    }
-
-    console.info(
-        platform
-            ? `📥 Pulling Docker image from: ${imageUri} (platform: ${platform.value})`
-            : `📥 Pulling Docker image from: ${imageUri}`,
-    );
-    const output = await docker$`docker pull ${dockerPlatform.args} ${imageUri}`.nothrow();
-
-    if (output.exitCode) {
-        const stderr = output.stderr ?? '';
-        const isAuthError =
-            stderr.includes('authorization token has expired') ||
-            stderr.includes('denied') ||
-            stderr.includes('pull access denied');
-
-        throw new Error(
-            [
-                'Docker image not available:',
-                `  - Image: ${imageUri} (pull failed)`,
-                isAuthError
-                    ? '  - ECR auth expired. Run: pnpm localnet login'
-                    : '  - Check if the image tag exists in image registry.',
-            ].join('\n'),
-        );
-    }
-
-    // After pulling, verify the same platform resolution path used by `docker run`.
-    // Drop any stamp from an older digest first. A failed probe must not leave that stamp
-    if (platform) {
-        await clearDockerPlatformProbeStamp(dockerPlatformProbeStampPath(imageUri, platform.value));
-        await probeAndStampDockerPlatform(platform);
-    }
-
-    console.info(`✅ Successfully pulled: ${imageUri}`);
-};
 
 export interface ToolCommandExecutionOptions {
     cwd: string;
@@ -352,10 +195,6 @@ export async function executeToolCommand<TImageId extends string>(
     }: ToolCommandExecutionOptions,
 ): Promise<ProcessOutput> {
     const tool = findToolByName(context, toolName);
-    const dockerPlatform = resolveDockerPlatformExecution({
-        dockerPlatform: dockerPlatformOverride,
-        toolDockerPlatform: tool.dockerPlatform,
-    });
 
     // Run pre-execution hook if defined (e.g., toolchain sync)
     // TODO Support a local tool execution.
@@ -405,6 +244,15 @@ export async function executeToolCommand<TImageId extends string>(
             env: customEnvVars,
             script,
         });
+    }
+
+    const { execution: dockerPlatform, engine } = await resolveRunDockerPlatform({
+        dockerPlatform: dockerPlatformOverride,
+        toolDockerPlatform: tool.dockerPlatform,
+        docker: createDockerCommandRunner(),
+    });
+    if (dockerPlatform.notice) {
+        console.warn(dockerPlatform.notice);
     }
 
     const scopedWorkspace = await createScopedWorkspace({
@@ -487,7 +335,13 @@ export async function executeToolCommand<TImageId extends string>(
             console.info(`  ${volumeArg}`);
         }
 
-        await ensureDockerImage(imageUri, dockerPlatform);
+        const imageRef = await ensureDockerImage({
+            imageUri,
+            platform: dockerPlatform.platform,
+            pinnedPlatform: resolveDockerPlatform(tool.dockerPlatform),
+            docker: createDockerCommandRunner(dockerPlatform.processEnv),
+            engine,
+        });
 
         if (entrypoint?.trim()) {
             console.info(`🔧 Using custom entrypoint: ${entrypoint}`);
@@ -564,7 +418,7 @@ export async function executeToolCommand<TImageId extends string>(
             containerCwd,
             ...(publish ?? []).flatMap((p) => ['-p', p.trim()]),
             ...(entrypoint ? ['--entrypoint', entrypoint] : []),
-            imageUri,
+            imageRef,
             ...finalArgs,
         ];
 

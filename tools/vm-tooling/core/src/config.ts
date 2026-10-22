@@ -7,6 +7,7 @@ import type { ChainContext } from './context';
 import type { ToolCommandExecutionOptions } from './core/tool-executor';
 import * as environment from './environment';
 import type { ScopedWorkspacePruner } from './scoped-workspace';
+import { parseDockerPlatform } from './utils/platform';
 
 interface RegistryConfig {
     registry: string;
@@ -77,8 +78,6 @@ export interface EnvironmentVariable {
 }
 
 // Explicit platform pins currently supported by tool config and the CLI.
-// `native` is a CLI-only escape hatch that runs Docker without `--platform`
-// and clears DOCKER_DEFAULT_PLATFORM for that invocation.
 export const DOCKER_PLATFORM_VALUES = ['linux/amd64', 'linux/arm64'] as const;
 export const DOCKER_PLATFORM_NATIVE = 'native';
 export const DOCKER_PLATFORM_OVERRIDE_VALUES = [
@@ -95,6 +94,23 @@ export type DockerPlatformOverride = (typeof DOCKER_PLATFORM_OVERRIDE_VALUES)[nu
 
 export const isDockerPlatformOverride = (input: unknown): input is DockerPlatformOverride =>
     typeof input === 'string' && dockerPlatformOverrideValueSet.has(input);
+
+export const parseDockerPlatformOverride = (input: unknown): DockerPlatformOverride => {
+    if (typeof input === 'string') {
+        const value =
+            input.trim().toLowerCase() === DOCKER_PLATFORM_NATIVE
+                ? DOCKER_PLATFORM_NATIVE
+                : parseDockerPlatform(input);
+
+        if (isDockerPlatformOverride(value)) {
+            return value;
+        }
+    }
+
+    throw new Error(
+        `Invalid docker platform: ${String(input)}. Expected ${DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION}.`,
+    );
+};
 
 export interface Tool {
     name: string;

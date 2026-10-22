@@ -4,11 +4,8 @@ import { describe, it } from 'vitest';
 
 import type { EnvironmentVariable, VolumeMapping } from '../config';
 import { CARGO_TARGET_CACHE_PATH } from '../config';
-import {
-    dockerPlatformProbeStampPath,
-    mergeToolEnv,
-    resolveCargoBuildDirEnv,
-} from './tool-executor';
+import { dockerPlatformProbeStampPath } from './docker-image';
+import { mergeToolEnv, resolveCargoBuildDirEnv } from './tool-executor';
 
 const withCache: readonly VolumeMapping[] = [
     { type: 'isolate', containerPath: CARGO_TARGET_CACHE_PATH, name: 'solana-target' },

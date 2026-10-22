@@ -26,4 +26,4 @@ export * from './github';
 export * from './scoped-workspace';
 export * from './test';
 export { findFileInParentDirectory } from './utils';
-export { getImageUri } from './utils/docker';
+export { getImageUri, parseImageIndexPlatforms } from './utils/docker';

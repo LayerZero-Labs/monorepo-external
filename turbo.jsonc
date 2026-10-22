@@ -47,6 +47,11 @@
             "dependsOn": ["build"],
             "outputLogs": "new-only"
         },
+        "test:offchain:localnet": {
+            "cache": false,
+            "dependsOn": ["build"],
+            "outputLogs": "new-only"
+        },
         "clean": {
             "cache": false
         },

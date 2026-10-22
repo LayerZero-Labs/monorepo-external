@@ -14,7 +14,7 @@
  *   reverse-engineers the leaf `Call` from the resulting auth entry, builds the merkle
  *   package for it, then delegates to `signAndSendOnesigTx`.
  */
-import { Address, contract, hash, Keypair, xdr } from '@stellar/stellar-sdk';
+import { Address, contract, hash, Keypair, type SigningCallback, xdr } from '@stellar/stellar-sdk';
 import { Wallet } from 'ethers';
 
 import { signSignerExecutionAuthorization } from '@layerzerolabs/onesig-core';
@@ -254,7 +254,7 @@ export async function signAndSendOnesigTx<T>(
 
     const customAuthorizeEntry = async (
         entry: xdr.SorobanAuthorizationEntry,
-        _signer: Keypair | ((preimage: xdr.HashIdPreimage) => Promise<unknown>),
+        _signer: Keypair | SigningCallback,
         validUntilLedgerSeq: number,
         networkPassphrase?: string,
     ) => {

@@ -138,7 +138,17 @@ export const oneSigInstanceSummarySchema = z.object({
 export type OneSigInstanceSummary = z.infer<typeof oneSigInstanceSummarySchema>;
 
 export const oneSigPerChainConfigSchema = z.object({
-    contractAddress: z.string(),
+    contractAddress: z
+        .string()
+        .describe(
+            'OneSig contract address on this chain. Not necessarily fundable: fund fundingAddress instead',
+        ),
+    fundingAddress: z
+        .string()
+        .optional()
+        .describe(
+            'Address to fund so this OneSig can spend the funds. On Solana this is the OneSig signer PDA (contractAddress is the program-owned state account; funds sent there are stuck). Equal to contractAddress on other supported chains. Omitted for chains without a known funding account (e.g. Canton) or when it cannot be derived',
+        ),
     signingConfig: z.string().describe('Hash referencing an entry in signingConfigs'),
     executionConfig: z
         .string()

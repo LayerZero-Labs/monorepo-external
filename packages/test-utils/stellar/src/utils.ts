@@ -1,5 +1,5 @@
 import { keccak_256 } from '@noble/hashes/sha3';
-import type { contract, Keypair } from '@stellar/stellar-sdk';
+import type { contract, Keypair, SigningCallback } from '@stellar/stellar-sdk';
 import {
     Account,
     Address,
@@ -154,7 +154,7 @@ export async function signDvnAuthEntries<T>(
     // Custom authorizer for DVN abstract account
     const customAuthorizeEntry = async (
         entry: xdr.SorobanAuthorizationEntry,
-        _signer: Keypair | ((preimage: xdr.HashIdPreimage) => Promise<unknown>),
+        _signer: Keypair | SigningCallback,
         validUntilLedgerSeq: number,
         _passphrase?: string,
     ): Promise<xdr.SorobanAuthorizationEntry> => {

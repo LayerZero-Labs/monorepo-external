@@ -7,7 +7,7 @@ import process from 'node:process';
 import type { DockerPlatformOverride, EnvironmentVariable, VolumeMapping } from './config';
 import {
     DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION,
-    isDockerPlatformOverride,
+    parseDockerPlatformOverride,
     volumeMappingSchema,
 } from './config';
 import type { ChainContext } from './context';
@@ -33,16 +33,6 @@ type RegisterExtraCommands = (
     program: Command,
     parseGlobalOptions: (command: Command) => Promise<ToolCommandExecutionOptions>,
 ) => void;
-
-const parseDockerPlatformOverride = (input: unknown): DockerPlatformOverride => {
-    if (isDockerPlatformOverride(input)) {
-        return input;
-    }
-
-    throw new Error(
-        `Invalid docker platform: ${String(input)}. Expected ${DOCKER_PLATFORM_OVERRIDE_VALUES_DESCRIPTION}.`,
-    );
-};
 
 const createCli = <TImageId extends string>(
     context: ChainContext<TImageId>,
