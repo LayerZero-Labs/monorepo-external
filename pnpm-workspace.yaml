@@ -765,10 +765,14 @@ catalogs:
     '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
     '@layerzerolabs/oapp-evm': 0.4.1
     '@layerzerolabs/oapp-evm-contracts': 1.2.20
+    '@layerzerolabs/oapp-upgradeable-evm-contracts': 1.2.20
     '@layerzerolabs/oft-evm': 4.0.1
     '@layerzerolabs/oft-evm-contracts': 1.2.20
+    '@layerzerolabs/oft-upgradeable-evm-contracts': 1.2.20
     '@layerzerolabs/utils-evm-contracts': 1.2.20
+    '@layerzerolabs/utils-upgradeable-evm-contracts': 1.2.20
     '@openzeppelin/contracts': 5.6.1
+    '@openzeppelin/contracts-upgradeable': 5.6.1
   next16:
     '@next/mdx': ^16.1.1
     '@tailwindcss/postcss': 4.1.13
