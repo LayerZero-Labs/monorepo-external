@@ -1,7 +1,7 @@
 import { publicKey } from '@metaplex-foundation/umi';
 import { expect, it } from 'vitest';
 
-import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import { addressToBytes32 } from '@layerzerolabs/protocol-codecs-v2';
 
 import {
     EndpointProgram,

@@ -63,7 +63,7 @@ export default createProtocolStackGlobalSetup(env, {
             repoRoot,
             'apps',
             'project-types',
-            'deploy-wire-protocol-app',
+            'protocol-app',
             'contracts',
             'stellar',
             'contracts',

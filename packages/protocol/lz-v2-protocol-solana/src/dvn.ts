@@ -14,11 +14,10 @@ import type {
 } from '@metaplex-foundation/umi';
 import { createNullRpc, defaultPublicKey, publicKey } from '@metaplex-foundation/umi';
 import { createDefaultProgramRepository } from '@metaplex-foundation/umi-program-repository';
+import { keccak_256 } from '@noble/hashes/sha3';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
-import type { HashSigner } from '@layerzerolabs/lz-foundation';
-import { keccak_256 } from '@layerzerolabs/lz-foundation';
-import { addressToBytes32, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { addressToBytes32, PacketV1Codec } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram, UlnProgram } from '.';
 import * as accounts from './generated/dvn/accounts';
@@ -40,6 +39,10 @@ export interface SignFunc {
         }[]
     >;
 }
+
+export type HashSigner = {
+    signHash(hash: Uint8Array): Promise<Uint8Array>;
+};
 
 export class SolanaSignerExt implements SignFunc {
     private readonly signers: HashSigner[];

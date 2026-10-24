@@ -22,14 +22,13 @@ import {
 } from '@metaplex-foundation/umi';
 import { createDefaultProgramRepository } from '@metaplex-foundation/umi-program-repository';
 import { toWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+import { keccak_256 } from '@noble/hashes/sha3';
 import { TransactionInstruction } from '@solana/web3.js';
 import invariant from 'tiny-invariant';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
-import { keccak_256 } from '@layerzerolabs/lz-foundation';
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import type { PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
-import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import type { PacketV1Codec } from '@layerzerolabs/protocol-codecs-v2';
+import { addressToBytes32 } from '@layerzerolabs/protocol-codecs-v2';
 
 import type { MessageLibInterface, SetConfigType, SolanaPacketPath } from '.';
 import {
@@ -1310,7 +1309,7 @@ export class Endpoint {
         params: instructions.SendComposeInstructionArgs,
         commitment: Commitment = 'confirmed',
     ): Promise<accounts.ComposeMessageState | null> {
-        const message = arrayify(keccak_256(params.message));
+        const message = keccak_256(params.message);
         const [composedMessagePDA] = this.pda.composedMessage(
             from,
             params.guid,

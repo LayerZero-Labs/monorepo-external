@@ -4,8 +4,8 @@ import { u64 } from '@metaplex-foundation/umi/serializers';
 import { Keypair } from '@solana/web3.js';
 import { assert, it } from 'vitest';
 
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
 import { Serializer } from '@layerzerolabs/lz-serdes';
-import { arrayify } from '@layerzerolabs/lz-utilities';
 
 import { accounts, errors, Executor, EXECUTOR_PROGRAM_ID } from '../../src/executor';
 import { PermissionDeniedError } from '../../src/generated/worker_interface';
@@ -29,7 +29,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
     const [msglib] = ulnPDA.messageLib();
     const lzReceiveGas = 1n;
     const lzReceiveValue = BigInt(1e9);
-    const optionParamBuf = arrayify(
+    const optionParamBuf = hexToBytes(
         solidityPack(['uint128', 'uint128'], [lzReceiveGas, lzReceiveValue]),
     );
 

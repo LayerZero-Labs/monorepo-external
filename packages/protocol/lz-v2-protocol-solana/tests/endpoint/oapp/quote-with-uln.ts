@@ -2,7 +2,7 @@ import { publicKeyBytes } from '@metaplex-foundation/umi';
 import { fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
 import { it } from 'vitest';
 
-import { Options } from '@layerzerolabs/lz-v2-utilities';
+import { Options } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram, SolanaPacketPath, UlnProgram } from '../../../src';
 import { errors } from '../../../src/endpoint';

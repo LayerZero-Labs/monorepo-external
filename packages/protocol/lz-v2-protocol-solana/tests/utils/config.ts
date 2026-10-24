@@ -1,4 +1,4 @@
-import { Options } from '@layerzerolabs/lz-v2-utilities';
+import { Options } from '@layerzerolabs/protocol-codecs-v2';
 
 import { dvnPDA } from './constants';
 

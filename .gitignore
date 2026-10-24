@@ -111,3 +111,5 @@ terraform.tfstate.backup
 
 # generated design-token audit artifacts
 color-tokens-reference.csv
+
+.lz-sui-client/

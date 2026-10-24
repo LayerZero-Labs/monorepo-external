@@ -19,6 +19,7 @@ import {
     toWeb3JsKeypair,
     toWeb3JsPublicKey,
 } from '@metaplex-foundation/umi-web3js-adapters';
+import * as secp256k1 from '@noble/secp256k1';
 import {
     Account,
     createMint,
@@ -32,16 +33,14 @@ import { assert, expect } from 'vitest';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
 import { SolanaSigner } from '@layerzerolabs/lz-corekit-solana';
-import { HashSigner, secp256k1, Secp256k1Signer } from '@layerzerolabs/lz-foundation';
-import { arrayify } from '@layerzerolabs/lz-utilities';
 import {
     addressToBytes32,
-    calculateGuid,
+    calculatePacketGuid,
     ExecutorOptionType,
     Packet,
     PacketHeader,
     PacketV1Codec,
-} from '@layerzerolabs/lz-v2-utilities';
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import {
     EndpointProgram,
@@ -50,7 +49,7 @@ import {
     simulateWeb3JsTransaction,
     SolanaPacketPath,
 } from '../../src';
-import { types } from '../../src/dvn';
+import { HashSigner, types } from '../../src/dvn';
 import { OnlyRevertError } from '../../src/generated/simple_messagelib';
 import { SIMPLE_MESSAGELIB_PROGRAM_ID, SimpleMessageLib } from '../../src/simple-message-lib';
 import { maxAdminNum, maxExecutorsLen, maxMsgLibsLen, maxSignerNum, maxUpdaterNum } from './config';
@@ -298,7 +297,7 @@ export function newNextInPacket(): Packet {
     };
     const packet: Packet = {
         message: `0x${Buffer.from('hello world').toString('hex')}`,
-        guid: calculateGuid(packetHeader),
+        guid: calculatePacketGuid(packetHeader),
         ...packetHeader,
         payload: '', // will be calculated in the program
     };
@@ -360,8 +359,8 @@ export function clear(delegate: Signer, packet: Packet): WrappedInstruction {
             srcEid: packet.srcEid,
             sender: addressToBytes32(packet.sender),
             nonce: nonce,
-            guid: arrayify(packet.guid),
-            message: arrayify(packet.message),
+            guid: hexToBytes(packet.guid),
+            message: hexToBytes(packet.message),
         },
     ).items[0];
 }
@@ -459,10 +458,16 @@ export function generateMaxSolanaSigner(): SolanaSigner[] {
 }
 
 export function buildHashSignerFromSolanaSigner(signer: SolanaSigner): HashSigner {
-    const { secretKey } = signer.native;
-    const seed = secretKey.subarray(0, 32);
-    const s = Secp256k1Signer.from(seed);
-    return s;
+    const seed = getECDSAPrivateKey(signer);
+    return {
+        signHash: async (hash) => {
+            const [signature, recoveryId] = await secp256k1.sign(hash, seed, {
+                recovered: true,
+                der: false,
+            });
+            return Uint8Array.from([...signature, recoveryId]);
+        },
+    };
 }
 
 export const MAX_VERIFIER_SIGNERS = generateMaxSolanaSigner();

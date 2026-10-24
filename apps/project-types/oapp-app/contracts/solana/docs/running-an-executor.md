@@ -93,8 +93,8 @@ isolation is an operator responsibility.
 ## References
 
 - Cap + bare-account enforcement:
-  [`post_execute.rs`](../../../../../../apps/project-types/deploy-wire-protocol-app/contracts/solana/programs/executor/src/instructions/post_execute.rs),
-  [`pre_execute.rs`](../../../../../../apps/project-types/deploy-wire-protocol-app/contracts/solana/programs/executor/src/instructions/pre_execute.rs)
+  [`post_execute.rs`](../../../../../../apps/project-types/protocol-app/contracts/solana/programs/executor/src/instructions/post_execute.rs),
+  [`pre_execute.rs`](../../../../../../apps/project-types/protocol-app/contracts/solana/programs/executor/src/instructions/pre_execute.rs)
 - Plan construction (trusts the OApp/composer simulation output):
   [`receive-types-v3.ts`](../../../../../../packages/protocol/lz-v2-protocol-solana/src/receive-types-v3.ts),
   [`compose-types-v3.ts`](../../../../../../packages/protocol/lz-v2-protocol-solana/src/compose-types-v3.ts)

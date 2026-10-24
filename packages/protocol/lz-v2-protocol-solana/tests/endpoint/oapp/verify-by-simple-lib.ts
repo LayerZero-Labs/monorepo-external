@@ -1,7 +1,12 @@
 import { PublicKey, publicKey, publicKeyBytes } from '@metaplex-foundation/umi';
 import { beforeAll, expect, it } from 'vitest';
 
-import { calculateGuid, Packet, PacketHeader, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import {
+    calculatePacketGuid,
+    Packet,
+    PacketHeader,
+    PacketV1Codec,
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import {
     EndpointProgram,
@@ -73,7 +78,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
         };
         packet = {
             message: Buffer.from('hello world').toString('hex'),
-            guid: calculateGuid(packetHeader),
+            guid: calculatePacketGuid(packetHeader),
             ...packetHeader,
             payload: '', // will be calculated in the program
         };

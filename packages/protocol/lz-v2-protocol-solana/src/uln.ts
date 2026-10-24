@@ -25,8 +25,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import invariant from 'tiny-invariant';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import { PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { PacketV1Codec } from '@layerzerolabs/protocol-codecs-v2';
 
 import type { MessageLibInterface, SolanaPacketPath } from '.';
 import { EndpointProgram, SetConfigType } from '.';
@@ -730,8 +729,8 @@ export class Uln implements MessageLibInterface {
         const payloadHashBytes = hexToBytes(payloadHash);
         const [confirmationsPDA] = this.pda.confirmations(headerHashBytes, payloadHashBytes, dvn);
         const endpoint = new EndpointProgram.Endpoint(endpointProgram);
-        const receiver = publicKey(arrayify(packet.receiver()));
-        const sender = arrayify(packet.sender());
+        const receiver = publicKey(hexToBytes(packet.receiver()));
+        const sender = hexToBytes(packet.sender());
         const nonce = await endpoint.getNonce(rpc, receiver, packet.srcEid(), sender, commitment);
         const pendingNonce = await endpoint.getPendingInboundNonce(
             rpc,
@@ -782,7 +781,7 @@ export class Uln implements MessageLibInterface {
         const packet = PacketV1Codec.fromBytes(packetBytes);
         const payloadHash = packet.payloadHash();
         const srcEid = packet.srcEid();
-        const receiver = publicKey(arrayify(packet.receiver()));
+        const receiver = publicKey(hexToBytes(packet.receiver()));
         const payloadHashBytes = hexToBytes(payloadHash);
 
         const [msgLib] = this.pda.messageLib();
@@ -816,7 +815,7 @@ export class Uln implements MessageLibInterface {
                 receiveConfig: this.pda.receiveConfig(srcEid, receiver),
 
                 // param
-                packetHeader: arrayify(packet.header()),
+                packetHeader: hexToBytes(packet.header()),
                 payloadHash: payloadHashBytes,
             },
         );

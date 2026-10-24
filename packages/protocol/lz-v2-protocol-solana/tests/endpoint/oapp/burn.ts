@@ -1,8 +1,12 @@
 import { publicKey } from '@metaplex-foundation/umi';
 import { expect, it } from 'vitest';
 
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import { addressToBytes32, PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
+import {
+    addressToBytes32,
+    PacketSerializer,
+    PacketV1Codec,
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import {
     EndpointProgram,
@@ -60,7 +64,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver: receiver,
             sender: sender,
             srcEid: packet1.srcEid,
-            payloadHash: arrayify(codec.payloadHash()),
+            payloadHash: hexToBytes(codec.payloadHash()),
         });
 
         const { signature } = await sendAndConfirm(umi, ix, [wallet, EOAPP_DELEGATE]);
@@ -114,7 +118,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver: receiver,
             sender: sender,
             srcEid: packet1.srcEid,
-            payloadHash: arrayify(codec.payloadHash()),
+            payloadHash: hexToBytes(codec.payloadHash()),
         });
         await shouldBeRejected(
             sendAndConfirm(umi, [clearIx2, ix], [wallet, EOAPP_DELEGATE, HACKER]),
@@ -139,7 +143,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver: receiver,
             sender: sender,
             srcEid: packet1.srcEid,
-            payloadHash: arrayify(codec.payloadHash()),
+            payloadHash: hexToBytes(codec.payloadHash()),
         });
         await shouldBeRejected(
             sendAndConfirm(umi, [...verifyIx1, ix], [wallet, EOAPP_DELEGATE]),
@@ -162,7 +166,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver: receiver,
             sender: sender,
             srcEid: packet1.srcEid,
-            payloadHash: arrayify(
+            payloadHash: hexToBytes(
                 '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
             ),
         });

@@ -20,7 +20,7 @@ import {
     TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 
-import { PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { PacketV1Codec } from '@layerzerolabs/protocol-codecs-v2';
 
 import type { MessageLibInterface, SolanaPacketPath } from '.';
 import { EndpointProgram } from '.';

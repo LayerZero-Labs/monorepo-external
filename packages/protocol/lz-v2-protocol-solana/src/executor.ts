@@ -16,7 +16,7 @@ import type {
 import { createNullRpc, defaultPublicKey } from '@metaplex-foundation/umi';
 import { createDefaultProgramRepository } from '@metaplex-foundation/umi-program-repository';
 
-import type { Packet } from '@layerzerolabs/lz-v2-utilities';
+import type { Packet } from '@layerzerolabs/protocol-codecs-v2';
 
 import type { ComposeSentEvent } from './generated/endpoint/events';
 import * as accounts from './generated/executor/accounts';

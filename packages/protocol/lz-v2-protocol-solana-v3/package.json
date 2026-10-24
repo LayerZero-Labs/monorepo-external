@@ -23,10 +23,10 @@
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
     },
     "dependencies": {
-        "@layerzerolabs/lz-foundation": "catalog:",
         "@metaplex-foundation/umi": "catalog:",
         "@metaplex-foundation/umi-eddsa-web3js": "catalog:",
         "@metaplex-foundation/umi-web3js-adapters": "catalog:",
+        "@noble/hashes": "catalog:",
         "@solana/kit": "catalog:",
         "@solana/web3.js": "catalog:"
     },

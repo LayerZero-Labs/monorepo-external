@@ -82,7 +82,7 @@ const extractPrograms = async (): Promise<void> => {
     console.log(`  Starting snapshot validator (${SNAPSHOT_IMAGE})...`);
     await $`docker rm -f ${CONTAINER_NAME}`.quiet().catch(() => {});
 
-    // TODO-SOLANA: replace this with apps/project-types/deploy-wire-protocol-app/contracts/solana/ to fetch and build the protocol programs (executor, dvn, endpoint, pricefeed, etc)
+    // TODO-SOLANA: replace this with apps/project-types/protocol-app/contracts/solana/ to fetch and build the protocol programs (executor, dvn, endpoint, pricefeed, etc)
     // stop-gap solution until protocol solana is migrated in from `monorepo`
     const validatorCmd = `solana-test-validator --rpc-port ${RPC_PORT} -l /app/cache --limit-ledger-size 50000000`;
     await $`docker run -d --name ${CONTAINER_NAME} -p ${RPC_PORT}:${RPC_PORT} ${SNAPSHOT_IMAGE} sh -c ${validatorCmd}`;

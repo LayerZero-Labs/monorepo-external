@@ -44,7 +44,6 @@ export interface FixDependenciesParams {
     write?: boolean;
     catalogize?: boolean;
     customCatalog?: Catalog;
-    preventCatalogsCleanup?: boolean;
     cwd?: string;
     dups?: boolean;
 }

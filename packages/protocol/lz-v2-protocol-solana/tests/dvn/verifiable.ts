@@ -3,13 +3,13 @@ import { u8 } from '@metaplex-foundation/umi/serializers';
 import { assert } from 'vitest';
 import { beforeAll as before, it } from 'vitest';
 
-import { arrayify } from '@layerzerolabs/lz-utilities';
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
 import {
-    calculateGuid,
+    calculatePacketGuid,
     Packet,
     PacketSerializer,
     PacketV1Codec,
-} from '@layerzerolabs/lz-v2-utilities';
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram } from '../../src';
 import { DVN, DVN_PROGRAM_ID } from '../../src/dvn';
@@ -60,11 +60,11 @@ export const testSuite = (validator: SolanaTestValidator): void => {
         const nonceAccount = await EndpointProgram.accounts.fetchNonce(umi, nonce);
         const NONCE = nonceAccount.inboundNonce + BigInt(1);
         packet.nonce = NONCE.toString();
-        packet.guid = calculateGuid(packet);
+        packet.guid = calculatePacketGuid(packet);
         packetBytes = PacketSerializer.serializeBytes(packet);
         const codec = PacketV1Codec.from(packet);
-        headerHashBytes = arrayify(codec.headerHash());
-        payloadHashBytes = arrayify(codec.payloadHash());
+        headerHashBytes = hexToBytes(codec.headerHash());
+        payloadHashBytes = hexToBytes(codec.payloadHash());
         [confirmationsPda] = ulnPDA.confirmations(headerHashBytes, payloadHashBytes, dvn);
     });
 
@@ -108,7 +108,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             ...packet,
             nonce: (inboundNonce + maxPendingInboundNonce + BigInt(1)).toString(),
         };
-        packet.guid = calculateGuid(packet);
+        packet.guid = calculatePacketGuid(packet);
 
         const ix = await dvnSDK.verifiable(umi.rpc, {
             packetBytes: PacketSerializer.serializeBytes(exceededPacket),

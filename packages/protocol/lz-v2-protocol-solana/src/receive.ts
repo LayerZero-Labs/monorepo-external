@@ -2,9 +2,9 @@ import type { Commitment, Instruction, PublicKey, RpcInterface } from '@metaplex
 import { publicKey } from '@metaplex-foundation/umi';
 import invariant from 'tiny-invariant';
 
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import type { Packet } from '@layerzerolabs/lz-v2-utilities';
-import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
+import type { Packet } from '@layerzerolabs/protocol-codecs-v2';
+import { addressToBytes32 } from '@layerzerolabs/protocol-codecs-v2';
 
 import { getLzComposeAccountsFromTypesV1 } from './compose-types-v1';
 import { buildLzComposeExecutionPlan, getLzComposeTypesInfo } from './compose-types-v2';
@@ -40,13 +40,13 @@ export async function lzReceive(
     | ReturnType<typeof buildLzReceiveExecutionPlan>
 > {
     const { message: message_, sender: sender_, srcEid, guid, receiver: receiver_, nonce } = packet;
-    const sender = arrayify(sender_);
+    const sender = hexToBytes(sender_);
     const receiverBytes = addressToBytes32(receiver_);
-    const message = arrayify(message_);
+    const message = hexToBytes(message_);
     const params: LzReceiveParams = {
         srcEid: srcEid,
         sender,
-        guid: arrayify(guid),
+        guid: hexToBytes(guid),
         message,
         callerParams,
         nonce: BigInt(nonce),

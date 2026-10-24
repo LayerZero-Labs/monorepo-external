@@ -215,7 +215,7 @@ export type GenerateContractsSnapshotOptions = {
     /**
      * Limit snapshot update to workspace packages under these directories. When omitted, turbo
      * updates every package with `test:snapshot:update` — which is what made generator-build
-     * flake on unrelated packages (e.g. `apps/project-types/deploy-wire-protocol-app/contracts/sui`).
+     * flake on unrelated packages (e.g. `apps/project-types/protocol-app/contracts/sui`).
      */
     directories?: string[];
 };

@@ -8,9 +8,8 @@ import { isPublicKey } from '@metaplex-foundation/umi';
 import type { Serializer } from '@metaplex-foundation/umi/serializers';
 import { base58 } from '@metaplex-foundation/umi/serializers';
 import { toWeb3JsInstruction, toWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+import { sha256 } from '@noble/hashes/sha2';
 import * as web3 from '@solana/web3.js';
-
-import { sha2_256 } from '@layerzerolabs/lz-foundation';
 
 import { EventEmitDiscriminator } from './endpoint';
 import type {
@@ -41,7 +40,7 @@ function getEventDiscriminator(event: string): string {
         https://book.anchor-lang.com/anchor_bts/discriminator.html
         sha256(namespace:eventName) namespace of cpi event is 'event'
     */
-    return Buffer.from(sha2_256(`event:${event}`))
+    return Buffer.from(sha256(`event:${event}`))
         .subarray(0, 8)
         .toString('hex');
 }

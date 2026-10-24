@@ -99,15 +99,8 @@ export const runCatalogizeAll = async (params: {
     pnpmLsObject: { [key: string]: PnpmPackageObject };
     dependenciesFilter: string[];
     customCatalog?: Catalog;
-    preventCatalogsCleanup?: boolean;
 }): Promise<void> => {
-    const {
-        packages,
-        pnpmLsObject,
-        dependenciesFilter,
-        customCatalog,
-        preventCatalogsCleanup = false,
-    } = params;
+    const { packages, pnpmLsObject, dependenciesFilter, customCatalog } = params;
     const catalog = customCatalog || (await getCatalog());
     let throwError = false;
     let changed = false;
@@ -140,6 +133,6 @@ export const runCatalogizeAll = async (params: {
         const sortedCatalog = Object.fromEntries(
             Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)),
         );
-        await writeCatalog(sortedCatalog, { preventCatalogsCleanup });
+        await writeCatalog(sortedCatalog);
     }
 };

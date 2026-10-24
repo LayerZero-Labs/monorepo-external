@@ -5,6 +5,7 @@ import {
     type Signer,
 } from '@metaplex-foundation/umi';
 import type { Serializer } from '@metaplex-foundation/umi/serializers';
+import { sha256 } from '@noble/hashes/sha2';
 import {
     createKeyPairSignerFromBytes,
     createSolanaRpc,
@@ -19,8 +20,6 @@ import {
     type TransactionVersion,
 } from '@solana/kit';
 import type { Connection } from '@solana/web3.js';
-
-import { sha2_256 } from '@layerzerolabs/lz-foundation';
 
 import { compileTransactionV1, type TransactionV1Budgets } from './transaction-v1';
 
@@ -194,7 +193,7 @@ export function decodeEvents<T>(
     serializer: Serializer<T, T>,
 ): T[] {
     const discriminator = Buffer.from(
-        sha2_256(Buffer.from(`event:${serializer.description}`)),
+        sha256(Buffer.from(`event:${serializer.description}`)),
     ).subarray(0, 8);
     return transaction.innerInstructions
         .filter(({ programId: emitter }) => emitter === String(programId))

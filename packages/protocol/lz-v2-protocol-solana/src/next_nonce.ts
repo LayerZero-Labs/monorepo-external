@@ -13,9 +13,9 @@ import {
 import { fromWeb3JsPublicKey, toWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
 import * as web3 from '@solana/web3.js';
 
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import type { Packet } from '@layerzerolabs/lz-v2-utilities';
-import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
+import type { Packet } from '@layerzerolabs/protocol-codecs-v2';
+import { addressToBytes32 } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EDDSA } from './pda';
 import { instructionDiscriminator, simulateWeb3JsTransaction, toWeb3Connection } from './utility';
@@ -71,7 +71,7 @@ export async function nextNonce(
 
     const params: NextNonceInstructionDataArgs = {
         srcEid: srcEid,
-        sender: arrayify(sender_),
+        sender: hexToBytes(sender_),
         receiver: fromWeb3JsPublicKey(receiver),
     };
     const receiverProgram = receiverInfo.owner;

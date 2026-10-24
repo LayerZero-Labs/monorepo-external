@@ -1,8 +1,12 @@
 import { publicKey } from '@metaplex-foundation/umi';
 import { expect, it } from 'vitest';
 
-import { arrayify } from '@layerzerolabs/lz-utilities';
-import { addressToBytes32, PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
+import {
+    addressToBytes32,
+    PacketSerializer,
+    PacketV1Codec,
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import {
     EndpointProgram,
@@ -47,7 +51,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver,
             sender,
             srcEid: packet.srcEid,
-            payloadHash: arrayify(codec.payloadHash()),
+            payloadHash: hexToBytes(codec.payloadHash()),
         });
         await shouldBeRejected(
             sendAndConfirm(umi, [...verifyIxs, ix], [wallet, HACKER]),
@@ -70,7 +74,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver,
             sender,
             srcEid: packet.srcEid,
-            payloadHash: arrayify(
+            payloadHash: hexToBytes(
                 '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
             ),
         });
@@ -97,7 +101,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
             receiver,
             sender,
             srcEid: packet.srcEid,
-            payloadHash: arrayify(codec.payloadHash()),
+            payloadHash: hexToBytes(codec.payloadHash()),
         });
 
         const { signature } = await sendAndConfirm(

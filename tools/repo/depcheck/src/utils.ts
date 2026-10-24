@@ -173,13 +173,8 @@ export const invalidateCachedCatalog = (): void => {
  * Reads the project's pnpm-workspace.yaml file and writes the catalog to it.
  *
  * @param catalog - The catalog to write.
- * @param options - The options for writing the catalog.
- * @param options.preventCatalogsCleanup - If true, the `cleanupUnusedCatalogs` flag is set to false, so unused catalogs will not be cleaned up.
  */
-export const writeCatalog = async (
-    catalog: Catalog,
-    options: { preventCatalogsCleanup?: boolean },
-) => {
+export const writeCatalog = async (catalog: Catalog) => {
     const { pnpmLsObject } = await getPnpmLs();
     let rootPackage: PnpmPackageObject = pnpmLsObject['root'];
     const pnpmWorkspace = await getPnpmWorkspace();
@@ -187,9 +182,6 @@ export const writeCatalog = async (
         pnpmWorkspace.catalogs = {};
     }
     pnpmWorkspace.catalogs.default = catalog;
-    if (options.preventCatalogsCleanup) {
-        pnpmWorkspace.cleanupUnusedCatalogs = false;
-    }
 
     await fs.promises.writeFile(
         path.join(rootPackage.path, 'pnpm-workspace.yaml'),

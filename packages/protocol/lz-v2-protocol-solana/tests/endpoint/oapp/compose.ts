@@ -1,7 +1,8 @@
+import { keccak_256 } from '@noble/hashes/sha3';
 import { expect, it } from 'vitest';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
-import { calculateGuid, keccak256, Packet, PacketHeader } from '@layerzerolabs/lz-v2-utilities';
+import { calculatePacketGuid, Packet, PacketHeader } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram, extractEventFromTransactionSignature } from '../../../src';
 import { accounts, errors, instructions } from '../../../src/endpoint';
@@ -33,12 +34,12 @@ export const testSuite = (validator: SolanaTestValidator): void => {
     };
     const packet: Packet = {
         message: Buffer.from('hello world').toString('hex'),
-        guid: calculateGuid(packetHeader),
+        guid: calculatePacketGuid(packetHeader),
         ...packetHeader,
         payload: '', // will be calculated in the program
     };
     const guid = Buffer.from(hexToBytes(packet.guid));
-    const messageHash = Buffer.from(hexToBytes(keccak256(`0x${packet.message}`)));
+    const messageHash = Buffer.from(keccak_256(hexToBytes(packet.message)));
     const [composedMessagePda, bump] = endpointPDA.composedMessage(
         oAppKp.publicKey,
         guid,

@@ -39,7 +39,6 @@ async function _fixDeps(options: FixDependenciesParams) {
         write,
         catalogize,
         customCatalog,
-        preventCatalogsCleanup = false,
         dups,
     } = options;
     // Commander.js maps --no-dups to 'dups' property
@@ -123,7 +122,6 @@ async function _fixDeps(options: FixDependenciesParams) {
             pnpmLsObject,
             dependenciesFilter: [],
             customCatalog,
-            preventCatalogsCleanup,
         });
     }
 }

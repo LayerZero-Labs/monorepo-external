@@ -10,7 +10,7 @@ import { fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
 import * as web3 from '@solana/web3.js';
 import invariant from 'tiny-invariant';
 
-import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import { addressToBytes32 } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram, SimpleMessageLibProgram, UlnProgram } from '.';
 import { accounts as DvnAccounts, DVN } from './dvn';

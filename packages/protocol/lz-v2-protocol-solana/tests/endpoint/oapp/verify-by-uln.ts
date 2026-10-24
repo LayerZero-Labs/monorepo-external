@@ -8,7 +8,12 @@ import {
 import { u8 } from '@metaplex-foundation/umi/serializers';
 import { assert, expect, it } from 'vitest';
 
-import { calculateGuid, Packet, PacketHeader, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import {
+    calculatePacketGuid,
+    Packet,
+    PacketHeader,
+    PacketV1Codec,
+} from '@layerzerolabs/protocol-codecs-v2';
 
 import { DVNProgram, EndpointProgram, UlnProgram } from '../../../src';
 import { accounts } from '../../../src/uln';
@@ -46,7 +51,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
     };
     const packet: Packet = {
         message: Buffer.from('hello world').toString('hex'),
-        guid: calculateGuid(packetHeader),
+        guid: calculatePacketGuid(packetHeader),
         ...packetHeader,
         payload: '', // will be calculated in the program
     };

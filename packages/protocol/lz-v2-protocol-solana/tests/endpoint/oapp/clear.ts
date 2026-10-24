@@ -2,7 +2,7 @@ import { PublicKey, publicKey, publicKeyBytes } from '@metaplex-foundation/umi';
 import { beforeAll, expect, it } from 'vitest';
 
 import { hexToBytes } from '@layerzerolabs/common-encoding-utils';
-import { calculateGuid, Packet, PacketHeader } from '@layerzerolabs/lz-v2-utilities';
+import { calculatePacketGuid, Packet, PacketHeader } from '@layerzerolabs/protocol-codecs-v2';
 
 import { EndpointProgram, extractEventFromTransactionSignature } from '../../../src';
 import { accounts, errors, instructions } from '../../../src/endpoint';
@@ -56,7 +56,7 @@ export const testSuite = (validator: SolanaTestValidator): void => {
         };
         packet = {
             message: Buffer.from('hello world').toString('hex'),
-            guid: calculateGuid(packetHeader),
+            guid: calculatePacketGuid(packetHeader),
             ...packetHeader,
             payload: '', // will be calculated in the program
         };

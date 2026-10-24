@@ -1,7 +1,6 @@
 import { SolanaSigner } from '@layerzerolabs/lz-corekit-solana';
-import { HashSigner } from '@layerzerolabs/lz-foundation';
 
-import { SignFunc } from '../../src/dvn';
+import { HashSigner, SignFunc } from '../../src/dvn';
 import { buildHashSignerFromSolanaSigner } from './util';
 
 export class DVNSigner implements SignFunc {
