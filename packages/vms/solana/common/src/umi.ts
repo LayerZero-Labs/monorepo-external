@@ -6,12 +6,12 @@ import {
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { createWeb3JsEddsa } from '@metaplex-foundation/umi-eddsa-web3js';
 import { fromWeb3JsPublicKey, toWeb3JsKeypair } from '@metaplex-foundation/umi-web3js-adapters';
-import type { PublicKey } from '@solana/web3.js';
+import type { Connection, PublicKey } from '@solana/web3.js';
 
 export { generateSigner, transactionBuilder } from '@metaplex-foundation/umi';
 
-export const getUnsignableUmiClient = (rpcUrl: string, signerPk: PublicKey) => {
-    const umi = createUmi(rpcUrl, 'confirmed');
+export const getUnsignableUmiClient = (rpc: string | Connection, signerPk: PublicKey) => {
+    const umi = typeof rpc === 'string' ? createUmi(rpc, 'confirmed') : createUmi(rpc);
     umi.use(
         signerIdentity(
             // by default using createFungible, this will also become the freeze authority

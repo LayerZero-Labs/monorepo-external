@@ -45,6 +45,8 @@ cache/
 .claude/**
 !.claude/skills/
 !.claude/skills/**
+# Shared hooks only (data/ lint feedback); personal settings stay in settings.local.json
+!.claude/settings.json
 .locks
 logs/
 
