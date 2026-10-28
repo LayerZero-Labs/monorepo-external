@@ -1,6 +1,6 @@
 [package]
 # The lib name must be unique in every sync target: the OtterSec verifier builds the first
-# crate whose lib name matches, and the archived and Stellar OneSig crates are named `onesig`.
+# crate whose lib name matches, and the Stellar OneSig crate is named `onesig`.
 name = "onesig-solana"
 version = "0.0.1"
 description = "Created with Anchor"

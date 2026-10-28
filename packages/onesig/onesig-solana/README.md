@@ -8,8 +8,7 @@ This package is program-only: Anchor program sources, Rust tests, IDL build outp
 documentation, and snapshot lockfile checks. It exports no JavaScript. The TypeScript SDK
 lives in [`@layerzerolabs/onesig-solana-sdk`](../onesig-solana-sdk).
 
-This is the canonical package, promoted from `@layerzerolabs/onesig-solana-staged`. The previous
-implementation is preserved in [`../onesig-solana-archived`](../onesig-solana-archived).
+This is the canonical package, promoted from `@layerzerolabs/onesig-solana-staged`.
 
 ## Toolchain
 
