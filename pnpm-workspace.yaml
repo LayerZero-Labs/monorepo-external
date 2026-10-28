@@ -286,6 +286,19 @@ catalogs:
     typescript: npm:@typescript/typescript6@^6.0.2
   grpc-compat:
     '@mysten/sui-v2': npm:@mysten/sui@2.26.2
+  zone-composer:
+    '@layerzerolabs/lz-evm-messagelib-v2': 3.0.168
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
+    '@layerzerolabs/lz-evm-v1-0.7': 3.0.168
+    '@openzeppelin/contracts': 5.6.1
+    '@openzeppelin/contracts-upgradeable': 5.6.1
+  zone-router:
+    '@layerzerolabs/lz-evm-protocol-v2': 3.0.168
+    '@openzeppelin/contracts': 5.6.1
+    '@openzeppelin/contracts-upgradeable': 5.6.1
+  zro-oft:
+    '@layerzerolabs/lz-evm-protocol-v2': 2.1.27
+    '@openzeppelin/contracts': 5.0.2
 allowBuilds:
   '@arbitrum/nitro-contracts': false
   '@stellar/stellar-sdk': false
