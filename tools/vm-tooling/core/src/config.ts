@@ -60,6 +60,7 @@ const isolateVolumeMappingSchema = volumeMappingBaseSchema.extend({
     name: z.string(),
     shared: z.optional(z.boolean()),
     locked: z.optional(z.boolean()),
+    nocopy: z.optional(z.boolean()),
     // Share this cache across packages on the same toolchain instead of per-package. See
     // qualifyVolumeName. Opt-in — omit to keep it package-private.
     toolchainKeyed: z.optional(z.boolean()),

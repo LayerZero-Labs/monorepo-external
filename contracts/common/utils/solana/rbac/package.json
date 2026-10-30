@@ -29,7 +29,8 @@
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:rust && pnpm test:example",
         "test:example": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --manifest-path macros/examples/vault/Cargo.toml --lib --tests' anchor",
-        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p rbac --lib --tests' anchor"
+        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p rbac --lib --tests' anchor",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/framework-solana-anchor-trait": "workspace:*"

@@ -3,6 +3,7 @@
  * CLI for generating Starknet contract verification artifact at build time
  *
  * Usage: generate-starknet-verification --scarb-package <package> --path <output-dir>
+ *          [--source-root <dir>]
  *
  * Example: generate-starknet-verification --scarb-package oft_adapter --path src/generated/verification
  */
@@ -14,15 +15,12 @@ import { z } from 'zod';
 import { parse } from '@layerzerolabs/args';
 import { generatePackageName, PackageNameCaseOption } from '@layerzerolabs/repo-utils';
 
-import {
-    findScarbPackages,
-    prepareContractVerificationArtifact,
-    type StarknetSourceSnapshot,
-} from './starknetSourceCollector';
+import { collectSourceSnapshot, type StarknetSourceSnapshot } from './starknetSourceCollector';
 
 const ArgsSchema = z.object({
     'scarb-package': z.string().min(1, 'Scarb package name cannot be empty'),
     path: z.string().min(1, 'Output path cannot be empty'),
+    'source-root': z.string().min(1, 'Source root cannot be empty'),
 });
 
 type VerificationCliArgs = z.infer<typeof ArgsSchema>;
@@ -40,6 +38,12 @@ const main = async (): Promise<void> => {
                 type: String,
                 description: 'Output directory for generated verification files',
             },
+            'source-root': {
+                type: String,
+                defaultValue: '.',
+                description:
+                    'Scarb workspace root holding the Cairo sources, relative to the current directory (default: the current directory)',
+            },
         },
     });
 
@@ -48,42 +52,31 @@ const main = async (): Promise<void> => {
         throw new Error(`Invalid arguments:\n${z.prettifyError(validationResult.error)}`);
     }
 
-    const { 'scarb-package': scarbPackage, path: outputDir } = validationResult.data;
+    const {
+        'scarb-package': scarbPackage,
+        path: outputDir,
+        'source-root': sourceRoot,
+    } = validationResult.data;
 
-    const scarbWorkspaceRoot = process.cwd();
-    const availablePackages = await findScarbPackages(scarbWorkspaceRoot);
-    const packagePath = availablePackages.get(scarbPackage);
-
-    if (!packagePath) {
-        throw new Error(
-            `Scarb package "${scarbPackage}" not found in ${scarbWorkspaceRoot}. ` +
-                `Available: ${[...availablePackages.keys()].join(', ')}`,
-        );
-    }
-
+    const scarbWorkspaceRoot = path.resolve(sourceRoot);
     console.log(`Generating verification artifact for Scarb package: ${scarbPackage}`);
     console.log(`Scarb workspace root: ${scarbWorkspaceRoot}`);
-    console.log(`Package path: ${packagePath}`);
-    console.log(`Output directory: ${outputDir}`);
 
-    const absoluteOutputDir = path.resolve(scarbWorkspaceRoot, outputDir);
+    const snapshot = await collectSourceSnapshot({ scarbPackage, scarbWorkspaceRoot });
+
+    // Generated output belongs to the package running this command, which is not necessarily where
+    // the Cairo sources were read from.
+    const absoluteOutputDir = path.resolve(process.cwd(), outputDir);
+    console.log(`Output directory: ${absoluteOutputDir}`);
+
     await fs.mkdir(absoluteOutputDir, { recursive: true });
 
     const outputPath = path.join(absoluteOutputDir, `${scarbPackage}.ts`);
+    await fs.writeFile(outputPath, generateTypedExport(snapshot));
 
-    try {
-        const snapshot = await prepareContractVerificationArtifact({
-            packagePath,
-            workspaceRoot: scarbWorkspaceRoot,
-        });
-
-        await fs.writeFile(outputPath, generateTypedExport(snapshot));
-        console.log(`\n✓ Generated: ${outputPath}`);
-        console.log(`  Sources collected: ${Object.keys(snapshot.sources).length}`);
-        console.log(`  Compiler version: ${snapshot.compilerVersion}`);
-    } catch (cause) {
-        throw new Error(`Failed to process Scarb package "${scarbPackage}"`, { cause });
-    }
+    console.log(`\n✓ Generated: ${outputPath}`);
+    console.log(`  Sources collected: ${Object.keys(snapshot.sources).length}`);
+    console.log(`  Compiler version: ${snapshot.compilerVersion}`);
 
     const exportName = `${generatePackageName(scarbPackage.replace(/_/g, '-'), PackageNameCaseOption.CAMEL)}VerificationArtifact`;
     const tsBarrelPath = path.join(absoluteOutputDir, 'index.ts');

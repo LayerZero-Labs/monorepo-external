@@ -6,7 +6,7 @@ import 'hardhat-deploy';
 import 'hardhat-contract-sizer';
 import '@nomiclabs/hardhat-ethers';
 import 'solidity-coverage';
-import '@layerzerolabs/hardhat-tron';
+import '@layerzerolabs/vm-tooling-evm/hardhat-tron';
 import '@matterlabs/hardhat-zksync-solc';
 
 import type { HardhatUserConfig } from 'hardhat/types';

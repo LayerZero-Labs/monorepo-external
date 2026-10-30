@@ -119,7 +119,11 @@ const resolveVolumePath = (volume: VolumeMapping, workspaceRoot: string): Volume
         : volume;
 
 const toDockerVolumeArgs = (volume: VolumeMapping): string[] => {
-    const mode = volume.readOnly ? ':ro' : '';
+    const options = [
+        ...(volume.readOnly ? ['ro'] : []),
+        ...(volume.type === 'isolate' && volume.nocopy ? ['nocopy'] : []),
+    ];
+    const mode = options.length > 0 ? `:${options.join(',')}` : '';
 
     if (volume.type === 'host') {
         return ['-v', `${volume.hostPath}:${volume.containerPath}${mode}`];

@@ -7,8 +7,8 @@ import {
     type ScopedWorkspacePruner,
 } from '@layerzerolabs/vm-tooling';
 
-// Scarb deps mix TS and Cairo. Drop only the top-level TS SDK (src/ -> dist/); nested Cairo crates
-// like layerzero/src and libs/*/src stay.
+// A Scarb package can bundle a TypeScript SDK at its root (src/ -> dist/) next to nested Cairo
+// crates. Drop only that top-level TS layer; crates like layerzero/src and libs/*/src stay.
 const SCARB_PACKAGE_PATTERNS = [
     '**/*',
     '!**/tests/**',

@@ -71,7 +71,7 @@ RUN <<-EOF
   done
 EOF
 
-COPY ./hardhat.config.cjs ./tasks.cjs ./compiler-versions.json ./offline-zksync.cjs /hardhat/
+COPY ./hardhat.config.cjs ./hardhat-tron.cjs ./tasks.cjs ./compiler-versions.json ./offline-zksync.cjs /hardhat/
 RUN ln -s /hardhat/hardhat.config.cjs /hardhat/hardhat.default.config.js
 
 COPY ./flatten.sh ./flatten_dir.sh ./sol_merger.sh /usr/local/bin/

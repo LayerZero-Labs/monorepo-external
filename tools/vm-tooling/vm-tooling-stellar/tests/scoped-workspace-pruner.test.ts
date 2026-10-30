@@ -34,7 +34,7 @@ const createDependency = async (root: string, relativePath: string, hasCargoToml
 };
 
 describe(createStellarScopedWorkspacePruner, () => {
-    it('selects release artifacts, full bindings source, and ignores unrelated dependencies', async ({
+    it('selects release artifacts and full bindings source, ignores unrelated dependencies, and lets .artifacts files vanish during the copy', async ({
         expect,
     }) => {
         const repoRoot = await mkdtemp(join(tmpdir(), 'stellar-scoped-workspace-pruner-'));
@@ -73,6 +73,7 @@ describe(createStellarScopedWorkspacePruner, () => {
                 ...DEFAULT_SOURCE_COPY_EXCLUDE_PATTERNS,
             ],
         });
+        expect(plan.mayVanishPatterns).toEqual(['.artifacts/**']);
         expect(plan.diagnostics).toEqual([
             'Stellar scoped-workspace pruner selected files from 2 workspace dependency package(s).',
         ]);

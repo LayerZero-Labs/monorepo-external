@@ -11,10 +11,11 @@
                 "!tests/**/*.rs",
                 "!turbo-snapshot.lock.json"
             ],
-            "outputs": ["dependencies/**", "target/deploy/*.so", "target/idl/**", "target/types/**"]
+            "outputs": ["target/deploy/*.so", "target/idl/**", "target/types/**"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

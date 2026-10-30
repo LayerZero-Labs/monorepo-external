@@ -18,7 +18,7 @@ platform-tools v1.53 and later print `Error: Function ... overflows the maximum 
 Limits:
 
 - `solana-verify build` builds in its own Docker container, which the guard does not see.
-- A script that calls cargo by absolute path (`/usr/local/cargo/bin/cargo`), or `cargo-build-sbf` directly, skips the guard. So does a run with `lz-tool --env PATH=...` that leaves out `/opt/sbf-guard/bin`.
+- A script that calls cargo by absolute path (`/usr/local/bin/cargo`, or `/usr/local/cargo/bin/cargo` in a run without the default cargo volume), or `cargo-build-sbf` directly, skips the guard. So does a run with `lz-tool --env PATH=...` that leaves out `/opt/sbf-guard/bin`.
 - A multi-command `lz-tool --script` stops at a rejected build only when the script stops on a failure: `set -e`, or `&&` between commands. `lz-tool` runs scripts with `bash -c` and no `errexit`.
 - `cargo build-sbf --debug` writes no `.so` in the output directory or the release directory. It writes `<output directory>/debug/<name>.so` and `<target_directory>/<sbf target>/debug/<name>.so` (for example `<target_directory>/sbpfv3-solana-solana/debug`), and the wrapper deletes neither. A rejected `--debug` build still fails, but both program files stay.
 - Images built before the guard was added, and `lz-tool` runs that select them, have no guard.

@@ -5,9 +5,15 @@
     "license": "MIT",
     "type": "module",
     "exports": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js",
-        "default": "./dist/index.js"
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./hardhat-tron": {
+            "types": "./docker/evm/hardhat-tron.d.cts",
+            "default": "./docker/evm/hardhat-tron.cjs"
+        }
     },
     "main": "./dist/index.js",
     "module": "./dist/index.js",
@@ -17,7 +23,8 @@
     },
     "files": [
         "dist/**/*",
-        "bin/**/*"
+        "bin/**/*",
+        "docker/evm/hardhat-tron.*"
     ],
     "scripts": {
         "build": "tsup",
@@ -26,17 +33,27 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@layerzerolabs/vm-tooling": "workspace:*"
+        "@layerzerolabs/vm-tooling": "workspace:*",
+        "semver": "catalog:"
     },
     "devDependencies": {
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vitest-configuration": "workspace:*",
         "@types/node": "catalog:",
+        "hardhat": "catalog:",
         "tsup": "catalog:",
         "tsx": "catalog:",
         "typescript": "catalog:",
         "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "hardhat": "catalog:"
+    },
+    "peerDependenciesMeta": {
+        "hardhat": {
+            "optional": true
+        }
     },
     "publishConfig": {
         "access": "restricted",

@@ -1,5 +1,5 @@
 require('hardhat-deploy');
-require('@layerzerolabs/hardhat-tron');
+require('./hardhat-tron.cjs');
 require('@matterlabs/hardhat-zksync-deploy');
 require('@matterlabs/hardhat-zksync-solc');
 require('./tasks.cjs');

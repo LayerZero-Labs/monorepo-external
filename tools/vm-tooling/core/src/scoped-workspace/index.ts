@@ -32,6 +32,13 @@ export {
 const FALLBACK_DIAGNOSTIC =
     'No scoped-workspace pruner configured; using unpruned package-level source copy fallback.';
 
+const describeSkippedSources = (skippedSourcePaths: readonly string[]): string[] =>
+    skippedSourcePaths.length
+        ? [
+              `Scoped copy skipped sources removed during the copy (${skippedSourcePaths.length}): ${skippedSourcePaths.join(', ')}`,
+          ]
+        : [];
+
 interface PrunerResolution {
     prunerName?: string;
     prunePlan?: ScopedWorkspacePrunePlan;
@@ -96,6 +103,7 @@ export const createScopedWorkspace = async (
         dependencyGraph,
         prunePatterns: prunerResolution.prunePlan?.patterns,
         packagePrunePatterns: prunerResolution.prunePlan?.packagePatterns,
+        mayVanishPatterns: prunerResolution.prunePlan?.mayVanishPatterns,
     });
 
     try {
@@ -122,6 +130,9 @@ export const createScopedWorkspace = async (
         copiedWorkspacePackageCount: copiedPackagePathEntries.length,
         copiedWorkspacePackagePaths: Object.fromEntries(copiedPackagePathEntries),
         prunerName: prunerResolution.prunerName,
-        diagnostics: prunerResolution.diagnostics,
+        diagnostics: [
+            ...prunerResolution.diagnostics,
+            ...describeSkippedSources(sourceCopy.skippedSourcePaths),
+        ],
     };
 };

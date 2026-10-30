@@ -1,10 +1,10 @@
 import { glob } from 'glob';
 import { copyFile, lstat, mkdir, mkdtemp, readlink, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import pLimit from 'p-limit';
 
-import { isInside, safeRemove } from '../utils/fs';
+import { getErrorCode, isInside, safeRemove } from '../utils/fs';
 import { COPY_CONCURRENCY } from './node-modules';
 import type { WorkspaceSourceCopyOptions, WorkspaceSourceCopyResult } from './types';
 
@@ -34,6 +34,17 @@ const DEFAULT_SOURCE_COPY_FALLBACK_PATTERNS = [
 const getPathSegments = (relativePath: string): string[] =>
     relativePath ? relativePath.split('/') : [];
 
+const matchesAnyPattern = (relativePath: string, patterns: readonly string[]): boolean =>
+    patterns.some((pattern) => posix.matchesGlob(relativePath, pattern));
+
+const skipVanishedSource = <T>(mayVanish: boolean, operation: Promise<T>): Promise<T | undefined> =>
+    operation.catch((error: unknown) => {
+        if (mayVanish && getErrorCode(error) === 'ENOENT') {
+            return undefined;
+        }
+        throw error;
+    });
+
 const isInsideNodeModules = (relativePath: string): boolean =>
     getPathSegments(relativePath).includes('node_modules');
 
@@ -58,6 +69,8 @@ const copySourceDirectory = async (
     sourceDir: string,
     destDir: string,
     copyPatterns: readonly string[],
+    mayVanishPatterns: readonly string[],
+    onSkippedSource: (relativePath: string) => void,
 ): Promise<void> => {
     await mkdir(destDir, { recursive: true });
 
@@ -75,16 +88,27 @@ const copySourceDirectory = async (
     await Promise.all(
         entries.sort().map((relativePath) =>
             limit(async () => {
+                const mayVanish = matchesAnyPattern(relativePath, mayVanishPatterns);
                 const sourcePath = join(sourceDir, relativePath);
                 const destPath = join(destDir, relativePath);
-                const stats = await lstat(sourcePath);
+                const stats = await skipVanishedSource(mayVanish, lstat(sourcePath));
 
+                if (!stats) {
+                    onSkippedSource(relativePath);
+                    return;
+                }
                 if (stats.isDirectory()) return;
 
                 if (stats.isSymbolicLink()) {
+                    const linkTarget = await skipVanishedSource(mayVanish, readlink(sourcePath));
+                    if (linkTarget === undefined) {
+                        onSkippedSource(relativePath);
+                        return;
+                    }
+
                     await mkdir(dirname(destPath), { recursive: true });
                     try {
-                        await symlink(await readlink(sourcePath), destPath);
+                        await symlink(linkTarget, destPath);
                     } catch (error) {
                         // A workspace package nested under another package root can be copied
                         // twice (once via the parent tree, once as its own importer). Treat an
@@ -95,8 +119,7 @@ const copySourceDirectory = async (
                                 : undefined;
                         if (code !== 'EEXIST') throw error;
                         const existing = await readlink(destPath).catch(() => undefined);
-                        const intended = await readlink(sourcePath);
-                        if (existing !== intended) throw error;
+                        if (existing !== linkTarget) throw error;
                     }
                     return;
                 }
@@ -106,7 +129,11 @@ const copySourceDirectory = async (
                 if (!stats.isFile()) return;
 
                 await mkdir(dirname(destPath), { recursive: true });
-                await copyFile(sourcePath, destPath);
+                const copied = await skipVanishedSource(
+                    mayVanish,
+                    copyFile(sourcePath, destPath).then(() => true),
+                );
+                if (!copied) onSkippedSource(relativePath);
             }),
         ),
     );
@@ -150,7 +177,8 @@ export const copyWorkspaceSources = async (
     options: WorkspaceSourceCopyOptions,
 ): Promise<WorkspaceSourceCopyResult> => {
     const scopedRoot = await mkdtemp(join(tmpdir(), 'lz-scoped-workspace-'));
-    const { prunePatterns, packagePrunePatterns } = options;
+    const { prunePatterns, packagePrunePatterns, mayVanishPatterns = [] } = options;
+    const skippedSourcePaths = new Set<string>();
 
     const copyPackageSource = async ({
         absolutePath,
@@ -173,6 +201,9 @@ export const copyWorkspaceSources = async (
                 prunePatterns,
                 packagePrunePatterns,
             }),
+            mayVanishPatterns,
+            (sourceRelativePath) =>
+                skippedSourcePaths.add(posix.join(relativePath, sourceRelativePath)),
         );
     };
 
@@ -203,5 +234,6 @@ export const copyWorkspaceSources = async (
         scopedRoot,
         packageRelativePath: options.dependencyGraph.packageRelativePath,
         copiedWorkspaceDependencies: options.dependencyGraph.includedWorkspaceDependencies,
+        skippedSourcePaths: [...skippedSourcePaths].sort(),
     };
 };

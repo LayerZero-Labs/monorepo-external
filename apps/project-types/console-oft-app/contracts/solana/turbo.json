@@ -13,10 +13,14 @@
                 "!vitest.config.ts",
                 "!programs/**/tests/**"
             ],
-            "outputs": ["dependencies/**", "target/deploy/*.so", "target/idl/**", "target/types/**"]
+            "outputs": ["target/deploy/*.so", "target/idl/**", "target/types/**"],
+            "dependsOn": ["vendor"]
+        },
+        "lint": {
+            "dependsOn": ["build", "^build"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

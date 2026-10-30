@@ -18,7 +18,6 @@
         "test": "pnpm lz-tool forge test"
     },
     "devDependencies": {
-        "@layerzerolabs/hardhat-tron": "catalog:",
         "@layerzerolabs/solhint-configuration": "workspace:*",
         "@layerzerolabs/toolbox-foundry": "catalog:",
         "@layerzerolabs/vm-tooling-evm": "workspace:*",

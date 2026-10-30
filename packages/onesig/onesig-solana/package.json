@@ -25,7 +25,8 @@
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:rs && pnpm test:js",
         "test:js": "vitest run",
-        "test:rs": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --package onesig-solana -- tests --nocapture' anchor"
+        "test:rs": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --package onesig-solana -- tests --nocapture' anchor",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/heap-allocator-solana-contracts": "workspace:*",

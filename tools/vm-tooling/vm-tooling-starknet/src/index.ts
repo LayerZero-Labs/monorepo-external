@@ -14,12 +14,15 @@ export const main = (): Promise<void> =>
             .command('build-typescript-sdk')
             .description('Generate TypeScript SDK for Starknet')
             .argument('<scarb-package>', 'Scarb package name')
-            .argument('<target-directory>', 'Scarb target directory')
+            .argument(
+                '<build-directory>',
+                'Directory holding the Scarb artifact index and the classes it names',
+            )
             .argument('<src-directory>', 'TypeScript source directory')
-            .action((scarbPackage: string, targetDirectory: string, srcDirectory: string) =>
+            .action((scarbPackage: string, buildDirectory: string, srcDirectory: string) =>
                 starknetCommands.buildTypescriptSdk({
                     scarbPackage,
-                    targetDirectory,
+                    buildDirectory,
                     srcDirectory,
                 }),
             );

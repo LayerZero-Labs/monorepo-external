@@ -1,3 +1,5 @@
+import { env } from 'node:process';
+
 import type {
     EnvironmentVariable,
     Image,
@@ -27,23 +29,27 @@ export const SURFPOOL_REV = '30242a4fe3b87557f3d6f1629f548e2515718242';
 /** Short form of {@link SURFPOOL_REV}; see the image's `patch`. */
 const SURFPOOL_REV_SHORT = SURFPOOL_REV.slice(0, 7);
 
+interface RustToolchainInstall {
+    channel: string;
+    components: readonly string[];
+    targets: readonly string[];
+    aliases: readonly string[];
+}
+
+const formatRustToolchainInstalls = (installs: readonly RustToolchainInstall[]): string =>
+    installs
+        .map(({ channel, components, targets, aliases }) =>
+            [channel, components.join(','), targets.join(','), aliases.join(',')].join(':'),
+        )
+        .join(' ');
+
 const defaultVolumes: readonly VolumeMapping[] = [
     {
         type: 'isolate',
         containerPath: '/usr/local/cargo',
         name: 'solana-cargo',
-        locked: true,
         toolchainKeyed: true,
-    },
-    {
-        type: 'isolate',
-        containerPath: '/usr/local/rustup',
-        name: 'solana-rustup',
-        toolchainKeyed: true,
-        // Written on every build: cargo-build-sbf's strip.sh sources the SDK's install.sh, which
-        // re-links the platform-tools toolchain because the image never ran it. Locked in its own
-        // right rather than relying on solana-cargo's lock, which a user --volume override drops.
-        locked: true,
+        nocopy: true,
     },
     // Cargo build-dir cache; see resolveCargoBuildDirEnv. Nothing prunes subtrees of deleted
     // checkouts.
@@ -52,10 +58,6 @@ const defaultVolumes: readonly VolumeMapping[] = [
         containerPath: CARGO_TARGET_CACHE_PATH,
         name: 'solana-target',
         toolchainKeyed: true,
-        // Locked in its own right: same-toolchain runs already serialize on solana-cargo, but a
-        // user `--volume` override of /usr/local/cargo could drop that lock, so don't make this
-        // shared cache's concurrency safety depend on another volume's lock surviving.
-        locked: true,
     },
 ];
 
@@ -69,11 +71,17 @@ const verifyVolumes: readonly VolumeMapping[] = [
     },
 ];
 
-// cargo defaults `--jobs` to core count, but turbo already builds crates in
-// parallel — uncapped rustc stacks up and OOMs into flaky `E0463: can't find
-// crate`. Cap jobs to bound memory; see PRO-3664.
+const cargoCacheEnv: readonly EnvironmentVariable[] = [
+    { name: 'CARGO_CACHE_AUTO_CLEAN_FREQUENCY', value: 'never' },
+];
+
+const localCargoBuildJobsEnv: readonly EnvironmentVariable[] = env.CI
+    ? []
+    : [{ name: 'CARGO_BUILD_JOBS', value: '4' }];
+
 const defaultEnv: readonly EnvironmentVariable[] = [
-    { name: 'CARGO_BUILD_JOBS', value: '4' },
+    ...cargoCacheEnv,
+    ...localCargoBuildJobsEnv,
     // rustc incremental session locks are owner-only.
     // Solana lz-tool runs Docker as root, so CI copies EACCES host `target/`.
     // Disable incremental. Unchanged crates still skip via cargo fingerprints.
@@ -105,12 +113,10 @@ export const tools: readonly [Tool, ...Tool[]] = [
         getSecondaryVersion: ({ cwd }) => parseAnchorTomlVersion(cwd, 'solana'),
     },
     {
-        // solana-verify compiles in a nested `docker run`; the path-rewriting wrapper in
-        // docker/solana/Dockerfile does not forward CARGO_BUILD_JOBS into it, so unlike anchor
-        // and solana the cap cannot reach rustc here. See PRO-3664.
         name: 'solana-verify',
         // No platform pin: solana-verify delegates artifact builds to its own verifiable-build image.
         defaultVolumes: [...defaultVolumes, ...verifyVolumes],
+        defaultEnv: cargoCacheEnv,
         scopedWorkspacePruner,
     },
     {
@@ -139,6 +145,24 @@ export const images = {
             'platform-tools-rust': '1.88.0',
         },
         patch: 2,
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
+    ['solana:anchor-0.29.0-solana-1.17.31-patch-3']: {
+        name: 'solana',
+        versions: {
+            solana: '1.17.31',
+            anchor: '0.29.0',
+        },
+        dependencies: {
+            rust: '1.79.0',
+            'cargo-expand': '1.0.95',
+            'platform-tools': '1.37',
+            'platform-tools-rust': '1.88.0',
+            'extra-rust-toolchains': formatRustToolchainInstalls([
+                { channel: '1.75.0', components: ['rustfmt', 'clippy'], targets: [], aliases: [] },
+            ]),
+        },
+        patch: 3,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
     ['solana:anchor-0.31.1-solana-2.2.20']: {
@@ -186,6 +210,27 @@ export const images = {
         patch: 4,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-5']: {
+        name: 'solana',
+        versions: {
+            anchor: '0.31.1',
+            solana: '2.2.20',
+            'solana-verify': '0.4.11',
+        },
+        dependencies: {
+            rust: '1.84.1',
+            'extra-rust-toolchains': formatRustToolchainInstalls([
+                {
+                    channel: 'nightly-2025-06-01',
+                    components: [],
+                    targets: [],
+                    aliases: ['nightly'],
+                },
+            ]),
+        },
+        patch: 5,
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
     ['solana:anchor-0.32.1-solana-2.3.0']: {
         name: 'solana',
         versions: {
@@ -195,6 +240,23 @@ export const images = {
         dependencies: {
             rust: '1.92.0',
             'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
+    ['solana:anchor-0.32.1-solana-2.3.0-patch-1']: {
+        name: 'solana',
+        versions: {
+            anchor: '0.32.1',
+            solana: '2.3.0',
+        },
+        patch: 1,
+        dependencies: {
+            rust: '1.92.0',
+            'rust-nightly': 'nightly-2025-06-01',
+            'spl-token-cli': '5.5.0',
+            'extra-rust-toolchains': formatRustToolchainInstalls([
+                { channel: '1.92.0', components: [], targets: [], aliases: ['stable'] },
+            ]),
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
@@ -213,6 +275,29 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.0.2-solana-3.1.10-patch-2']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.0.2',
+            solana: '3.1.10',
+        },
+        patch: 2,
+        dependencies: {
+            rust: '1.89.0',
+            'platform-tools': '1.52',
+            'platform-tools-rust': '1.89.0',
+            'rust-nightly': 'nightly-2025-06-01',
+            'extra-rust-toolchains': formatRustToolchainInstalls([
+                {
+                    channel: '1.92.0',
+                    components: ['rustfmt', 'clippy'],
+                    targets: [],
+                    aliases: ['stable'],
+                },
+            ]),
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
     ['solana:anchor-1.1.2-solana-3.1.10-patch-1']: {
         name: 'solana',
         versions: {
@@ -222,6 +307,21 @@ export const images = {
         patch: 1,
         dependencies: {
             // Host rustc for compiling anchor-cli. 1.1.2 lockfile pins cargo-platform 0.3.3 (MSRV 1.91).
+            rust: '1.92.0',
+            'platform-tools': '1.52',
+            'platform-tools-rust': '1.89.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
+    ['solana:anchor-1.1.2-solana-3.1.10-patch-2']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.1.2',
+            solana: '3.1.10',
+        },
+        patch: 2,
+        dependencies: {
             rust: '1.92.0',
             'platform-tools': '1.52',
             'platform-tools-rust': '1.89.0',
@@ -300,6 +400,22 @@ export const images = {
         },
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
+    ['solana:anchor-1.2.1-solana-4.3.0-patch-2']: {
+        name: 'solana',
+        versions: {
+            anchor: '1.2.1',
+            solana: '4.3.0',
+        },
+        patch: 2,
+        dependencies: {
+            rust: '1.97.1',
+            'cargo-build-sbf': '4.3.0',
+            'platform-tools': '1.57',
+            'platform-tools-rust': '1.95.0',
+            'rust-nightly': 'nightly-2025-06-01',
+        },
+        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
+    },
     // Standalone surfpool runtime image, built from `docker/surfpool/Dockerfile`.
     // Key must equal the tag getImageTag derives; the Docker image IDs test enforces it.
     ['surfpool:surfpool-1.5.0-patch-30242a4']: {
@@ -326,17 +442,17 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
     [
         {
             images: {
-                anchor: 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-4',
-                solana: 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-4',
-                'solana-verify': 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-4',
+                anchor: 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-5',
+                solana: 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-5',
+                'solana-verify': 'solana:anchor-0.31.1-solana-2.2.20-solana-verify-0.4.11-patch-5',
             },
             description: 'Latest stable release',
             stable: true,
         },
         {
             images: {
-                anchor: 'solana:anchor-0.32.1-solana-2.3.0',
-                solana: 'solana:anchor-0.32.1-solana-2.3.0',
+                anchor: 'solana:anchor-0.32.1-solana-2.3.0-patch-1',
+                solana: 'solana:anchor-0.32.1-solana-2.3.0-patch-1',
             },
             description:
                 'Console OFT + Token-2022 (Anchor 0.32.1 with pausable support, nightly-2025-06-01 rustfmt)',
@@ -344,31 +460,31 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
         },
         {
             images: {
-                anchor: 'solana:anchor-1.0.2-solana-3.1.10-patch-1',
-                solana: 'solana:anchor-1.0.2-solana-3.1.10-patch-1',
+                anchor: 'solana:anchor-1.0.2-solana-3.1.10-patch-2',
+                solana: 'solana:anchor-1.0.2-solana-3.1.10-patch-2',
             },
             description: 'Anchor 1.0.2 on Solana 3.1.10 with Rust 1.89.0 and platform-tools 1.52',
         },
         {
             images: {
-                anchor: 'solana:anchor-1.1.2-solana-3.1.10-patch-1',
-                solana: 'solana:anchor-1.1.2-solana-3.1.10-patch-1',
+                anchor: 'solana:anchor-1.1.2-solana-3.1.10-patch-2',
+                solana: 'solana:anchor-1.1.2-solana-3.1.10-patch-2',
             },
             description:
                 'Anchor 1.1.2 on Solana 3.1.10 with host Rust 1.92.0, platform-tools 1.52 (rustc 1.89.0)',
         },
         {
             images: {
-                anchor: 'solana:anchor-1.2.1-solana-4.3.0-patch-1',
-                solana: 'solana:anchor-1.2.1-solana-4.3.0-patch-1',
+                anchor: 'solana:anchor-1.2.1-solana-4.3.0-patch-2',
+                solana: 'solana:anchor-1.2.1-solana-4.3.0-patch-2',
             },
             description:
                 'Anchor 1.2.1 on Solana 4.3.0 (cargo-build-sbf 4.3.0) with host Rust 1.97.1, platform-tools 1.57 (rustc 1.95.0)',
         },
         {
             images: {
-                solana: 'solana:anchor-0.29.0-solana-1.17.31-patch-2',
-                anchor: 'solana:anchor-0.29.0-solana-1.17.31-patch-2',
+                solana: 'solana:anchor-0.29.0-solana-1.17.31-patch-3',
+                anchor: 'solana:anchor-0.29.0-solana-1.17.31-patch-3',
             },
             description: 'Stable and well-tested',
             stable: true,

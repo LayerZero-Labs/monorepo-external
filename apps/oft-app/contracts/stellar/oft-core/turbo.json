@@ -9,10 +9,11 @@
                 "!src/tests/**",
                 "!integration-tests/**"
             ],
-            "outputs": ["dependencies/**", "target/release/*.rlib"]
+            "outputs": ["target/release/*.rlib"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

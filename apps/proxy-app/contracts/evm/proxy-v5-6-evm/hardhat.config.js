@@ -1,7 +1,7 @@
 require('@matterlabs/hardhat-zksync-solc');
-// `hardhat-deploy` is required by `@layerzerolabs/hardhat-tron`.
+// `hardhat-deploy` sets `metadata.useLiteralContent: true`, which the artifacts depend on.
 require('hardhat-deploy');
-require('@layerzerolabs/hardhat-tron');
+require('@layerzerolabs/vm-tooling-evm/hardhat-tron');
 
 module.exports = {
     paths: {

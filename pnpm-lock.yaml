@@ -231,9 +231,6 @@ catalogs:
     '@jest/globals':
       specifier: ^29.7.0
       version: 29.7.0
-    '@layerzerolabs/hardhat-tron':
-      specifier: 3.0.168
-      version: 3.0.168
     '@layerzerolabs/lz-corekit-solana':
       specifier: 3.0.168
       version: 3.0.168
@@ -477,6 +474,9 @@ catalogs:
     js-yaml:
       specifier: 4.3.2
       version: 4.3.2
+    json5:
+      specifier: ^2.2.3
+      version: 2.2.3
     merkletreejs:
       specifier: ^0.3.11
       version: 0.3.11
@@ -599,6 +599,7 @@ overrides:
   fast-uri: ^3.1.6
   flatted: ^3.4.2
   flatted@^3: ^3.4.2
+  follow-redirects@1: 1.16.1
   form-data@^2: ^2.5.6
   form-data@^3: ^3.0.5
   form-data@^4: ^4.0.6
@@ -633,12 +634,13 @@ overrides:
   rollup@^4: ^4.59.0
   serialize-javascript: ^7.0.3
   sonner>@types/react: 19.2.6
+  source-map-js@1: 1.2.2
   string-width: 4.1.0
   tinypool: 2.1.2
   tmp@<0.2.6: ^0.2.6
-  undici@^5: ^6.28.1
-  undici@^6: ^6.28.1
-  undici@^7: ^7.29.1
+  undici@^5: ^6.29.1
+  undici@^6: ^6.29.1
+  undici@^7: ^7.30.1
   undici@8: 8.12.2
   validator: ^13.15.22
   vite@^6: ^6.4.3
@@ -708,9 +710,6 @@ importers:
 
   apps/oft-app/contracts/evm/non-upgradeable:
     devDependencies:
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: 'catalog:'
         version: 3.0.168(d883fd0b6f2cad6203cfa25125ebe07d)
@@ -759,9 +758,6 @@ importers:
 
   apps/oft-app/contracts/evm/upgradeable:
     devDependencies:
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: 'catalog:'
         version: 3.0.168(d883fd0b6f2cad6203cfa25125ebe07d)
@@ -846,7 +842,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../../project-types/protocol-app/contracts/starknet
+        version: link:../../../../project-types/protocol-app/contracts/starknet/contracts
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -868,7 +864,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../../project-types/protocol-app/contracts/starknet
+        version: link:../../../../project-types/protocol-app/contracts/starknet/contracts
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -1022,9 +1018,6 @@ importers:
       '@layerzerolabs/contract-sizes-evm':
         specifier: workspace:*
         version: link:../../../../../tools/vm-utils/evm/contract-sizes
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: catalog:console
         version: 3.0.168(d883fd0b6f2cad6203cfa25125ebe07d)
@@ -1185,9 +1178,6 @@ importers:
       '@layerzerolabs/contract-sizes-evm':
         specifier: workspace:*
         version: link:../../../../../tools/vm-utils/evm/contract-sizes
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-evm-messagelib-v2':
         specifier: catalog:console
         version: 3.0.168(d883fd0b6f2cad6203cfa25125ebe07d)
@@ -1423,23 +1413,11 @@ importers:
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-solana
 
-  apps/project-types/protocol-app/contracts/starknet:
+  apps/project-types/protocol-app/contracts/starknet/contracts:
     devDependencies:
-      '@layerzerolabs/build-utils-starknet':
-        specifier: workspace:*
-        version: link:../../../../../tools/vm-utils/starknet/build-utils
-      '@layerzerolabs/tsup-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/tsup
-      '@layerzerolabs/typescript-configuration':
-        specifier: workspace:*
-        version: link:../../../../../tooling-configs/typescript
       '@layerzerolabs/vm-tooling-starknet':
         specifier: workspace:*
-        version: link:../../../../../tools/vm-tooling/vm-tooling-starknet
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+        version: link:../../../../../../tools/vm-tooling/vm-tooling-starknet
 
   apps/project-types/protocol-app/contracts/stellar/contracts:
     dependencies:
@@ -1493,9 +1471,6 @@ importers:
 
   apps/proxy-app/contracts/evm/proxy-v5-6-evm:
     devDependencies:
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/solhint-configuration':
         specifier: workspace:*
         version: link:../../../../../tooling-configs/solhint
@@ -1560,7 +1535,7 @@ importers:
     dependencies:
       '@layerzerolabs/protocol-v2-starknet-contracts':
         specifier: workspace:*
-        version: link:../../../project-types/protocol-app/contracts/starknet
+        version: link:../../../project-types/protocol-app/contracts/starknet/contracts
     devDependencies:
       '@layerzerolabs/build-utils-starknet':
         specifier: workspace:*
@@ -2089,9 +2064,6 @@ importers:
       '@layerzerolabs/eslint-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/eslint
-      '@layerzerolabs/hardhat-tron':
-        specifier: 'catalog:'
-        version: 3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)
       '@layerzerolabs/onesig-core':
         specifier: workspace:*
         version: link:../onesig-core
@@ -2790,6 +2762,9 @@ importers:
       '@layerzerolabs/args':
         specifier: workspace:*
         version: link:../args
+      '@layerzerolabs/build-utils-starknet':
+        specifier: workspace:*
+        version: link:../vm-utils/starknet/build-utils
       '@layerzerolabs/layerzero-definitions':
         specifier: workspace:*
         version: link:../../packages/chain-abstractions/lz-definitions
@@ -3005,6 +2980,9 @@ importers:
       '@layerzerolabs/vm-tooling':
         specifier: workspace:*
         version: link:../core
+      semver:
+        specifier: 'catalog:'
+        version: 7.8.5
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -3018,6 +2996,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
+      hardhat:
+        specifier: 2.27.0
+        version: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10)
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
@@ -3064,6 +3045,9 @@ importers:
 
   tools/vm-tooling/vm-tooling-starknet:
     dependencies:
+      '@layerzerolabs/build-utils-starknet':
+        specifier: workspace:*
+        version: link:../../vm-utils/starknet/build-utils
       '@layerzerolabs/common-node-utils':
         specifier: workspace:*
         version: link:../../../packages/common/common-node-utils
@@ -3209,6 +3193,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
+      json5:
+        specifier: 'catalog:'
+        version: 2.2.3
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
@@ -4487,12 +4474,6 @@ packages:
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
 
-  '@layerzerolabs/hardhat-tron@3.0.168':
-    resolution: {integrity: sha512-4FomlzMRzHgkMSEULS2mnFLnevPrMJK5DQ5Be52Fvfv9Rpt8d5rZywe5r51IUT1s+euxXrQcVsdmqt+SPzKZLQ==}
-    peerDependencies:
-      hardhat: 2.27.0
-      hardhat-deploy: ^0.12.4
-
   '@layerzerolabs/lz-core@3.0.168':
     resolution: {integrity: sha512-jXhZFFCl1+HEFEbdcZnKsPCOEyXqLJziVDNSKuAzxYgnUiAGUV3Y3sSwAyJBPtIsQrwVYenD9nXogh9TpvEC+Q==}
 
@@ -4626,15 +4607,19 @@ packages:
 
   '@ledgerhq/errors@6.27.0':
     resolution: {integrity: sha512-EE2hATONHdNP3YWFe3rZwwpSEzI5oN+q/xTjOulnjHZo84TLjungegEJ54A/Pzld0woulkkeVA27FbW5SAO1aA==}
+    deprecated: This package is no longer maintained and will not receive updates. Published versions remain available.
 
   '@ledgerhq/errors@7.0.0':
     resolution: {integrity: sha512-+Q/vykUlNeIxiM+I3cu1B660WLkzlmIsHLTV9QNV5D2/Ocplx3QMg52NYq2X7OAfGQnfH1rQvhn/NrjT+t9wBA==}
+    deprecated: This package is no longer maintained and will not receive updates. Published versions remain available.
 
   '@ledgerhq/hw-transport-webhid@6.30.8':
     resolution: {integrity: sha512-2Hc15GjC7BFrpMVJYJ7N2p70A6OzIdcMklwUEYpOcIVYbEWWj84+M5E5pc83ZIBc5j3C8rdtjncPCm2ExGx2LQ==}
+    deprecated: This package is no longer maintained. Use @ledgerhq/device-transport-kit-web-hid instead.
 
   '@ledgerhq/hw-transport-webusb@6.29.13':
     resolution: {integrity: sha512-RhQMCX2kjpI5N+4EvepDtIH9opTJxmCAEWIip4Im+ScjoSvBI1wveE5aDFhjDsHJUcKIQzIbB5jSuv0DZaajFA==}
+    deprecated: This package is no longer maintained. Use @ledgerhq/device-transport-kit-web-hid instead.
 
   '@ledgerhq/hw-transport@6.31.13':
     resolution: {integrity: sha512-MrJRDk74wY980ofiFPRpTHQBbRw1wDuKbdag1zqlO1xtJglymwwY03K2kvBNvkm1RTSCPUp/nAoNG+WThZuuew==}
@@ -7774,8 +7759,8 @@ packages:
   fmix@0.1.0:
     resolution: {integrity: sha512-Y6hyofImk9JdzU8k5INtTXX1cu8LDlePWDFU5sftm9H+zKCr5SGrVjdhkvsim646cw5zD0nADj8oHyXMZmCZ9w==}
 
-  follow-redirects@1.16.0:
-    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+  follow-redirects@1.16.1:
+    resolution: {integrity: sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -9774,8 +9759,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  source-map-js@1.2.1:
-    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
+  source-map-js@1.2.2:
+    resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
 
   source-map-support@0.5.13:
@@ -10262,12 +10247,12 @@ packages:
   undici-types@8.10.2:
     resolution: {integrity: sha512-7/+aSjzkUoLc92hV22bTW4aGanXf800zbwguhcICs0OAoCF9wDOE4wkopQ+SqfhXZm8mCK8gHpdTs7pZUWzK3w==}
 
-  undici@6.29.0:
-    resolution: {integrity: sha512-R+RODBqp6i2pPflGdq+xIOUkl+RNfGgHwoinecKu/JCuf2uO06cOKoDbI2P7Dn6KcswdKwrczbU6IYJ6K8X+wg==}
+  undici@6.29.1:
+    resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
+  undici@7.30.1:
+    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
   universalify@0.1.2:
@@ -10586,12 +10571,6 @@ packages:
 
   zksync-ethers@5.7.0:
     resolution: {integrity: sha512-X99c5APICTlRzyXXjfwkEjRzOPp3Jwo62+z2DVGaZbe+b9Apbizcd2UGV4NGomoAR2GXPbeiSqi1cf3Hbo3cQw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      ethers: ^5.8.0
-
-  zksync-ethers@5.8.0-beta.5:
-    resolution: {integrity: sha512-saT/3OwLgifqzrBG7OujvUMapzXnshAaLzAZMycUtdV20eLSSVkyLIARVwh1M6hMQIUvX2htV0JN82QRMyM3Ig==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       ethers: ^5.8.0
@@ -12178,41 +12157,6 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
-  '@layerzerolabs/hardhat-tron@3.0.168(bufferutil@4.0.9)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(hardhat@2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10))(supports-color@8.1.1)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@ethersproject/abstract-signer': 5.8.0
-      '@ethersproject/address': 5.8.0
-      '@ethersproject/bignumber': 5.8.0
-      '@ethersproject/bytes': 5.8.0
-      '@ethersproject/constants': 5.8.0
-      '@ethersproject/contracts': 5.8.0
-      '@ethersproject/solidity': 5.8.0
-      '@ethersproject/transactions': 5.8.0
-      '@ethersproject/wallet': 5.8.0
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      chalk: 5.6.2
-      chokidar: 3.6.0
-      debug: 4.4.3(supports-color@8.1.1)
-      dotenv: 16.4.7
-      enquirer: 2.4.1
-      ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      form-data: 4.0.6
-      fs-extra: 11.2.0
-      hardhat: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10)
-      hardhat-deploy: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
-      match-all: 1.2.7
-      murmur-128: 0.2.1
-      qs: 6.15.0
-      semver: 7.8.5
-      solc: 0.8.26(debug@4.4.3(supports-color@8.1.1))
-      tronweb: 5.3.4(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(utf-8-validate@5.0.10)
-      undici: 6.29.0
-      zksync-ethers: 5.8.0-beta.5(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
   '@layerzerolabs/lz-core@3.0.168': {}
 
   '@layerzerolabs/lz-corekit-solana@3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)':
@@ -12576,7 +12520,7 @@ snapshots:
       semver: 7.8.5
       sinon: 18.0.1
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@18.0.1)
-      undici: 6.29.0
+      undici: 6.29.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14524,7 +14468,7 @@ snapshots:
       '@vue/shared': 3.5.24
       entities: 4.5.0
       estree-walker: 2.0.2
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
 
   '@vue/compiler-dom@3.5.24':
     dependencies:
@@ -14541,7 +14485,7 @@ snapshots:
       estree-walker: 2.0.2
       magic-string: 0.30.21
       postcss: 8.5.26
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
 
   '@vue/compiler-ssr@3.5.24':
     dependencies:
@@ -14735,7 +14679,7 @@ snapshots:
 
   axios@0.34.0(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.1(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -14743,7 +14687,7 @@ snapshots:
 
   axios@1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.1(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
@@ -15136,7 +15080,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.30.0
+      undici: 7.30.1
       whatwg-mimetype: 4.0.0
     optional: true
 
@@ -16209,7 +16153,7 @@ snapshots:
     dependencies:
       imul: 1.0.1
 
-  follow-redirects@1.16.0(debug@4.4.3(supports-color@8.1.1)):
+  follow-redirects@1.16.1(debug@4.4.3(supports-color@8.1.1)):
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
 
@@ -16562,7 +16506,7 @@ snapshots:
       stacktrace-parser: 0.1.11
       tinyglobby: 0.2.17
       tsort: 0.0.1
-      undici: 6.29.0
+      undici: 6.29.1
       uuid: 8.3.2
       ws: 7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
@@ -17492,7 +17436,7 @@ snapshots:
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/types': 7.29.7
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
     optional: true
 
   make-dir@4.0.0:
@@ -18011,7 +17955,7 @@ snapshots:
     dependencies:
       nanoid: 3.3.18
       picocolors: 1.1.1
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
 
   prelude-ls@1.1.2: {}
 
@@ -18534,7 +18478,7 @@ snapshots:
     dependencies:
       command-exists: 1.2.9
       commander: 8.3.0
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.1(debug@4.4.3(supports-color@8.1.1))
       js-sha3: 0.8.0
       memorystream: 0.3.1
       semver: 5.7.2
@@ -18609,7 +18553,7 @@ snapshots:
       sort-object-keys: 1.1.3
       tinyglobby: 0.2.17
 
-  source-map-js@1.2.1: {}
+  source-map-js@1.2.2: {}
 
   source-map-support@0.5.13:
     dependencies:
@@ -19125,9 +19069,9 @@ snapshots:
 
   undici-types@8.10.2: {}
 
-  undici@6.29.0: {}
+  undici@6.29.1: {}
 
-  undici@7.30.0:
+  undici@7.30.1:
     optional: true
 
   universalify@0.1.2: {}
@@ -19398,10 +19342,6 @@ snapshots:
   yocto-queue@1.2.2: {}
 
   zksync-ethers@5.7.0(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
-    dependencies:
-      ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-
-  zksync-ethers@5.8.0-beta.5(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 

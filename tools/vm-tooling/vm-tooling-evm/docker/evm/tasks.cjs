@@ -1,6 +1,5 @@
 const { task } = require('hardhat/config');
 const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require('hardhat/builtin-tasks/task-names');
-const { TronSolcCompilerDownloader } = require('@layerzerolabs/hardhat-tron/dist/downloader');
 const {
     ZksolcCompilerDownloader,
 } = require('@matterlabs/hardhat-zksync-solc/dist/src/compile/downloader');
@@ -9,6 +8,7 @@ const {
 } = require('@matterlabs/hardhat-zksync-solc/dist/src/compile/zkvm-solc-downloader');
 const { getCompilersDir } = require('hardhat/internal/util/global-dir');
 const compilerVersions = require('./compiler-versions.json');
+const { getTronSolcPath } = require('./hardhat-tron.cjs');
 
 task('download:all', 'Download all solc variants').setAction(async (_, hre) => {
     for (const version of compilerVersions.solc.solc) {
@@ -37,7 +37,7 @@ task('download:solc', 'Download vanilla solc')
 task('download:tronsolc', 'Download Tron soljson')
     .addParam('solcVersion', 'The tron solc version to download')
     .setAction(async ({ solcVersion }) => {
-        await new TronSolcCompilerDownloader(solcVersion).getCompilerPath();
+        await getTronSolcPath(solcVersion);
     });
 
 task('download:zksolc', 'Download the zksolc compiler')

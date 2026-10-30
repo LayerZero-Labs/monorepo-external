@@ -15,7 +15,6 @@
         "test": "pnpm lz-tool forge test"
     },
     "devDependencies": {
-        "@layerzerolabs/hardhat-tron": "catalog:",
         "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
         "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
         "@layerzerolabs/lz-evm-v1-0.7": "catalog:",

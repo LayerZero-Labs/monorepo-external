@@ -9,6 +9,7 @@ import { ChainName, ChainType } from '@layerzerolabs/layerzero-definitions';
 import { copyDir } from './copyDir';
 import { copyEvmContractArtifacts, copyZkSyncContractArtifacts } from './copyEvmContractArtifacts';
 import { copySolanaContractArtifacts } from './copySolanaContractArtifacts';
+import { copyStarknetContractArtifacts } from './copyStarknetContractArtifacts';
 import { copyTonContractArtifacts, postGenerateOperationsTon } from './copyTonContractArtifacts';
 import { copyTronContractArtifacts } from './copyTronContractArtifacts';
 import type { ArtifactPackagesConfig, ContractConfig, PostGenerateOperationsInput } from './types';
@@ -156,6 +157,13 @@ export const copyAllArtifacts = async () => {
                         contract.rename,
                         contract.isVerifiable,
                     );
+                } else if (target === ChainType.STARKNET) {
+                    return copyStarknetContractArtifacts({
+                        resolvePath,
+                        packageRoot,
+                        packageName,
+                        scarbPackage: contract.name,
+                    });
                 } else if (target === ChainType.TON) {
                     return copyTonContractArtifacts(
                         resolvePath,
@@ -184,10 +192,7 @@ export const copyAllArtifacts = async () => {
         })
         .flat();
 
-    // Avoid race condition by copying directories sequentially
-    for (const copyDirPromise of copyDirPromises) {
-        await copyDirPromise;
-    }
+    await Promise.all(copyDirPromises);
 
     console.log(`✅ Successfully copied * for ${copyDirPromises.length} directory(ies)`);
 };

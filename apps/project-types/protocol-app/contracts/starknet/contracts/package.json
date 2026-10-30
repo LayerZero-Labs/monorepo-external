@@ -1,0 +1,30 @@
+{
+    "name": "@layerzerolabs/protocol-v2-starknet-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Starknet implementation of LayerZero protocol v2",
+    "license": "LZBL-1.3",
+    "files": [
+        "Scarb.toml",
+        "Scarb.lock",
+        "layerzero",
+        "!layerzero/tests",
+        "!layerzero/tools",
+        "libs",
+        "!libs/*/tests"
+    ],
+    "scripts": {
+        "build": "lz-tool scarb --release build",
+        "clean": "rm -rf .turbo ./node_modules && pnpm generated:clean",
+        "generated:clean": "rm -rf ./target .snfoundry_cache",
+        "lint": "lz-tool scarb fmt --check && lz-tool scarb lint --test",
+        "test": "lz-tool scarb test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/vm-tooling-starknet": "workspace:*"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

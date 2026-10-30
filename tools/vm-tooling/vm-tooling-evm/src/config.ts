@@ -22,58 +22,13 @@ export const tools: readonly [Tool, ...Tool[]] = [
 ];
 
 export const images = {
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-1']: {
+    ['evm:forge-1.3.6-hardhat-2.26.3-patch-7']: {
         name: 'evm',
         versions: {
             forge: '1.3.6',
             hardhat: '2.26.3',
         },
-        patch: 1,
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-2']: {
-        name: 'evm',
-        versions: {
-            forge: '1.3.6',
-            hardhat: '2.26.3',
-        },
-        patch: 2,
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-3']: {
-        name: 'evm',
-        versions: {
-            forge: '1.3.6',
-            hardhat: '2.26.3',
-        },
-        patch: 3,
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-4']: {
-        name: 'evm',
-        versions: {
-            forge: '1.3.6',
-            hardhat: '2.26.3',
-        },
-        patch: 4,
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-5']: {
-        name: 'evm',
-        versions: {
-            forge: '1.3.6',
-            hardhat: '2.26.3',
-        },
-        patch: 5,
-        mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
-    },
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-6']: {
-        name: 'evm',
-        versions: {
-            forge: '1.3.6',
-            hardhat: '2.26.3',
-        },
-        patch: 6,
+        patch: 7,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
 } satisfies Record<string, Image>;
@@ -84,15 +39,8 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
     [
         {
             images: {
-                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-6',
-                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-6',
-            },
-            stable: true,
-        },
-        {
-            images: {
-                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-1',
-                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-1',
+                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-7',
+                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-7',
             },
             stable: true,
         },

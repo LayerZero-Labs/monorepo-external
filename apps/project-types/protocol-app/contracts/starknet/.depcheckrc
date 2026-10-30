@@ -1,5 +1,0 @@
-{
-    "ignores": [
-        "@layerzerolabs/build-utils-starknet"
-    ]
-}

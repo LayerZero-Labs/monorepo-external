@@ -33,7 +33,8 @@
         "test:rust": "pnpm build:test-fixtures && pnpm exec lz-tool --script 'cargo test -p console-oft -p console-oft-integration-tests --locked' anchor",
         "test:sdk": "pnpm build:sdk && vitest run --config vitest.sdk.config.ts",
         "test:unit": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p console-oft --lib' anchor",
-        "test:validator": "pnpm build:sdk && vitest run"
+        "test:validator": "pnpm build:sdk && vitest run",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/heap-allocator-solana-contracts": "workspace:*",

@@ -3,10 +3,11 @@
     "tasks": {
         "build": {
             "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!src/tests/**"],
-            "outputs": ["dependencies/**", ".artifacts/*.wasm", ".artifacts/*.zip"]
+            "outputs": [".artifacts/*.wasm", ".artifacts/*.zip"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

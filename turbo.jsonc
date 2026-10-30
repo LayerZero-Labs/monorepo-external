@@ -50,6 +50,7 @@
         "test:offchain:localnet": {
             "cache": false,
             "dependsOn": ["build"],
+            "passThroughEnv": ["LZ_WORKERS_LOCALNET_SEED"],
             "outputLogs": "new-only"
         },
         "clean": {
@@ -99,12 +100,48 @@
                 // sui, iota, ton, aptos
                 "build/**",
 
-                // sui
                 "dependencies/**",
 
                 "src/typechain/**"
             ],
             "dependsOn": ["^build"],
+            "outputLogs": "new-only"
+        },
+        "vendor": {
+            "inputs": [
+                "**/*.rs",
+                "**/*.toml",
+                "**/*.json",
+                "!**/dependencies/**",
+                "!**/node_modules/**",
+                "!**/target/**",
+                "!**/.turbo/**",
+                "!**/examples/**",
+                "!**/benches/**",
+                "!**/fuzz/**",
+                "!**/.cargo/**",
+                "!**/.git/**",
+                "!**/.github/**",
+                "!**/tests/**",
+                "!**/integration-tests/**",
+                "!**/integration_tests/**",
+                "!**/test_snapshots/**",
+                "!**/build/**",
+                "!**/artifacts/**",
+                "!**/package.json",
+                "!**/pnpm-lock.yaml",
+                "!**/tsconfig.json",
+                "!**/turbo-snapshot.lock.json",
+                "!**/turbo.json",
+                "!**/Cargo.lock",
+                "!**/clippy.toml",
+                "!**/deny.toml",
+                "!**/rust-toolchain.toml",
+                "!**/rustfmt.toml",
+                "!**/Anchor.toml"
+            ],
+            "outputs": ["dependencies/**"],
+            "dependsOn": ["^vendor"],
             "outputLogs": "new-only"
         },
         "typecheck": {

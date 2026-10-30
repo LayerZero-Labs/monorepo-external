@@ -9,10 +9,11 @@
                 "!src/tests/**",
                 "!integration_tests/**"
             ],
-            "outputs": ["dependencies/**", "target/wasm32v1-none/release/*.wasm"]
+            "outputs": ["target/wasm32v1-none/release/*.wasm"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

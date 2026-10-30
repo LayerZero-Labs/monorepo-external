@@ -1078,6 +1078,7 @@ export enum ChainKey {
     //alpen
     ALPEN_TESTNET = 'alpen-testnet',
     //zero
+    ZEROINTEROP = 'zerointerop',
     ZEROINTEROP_TESTNET = 'zerointerop-testnet',
     ZEROSYSTEM_TESTNET = 'zerosystem-testnet',
     ZEROATLAS_TESTNET = 'zeroatlas-testnet',

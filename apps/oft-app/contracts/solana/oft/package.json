@@ -22,7 +22,8 @@
         "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo +nightly-2025-06-01 fmt -- --check && cargo clippy --all-targets' anchor",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:rust",
-        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p oft --lib --tests' anchor"
+        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test -p oft --lib --tests' anchor",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/framework-solana-anchor-trait": "workspace:*",

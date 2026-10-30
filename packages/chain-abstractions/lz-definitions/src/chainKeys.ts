@@ -4022,6 +4022,14 @@ export const CHAIN_KEY_ALIAS_CONFIG = {
             },
         ],
     },
+    [ChainKey.ZEROINTEROP]: {
+        aliases: [
+            {
+                environment: Environment.MAINNET,
+                name: ChainName.ZEROINTEROP,
+            },
+        ],
+    },
     [ChainKey.ZEROINTEROP_TESTNET]: {
         aliases: [
             {

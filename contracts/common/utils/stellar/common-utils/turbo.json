@@ -11,10 +11,11 @@
                 "!**/integration-tests/**",
                 "!**/integration_tests/**"
             ],
-            "outputs": ["dependencies/**"]
+            "outputs": [],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

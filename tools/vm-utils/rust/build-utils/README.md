@@ -64,7 +64,9 @@ hardcoded `programs/`, no `Anchor.toml`); it works for whatever layout the root
 - **Files:** only `.rs`, `.toml`, and `.json` are copied. Prebuilt or non-source
   assets a build might read (`.wasm`, `.bin`, `.proto`, `.md`, …) are **not**
   vendored. If a crate's build genuinely needs one, add its extension to
-  `COPY_EXTENSIONS` in `src/resolve/exclude.ts`.
+  `COPY_EXTENSIONS` in `src/resolve/exclude.ts`. The `vendor.inputs` in the root
+  `turbo.jsonc` mirror the copy set, and the `vendorInputs` test fails until they
+  match.
 - **Path deps:** rewritten by parsing the manifest (via `smol-toml`), so every TOML
   form is handled — inline tables (`dep = { path = "…" }`), the table-header form
   (`[dependencies.dep]` + `path = "…"`), `[dev-/build-dependencies]`,

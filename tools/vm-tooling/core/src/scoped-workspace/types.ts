@@ -28,6 +28,7 @@ export interface WorkspaceSourceCopyOptions {
     prunePatterns?: readonly string[];
     /** Package-relative path overrides for workspace source copies. */
     packagePrunePatterns?: Readonly<Record<string, readonly string[]>>;
+    mayVanishPatterns?: readonly string[];
 }
 
 export interface WorkspaceSourceCopyResult {
@@ -36,6 +37,7 @@ export interface WorkspaceSourceCopyResult {
     scopedRoot: string;
     packageRelativePath: string;
     copiedWorkspaceDependencies: WorkspaceDependencyEdge[];
+    readonly skippedSourcePaths: readonly string[];
 }
 
 export interface PnpmVirtualStoreMount {
@@ -89,5 +91,6 @@ export interface ScopedWorkspacePrunePlan {
     patterns: readonly string[];
     /** Overrides keyed by workspace package relative path. */
     packagePatterns?: Readonly<Record<string, readonly string[]>>;
+    mayVanishPatterns?: readonly string[];
     diagnostics?: readonly string[];
 }

@@ -26,6 +26,7 @@
         "test": "vitest"
     },
     "dependencies": {
+        "@layerzerolabs/build-utils-starknet": "workspace:*",
         "@layerzerolabs/common-node-utils": "workspace:*",
         "@layerzerolabs/vm-tooling": "workspace:*",
         "p-limit": "catalog:",

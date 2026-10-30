@@ -41,7 +41,7 @@ describe(createStarknetScopedWorkspacePruner, () => {
         repoRoots.push(repoRoot);
         const scarbDependency = await createDependency(
             repoRoot,
-            'apps/project-types/protocol-app/contracts/starknet',
+            'apps/project-types/protocol-app/contracts/starknet/contracts',
             true,
         );
         const tsDependency = await createDependency(
@@ -66,7 +66,7 @@ describe(createStarknetScopedWorkspacePruner, () => {
 
         expect(plan.patterns).toEqual(['!**/**']);
         expect(plan.packagePatterns).toEqual({
-            'apps/project-types/protocol-app/contracts/starknet': [
+            'apps/project-types/protocol-app/contracts/starknet/contracts': [
                 '**/*',
                 '!**/tests/**',
                 '!dist/**',

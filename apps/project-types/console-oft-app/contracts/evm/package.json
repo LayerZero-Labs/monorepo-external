@@ -17,7 +17,6 @@
     },
     "devDependencies": {
         "@layerzerolabs/contract-sizes-evm": "workspace:*",
-        "@layerzerolabs/hardhat-tron": "catalog:",
         "@layerzerolabs/lz-evm-messagelib-v2": "catalog:console",
         "@layerzerolabs/lz-evm-protocol-v2": "catalog:console",
         "@layerzerolabs/lz-evm-v1-0.7": "catalog:console",

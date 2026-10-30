@@ -34,7 +34,12 @@ const runDocker = async (args: string[]): Promise<void> => {
     }
 };
 
-const compileScript = (pragma: string, config: string, extraArgs: string): string => `
+const compileScript = (
+    pragma: string,
+    config: string,
+    extraArgs: string,
+    check: string,
+): string => `
 set -e
 mkdir -p contracts
 printf '%s\\n' '// SPDX-License-Identifier: MIT' 'pragma solidity ${pragma};' 'contract A {}' > contracts/A.sol
@@ -42,6 +47,7 @@ cat > hardhat.config.cjs << 'CFG'
 ${config}
 CFG
 hardhat compile ${extraArgs}
+${check}
 `;
 
 const cases = [
@@ -49,6 +55,7 @@ const cases = [
         name: 'evm',
         pragma: '0.8.26',
         extraArgs: '',
+        check: '',
         config: `module.exports = {
     solidity: { compilers: [{ version: '0.8.26' }] },
 };`,
@@ -57,8 +64,8 @@ const cases = [
         name: 'tron',
         pragma: '0.8.24',
         extraArgs: '--network tron-mainnet',
-        config: `require('hardhat-deploy');
-require('@layerzerolabs/hardhat-tron');
+        check: '',
+        config: `require('/hardhat/hardhat-tron.cjs');
 module.exports = {
     networks: { 'tron-mainnet': { url: 'http://127.0.0.1:8514/jsonrpc', tron: true } },
     solidity: { compilers: [{ version: '0.8.24' }] },
@@ -66,9 +73,27 @@ module.exports = {
 };`,
     },
     {
+        name: 'tron with versionRemapping',
+        pragma: '^0.8.22',
+        extraArgs: '--network tron-mainnet',
+        config: `require('/hardhat/hardhat-tron.cjs');
+module.exports = {
+    networks: { 'tron-mainnet': { url: 'http://127.0.0.1:8514/jsonrpc', tron: true } },
+    solidity: { compilers: [{ version: '0.8.22' }] },
+    tronSolc: {
+        enable: true,
+        versionRemapping: [['0.8.22', '0.8.20']],
+        compilers: [{ version: '0.8.20' }],
+    },
+};`,
+        check: `grep -q '"solcVersion": *"0.8.20"' artifacts-tron/build-info/*.json
+grep -q 'pragma solidity ^0.8.20;' artifacts-tron/build-info/*.json`,
+    },
+    {
         name: 'zksync',
         pragma: '0.8.26',
         extraArgs: '--network zksync',
+        check: '',
         config: `require('@matterlabs/hardhat-zksync-solc');
 module.exports = {
     networks: { zksync: { zksync: true, url: 'http://127.0.0.1' } },
@@ -91,7 +116,7 @@ describe.sequential('evm tooling images', () => {
             imageUri = await getImageUri(image);
         });
 
-        for (const { name, pragma, extraArgs, config } of cases) {
+        for (const { name, pragma, extraArgs, config, check } of cases) {
             it(
                 `compiles pre-downloaded ${name} with --network=none`,
                 async () => {
@@ -104,7 +129,7 @@ describe.sequential('evm tooling images', () => {
                         imageUri,
                         'bash',
                         '-c',
-                        compileScript(pragma, config, extraArgs),
+                        compileScript(pragma, config, extraArgs, check),
                     ]);
                 },
                 COMMAND_TIMEOUT,

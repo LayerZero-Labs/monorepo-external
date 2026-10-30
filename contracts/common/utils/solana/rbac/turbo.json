@@ -9,10 +9,11 @@
                 "!tests/**",
                 "!macros/examples/vault/tests/**"
             ],
-            "outputs": ["dependencies/**", "target/deploy/*.so"]
+            "outputs": ["target/deploy/*.so"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

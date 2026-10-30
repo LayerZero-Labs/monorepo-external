@@ -29,11 +29,16 @@ EOF
 # Agave 4.x leaves `cargoBuildSbfVersion` empty, so the install script would take crates.io's latest
 # cargo-build-sbf. CARGO_BUILD_SBF_VERSION (config.ts dependencies) pins it.
 ARG CARGO_BUILD_SBF_VERSION
+ARG SPL_TOKEN_CLI_VERSION
 RUN <<-EOF
   set -e
   if [ -n "$CARGO_BUILD_SBF_VERSION" ]; then
     sed -i "s/^cargoBuildSbfVersion=.*/cargoBuildSbfVersion=$CARGO_BUILD_SBF_VERSION/" scripts/cargo-build-sbf-version.sh
     grep -qx "cargoBuildSbfVersion=$CARGO_BUILD_SBF_VERSION" scripts/cargo-build-sbf-version.sh
+  fi
+  if [ -n "$SPL_TOKEN_CLI_VERSION" ]; then
+    sed -i "s/^splTokenCliVersion=.*/splTokenCliVersion=$SPL_TOKEN_CLI_VERSION/" scripts/spl-token-cli-version.sh
+    grep -qx "splTokenCliVersion=$SPL_TOKEN_CLI_VERSION" scripts/spl-token-cli-version.sh
   fi
   scripts/cargo-install-all.sh /opt/solana
 EOF
@@ -54,15 +59,12 @@ RUN cargo install --locked --root /opt/solana cargo-expand --version $CARGO_EXPA
 
 # Pre-build platform-tools for the cache so cargo-build-sbf doesn't download at runtime.
 # Adapted from https://github.com/LayerZero-Labs/devtools
-# Uses a separate Rust version (not $RUST_VERSION) because the platform-tools cargo fork
-# (solana-labs/cargo) has no Cargo.lock, so transitive deps resolve to latest versions.
-# Controlled via PLATFORM_TOOLS_RUST_VERSION from config.ts dependencies.
 FROM rust:${PLATFORM_TOOLS_RUST_VERSION}-$OS_VERSION AS platform_tools_build
 
 ARG PLATFORM_TOOLS_VERSION
 ARG TARGETARCH
 
-RUN <<-EOF
+RUN --mount=type=bind,source=platform-tools-cargo-lock,target=/tmp/platform-tools-cargo-lock <<-EOF
   set -e
 
   if [ -z "$PLATFORM_TOOLS_VERSION" ]; then
@@ -101,6 +103,17 @@ RUN <<-EOF
     if [ "$PLATFORM_TOOLS_VERSION" != "1.41" ] && [ "$(printf '%s\n' "1.41" "$PLATFORM_TOOLS_VERSION" | sort -V | head -1)" = "$PLATFORM_TOOLS_VERSION" ]; then
       sed -i 's/== "arm64"/== "arm64" || "$(uname -m)" == "aarch64"/' build.sh
     fi
+    CARGO_FORK_LOCK_PATCH_DIR="/tmp/platform-tools-cargo-lock/v${PLATFORM_TOOLS_VERSION}"
+    if [ -d "$CARGO_FORK_LOCK_PATCH_DIR" ]; then
+      sed -i \
+        -e "/^pushd cargo$/a git apply $CARGO_FORK_LOCK_PATCH_DIR/git2.patch" \
+        -e "/^pushd cargo$/a cp $CARGO_FORK_LOCK_PATCH_DIR/Cargo.lock Cargo.lock" \
+        build.sh
+      sed -i 's/cargo build --release$/cargo build --release --locked/' build.sh
+      grep -qx "git apply $CARGO_FORK_LOCK_PATCH_DIR/git2.patch" build.sh
+      grep -qx "cp $CARGO_FORK_LOCK_PATCH_DIR/Cargo.lock Cargo.lock" build.sh
+      grep -q 'cargo build --release --locked$' build.sh
+    fi
     ./build.sh target
     tar -xf platform-tools-linux-aarch64.tar.bz2
     mv llvm/ rust/ version.md /opt/platform-tools/
@@ -124,35 +137,6 @@ EOF
 FROM rust:$RUST_VERSION-$OS_VERSION
 
 ARG SOLANA_VERSION
-ARG TARGETARCH
-
-RUN <<-EOF
-  set -e
-
-  mkdir /tmp/platform-tools
-  cd /tmp/platform-tools
-
-  # Solana v1.x releases live under solana-labs/solana, v2.x+ under anza-xyz/agave
-  MAJOR_VERSION=$(echo "$SOLANA_VERSION" | cut -d. -f1)
-  if [ "$MAJOR_VERSION" -ge 2 ]; then
-    SBF_SDK_REPO="anza-xyz/agave"
-  else
-    SBF_SDK_REPO="solana-labs/solana"
-  fi
-
-  # Agave 4.x releases no longer ship sbf-sdk.tar.bz2, and cargo-build-sbf 4.x ignores --sbf-sdk.
-  if [ "$MAJOR_VERSION" -ge 4 ]; then
-    echo "Skipping sbf-sdk install: not used by Solana $SOLANA_VERSION"
-  # Solana 1.x platform-tools only ship x86_64 binaries; skip on arm64
-  elif [ "$MAJOR_VERSION" -lt 2 ] && [ "$TARGETARCH" = "arm64" ]; then
-    echo "Skipping sbf-sdk install: Solana 1.x platform-tools not available for arm64"
-  else
-    curl -fsSL https://github.com/$SBF_SDK_REPO/releases/download/v$SOLANA_VERSION/sbf-sdk.tar.bz2 | tar jx
-    # Fix architecture detection bug in install.sh
-    sed -i 's/arm64\*)/arm64*|aarch64*)/' sbf-sdk/scripts/install.sh
-    sbf-sdk/scripts/install.sh
-  fi
-EOF
 
 # Pre-populate platform-tools cache so cargo-build-sbf doesn't download at runtime
 # This is critical for arm64 where older platform-tools versions have no prebuilt binaries
@@ -162,14 +146,9 @@ RUN <<-EOF
   set -e
   if [ -n "$PLATFORM_TOOLS_VERSION" ] && [ -f /tmp/platform-tools-staged/version.md ]; then
     CACHE_DIR="/root/.cache/solana/v${PLATFORM_TOOLS_VERSION}/platform-tools"
-    # SBF SDK may have already populated the cache on amd64; only copy if empty
-    if [ ! -f "$CACHE_DIR/version.md" ]; then
-      mkdir -p "$CACHE_DIR"
-      cp -r /tmp/platform-tools-staged/* "$CACHE_DIR/"
-      echo "Pre-populated platform-tools cache at $CACHE_DIR"
-    else
-      echo "Platform-tools cache already populated at $CACHE_DIR, skipping"
-    fi
+    mkdir -p "$CACHE_DIR"
+    cp -r /tmp/platform-tools-staged/* "$CACHE_DIR/"
+    echo "Pre-populated platform-tools cache at $CACHE_DIR"
   fi
   rm -rf /tmp/platform-tools-staged
 EOF
@@ -227,9 +206,23 @@ COPY --from=anchor_build /opt/solana /usr/local
 COPY --from=cargo_expand_build /opt/solana /usr/local
 COPY --from=solana_verify_build /opt/solana /usr/local
 
-# Copy cargo binaries to /usr/local/bin so they're available even when
-# /usr/local/cargo is mounted as a volume for caching
-RUN find /usr/local/cargo/bin -maxdepth 1 -type f -exec cp {} /usr/local/bin/ \;
+RUN <<-EOF
+  set -e
+  MAJOR_VERSION=$(echo "$SOLANA_VERSION" | cut -d. -f1)
+  if [ "$MAJOR_VERSION" -ge 4 ]; then
+    PLATFORM_TOOLS_RUST="/root/.cache/solana/v${PLATFORM_TOOLS_VERSION}/platform-tools/rust"
+    PLATFORM_TOOLS_RUSTC_VERSION=$("$PLATFORM_TOOLS_RUST/bin/rustc" --version | sed -E 's/^rustc ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+    rustup toolchain link "${PLATFORM_TOOLS_RUSTC_VERSION}-sbpf-solana-v${PLATFORM_TOOLS_VERSION}" "$PLATFORM_TOOLS_RUST"
+  else
+    if [ "$MAJOR_VERSION" -ge 2 ]; then
+      SBF_SDK=/usr/local/bin/platform-tools-sdk/sbf
+    else
+      SBF_SDK=/usr/local/bin/sdk/sbf
+    fi
+    sed -i 's/arm64\*)/arm64*|aarch64*)/' "$SBF_SDK/scripts/install.sh"
+    "$SBF_SDK/scripts/install.sh"
+  fi
+EOF
 
 # Contract workspaces pin the host channel in rust-toolchain.toml with rustfmt and clippy; install
 # them here so the first cargo command does not fetch them at runtime (or fail offline).
@@ -242,6 +235,28 @@ RUN if [ -n "$RUST_NIGHTLY_VERSION" ]; then \
       rustup install $RUST_NIGHTLY_VERSION && \
       rustup component add rustfmt clippy --toolchain $RUST_NIGHTLY_VERSION; \
     fi
+
+ARG EXTRA_RUST_TOOLCHAINS_VERSION
+RUN <<-EOF
+  set -e
+  HOST_TRIPLE=$(rustc -vV | sed -n 's/^host: //p')
+  for TOOLCHAIN in $EXTRA_RUST_TOOLCHAINS_VERSION; do
+    CHANNEL=$(echo "$TOOLCHAIN" | cut -d: -f1)
+    COMPONENTS=$(echo "$TOOLCHAIN" | cut -d: -f2 | tr , ' ')
+    TARGETS=$(echo "$TOOLCHAIN" | cut -d: -f3 | tr , ' ')
+    ALIASES=$(echo "$TOOLCHAIN" | cut -d: -f4 | tr , ' ')
+    rustup toolchain install "$CHANNEL" --profile minimal --no-self-update
+    if [ -n "$COMPONENTS" ]; then rustup component add --toolchain "$CHANNEL" $COMPONENTS; fi
+    if [ -n "$TARGETS" ]; then rustup target add --toolchain "$CHANNEL" $TARGETS; fi
+    for ALIAS in $ALIASES; do
+      ln -s "$CHANNEL-$HOST_TRIPLE" "$RUSTUP_HOME/toolchains/$ALIAS-$HOST_TRIPLE"
+    done
+  done
+EOF
+
+ENV RUSTUP_AUTO_INSTALL=0
+
+RUN find /usr/local/cargo/bin -maxdepth 1 \( -type f -o -type l \) -exec cp -P {} /usr/local/bin/ \;
 
 COPY --chmod=755 sbf-guard/cargo /opt/sbf-guard/bin/cargo
 ENV PATH=/opt/sbf-guard/bin:$PATH
@@ -257,6 +272,20 @@ RUN <<-EOF
   cargo fmt --version
   cargo clippy --version
   if [ -n "$RUST_NIGHTLY_VERSION" ]; then cargo +${RUST_NIGHTLY_VERSION} fmt --version; fi
+  HOST_TRIPLE=$(rustc -vV | sed -n 's/^host: //p')
+  for TOOLCHAIN in $EXTRA_RUST_TOOLCHAINS_VERSION; do
+    CHANNEL=$(echo "$TOOLCHAIN" | cut -d: -f1)
+    cargo +$CHANNEL --version
+    for COMPONENT in $(echo "$TOOLCHAIN" | cut -d: -f2 | tr , ' '); do
+      rustup component list --toolchain "$CHANNEL" --installed | grep -qx -e "$COMPONENT" -e "$COMPONENT-$HOST_TRIPLE"
+    done
+    for TARGET in $(echo "$TOOLCHAIN" | cut -d: -f3 | tr , ' '); do
+      rustup target list --toolchain "$CHANNEL" --installed | grep -qx "$TARGET"
+    done
+    for ALIAS in $(echo "$TOOLCHAIN" | cut -d: -f4 | tr , ' '); do
+      test "$(cargo +$ALIAS --version)" = "$(cargo +$CHANNEL --version)"
+    done
+  done
   solana --version
   if [ -n "$CARGO_BUILD_SBF_VERSION" ]; then
     cargo-build-sbf --version

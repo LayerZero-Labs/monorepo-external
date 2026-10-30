@@ -35,6 +35,13 @@ By default, dependency packages are copied with the default source-copy set:
 Symlinks are preserved as links. Files under package-local `node_modules` are not copied; dependency
 contents come from the mounted root pnpm virtual store.
 
+The copy is a point-in-time snapshot. An entry can be removed between the listing and its copy, for
+example an output that a concurrent dependency build replaces. Such a removal fails the run, unless
+the pruner names the entry in `mayVanishPatterns`. The copy skips a removed entry whose
+package-relative path matches one of those patterns. The scoped workspace adds one diagnostic with
+the count and the repo-relative paths of the skipped entries. Each skipped entry is listed once. An
+entry that matches a pattern still fails the run on any other copy error.
+
 ## Pruner Hook
 
 A VM-specific pruner can inspect the computed dependency graph and return a glob-compatible copy
@@ -42,6 +49,9 @@ plan:
 
 - `patterns` sets the global include/exclude list for dependency source copies.
 - `packagePatterns` overrides the global list for specific workspace package paths.
+- `mayVanishPatterns` names the package-relative paths that a concurrent build can remove during the
+  copy. Each pattern is matched with Node's `path.matchesGlob`, where `*` and `**` do not match a
+  name that starts with a dot.
 - `diagnostics` are surfaced by the tool executor.
 
 Use explicit glob patterns such as `src/**` for directory contents and `!tests/**` for exclusions.

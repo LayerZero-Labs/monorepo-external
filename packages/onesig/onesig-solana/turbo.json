@@ -13,10 +13,11 @@
                 "!vitest.config.ts",
                 "!eslint.config.js"
             ],
-            "outputs": ["dependencies/**", "target/deploy/*.so", "build/**"]
+            "outputs": ["target/deploy/*.so", "build/**"],
+            "dependsOn": ["vendor"]
         },
         "test": {
-            "dependsOn": ["build", "lint"]
+            "dependsOn": ["build", "lint", "^build"]
         }
     }
 }

@@ -45,6 +45,7 @@ export const createStellarScopedWorkspacePruner = (): ScopedWorkspacePruner => (
         return {
             patterns: ['!**/**'],
             packagePatterns,
+            mayVanishPatterns: ['.artifacts/**'],
             diagnostics: [
                 `Stellar scoped-workspace pruner selected files from ${includedPackageCount} workspace dependency package(s).`,
             ],

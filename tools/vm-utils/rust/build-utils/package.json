@@ -34,6 +34,7 @@
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@types/node": "catalog:",
+        "json5": "catalog:",
         "tsup": "catalog:",
         "vitest": "catalog:"
     },

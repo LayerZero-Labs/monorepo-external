@@ -20,7 +20,8 @@
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:non-ui && pnpm test:ui",
         "test:non-ui": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'not test(/^ui_/)'\" stellar",
-        "test:ui": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'test(/^ui_/)'\" stellar"
+        "test:ui": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run -E 'test(/^ui_/)'\" stellar",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",

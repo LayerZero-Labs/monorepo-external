@@ -1,7 +1,7 @@
 require('@matterlabs/hardhat-zksync-solc');
-// `hardhat-deploy` is required by `@layerzerolabs/hardhat-tron`.
+// `hardhat-deploy` sets `metadata.useLiteralContent: true`, which the artifacts depend on.
 require('hardhat-deploy');
-require('@layerzerolabs/hardhat-tron');
+require('@layerzerolabs/vm-tooling-evm/hardhat-tron');
 
 module.exports = {
     paths: {
@@ -58,7 +58,7 @@ module.exports = {
                 },
             },
         ],
-        // `@layerzerolabs/hardhat-tron` does not support `overrides`.
+        // `@layerzerolabs/vm-tooling-evm/hardhat-tron` does not support `overrides`.
     },
     networks: {
         'zksync-mainnet': {

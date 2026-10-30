@@ -25,7 +25,8 @@
         "lint": "pnpm resolve-dependencies && pnpm format:check && pnpm exec lz-tool --script 'cargo clippy --workspace --all-targets --locked -- -D warnings' anchor",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
         "test": "pnpm test:rust",
-        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --workspace --locked' anchor"
+        "test:rust": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --workspace --locked' anchor",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/program-id-solana-contracts": "workspace:*",

@@ -2,12 +2,14 @@
 export const COPY_EXTENSIONS = new Set(['.rs', '.toml', '.json']);
 
 /** Directories never descended into when copying or scanning. */
-const EXCLUDE_DIR = new Set([
+export const EXCLUDE_DIR = new Set([
     // npm directories
     'dependencies',
     'node_modules',
     'target',
     '.turbo',
+    'build',
+    'artifacts',
     // cargo directories
     'examples',
     'benches',
@@ -25,7 +27,7 @@ const EXCLUDE_DIR = new Set([
 ]);
 
 /** Files matching COPY_EXTENSIONS that must still be skipped — lockfiles, toolchain config, etc. */
-const EXCLUDE_FILE = new Set([
+export const EXCLUDE_FILE = new Set([
     // npm
     'package.json',
     'pnpm-lock.yaml',

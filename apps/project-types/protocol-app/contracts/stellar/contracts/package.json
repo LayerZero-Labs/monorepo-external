@@ -27,7 +27,8 @@
         "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "package:source": "pnpm resolve-dependencies && pnpm exec lz-tool extra stellar package-source --output .artifacts/.incoming/contracts-source.zip",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
-        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run\" stellar"
+        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run\" stellar",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*",

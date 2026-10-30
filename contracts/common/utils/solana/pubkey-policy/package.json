@@ -14,7 +14,8 @@
         "test": "pnpm test:rust",
         "test:mollusk": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'sh scripts/test-mollusk.sh' anchor",
         "test:rust": "pnpm test:unit && pnpm test:mollusk",
-        "test:unit": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --workspace --exclude pubkey-policy-integration-tests --locked' anchor"
+        "test:unit": "pnpm resolve-dependencies && pnpm exec lz-tool --script 'cargo test --workspace --exclude pubkey-policy-integration-tests --locked' anchor",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/program-id-solana-contracts": "workspace:*",

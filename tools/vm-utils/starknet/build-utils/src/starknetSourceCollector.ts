@@ -44,11 +44,13 @@ interface PackageInfo {
  * @param workspaceRoot - Path to the workspace root
  * @returns Source snapshot with all files and metadata for verification
  */
-export const prepareContractVerificationArtifact = async (params: {
+export const prepareContractVerificationArtifact = async ({
+    packagePath,
+    workspaceRoot,
+}: {
     packagePath: string;
     workspaceRoot: string;
 }): Promise<StarknetSourceSnapshot> => {
-    const { packagePath, workspaceRoot } = params;
     const absolutePath = path.resolve(packagePath);
     const manifestPath = path.join(absolutePath, SCARB_TOML_PATTERN);
     const mainPackage = await parsePackageScarbToml(manifestPath);
@@ -96,12 +98,10 @@ export const prepareContractVerificationArtifact = async (params: {
 export const findScarbPackages = async (rootDir: string): Promise<Map<string, string>> => {
     const scarbTomlPath = path.join(rootDir, SCARB_TOML_PATTERN);
 
-    let scarbToml: ScarbToml;
-    try {
-        scarbToml = await parseScarbToml(scarbTomlPath);
-    } catch {
+    if (!(await fileExists(scarbTomlPath))) {
         throw new Error(`Scarb.toml not found at ${scarbTomlPath}, not a valid Scarb package`);
     }
+    const scarbToml = await parseScarbToml(scarbTomlPath);
 
     const packages = new Map<string, string>();
 
@@ -113,16 +113,10 @@ export const findScarbPackages = async (rootDir: string): Promise<Map<string, st
 
             for (const memberPath of expandedPaths) {
                 const fullPath = path.join(rootDir, memberPath);
-                const memberScarbPath = path.join(fullPath, SCARB_TOML_PATTERN);
+                const memberToml = await parseScarbToml(path.join(fullPath, SCARB_TOML_PATTERN));
 
-                try {
-                    const memberToml = await parseScarbToml(memberScarbPath);
-
-                    if (memberToml.package?.name) {
-                        packages.set(memberToml.package.name, fullPath);
-                    }
-                } catch {
-                    // Not a valid package, skip
+                if (memberToml.package?.name) {
+                    packages.set(memberToml.package.name, fullPath);
                 }
             }
         }
@@ -139,6 +133,33 @@ export const findScarbPackages = async (rootDir: string): Promise<Map<string, st
     throw new Error(
         `Scarb.toml at ${scarbTomlPath} is not a valid Scarb package, must have either [workspace] or [package] section`,
     );
+};
+
+export const collectSourceSnapshot = async ({
+    scarbPackage,
+    scarbWorkspaceRoot,
+}: {
+    scarbPackage: string;
+    scarbWorkspaceRoot: string;
+}): Promise<StarknetSourceSnapshot> => {
+    const availablePackages = await findScarbPackages(scarbWorkspaceRoot);
+    const packagePath = availablePackages.get(scarbPackage);
+
+    if (!packagePath) {
+        throw new Error(
+            `Scarb package "${scarbPackage}" not found in ${scarbWorkspaceRoot}. ` +
+                `Available: ${[...availablePackages.keys()].join(', ')}`,
+        );
+    }
+
+    try {
+        return await prepareContractVerificationArtifact({
+            packagePath,
+            workspaceRoot: scarbWorkspaceRoot,
+        });
+    } catch (cause) {
+        throw new Error(`Failed to process Scarb package "${scarbPackage}"`, { cause });
+    }
 };
 
 const expandMemberPattern = async (rootDir: string, pattern: string): Promise<string[]> => {
@@ -166,7 +187,11 @@ const parsePackageScarbToml = async (manifestPath: string): Promise<PackageInfo>
 
 const parseScarbToml = async (manifestPath: string): Promise<ScarbToml> => {
     const content = await fs.readFile(manifestPath, 'utf-8');
-    return toml.parse(content) as ScarbToml;
+    try {
+        return toml.parse(content) as ScarbToml;
+    } catch (cause) {
+        throw new Error(`Cannot parse Scarb.toml at ${manifestPath}`, { cause });
+    }
 };
 
 const gatherDependencies = async (packageInfo: PackageInfo): Promise<PackageInfo[]> => {

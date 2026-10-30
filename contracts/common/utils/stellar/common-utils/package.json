@@ -18,7 +18,8 @@
         "lint": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo fmt -- --check && cargo clippy --all-targets -- -D warnings\" stellar",
         "lint:fix": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo clippy --all-targets --fix --allow-dirty --allow-staged && cargo fmt\" stellar",
         "resolve-dependencies": "pnpm exec build-utils-rust resolve",
-        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run --features testutils\" stellar"
+        "test": "pnpm resolve-dependencies && pnpm exec lz-tool --script \"cargo nextest run --features testutils\" stellar",
+        "vendor": "pnpm resolve-dependencies"
     },
     "dependencies": {
         "@layerzerolabs/common-utils-macros-stellar-contracts": "workspace:*"

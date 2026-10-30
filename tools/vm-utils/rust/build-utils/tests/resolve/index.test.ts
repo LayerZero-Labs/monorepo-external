@@ -426,6 +426,28 @@ describe('resolveDependencies — excludes integration test dirs from vendored c
     });
 });
 
+describe('resolveDependencies — excludes build output dirs from vendored crates', () => {
+    it('does not vendor build/ or artifacts/ subtrees', async () => {
+        const root = join(TMP, 'exclude-build-output');
+        createCrate(root, fixture('program-with-deps.toml'));
+
+        const dep = join(root, 'node_modules', '@layerzerolabs', 'rbac-solana-contracts');
+        createCrate(dep, fixture('minimal.toml'));
+        writeFileSync(join(dep, 'package.json'), '{}');
+        for (const dir of ['build', 'artifacts']) {
+            mkdirSync(join(dep, dir), { recursive: true });
+            writeFileSync(join(dep, dir, 'y.json'), '{}');
+        }
+
+        await resolveDependencies({ cwd: root });
+
+        const vendored = join(root, 'dependencies', 'rbac-solana-contracts');
+        expect(existsSync(join(vendored, 'src', 'lib.rs'))).toBe(true);
+        expect(existsSync(join(vendored, 'build'))).toBe(false);
+        expect(existsSync(join(vendored, 'artifacts'))).toBe(false);
+    });
+});
+
 describe('resolveDependencies — single-crate consumer (no [workspace])', () => {
     it('places dependencies/ next to the crate Cargo.toml', async () => {
         const root = join(TMP, 'leaf-consumer');

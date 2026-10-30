@@ -28,7 +28,6 @@
     "devDependencies": {
         "@ethersproject/abstract-provider": "catalog:",
         "@layerzerolabs/eslint-configuration": "workspace:*",
-        "@layerzerolabs/hardhat-tron": "catalog:",
         "@layerzerolabs/onesig-core": "workspace:*",
         "@layerzerolabs/onesig-evm-sdk": "workspace:*",
         "@layerzerolabs/toolbox-foundry": "catalog:",

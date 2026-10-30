@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@layerzerolabs/args": "workspace:*",
+        "@layerzerolabs/build-utils-starknet": "workspace:*",
         "@layerzerolabs/layerzero-definitions": "workspace:*",
         "@layerzerolabs/ton-sdk-tools": "catalog:"
     },
