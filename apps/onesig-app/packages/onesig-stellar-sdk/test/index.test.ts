@@ -5,7 +5,12 @@
 import { Keypair, xdr } from '@stellar/stellar-sdk';
 import { describe, expect, test } from 'vitest';
 
-import { createExecuteTransactionCall, StellarLeafData, stellarLeafGenerator } from '../src/index';
+import {
+    createExecuteTransactionCall,
+    createSetSeedCall,
+    StellarLeafData,
+    stellarLeafGenerator,
+} from '../src/index';
 import { createTestCall, generateTestContractAddress } from './helpers';
 
 describe('onesig-stellar', () => {
@@ -52,12 +57,11 @@ describe('onesig-stellar', () => {
 
     describe('Leaf Generation', () => {
         test('should generate valid leaf data structure', () => {
-            // Create a minimal leaf with empty calls (will be validated when contracts are implemented)
             const leaf: StellarLeafData = {
                 nonce: 0n,
                 oneSigId,
                 targetOneSigAddress: oneSigAddress,
-                calls: [],
+                calls: [createSetSeedCall(Buffer.alloc(32, 9), oneSigAddress)],
             };
 
             const generator = stellarLeafGenerator([leaf]);
@@ -66,7 +70,7 @@ describe('onesig-stellar', () => {
             expect(generator.leafs[0].nonce).toBe(0n);
             expect(generator.leafs[0].oneSigId).toBe(oneSigId);
             expect(generator.leafs[0].targetOneSigAddress).toBe(oneSigAddress);
-            expect(generator.leafs[0].calls).toHaveLength(0);
+            expect(generator.leafs[0].calls).toHaveLength(1);
         });
 
         test('should generate multiple leaves', () => {
@@ -75,13 +79,13 @@ describe('onesig-stellar', () => {
                     nonce: 0n,
                     oneSigId,
                     targetOneSigAddress: oneSigAddress,
-                    calls: [],
+                    calls: [createSetSeedCall(Buffer.alloc(32, 9), oneSigAddress)],
                 },
                 {
                     nonce: 1n,
                     oneSigId,
                     targetOneSigAddress: oneSigAddress,
-                    calls: [],
+                    calls: [createSetSeedCall(Buffer.alloc(32, 9), oneSigAddress)],
                 },
             ];
 
@@ -125,7 +129,7 @@ describe('onesig-stellar', () => {
         test('should throw when encoding empty call list', () => {
             const generator = stellarLeafGenerator([]);
             expect(() => generator.encodeCalls([])).toThrow(
-                'Stellar leaf must have exactly one self-call',
+                'A Stellar leaf encodes exactly one OneSig self-call',
             );
         });
 
@@ -134,7 +138,7 @@ describe('onesig-stellar', () => {
             const call1 = createTestCall(generateTestContractAddress(), 'set_seed');
             const call2 = createTestCall(generateTestContractAddress(), 'set_threshold');
             expect(() => generator.encodeCalls([call1, call2])).toThrow(
-                'Stellar leaf must have exactly one self-call',
+                'A Stellar leaf encodes exactly one OneSig self-call',
             );
         });
     });
@@ -188,7 +192,7 @@ describe('onesig-stellar', () => {
                     nonce: 0n,
                     oneSigId,
                     targetOneSigAddress: oneSigAddress,
-                    calls: [],
+                    calls: [createSetSeedCall(Buffer.alloc(32, 9), oneSigAddress)],
                 },
             ];
 

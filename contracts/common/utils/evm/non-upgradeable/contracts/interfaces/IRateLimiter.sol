@@ -170,6 +170,7 @@ interface IRateLimiter {
      * @notice Returns the rate limit state and configuration for a given ID.
      * @dev May return unscaled state if `SCALE_DECIMALS` is set, use `getRateLimitUsages` for scaled values.
      * @dev Reads the rate limit state from storage without checking defaults.
+     * @dev A window of `type(uint32).max` means usage in that direction does not decay.
      * @param _id ID of the rate limit
      * @return rateLimit Rate limit state and configuration
      */
@@ -215,6 +216,7 @@ interface IRateLimiter {
      * @notice Sets ID-specific configurations for the rate limiter.
      * @dev Configurations must be significantly larger than windows to avoid precision loss when calculating decays.
      * @dev It does not checkpoint rate limits for the configured IDs.
+     * @dev A window of `type(uint32).max` disables decay in that direction instead of setting a finite window.
      * @param _params Array of configurations to set
      */
     function setRateLimitConfigs(SetRateLimitConfigParam[] calldata _params) external;

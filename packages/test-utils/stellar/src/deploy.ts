@@ -13,10 +13,10 @@ import { readFileSync } from 'fs';
 import type { StellarTestEnv } from './env.js';
 
 export interface DeployableContractClient<T extends { options: { contractId: string } }> {
-    deploy: (
+    deploy(
         argsOrOptions: unknown,
         options?: unknown,
-    ) => Promise<{ signAndSend: () => Promise<{ result: T }> }>;
+    ): Promise<{ signAndSend: () => Promise<{ result: T }> }>;
 }
 
 /**

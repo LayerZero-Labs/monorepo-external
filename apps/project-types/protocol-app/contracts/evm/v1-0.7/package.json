@@ -1,0 +1,51 @@
+{
+    "name": "@layerzerolabs/protocol-v1-0.7-evm-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Copied from @layerzerolabs/lz-evm-v1-0.7 in the old LayerZero-Labs/monorepo",
+    "license": "BUSL-1.1",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./artifacts/*": "./artifacts/*",
+        "./artifacts-tron/*": "./artifacts-tron/*",
+        "./contracts/*": "./contracts/*",
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "artifacts/contracts/**/!(*.dbg).json",
+        "artifacts-tron/contracts/**/!(*.dbg).json",
+        "contracts/**/*",
+        "dist/**/*"
+    ],
+    "scripts": {
+        "build": "pnpm compile:evm && pnpm compile:tron && tsup",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.cjs",
+        "compile:tron": "pnpm lz-tool hardhat compile --config ./hardhat.config.cjs --network tron-mainnet",
+        "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "pnpm lz-tool forge test"
+    },
+    "devDependencies": {
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:protocol-v1-evm",
+        "@openzeppelin/contracts-upgradeable": "catalog:protocol-v1-evm",
+        "hardhat-deploy": "catalog:protocol-v1-evm",
+        "tsup": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

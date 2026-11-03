@@ -13,6 +13,7 @@
         "@layerzerolabs/lz-evm-messagelib-v2": "catalog:",
         "@layerzerolabs/lz-evm-protocol-v2": "catalog:",
         "@layerzerolabs/lz-evm-v1-0.7": "catalog:",
+        "@layerzerolabs/protocol-v2-messagelib-evm-contracts": "workspace:*",
         "@layerzerolabs/solhint-configuration": "workspace:*",
         "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
         "@layerzerolabs/toolbox-foundry": "catalog:",

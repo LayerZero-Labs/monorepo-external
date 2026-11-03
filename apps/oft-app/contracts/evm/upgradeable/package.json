@@ -21,6 +21,7 @@
         "@layerzerolabs/oapp-evm-contracts": "workspace:*",
         "@layerzerolabs/oapp-upgradeable-evm-contracts": "workspace:*",
         "@layerzerolabs/oft-evm-contracts": "workspace:*",
+        "@layerzerolabs/protocol-v2-messagelib-evm-contracts": "workspace:*",
         "@layerzerolabs/solhint-configuration": "workspace:*",
         "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
         "@layerzerolabs/test-utils-evm-contracts": "workspace:*",

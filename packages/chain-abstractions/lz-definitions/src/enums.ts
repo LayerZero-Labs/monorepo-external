@@ -295,8 +295,6 @@ export enum ChainName {
     OPN = 'opn',
     ALPEN = 'alpen',
     ZEROINTEROP = 'zerointerop',
-    ZEROSYSTEM = 'zerosystem',
-    ZEROATLAS = 'zeroatlas',
 }
 
 export enum ChainKey {
@@ -1080,8 +1078,6 @@ export enum ChainKey {
     //zero
     ZEROINTEROP = 'zerointerop',
     ZEROINTEROP_TESTNET = 'zerointerop-testnet',
-    ZEROSYSTEM_TESTNET = 'zerosystem-testnet',
-    ZEROATLAS_TESTNET = 'zeroatlas-testnet',
 }
 
 export enum ChainType {
@@ -1395,8 +1391,6 @@ export const CHAIN_NAME_TO_CHAIN_TYPE = {
     opn: ChainType.EVM,
     alpen: ChainType.EVM,
     zerointerop: ChainType.EVM,
-    zerosystem: ChainType.EVM,
-    zeroatlas: ChainType.EVM,
 } as const satisfies Record<ChainName, ChainType>;
 
 export const CHAIN_TYPE_TO_CHAIN_NAME = Object.entries(CHAIN_NAME_TO_CHAIN_TYPE).reduce(

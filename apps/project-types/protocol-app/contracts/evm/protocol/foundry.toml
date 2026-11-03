@@ -1,0 +1,22 @@
+[profile.default]
+solc = '0.8.22'
+verbosity = 3
+src = "contracts"
+test = "test"
+out = "out"
+cache_path = "cache"
+optimizer = true
+optimizer_runs = 20_000
+# The old tests predate Foundry 1.0, which rejects `vm.expectRevert` on internal calls by default.
+allow_internal_expect_revert = true
+
+libs = ['node_modules', 'node_modules/@layerzerolabs/toolbox-foundry/lib']
+
+remappings = [
+    'ds-test/=node_modules/@layerzerolabs/toolbox-foundry/lib/ds-test/',
+    'forge-std/=node_modules/@layerzerolabs/toolbox-foundry/lib/forge-std/',
+    '@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/',
+    '@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/',
+    'hardhat-deploy/=node_modules/hardhat-deploy/',
+    '@layerzerolabs/lz-evm-protocol-v2/=./',
+]
