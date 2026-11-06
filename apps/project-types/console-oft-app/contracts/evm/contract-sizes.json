@@ -5,8 +5,8 @@
             "initcodeSize": 21435
         },
         "tron": {
-            "runtimeSize": 14354,
-            "initcodeSize": 14637
+            "runtimeSize": 19573,
+            "initcodeSize": 19856
         },
         "zksync": {
             "runtimeSize": 49504,

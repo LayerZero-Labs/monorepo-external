@@ -62,3 +62,8 @@ export const sortNormalizedHex = <T extends NormalizedHexString[] | null>(hexStr
     hexStrings === null ? hexStrings : (hexStrings.sort(normalizedHexSort) as T);
 
 export const NORMALIZED_HEX_ZERO = normalizeHex('0x0');
+
+export const nonZeroAddressSchema = normalizedHexSchema.refine(
+    (address) => address !== NORMALIZED_HEX_ZERO,
+    { error: 'must not be the zero address' },
+);

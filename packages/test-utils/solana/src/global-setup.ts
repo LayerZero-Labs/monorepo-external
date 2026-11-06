@@ -40,7 +40,7 @@ const SNAPSHOT_IMAGE = 'us-east1-docker.pkg.dev/lz-docker/layerzero/solana-snaps
 // includes this so such a change invalidates a cached base.json; without it a stale base would be
 // reused silently.
 const BASE_SCHEMA_VERSION = 2;
-const CONTAINER_NAME = 'lz-artifact-extract';
+const CONTAINER_NAME = `lz-artifact-extract-${process.pid}-${Math.random().toString(36).slice(2, 8)}`;
 const RPC_PORT = 19899;
 
 const exists = (p: string) =>
@@ -85,14 +85,19 @@ const extractPrograms = async (): Promise<void> => {
     // TODO-SOLANA: replace this with apps/project-types/protocol-app/contracts/solana/ to fetch and build the protocol programs (executor, dvn, endpoint, pricefeed, etc)
     // stop-gap solution until protocol solana is migrated in from `monorepo`
     const validatorCmd = `solana-test-validator --rpc-port ${RPC_PORT} -l /app/cache --limit-ledger-size 50000000`;
-    await $`docker run -d --name ${CONTAINER_NAME} -p ${RPC_PORT}:${RPC_PORT} ${SNAPSHOT_IMAGE} sh -c ${validatorCmd}`;
+    await $`docker run -d --name ${CONTAINER_NAME} -p 127.0.0.1::${RPC_PORT} ${SNAPSHOT_IMAGE} sh -c ${validatorCmd}`;
 
     try {
+        const portLine = (await $`docker port ${CONTAINER_NAME} ${RPC_PORT}/tcp`.quiet()).stdout
+            .trim()
+            .split('\n')[0];
+        const hostPort = portLine.slice(portLine.lastIndexOf(':') + 1);
+
         // Wait for RPC (60s, image pull + validator startup can be slow on first run)
         let started = false;
         for (let i = 0; i < 60; i++) {
             try {
-                const resp = await fetch(`http://localhost:${RPC_PORT}`, {
+                const resp = await fetch(`http://127.0.0.1:${hostPort}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getVersion' }),
@@ -107,7 +112,7 @@ const extractPrograms = async (): Promise<void> => {
             }
         }
         if (!started) {
-            throw new Error(`Snapshot validator failed to start within 60s on port ${RPC_PORT}`);
+            throw new Error(`Snapshot validator failed to start within 60s on port ${hostPort}`);
         }
 
         // Dump each program

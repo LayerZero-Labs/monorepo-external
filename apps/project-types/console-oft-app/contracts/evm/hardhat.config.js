@@ -58,7 +58,17 @@ module.exports = {
                 },
             },
         ],
-        // `@layerzerolabs/vm-tooling-evm/hardhat-tron` does not support `overrides`.
+        overrides: {
+            'contracts/ERC20Plus.sol': {
+                version: '0.8.24',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 1_000_000,
+                    },
+                },
+            },
+        },
     },
     networks: {
         'zksync-mainnet': {

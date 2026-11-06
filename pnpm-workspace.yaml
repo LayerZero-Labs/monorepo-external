@@ -77,14 +77,13 @@ catalogs:
     '@iota/iota-sdk': 1.10.1
     '@jest/globals': ^29.7.0
     '@layerzerolabs/lz-corekit-solana': 3.0.168
-    '@layerzerolabs/lz-definitions': 3.1.19
+    '@layerzerolabs/lz-definitions': 3.1.20
     '@layerzerolabs/lz-evm-messagelib-v2': workspace:@layerzerolabs/protocol-v2-messagelib-evm-contracts@*
     '@layerzerolabs/lz-evm-protocol-v2': workspace:@layerzerolabs/protocol-v2-evm-contracts@*
     '@layerzerolabs/lz-evm-v1-0.7': workspace:@layerzerolabs/protocol-v1-0.7-evm-contracts@*
     '@layerzerolabs/lz-foundation': 3.0.168
     '@layerzerolabs/lz-serdes': 3.0.168
     '@layerzerolabs/lz-solana-sdk-v2': 3.0.168
-    '@layerzerolabs/lz-v2-utilities': 3.0.168
     '@layerzerolabs/oft-v2-solana-sdk': 3.0.168
     '@layerzerolabs/test-devtools-evm-foundry': 8.0.1
     '@layerzerolabs/ton-sdk-tools': 3.0.168
@@ -174,14 +173,14 @@ catalogs:
     prettier-plugin-solidity: 2.1.0
     prettier-plugin-tailwindcss: 0.6.8
     semver: ^7.5.4
-    smol-toml: ^1.7.0
+    smol-toml: 1.7.2
     solhint: ^6.0.1
     solidity-bytes-utils: ^0.8.4
     solidity-coverage: ^0.8.12
     string-format: ^2.0.0
     tiny-invariant: 1.3.1
     tinypool: ^2.1.2
-    toml: ^3.0.0
+    toml: ^5.0.1
     ts-jest: ^29.3.1
     ts-node: ^10.9.2
     tsup: ^8.4.0
@@ -229,6 +228,9 @@ catalogs:
     '@layerzerolabs/lz-evm-v1-0.7': workspace:@layerzerolabs/protocol-v1-0.7-evm-contracts@*
     '@openzeppelin/contracts': 5.6.1
     '@openzeppelin/contracts-upgradeable': 5.6.1
+  nilify-delegate:
+    '@layerzerolabs/lz-evm-protocol-v2': workspace:@layerzerolabs/protocol-v2-evm-contracts@*
+    '@openzeppelin/contracts': 5.6.1
   onesig-evm:
     '@openzeppelin/contracts': 5.0.2
   onesig-solana:
@@ -292,6 +294,8 @@ catalogs:
     typescript: npm:@typescript/typescript6@^6.0.2
   oft-iota-sdk:
     '@iota/iota-sdk': ^1.6.1
+  oft-sui-sdk-v2:
+    '@mysten/sui': 2.26.2
   grpc-compat:
     '@mysten/sui-v2': npm:@mysten/sui@2.26.2
   zone-composer:
@@ -328,9 +332,9 @@ overrides:
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
-  '@layerzerolabs/lz-definitions': 3.1.19
+  '@layerzerolabs/lz-definitions': 3.1.20
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
-  '@mysten/sui': 1.45.2
+  '@mysten/sui@<2': 1.45.2
   '@react-spring/animated>@types/react': 19.2.6
   '@react-spring/web>@types/react': 19.2.6
   '@solana/web3.js': 1.99.0
@@ -342,7 +346,6 @@ overrides:
   '@ton/ton': npm:@layerzerolabs/ton@15.1.0-rc.11
   '@types/react': 19.2.6
   '@types/react-dom': 19.2.3
-  '@vitest/mocker>vite': 7.3.6
   adm-zip: ^0.6.1
   brace-expansion@1: 1.1.21
   brace-expansion@2: 2.1.7
@@ -354,9 +357,8 @@ overrides:
   elliptic: ^6.6.1
   ethers@^5: ^5.8.0
   fast-uri: ^3.1.6
-  flatted: ^3.4.2
   flatted@^3: ^3.4.2
-  follow-redirects@1: 1.16.1
+  follow-redirects@1: 1.16.2
   form-data@^2: ^2.5.6
   form-data@^3: ^3.0.5
   form-data@^4: ^4.0.6
@@ -372,35 +374,34 @@ overrides:
   minimatch@^5: ^5.1.8
   minimatch@^7: ^7.4.8
   minimatch@^9: ^9.0.7
-  minimatch@9.0.5: ^9.0.7
   minimatch@^10: ^10.2.3
   nanoid@3: ^3.3.18
   nanoid@5: ^5.1.16
-  path-to-regexp@~0.1: 0.1.13
+  path-to-regexp@^0.1: 0.1.13
   path-to-regexp@^8: ^8.4.0
   picomatch@^2: ^2.3.2
   picomatch@^3: ^3.0.2
   picomatch@^4: ^4.0.4
   protobufjs: ^7.5.6
-  protobufjs@^7: ^7.5.6
   protobufjs@^8: ^8.0.2
-  qs@^6: ^6.14.1
+  qs@^6: ^6.16.2
   recharts>@types/react: 19.2.6
   rollup@^2: ^2.80.0
   rollup@^4: ^4.59.0
   serialize-javascript: ^7.0.3
+  smol-toml@^1: 1.7.2
   sonner>@types/react: 19.2.6
   source-map-js@1: 1.2.2
   string-width: 4.1.0
   tinypool: 2.1.2
-  tmp@<0.2.6: ^0.2.6
+  tmp: ^0.2.7
+  toml@^3: ^5.0.1
   undici@^5: ^6.29.1
   undici@^6: ^6.29.1
   undici@^7: ^7.30.1
   undici@8: 8.12.2
   validator: ^13.15.22
-  vite@^6: ^6.4.3
-  vitest>vite: 7.3.6
+  vite@^7: ^7.3.7
   wrap-ansi: 7.0.0
   ws@^7: ^7.5.11
   ws@^8: ^8.21.0

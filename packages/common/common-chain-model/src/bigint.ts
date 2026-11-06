@@ -17,6 +17,13 @@ export const decimalStringSchema = z.string().refine((data) => {
     );
 }) as any as z.ZodType<DecimalString>;
 
+const MAX_UINT256 = 2n ** 256n - 1n;
+
+export const uint256Schema = decimalStringSchema.refine(
+    (value) => /^\d+$/.test(value.toString()) && BigInt(value.toString()) <= MAX_UINT256,
+    { error: `must be between 0 and ${MAX_UINT256.toString()}` },
+);
+
 export const decimalString = {
     parse: (data: string | bigint) => {
         if (typeof data === 'bigint') {

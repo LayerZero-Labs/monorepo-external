@@ -54,7 +54,7 @@
         "@layerzerolabs/build-utils-rust": "workspace:*",
         "@layerzerolabs/lz-solana-sdk-v2": "catalog:",
         "@layerzerolabs/lz-v2-protocol-solana": "workspace:*",
-        "@layerzerolabs/lz-v2-utilities": "catalog:",
+        "@layerzerolabs/protocol-codecs-v2": "workspace:*",
         "@layerzerolabs/test-utils-solana": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "@layerzerolabs/vm-tooling-solana": "workspace:*",

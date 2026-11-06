@@ -180,9 +180,18 @@ extendConfig((config, userConfig) => {
         }
         versionRemapping.set(remapping[0], remapping[1]);
     }
+    const overrides = tronSolc?.overrides ?? {};
+    for (const [sourceName, override] of Object.entries(overrides)) {
+        if (semver.valid(override.version) == null) {
+            throw new TronSolcPluginError(
+                `invalid version in overrides for ${sourceName}: ${override.version}`,
+            );
+        }
+    }
     config.tronSolc = {
         enable: !!tronSolc?.enable,
         compilers: tronSolc?.compilers ?? [],
+        overrides,
         filter: new Set(tronSolc?.filter ?? []),
         versionRemapping,
     };
@@ -215,7 +224,16 @@ subtask(
         const compilationJob = await runSuper();
         if (!isTronEnabled(hre) || 'reason' in compilationJob) return compilationJob;
 
-        const { compilers } = hre.config.tronSolc;
+        const { compilers, overrides } = hre.config.tronSolc;
+        const override = overrides[file.sourceName];
+        if (override !== undefined) {
+            compilationJob.solidityConfig = tronSolidityConfig(
+                compilationJob.solidityConfig,
+                override,
+            );
+            return compilationJob;
+        }
+
         const pragmas = dependencyGraph
             .getTransitiveDependencies(file)
             .flatMap(({ dependency }) => dependency.content.versionPragmas);

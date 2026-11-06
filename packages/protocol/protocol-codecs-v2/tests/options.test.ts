@@ -41,6 +41,18 @@ describe('Options builder', () => {
         expect(Options.newOptions().toHex()).toBe('0x0003');
     });
 
+    it('encodes compose, ordered and lzRead options', () => {
+        const options = Options.newOptions()
+            .addExecutorComposeOption(2, 300)
+            .addExecutorComposeOption(0, 400, 11)
+            .addExecutorOrderedExecutionOption()
+            .addExecutorLzReadOption(1000, 64)
+            .addExecutorLzReadOption(1, 2, 3);
+        expect(options.toHex()).toBe(
+            '0x00030100130300020000000000000000000000000000012c010023030000000000000000000000000000000001900000000000000000000000000000000b0100010401001505000000000000000000000000000003e80000004001002505000000000000000000000000000000010000000200000000000000000000000000000003',
+        );
+    });
+
     it('rejects a gas limit above uint128', () => {
         expect(() => Options.newOptions().addExecutorLzReceiveOption(1n << 128n)).toThrow();
     });

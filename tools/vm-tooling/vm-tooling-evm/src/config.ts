@@ -22,13 +22,13 @@ export const tools: readonly [Tool, ...Tool[]] = [
 ];
 
 export const images = {
-    ['evm:forge-1.3.6-hardhat-2.26.3-patch-7']: {
+    ['evm:forge-1.3.6-hardhat-2.26.3-patch-8']: {
         name: 'evm',
         versions: {
             forge: '1.3.6',
             hardhat: '2.26.3',
         },
-        patch: 7,
+        patch: 8,
         mirrorRegistries: [DockerRegistryMirror.PUBLIC_GAR],
     },
 } satisfies Record<string, Image>;
@@ -39,8 +39,8 @@ export const versionCombinations: [VersionCombination<ImageId>, ...VersionCombin
     [
         {
             images: {
-                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-7',
-                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-7',
+                forge: 'evm:forge-1.3.6-hardhat-2.26.3-patch-8',
+                hardhat: 'evm:forge-1.3.6-hardhat-2.26.3-patch-8',
             },
             stable: true,
         },

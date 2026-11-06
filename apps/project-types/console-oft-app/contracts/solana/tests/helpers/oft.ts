@@ -27,7 +27,7 @@ import { type Connection, SYSVAR_CLOCK_PUBKEY } from '@solana/web3.js';
 import { UMI } from '@layerzerolabs/lz-solana-sdk-v2';
 import { EndpointProgram } from '@layerzerolabs/lz-v2-protocol-solana';
 import { composeV3, executeV3 } from '@layerzerolabs/lz-v2-protocol-solana/v3';
-import { Options, PacketSerializer, PacketV1Codec } from '@layerzerolabs/lz-v2-utilities';
+import { Options, PacketSerializer, PacketV1Codec } from '@layerzerolabs/protocol-codecs-v2';
 import type { InfraEnv } from '@layerzerolabs/test-utils-solana';
 
 import { instructions } from '../../sdk/oft';

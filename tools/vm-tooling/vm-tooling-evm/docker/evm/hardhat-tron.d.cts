@@ -32,6 +32,7 @@ declare module 'hardhat/types/config' {
         tronSolc?: {
             enable?: boolean;
             compilers?: TronSolcCompiler[];
+            overrides?: Record<string, TronSolcCompiler>;
             filter?: string[];
             versionRemapping?: [string, string][];
         };
@@ -40,6 +41,7 @@ declare module 'hardhat/types/config' {
         tronSolc: {
             enable: boolean;
             compilers: TronSolcCompiler[];
+            overrides: Record<string, TronSolcCompiler>;
             filter: Set<string>;
             versionRemapping: Map<string, string>;
         };

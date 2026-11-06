@@ -90,6 +90,28 @@ module.exports = {
 grep -q 'pragma solidity ^0.8.20;' artifacts-tron/build-info/*.json`,
     },
     {
+        name: 'tron with overrides',
+        pragma: '^0.8.20',
+        extraArgs: '--network tron-mainnet',
+        config: `require('/hardhat/hardhat-tron.cjs');
+module.exports = {
+    networks: { 'tron-mainnet': { url: 'http://127.0.0.1:8514/jsonrpc', tron: true } },
+    solidity: { compilers: [{ version: '0.8.24' }] },
+    tronSolc: {
+        enable: true,
+        compilers: [{ version: '0.8.24' }],
+        overrides: {
+            'contracts/A.sol': {
+                version: '0.8.20',
+                settings: { optimizer: { enabled: true, runs: 1234 } },
+            },
+        },
+    },
+};`,
+        check: `grep -q '"solcVersion": *"0.8.20"' artifacts-tron/build-info/*.json
+grep -q '"runs": *1234' artifacts-tron/build-info/*.json`,
+    },
+    {
         name: 'zksync',
         pragma: '0.8.26',
         extraArgs: '--network zksync',

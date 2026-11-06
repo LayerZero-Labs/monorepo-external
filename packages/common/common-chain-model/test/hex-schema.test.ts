@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { hexSchema, isNormalizedHex } from '../src/address';
+import {
+    hexSchema,
+    isNormalizedHex,
+    nonZeroAddressSchema,
+    NORMALIZED_HEX_ZERO,
+} from '../src/address';
 
 describe('hexSchema', () => {
     it('accepts valid 0x-prefixed hex', () => {
@@ -30,5 +35,22 @@ describe('isNormalizedHex', () => {
         expect(isNormalizedHex('0x0dead')).toBe(false);
         expect(isNormalizedHex('0xDEAD')).toBe(false);
         expect(isNormalizedHex('not-hex')).toBe(false);
+    });
+});
+
+describe('nonZeroAddressSchema', () => {
+    it('accepts a non-zero normalized address', () => {
+        expect(nonZeroAddressSchema.parse('0xc0c0000000000000000000000000000000000007')).toBe(
+            '0xc0c0000000000000000000000000000000000007',
+        );
+    });
+
+    it('rejects the zero address with an error that says so', () => {
+        const result = nonZeroAddressSchema.safeParse(NORMALIZED_HEX_ZERO);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues.map(({ message }) => message)).toEqual([
+            'must not be the zero address',
+        ]);
     });
 });

@@ -128,6 +128,34 @@ export class Options {
         );
     }
 
+    addExecutorComposeOption(
+        index: number,
+        gasLimit: string | number | bigint,
+        nativeDrop: string | number | bigint = 0,
+    ): this {
+        const head = [bigIntToBytes(BigInt(index), 2), uint128(gasLimit)];
+        const value = uint128(nativeDrop);
+        return BigInt(nativeDrop) === 0n
+            ? this.addExecutorOption(ExecutorOptionType.COMPOSE, ...head)
+            : this.addExecutorOption(ExecutorOptionType.COMPOSE, ...head, value);
+    }
+
+    addExecutorOrderedExecutionOption(): this {
+        return this.addExecutorOption(ExecutorOptionType.ORDERED);
+    }
+
+    addExecutorLzReadOption(
+        gasLimit: string | number | bigint,
+        dataSize: string | number | bigint,
+        nativeDrop: string | number | bigint = 0,
+    ): this {
+        const head = [uint128(gasLimit), bigIntToBytes(BigInt(dataSize), 4)];
+        const value = uint128(nativeDrop);
+        return BigInt(nativeDrop) === 0n
+            ? this.addExecutorOption(ExecutorOptionType.LZ_READ, ...head)
+            : this.addExecutorOption(ExecutorOptionType.LZ_READ, ...head, value);
+    }
+
     toBytes(): Uint8Array {
         const workerIds = [...new Set(this.options.map((o) => o.workerId))];
         const encoded = workerIds.flatMap((workerId) =>
