@@ -67,3 +67,14 @@ export const nonZeroAddressSchema = normalizedHexSchema.refine(
     (address) => address !== NORMALIZED_HEX_ZERO,
     { error: 'must not be the zero address' },
 );
+
+export const bytesHexSchema = hexSchema
+    .overwrite((hex): HexString => `0x${hex.slice(2).toLowerCase()}`)
+    .refine((hex) => hex.length % 2 === 0, { error: 'must be whole bytes' });
+
+export const fixedBytesHexSchema = (bytes: number) =>
+    bytesHexSchema.refine((hex) => hex.length === 2 + 2 * bytes, {
+        error: `must be ${bytes} bytes`,
+    });
+
+export const bytes32HexSchema = fixedBytesHexSchema(32);

@@ -3,11 +3,6 @@
     "version": "0.0.0",
     "private": false,
     "description": "TypeScript SDK bindings for LayerZero V2 Stellar protocol contracts (EndpointV2, ULN302, workers, views, …)",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/layerzerolabs/monorepo-internal.git",
-        "directory": "apps/project-types/protocol-app/packages/lz-v2-stellar-sdk"
-    },
     "license": "MIT",
     "type": "module",
     "exports": "./dist/index.js",
