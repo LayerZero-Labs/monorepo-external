@@ -36,7 +36,6 @@
         "@openzeppelin/contracts": "catalog:console",
         "@openzeppelin/contracts-upgradeable": "catalog:console",
         "ethers": "catalog:",
-        "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {

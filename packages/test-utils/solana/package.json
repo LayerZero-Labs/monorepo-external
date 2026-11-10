@@ -40,6 +40,7 @@
         "zx": "catalog:"
     },
     "devDependencies": {
+        "@layerzerolabs/lz-definitions": "workspace:*",
         "@layerzerolabs/tsup-configuration": "workspace:*",
         "@layerzerolabs/typescript-configuration": "workspace:*",
         "tsup": "catalog:",

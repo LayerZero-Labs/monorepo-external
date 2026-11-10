@@ -35,7 +35,7 @@ export const transactionResultSchema = z.discriminatedUnion('type', [
     // we cannot know whether the transaction was submitted
     z.object({
         type: z.literal('indeterminate'),
-        meta: z.any(),
+        meta: z.any().optional(),
     }),
 ]);
 

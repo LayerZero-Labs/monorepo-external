@@ -547,8 +547,8 @@ catalogs:
       specifier: ^2.2.2
       version: 2.9.1
     zod:
-      specifier: 4.3.5
-      version: 4.3.5
+      specifier: 4.6.7
+      version: 4.6.7
     zx:
       specifier: ^8.8.5
       version: 8.8.5
@@ -596,6 +596,10 @@ catalogs:
     '@openzeppelin/contracts':
       specifier: 5.6.1
       version: 5.6.1
+  typescript6:
+    typescript:
+      specifier: npm:@typescript/typescript6@^6.0.2
+      version: 6.0.2
 
 overrides:
   js-yaml@3: 3.15.2
@@ -604,7 +608,7 @@ overrides:
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
-  '@layerzerolabs/lz-definitions': 3.1.21
+  '@layerzerolabs/lz-definitions': workspace:*
   '@matterlabs/zksync-telemetry-js': workspace:@layerzerolabs/zksync-telemetry-js-stub@*
   '@mysten/sui@<2': 1.45.2
   '@react-spring/animated>@types/react': 19.2.6
@@ -677,10 +681,10 @@ overrides:
   wrap-ansi: 7.0.0
   ws@^7: ^7.5.11
   ws@^8: ^8.21.0
-  zod@^4: 4.3.5
+  zod@^4: 4.6.7
   http-cache-semantics@4: 4.3.0
 
-packageExtensionsChecksum: sha256-uHzDOecf6WkjFcDZQJZS/Sg9QI63aqpPMvG7AdyzF60=
+packageExtensionsChecksum: sha256-MGbIQL/OsFPo9zWhc5JsDCvV+GUAR1bS3oubsACMyZw=
 
 pnpmfileChecksum: sha256-4rJ1+NsUfC/JmNo4NamNW+LVqBQo4DFFMt3t2MTnia4=
 
@@ -781,9 +785,6 @@ importers:
       ethers:
         specifier: 'catalog:'
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      hardhat-deploy:
-        specifier: ^0.12.4
-        version: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       solhint:
         specifier: 'catalog:'
         version: 6.0.1(typescript@7.0.2)
@@ -844,9 +845,6 @@ importers:
       ethers:
         specifier: 'catalog:'
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      hardhat-deploy:
-        specifier: ^0.12.4
-        version: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       solhint:
         specifier: 'catalog:'
         version: 6.0.1(typescript@7.0.2)
@@ -1110,9 +1108,6 @@ importers:
       ethers:
         specifier: 'catalog:'
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      hardhat-deploy:
-        specifier: ^0.12.4
-        version: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       solhint:
         specifier: 'catalog:'
         version: 6.0.1(typescript@7.0.2)
@@ -1270,9 +1265,6 @@ importers:
       '@openzeppelin/contracts-upgradeable':
         specifier: catalog:console
         version: 5.6.1(@openzeppelin/contracts@5.6.1)
-      hardhat-deploy:
-        specifier: ^0.12.4
-        version: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       solhint:
         specifier: 'catalog:'
         version: 6.0.1(typescript@7.0.2)
@@ -1641,9 +1633,6 @@ importers:
       '@openzeppelin/contracts':
         specifier: catalog:proxy-v5-6
         version: 5.6.1
-      hardhat-deploy:
-        specifier: ^0.12.4
-        version: 0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10)
       solhint:
         specifier: 'catalog:'
         version: 6.0.1(typescript@7.0.2)
@@ -1923,7 +1912,7 @@ importers:
         version: link:../../zod-utils
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -1934,6 +1923,28 @@ importers:
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/chain-abstractions/lz-definitions-legacy:
+    dependencies:
+      tiny-invariant:
+        specifier: 'catalog:'
+        version: 1.3.1
+    devDependencies:
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../lz-definitions
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(@typescript/typescript6@6.0.2)(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(yaml@2.9.1)
+      typescript:
+        specifier: catalog:typescript6
+        version: '@typescript/typescript6@6.0.2'
       vitest:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
@@ -1951,7 +1962,7 @@ importers:
         version: link:../../zod-utils
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2062,7 +2073,7 @@ importers:
         version: link:../../../typescript-utils
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2084,7 +2095,7 @@ importers:
         version: link:../base-definitions
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2125,7 +2136,7 @@ importers:
         version: link:../../../typescript-utils
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2339,7 +2350,7 @@ importers:
         version: link:../../chain-abstractions/lz-definitions
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2391,8 +2402,8 @@ importers:
         specifier: 'catalog:'
         version: 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-definitions':
-        specifier: 3.1.21
-        version: 3.1.21
+        specifier: workspace:*
+        version: link:../../chain-abstractions/lz-definitions-legacy
       '@layerzerolabs/lz-serdes':
         specifier: 'catalog:'
         version: 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
@@ -2580,6 +2591,9 @@ importers:
         specifier: 'catalog:'
         version: 8.8.5
     devDependencies:
+      '@layerzerolabs/lz-definitions':
+        specifier: workspace:*
+        version: link:../../chain-abstractions/lz-definitions-legacy
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/tsup
@@ -2703,8 +2717,11 @@ importers:
         version: 3.1.3
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
+      '@layerzerolabs/lz-definitions':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/lz-definitions-legacy
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
         version: link:../../../../tooling-configs/tsup
@@ -2783,7 +2800,7 @@ importers:
         version: 1.45.2(typescript@7.0.2)
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2807,7 +2824,7 @@ importers:
         version: link:../framework/definitions/function-pointer
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2974,7 +2991,7 @@ importers:
         version: 2.1.2
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -3085,7 +3102,7 @@ importers:
         version: 2.9.1
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
       zx:
         specifier: 'catalog:'
         version: 8.8.5
@@ -3214,7 +3231,7 @@ importers:
         version: 6.2.0
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -3393,7 +3410,7 @@ importers:
         version: 5.0.1
       zod:
         specifier: 'catalog:'
-        version: 4.3.5
+        version: 4.6.7
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -4631,9 +4648,6 @@ packages:
 
   '@layerzerolabs/lz-corekit-solana@3.0.168':
     resolution: {integrity: sha512-tzas3P2LT8ZbUvduHaW03gt6Vri74+pPUmEcJL+Ld5A1rf8rYx4BeJ/EpQ2zqFx+hU0mUU99TvA9LT76gR89fQ==}
-
-  '@layerzerolabs/lz-definitions@3.1.21':
-    resolution: {integrity: sha512-xDf1/MR2wj/FSj5JXmv/lQQqMLKcQiuJhY23o80m5pH9t8jzu0JQPzYfihkoUTOI+bcKB9apGCFvZ9pOpvriCQ==}
 
   '@layerzerolabs/lz-evm-messagelib-v2@3.0.168':
     resolution: {integrity: sha512-tNrpfDu9nhB+/onG3Qzby0PFqi21HpW9dI9oa4HulW5/VfiMQllj2gKOX+BEemokdq2JQhAHvj8dTkp0euXPPg==}
@@ -10576,8 +10590,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.3.5:
-    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zx@8.8.5:
     resolution: {integrity: sha512-SNgDF5L0gfN7FwVOdEFguY3orU5AkfFZm9B5YSHog/UDHv+lvmd82ZAsOenOkQixigwH2+yyH198AwNdKhj+RA==}
@@ -12175,10 +12189,6 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@layerzerolabs/lz-definitions@3.1.21':
-    dependencies:
-      tiny-invariant: 1.3.1
-
   '@layerzerolabs/lz-evm-messagelib-v2@3.0.168(fe1837057cb0d93cd24e2e7d37994cc0)':
     dependencies:
       '@axelar-network/axelar-gmp-sdk-solidity': 5.6.4
@@ -12208,7 +12218,7 @@ snapshots:
 
   '@layerzerolabs/lz-foundation@3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)':
     dependencies:
-      '@layerzerolabs/lz-definitions': 3.1.21
+      '@layerzerolabs/lz-definitions': link:packages/chain-abstractions/lz-definitions-legacy
       '@layerzerolabs/lz-utilities': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@noble/ed25519': 1.7.5
       '@noble/hashes': 1.8.0
@@ -12253,7 +12263,7 @@ snapshots:
   '@layerzerolabs/lz-solana-sdk-v2@3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)':
     dependencies:
       '@layerzerolabs/lz-corekit-solana': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
-      '@layerzerolabs/lz-definitions': 3.1.21
+      '@layerzerolabs/lz-definitions': link:packages/chain-abstractions/lz-definitions-legacy
       '@layerzerolabs/lz-foundation': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-serdes': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@layerzerolabs/lz-utilities': 3.0.168(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(got@11.8.6)(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
@@ -12288,7 +12298,7 @@ snapshots:
       '@ethersproject/bytes': 5.8.0
       '@initia/initia.js': 1.0.4(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@iota/iota-sdk': 1.10.1(typescript@7.0.2)
-      '@layerzerolabs/lz-definitions': 3.1.21
+      '@layerzerolabs/lz-definitions': link:packages/chain-abstractions/lz-definitions-legacy
       '@mysten/sui': 1.45.2(typescript@7.0.2)
       '@solana/web3.js': 1.99.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@7.0.2)(utf-8-validate@5.0.10)
       '@ton/core': 0.59.1(@ton/crypto@3.3.0)
@@ -18701,6 +18711,35 @@ snapshots:
 
   tsort@0.0.1: {}
 
+  tsup@8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(@typescript/typescript6@6.0.2)(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(yaml@2.9.1):
+    dependencies:
+      bundle-require: 5.1.0(esbuild@0.27.2)
+      cac: 6.7.14
+      chokidar: 4.0.3
+      consola: 3.4.2
+      debug: 4.4.3(supports-color@8.1.1)
+      esbuild: 0.27.2
+      fix-dts-default-cjs-exports: 1.0.1
+      joycon: 3.1.1
+      picocolors: 1.1.1
+      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.21.0)(yaml@2.9.1)
+      resolve-from: 5.0.0
+      rollup: 4.62.5
+      source-map: 0.7.6
+      sucrase: 3.35.1
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.17
+      tree-kill: 1.2.2
+    optionalDependencies:
+      '@swc/core': 1.15.2(@swc/helpers@0.5.23)
+      postcss: 8.5.26
+      typescript: '@typescript/typescript6@6.0.2'
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
   tsup@8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.2)
@@ -19093,6 +19132,6 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.3.5: {}
+  zod@4.6.7: {}
 
   zx@8.8.5: {}

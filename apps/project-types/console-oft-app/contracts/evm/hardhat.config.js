@@ -1,6 +1,4 @@
 require('@matterlabs/hardhat-zksync-solc');
-// `hardhat-deploy` sets `metadata.useLiteralContent: true`, which the artifacts depend on.
-require('hardhat-deploy');
 require('@layerzerolabs/vm-tooling-evm/hardhat-tron');
 
 module.exports = {
@@ -18,8 +16,6 @@ module.exports = {
                         enabled: true,
                         runs: 400,
                     },
-                    // Making the implicit `hardhat-deploy` behaviour explicit.
-                    // https://github.com/wighawag/hardhat-deploy/blob/v0.12.4/src/index.ts#L317
                     metadata: { useLiteralContent: true },
                 },
             },
@@ -34,7 +30,6 @@ module.exports = {
                         enabled: true,
                         runs: 1_000_000,
                     },
-                    // `hardhat-deploy` does not support `overrides`.
                     metadata: { useLiteralContent: true },
                 },
             },

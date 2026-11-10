@@ -2,9 +2,6 @@
 // (and the shared `@layerzerolabs/hardhat-config` it spread), so the build reproduces the
 // published artifacts byte for byte. Deploy, network and key settings are left out.
 require('@matterlabs/hardhat-zksync-solc');
-// `hardhat-deploy` sets `metadata.useLiteralContent: true`, which the published metadata hashes
-// depend on.
-require('hardhat-deploy');
 require('@layerzerolabs/vm-tooling-evm/hardhat-tron');
 
 const optimizer = {
@@ -30,12 +27,14 @@ module.exports = {
                 eraVersion: '1.0.1',
                 settings: {
                     optimizer,
+                    metadata: { useLiteralContent: true },
                 },
             },
             {
                 version: '0.8.20',
                 settings: {
                     optimizer,
+                    metadata: { useLiteralContent: true },
                 },
             },
         ],

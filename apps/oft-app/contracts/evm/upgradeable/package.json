@@ -33,7 +33,6 @@
         "@openzeppelin/contracts": "catalog:",
         "@openzeppelin/contracts-upgradeable": "catalog:",
         "ethers": "catalog:",
-        "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {

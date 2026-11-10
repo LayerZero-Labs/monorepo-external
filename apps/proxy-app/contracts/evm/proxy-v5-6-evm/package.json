@@ -23,7 +23,6 @@
         "@layerzerolabs/vm-tooling-evm": "workspace:*",
         "@matterlabs/hardhat-zksync-solc": "catalog:",
         "@openzeppelin/contracts": "catalog:proxy-v5-6",
-        "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {

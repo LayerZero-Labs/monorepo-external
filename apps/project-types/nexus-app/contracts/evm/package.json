@@ -35,7 +35,6 @@
         "@matterlabs/hardhat-zksync-solc": "catalog:",
         "@openzeppelin/contracts": "catalog:console",
         "@openzeppelin/contracts-upgradeable": "catalog:console",
-        "hardhat-deploy": "catalog:",
         "solhint": "catalog:"
     },
     "publishConfig": {

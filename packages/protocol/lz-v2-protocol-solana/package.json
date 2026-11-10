@@ -40,7 +40,7 @@
     "dependencies": {
         "@layerzerolabs/common-encoding-utils": "workspace:*",
         "@layerzerolabs/lz-corekit-solana": "catalog:",
-        "@layerzerolabs/lz-definitions": "catalog:",
+        "@layerzerolabs/lz-definitions": "workspace:*",
         "@layerzerolabs/lz-serdes": "catalog:",
         "@layerzerolabs/lz-v2-protocol-solana-v3": "workspace:*",
         "@layerzerolabs/protocol-codecs-v2": "workspace:*",

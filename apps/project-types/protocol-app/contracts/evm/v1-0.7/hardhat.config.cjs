@@ -1,8 +1,6 @@
 // Compiler settings copied from the old LayerZero-Labs/monorepo lz-evm-v1-0.7 hardhat.config.ts,
 // so the build reproduces the old artifacts byte for byte. Deploy, network and key settings are
 // left out.
-// `hardhat-deploy` sets `metadata.useLiteralContent: true`, which the metadata hashes depend on.
-require('hardhat-deploy');
 require('@layerzerolabs/vm-tooling-evm/hardhat-tron');
 
 module.exports = {
@@ -20,6 +18,7 @@ module.exports = {
                         enabled: true,
                         runs: 30000,
                     },
+                    metadata: { useLiteralContent: true },
                 },
             },
         ],

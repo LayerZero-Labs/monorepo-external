@@ -1,0 +1,39 @@
+{
+    "name": "@layerzerolabs/lz-definitions",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero Utility",
+    "license": "BUSL-1.1",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/index.cjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest --run"
+    },
+    "dependencies": {
+        "tiny-invariant": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/layerzero-definitions": "workspace:*",
+        "@types/node": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:typescript6",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}
