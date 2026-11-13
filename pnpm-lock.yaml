@@ -626,6 +626,7 @@ overrides:
   brace-expansion@1: 1.1.21
   brace-expansion@2: 2.1.7
   brace-expansion@5: 5.0.12
+  bigint-buffer: workspace:@layerzerolabs/bigint-buffer-shim@*
   browserslist: ^4.28.7
   axios@^0: ^0.34.0
   axios@^1: ^1.20.0
@@ -692,6 +693,9 @@ importers:
 
   .:
     devDependencies:
+      '@layerzerolabs/bigint-buffer-shim':
+        specifier: workspace:*
+        version: link:packages/bigint-buffer-shim
       '@layerzerolabs/eslint-configuration':
         specifier: workspace:*
         version: link:tooling-configs/eslint
@@ -1898,6 +1902,18 @@ importers:
       '@layerzerolabs/vm-tooling-stellar':
         specifier: workspace:*
         version: link:../../../../../tools/vm-tooling/vm-tooling-stellar
+
+  packages/bigint-buffer-shim:
+    devDependencies:
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../tooling-configs/typescript
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
   packages/chain-abstractions/lz-definitions:
     dependencies:
@@ -6837,10 +6853,6 @@ packages:
     peerDependencies:
       ajv: 4.11.8 - 8
 
-  bigint-buffer@1.1.5:
-    resolution: {integrity: sha512-trfYco6AoZ+rKhKnxA0hgX0HAbVP/s808/EuDSe2JDzUnCp/xAsli35Orvk67UrTEcwuxZqYZDmfA2RXJgxVvA==}
-    engines: {node: '>= 10.0.0'}
-
   bignumber.js@11.1.5:
     resolution: {integrity: sha512-6WmzCNtUnfKpbozq+hOgWaZMMzORmYBwF1xZScyoIX3QRYWeKTtxxwDOW5tIz7C9BdjkIYHGTcelCLkXg0mndw==}
 
@@ -6850,9 +6862,6 @@ packages:
   binary-extensions@2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
-
-  bindings@1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
 
   bip32@5.0.1:
     resolution: {integrity: sha512-PWlHIAgYCfVhwqNpZyeakHXuLAGyN6rEQZnhxHxKI3BoFJRVWLl26455fhRlHsmbYcV986HqtPnt33Edu5sTCw==}
@@ -7806,9 +7815,6 @@ packages:
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
-
-  file-uri-to-path@1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -13297,7 +13303,7 @@ snapshots:
     dependencies:
       '@solana/buffer-layout': 4.0.1
       '@solana/web3.js': 1.99.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@7.0.2)(utf-8-validate@5.0.10)
-      bigint-buffer: 1.1.5
+      bigint-buffer: link:packages/bigint-buffer-shim
       bignumber.js: 9.3.1
     transitivePeerDependencies:
       - bufferutil
@@ -14831,19 +14837,11 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  bigint-buffer@1.1.5:
-    dependencies:
-      bindings: 1.5.0
-
   bignumber.js@11.1.5: {}
 
   bignumber.js@9.3.1: {}
 
   binary-extensions@2.2.0: {}
-
-  bindings@1.5.0:
-    dependencies:
-      file-uri-to-path: 1.0.0
 
   bip32@5.0.1(typescript@7.0.2):
     dependencies:
@@ -15995,8 +15993,6 @@ snapshots:
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
-
-  file-uri-to-path@1.0.0: {}
 
   fill-range@7.1.1:
     dependencies:

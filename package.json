@@ -8,6 +8,7 @@
         "clean": "rm -rf ./node_modules .turbo"
     },
     "devDependencies": {
+        "@layerzerolabs/bigint-buffer-shim": "workspace:*",
         "@layerzerolabs/eslint-configuration": "workspace:*",
         "@types/jest": "catalog:",
         "@types/lodash-es": "catalog:",

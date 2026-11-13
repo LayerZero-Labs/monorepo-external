@@ -1,0 +1,42 @@
+{
+    "name": "@layerzerolabs/bigint-buffer-shim",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Pure-JS drop-in for bigint-buffer with validated inputs, replacing it through a pnpm override",
+    "license": "MIT",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./index.d.mts",
+                "default": "./index.mjs"
+            },
+            "require": {
+                "types": "./index.d.ts",
+                "default": "./index.js"
+            },
+            "default": "./index.js"
+        }
+    },
+    "main": "./index.js",
+    "module": "./index.mjs",
+    "types": "./index.d.ts",
+    "files": [
+        "index.js",
+        "index.mjs",
+        "index.d.ts",
+        "index.d.mts",
+        "LICENSE"
+    ],
+    "scripts": {
+        "test": "tsc --noEmit && vitest --run"
+    },
+    "devDependencies": {
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

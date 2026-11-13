@@ -1,0 +1,8 @@
+{
+    "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "incremental": false
+    },
+    "include": ["index.d.ts", "index.d.mts", "tests"]
+}
