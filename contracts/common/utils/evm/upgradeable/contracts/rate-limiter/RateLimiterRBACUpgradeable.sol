@@ -8,7 +8,7 @@ import { RateLimiterBaseUpgradeable } from "./RateLimiterBaseUpgradeable.sol";
 /**
  * @title RateLimiterRBACUpgradeable
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Abstract upgradeable contract that provides toggleable rate limiting functionality for OApps.
  *         Token bucket algorithm with linear decay.
  * @dev Exposes public management functions through `AccessControl2StepUpgradeable`.
@@ -16,7 +16,7 @@ import { RateLimiterBaseUpgradeable } from "./RateLimiterBaseUpgradeable.sol";
  * @dev Net rate limits offset outflow usage with inflows and vice versa, gross rate limits do not.
  * @dev Amounts are stored as `uint96`, any amounts larger than `type(uint96).max` need to be downscaled via the
  *      `SCALE_DECIMALS` constructor parameter.
- * @dev When using global state, ID-specific configs are ignored, and the default config is always used.
+ * @dev When using global state, every ID shares the state and config of `GLOBAL_STATE_ID`.
  */
 abstract contract RateLimiterRBACUpgradeable is
     IRateLimiter,

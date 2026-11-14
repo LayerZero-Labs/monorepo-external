@@ -36,13 +36,13 @@
     ],
     "tasks": {
         "test": {
-            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!**/approval_rules.yml"],
             "outputs": [],
             "dependsOn": ["build"],
             "outputLogs": "new-only"
         },
         "test:integration": {
-            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!**/approval_rules.yml"],
             "outputs": [],
             "dependsOn": ["build"],
             "outputLogs": "new-only"
@@ -57,7 +57,7 @@
             "cache": false
         },
         "lint": {
-            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!**/approval_rules.yml"],
             "outputs": [],
             "dependsOn": ["build"],
             "outputLogs": "new-only"
@@ -67,6 +67,7 @@
                 "$TURBO_DEFAULT$",
                 "!**/*.md",
                 "!**/LICENSE",
+                "!**/approval_rules.yml",
                 "!**/*.test.ts",
                 "!**/*.spec.ts",
                 "!**/*.test.tsx",
@@ -145,7 +146,7 @@
             "outputLogs": "new-only"
         },
         "typecheck": {
-            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE"],
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!**/LICENSE", "!**/approval_rules.yml"],
             "outputs": [],
             "dependsOn": ["build"],
             "outputLogs": "new-only"

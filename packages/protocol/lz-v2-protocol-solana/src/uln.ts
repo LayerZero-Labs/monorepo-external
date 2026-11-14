@@ -39,6 +39,7 @@ import * as events from './generated/uln/events';
 import * as instructions from './generated/uln/instructions';
 import * as types from './generated/uln/types';
 import { EndpointPDA, EventPDA, UlnPDA } from './pda';
+import { ULN_RECEIVE_CONFIG_SPACE, ULN_SEND_CONFIG_SPACE, withCreatedAccounts } from './rent';
 
 export { ULN_PROGRAM_ID } from './generated/uln';
 export { accounts, errors, events, instructions, types };
@@ -254,7 +255,7 @@ export class Uln implements MessageLibInterface {
             invariant(isSome(executorConfig), 'executorConfig is required');
 
             // init default config
-            return instructions.initDefaultConfig(
+            const ix = instructions.initDefaultConfig(
                 { programs: this.programRepo },
                 {
                     admin,
@@ -270,6 +271,7 @@ export class Uln implements MessageLibInterface {
                     executorConfig: executorConfig.value,
                 },
             ).items[0];
+            return withCreatedAccounts(ix, [ULN_SEND_CONFIG_SPACE, ULN_RECEIVE_CONFIG_SPACE]);
         }
     }
 

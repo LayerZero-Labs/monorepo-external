@@ -9,7 +9,7 @@ import { OFTCoreExtendedRBACUpgradeable } from "./OFTCoreExtendedRBACUpgradeable
 /**
  * @title OFTBurnMintExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.1.0
+ * @custom:version 1.2.0
  * @notice Upgradeable OFT burn-mint adapter with toggleable pause, fee, and rate limit functionality.
  *         Supports dynamic mint/burn function selectors and configurable approval requirements.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.

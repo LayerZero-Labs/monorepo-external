@@ -46,6 +46,7 @@ import * as types from './generated/endpoint/types';
 import type { Version } from './generated/simple_messagelib';
 import { SIMPLE_MESSAGELIB_PROGRAM_ID } from './generated/simple_messagelib';
 import { EndpointPDA, EventPDA, MessageLibPDA } from './pda';
+import { RECEIVE_LIBRARY_CONFIG_SPACE, withCreatedAccounts } from './rent';
 
 export { accounts, errors, events, instructions, types };
 export { ENDPOINT_PROGRAM_ID } from './generated/endpoint';
@@ -132,7 +133,7 @@ export class Endpoint {
         params: { messageLibProgram: PublicKey; libType?: types.MessageLibType },
     ): WrappedInstruction {
         const [msgLib] = new MessageLibPDA(params.messageLibProgram).messageLib();
-        return instructions.registerLibrary(
+        const ix = instructions.registerLibrary(
             {
                 programs: this.programRepo,
             },
@@ -146,6 +147,7 @@ export class Endpoint {
                 libType: params.libType ?? types.MessageLibType.SendAndReceive,
             },
         ).items[0];
+        return withCreatedAccounts(ix, [accounts.getMessageLibInfoSize()]);
     }
 
     /**
@@ -213,7 +215,9 @@ export class Endpoint {
                 },
             );
         }
-        return txBuilder.items[0];
+        return defaultSendLibConfigInfo.exists
+            ? txBuilder.items[0]
+            : withCreatedAccounts(txBuilder.items[0], [accounts.getSendLibraryConfigSize()]);
     }
 
     /**
@@ -280,7 +284,9 @@ export class Endpoint {
                 },
             );
         }
-        return txBuilder.items[0];
+        return defaultReceiveLibConfigInfo.exists
+            ? txBuilder.items[0]
+            : withCreatedAccounts(txBuilder.items[0], [RECEIVE_LIBRARY_CONFIG_SPACE]);
     }
 
     /**

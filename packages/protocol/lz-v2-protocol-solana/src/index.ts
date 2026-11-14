@@ -13,6 +13,7 @@ export * as PriceFeedProgram from './pricefeed';
 export * from './receive';
 export * from './receive-types-v1';
 export * from './receive-types-v2';
+export { getCreatedAccountsRentLamports } from './rent';
 export * from './send-helper';
 export * as SimpleMessageLibProgram from './simple-message-lib';
 export * from './types';

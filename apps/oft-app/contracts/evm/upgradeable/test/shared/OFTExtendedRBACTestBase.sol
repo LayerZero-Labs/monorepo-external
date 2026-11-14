@@ -142,7 +142,7 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: _id,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: true,
                 inboundEnabled: true,
                 netAccountingEnabled: true,
@@ -166,7 +166,7 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: _id,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: true,
                 inboundEnabled: true,
                 netAccountingEnabled: true,
@@ -254,7 +254,7 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: DST_EID,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: false,
                 inboundEnabled: true,
                 netAccountingEnabled: false,
@@ -619,7 +619,7 @@ abstract contract OFTExtendedRBACTestBase is TestHelperOz5 {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: DST_EID,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: false,
                 inboundEnabled: true,
                 netAccountingEnabled: false,

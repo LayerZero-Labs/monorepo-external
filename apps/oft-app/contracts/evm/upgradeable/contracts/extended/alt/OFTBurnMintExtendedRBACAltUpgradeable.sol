@@ -8,7 +8,7 @@ import { OFTBurnMintExtendedRBACUpgradeable } from "./../OFTBurnMintExtendedRBAC
 /**
  * @title OFTBurnMintExtendedRBACAltUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.1.0
+ * @custom:version 1.2.0
  * @notice `OFTBurnMintExtendedRBACUpgradeable` variant that pays native fees using an ERC20 token instead of
  *         `msg.value`.
  * @dev For chains where gas/native fees are paid via an ERC20 token (e.g., some L2s using `EndpointV2Alt`).

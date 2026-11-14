@@ -25,7 +25,7 @@ import { OFTCoreRBACUpgradeable } from "./../oft/OFTCoreRBACUpgradeable.sol";
 /**
  * @title OFTCoreExtendedRBACUpgradeable
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.1.0
+ * @custom:version 1.2.0
  * @notice Abstract upgradeable contract that implements the core functionality of an extended OFT token.
  * @dev Includes `CreditRedirect`, `Fee`, `RateLimiter`, and `Pause` extensions with RBAC access control.
  * @dev Roles are handled through `AccessControl2StepUpgradeable`.

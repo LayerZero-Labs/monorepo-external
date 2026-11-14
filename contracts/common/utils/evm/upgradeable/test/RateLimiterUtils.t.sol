@@ -6,9 +6,9 @@ import { RateLimiterUtils } from "../contracts/rate-limiter/libs/RateLimiterUtil
 
 /// @dev Individual harnesses to prevent function selection costs in snapshots.
 
-contract DecodeOverrideDefaultConfigHarness {
-    function decodeOverrideDefaultConfig(uint24 _config) external pure returns (bool overrideDefaultConfig) {
-        return RateLimiterUtils.decodeOverrideDefaultConfig(_config);
+contract DecodeActiveHarness {
+    function decodeActive(uint24 _config) external pure returns (bool active) {
+        return RateLimiterUtils.decodeActive(_config);
     }
 }
 
@@ -26,7 +26,7 @@ contract DecodeConfigBitmapFlagsHarness {
 
 contract EncodeConfigBitmapHarness {
     function encodeConfigBitmap(
-        bool _overrideDefaultConfig,
+        bool _active,
         bool _outboundEnabled,
         bool _inboundEnabled,
         bool _netAccountingEnabled,
@@ -34,7 +34,7 @@ contract EncodeConfigBitmapHarness {
     ) external pure returns (uint24 config) {
         return
             RateLimiterUtils.encodeConfigBitmap(
-                _overrideDefaultConfig,
+                _active,
                 _outboundEnabled,
                 _inboundEnabled,
                 _netAccountingEnabled,
@@ -44,36 +44,36 @@ contract EncodeConfigBitmapHarness {
 }
 
 contract RateLimiterUtilsTest is Test {
-    DecodeOverrideDefaultConfigHarness public decodeOverrideDefaultConfigHarness;
+    DecodeActiveHarness public decodeActiveHarness;
     DecodeConfigBitmapFlagsHarness public decodeConfigBitmapFlagsHarness;
     EncodeConfigBitmapHarness public encodeConfigBitmapHarness;
 
     function setUp() public {
-        decodeOverrideDefaultConfigHarness = new DecodeOverrideDefaultConfigHarness();
+        decodeActiveHarness = new DecodeActiveHarness();
         decodeConfigBitmapFlagsHarness = new DecodeConfigBitmapFlagsHarness();
         encodeConfigBitmapHarness = new EncodeConfigBitmapHarness();
     }
 
     // ============ Encode/Decode Tests ============
 
-    function test_decodeOverrideDefaultConfig_False() public view {
+    function test_decodeActive_False() public view {
         uint24 config = 0;
-        bool overrideDefaultConfig = decodeOverrideDefaultConfigHarness.decodeOverrideDefaultConfig(config);
-        assertFalse(overrideDefaultConfig);
+        bool active = decodeActiveHarness.decodeActive(config);
+        assertFalse(active);
     }
 
-    function test_decodeOverrideDefaultConfig_True() public view {
+    function test_decodeActive_True() public view {
         uint24 config = 1;
-        bool overrideDefaultConfig = decodeOverrideDefaultConfigHarness.decodeOverrideDefaultConfig(config);
-        assertTrue(overrideDefaultConfig);
+        bool active = decodeActiveHarness.decodeActive(config);
+        assertTrue(active);
     }
 
-    function test_decodeOverrideDefaultConfig_Fuzz(uint24 config) public pure {
-        bool overrideDefaultConfig = RateLimiterUtils.decodeOverrideDefaultConfig(config);
+    function test_decodeActive_Fuzz(uint24 config) public pure {
+        bool active = RateLimiterUtils.decodeActive(config);
         if (config % 2 == 0) {
-            assertFalse(overrideDefaultConfig);
+            assertFalse(active);
         } else {
-            assertTrue(overrideDefaultConfig);
+            assertTrue(active);
         }
     }
 

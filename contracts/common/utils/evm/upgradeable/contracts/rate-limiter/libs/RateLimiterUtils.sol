@@ -4,31 +4,31 @@ pragma solidity ^0.8.22;
 /**
  * @title RateLimiterUtils
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Library for utility functions for the `RateLimiter` contract.
  */
 library RateLimiterUtils {
     uint24 private constant BIT_MASK = 1;
 
-    uint24 private constant OVERRIDE_DEFAULT_CONFIG_BIT = 0;
+    uint24 private constant ACTIVE_BIT = 0;
     uint24 private constant OUTBOUND_ENABLED_BIT = 1;
     uint24 private constant INBOUND_ENABLED_BIT = 2;
     uint24 private constant NET_ACCOUNTING_BIT = 3;
     uint24 private constant ADDRESS_EXEMPTION_BIT = 4;
 
     /**
-     * @notice Decodes the override default configuration flag from the configuration bitmap.
+     * @notice Decodes the active flag from the configuration bitmap.
      * @param _config Bitmap of the rate limit configuration
-     * @return overrideDefaultConfig Whether to override the default configuration
+     * @return active Whether the configuration is active
      */
-    function decodeOverrideDefaultConfig(uint24 _config) internal pure returns (bool overrideDefaultConfig) {
+    function decodeActive(uint24 _config) internal pure returns (bool active) {
         assembly {
-            overrideDefaultConfig := and(shr(OVERRIDE_DEFAULT_CONFIG_BIT, _config), BIT_MASK)
+            active := and(shr(ACTIVE_BIT, _config), BIT_MASK)
         }
     }
 
     /**
-     * @notice Decodes the configuration bitmap into its components, excluding the override default configuration flag.
+     * @notice Decodes the configuration bitmap into its components, excluding the active flag.
      * @param _config Bitmap of the rate limit configuration
      * @return outboundEnabled Whether outbound is enabled
      * @return inboundEnabled Whether inbound is enabled
@@ -52,7 +52,7 @@ library RateLimiterUtils {
 
     /**
      * @notice Encodes the configuration bitmap into its components.
-     * @param _overrideDefaultConfig Whether to override the default configuration
+     * @param _active Whether the configuration is active
      * @param _outboundEnabled Whether outbound is enabled
      * @param _inboundEnabled Whether inbound is enabled
      * @param _netAccountingEnabled Whether net accounting is enabled
@@ -60,7 +60,7 @@ library RateLimiterUtils {
      * @return config Configuration bitmap
      */
     function encodeConfigBitmap(
-        bool _overrideDefaultConfig,
+        bool _active,
         bool _outboundEnabled,
         bool _inboundEnabled,
         bool _netAccountingEnabled,
@@ -69,10 +69,7 @@ library RateLimiterUtils {
         assembly {
             config := or(
                 or(
-                    or(
-                        shl(OVERRIDE_DEFAULT_CONFIG_BIT, _overrideDefaultConfig),
-                        shl(OUTBOUND_ENABLED_BIT, _outboundEnabled)
-                    ),
+                    or(shl(ACTIVE_BIT, _active), shl(OUTBOUND_ENABLED_BIT, _outboundEnabled)),
                     or(shl(INBOUND_ENABLED_BIT, _inboundEnabled), shl(NET_ACCOUNTING_BIT, _netAccountingEnabled))
                 ),
                 shl(ADDRESS_EXEMPTION_BIT, _addressExemptionEnabled)

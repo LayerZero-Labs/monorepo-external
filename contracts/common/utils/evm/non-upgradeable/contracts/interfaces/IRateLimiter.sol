@@ -4,7 +4,7 @@ pragma solidity ^0.8.22;
 /**
  * @title IRateLimiter
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Interface for the `RateLimiter` contract.
  */
 interface IRateLimiter {
@@ -42,7 +42,7 @@ interface IRateLimiter {
 
     /**
      * @notice Rate limit configuration.
-     * @param overrideDefaultConfig Whether to override the default configuration
+     * @param active Whether the configuration is active, an inactive configuration is closed in both directions
      * @param outboundEnabled Whether the outbound rate limit is enabled
      * @param inboundEnabled Whether the inbound rate limit is enabled
      * @param netAccountingEnabled Whether net accounting is enabled
@@ -53,7 +53,7 @@ interface IRateLimiter {
      * @param inboundWindow Window of the inbound rate limit
      */
     struct RateLimitConfig {
-        bool overrideDefaultConfig;
+        bool active;
         bool outboundEnabled;
         bool inboundEnabled;
         bool netAccountingEnabled;
@@ -169,7 +169,7 @@ interface IRateLimiter {
     /**
      * @notice Returns the rate limit state and configuration for a given ID.
      * @dev May return unscaled state if `SCALE_DECIMALS` is set, use `getRateLimitUsages` for scaled values.
-     * @dev Reads the rate limit state from storage without checking defaults.
+     * @dev Returns the stored values, including the limits of an inactive configuration.
      * @dev A window of `type(uint32).max` means usage in that direction does not decay.
      * @param _id ID of the rate limit
      * @return rateLimit Rate limit state and configuration
@@ -186,8 +186,10 @@ interface IRateLimiter {
     /**
      * @notice Calculates decayed usages and capacities for a rate limit.
      * @dev Potentially scaled up by `SCALE_DECIMALS`.
-     * @dev Checks config and falls back to default if necessary.
-     * @dev If a rate limit is disabled in a given direction, the available amount is `type(uint256).max`.
+     * @dev The available amounts are 0 when the config that applies to `_id` is not active: its own config, or the
+     *      shared config under global state.
+     * @dev The available amount is `type(uint256).max` in a disabled direction of an active config, and in both
+     *      directions when the rate limiter is globally disabled.
      * @param _id ID of the rate limit
      * @return outboundUsage Scaled current usage of the outbound rate limit
      * @return outboundAvailableAmount Scaled capacity of the outbound rate limit

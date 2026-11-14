@@ -15,7 +15,7 @@ import { IOFT } from "./IOFT.sol";
 /**
  * @title IOFTExtended
  * @author LayerZero Labs (@TRileySchwarz, tinom.eth)
- * @custom:version 1.1.0
+ * @custom:version 1.2.0
  * @notice Interface for extended OFT contracts with credit redirect, fee, pause, and rate limiter functionality.
  */
 interface IOFTExtended is IOFT, IOAppExtended, ICreditRedirect, IFeeConfig, IFeeHandler, IPauseByID, IRateLimiter {}

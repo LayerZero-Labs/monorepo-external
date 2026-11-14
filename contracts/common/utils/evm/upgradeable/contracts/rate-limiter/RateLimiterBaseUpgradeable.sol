@@ -9,7 +9,7 @@ import { RateLimiterUtils } from "./libs/RateLimiterUtils.sol";
 /**
  * @title RateLimiterBaseUpgradeable
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Abstract contract that provides toggleable rate limiting functionality for OApps.
  *         Token bucket algorithm with linear decay.
  * @dev No public management functions are exposed by this contract, wrappers should be used with access control.
@@ -18,7 +18,7 @@ import { RateLimiterUtils } from "./libs/RateLimiterUtils.sol";
  * @dev Net rate limits offset outflow usage with inflows and vice versa, gross rate limits do not.
  * @dev Amounts are stored as `uint96`, any amounts larger than `type(uint96).max` need to be downscaled via the
  *      `SCALE_DECIMALS` constructor parameter.
- * @dev When using global state, ID-specific configs are ignored, and the default config is always used.
+ * @dev When using global state, every ID shares the state and config of `GLOBAL_STATE_ID`.
  * @dev If `SCALE_DECIMALS` are applied, scaling rounding can favour the user in certain configurations. It is the
  *      responsibility of the app to ensure the economic cost of running the rate-limited operation is greater than the
  *      economic benefit of bypassing a unit of rate limit.
@@ -110,8 +110,8 @@ import { RateLimiterUtils } from "./libs/RateLimiterUtils.sol";
  *                          [ --------------- Extended 60 Second Window --------------- ]
  */
 abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
-    /// @notice ID of the default rate limit configuration.
-    uint256 public constant DEFAULT_ID = 0;
+    /// @notice ID of the rate limit state and configuration shared by every ID when using global state.
+    uint256 public constant GLOBAL_STATE_ID = 0;
 
     /// @notice Number of decimals to scale the rate limit amounts, usually 0.
     uint8 public immutable SCALE_DECIMALS;
@@ -164,25 +164,7 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
      * @param _useGlobalState Whether to use global rules for the rate limiter, instead of per-ID rules
      */
     function __RateLimiterBase_init_unchained(bool _useGlobalState) internal onlyInitializing {
-        RateLimiterStorage storage $ = _getRateLimiterStorage();
-        $.useGlobalStateFlag = _useGlobalState;
-
-        /// @dev Default config is closed by default.
-        $.rateLimits[DEFAULT_ID].configBitmap = RateLimiterUtils.encodeConfigBitmap(false, true, true, true, false);
-        emit RateLimitConfigUpdated(
-            DEFAULT_ID,
-            RateLimitConfig({
-                overrideDefaultConfig: false,
-                outboundEnabled: true,
-                inboundEnabled: true,
-                netAccountingEnabled: true,
-                addressExemptionEnabled: false,
-                outboundLimit: 0,
-                inboundLimit: 0,
-                outboundWindow: 0,
-                inboundWindow: 0
-            })
-        );
+        _getRateLimiterStorage().useGlobalStateFlag = _useGlobalState;
     }
 
     // ============ Public Getters ============
@@ -356,7 +338,7 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
     }
 
     /**
-     * @notice Gets the rate limit state and configuration for a given ID, falling back to defaults if necessary.
+     * @notice Gets the rate limit state and configuration for a given ID.
      * @param _id ID of the rate limit
      * @return rateLimitState Rate limit state
      * @return rateLimitCache Rate limit configuration
@@ -382,57 +364,15 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
     {
         RateLimiterStorage storage $ = _getRateLimiterStorage();
 
-        uint256 stateId;
-        uint256 configId;
+        rateLimitState = $.rateLimits[$.useGlobalStateFlag ? GLOBAL_STATE_ID : _id];
+        rateLimitCache = rateLimitState;
 
-        if ($.useGlobalStateFlag) {
-            /// @dev If using global state, ID-specific config is ignored.
-            stateId = DEFAULT_ID;
-            configId = DEFAULT_ID;
-        } else {
-            stateId = _id;
-            configId = RateLimiterUtils.decodeOverrideDefaultConfig($.rateLimits[_id].configBitmap) ? _id : DEFAULT_ID;
+        if (!RateLimiterUtils.decodeActive(rateLimitCache.configBitmap)) {
+            return (rateLimitState, rateLimitCache, true, true, false, false);
         }
-
-        rateLimitState = $.rateLimits[stateId];
-        rateLimitCache = _populateRateLimitCache(stateId, configId);
 
         (outboundEnabled, inboundEnabled, netAccountingEnabled, addressExemptionEnabled) = RateLimiterUtils
             .decodeConfigBitmapFlags(rateLimitCache.configBitmap);
-    }
-
-    /**
-     * @notice Populates the rate limit cache for a given state and configuration ID.
-     * @dev Avoids stack too deep error in `_getRateLimitStateAndConfig`.
-     * @param _stateId State ID
-     * @param _configId Configuration ID
-     * @return rateLimitCache Rate limit cache
-     */
-    function _populateRateLimitCache(
-        uint256 _stateId,
-        uint256 _configId
-    ) internal view virtual returns (RateLimit memory rateLimitCache) {
-        RateLimiterStorage storage $ = _getRateLimiterStorage();
-
-        (rateLimitCache.outboundUsage, rateLimitCache.inboundUsage, rateLimitCache.lastUpdated) = (
-            $.rateLimits[_stateId].outboundUsage,
-            $.rateLimits[_stateId].inboundUsage,
-            $.rateLimits[_stateId].lastUpdated
-        );
-
-        (
-            rateLimitCache.configBitmap,
-            rateLimitCache.outboundLimit,
-            rateLimitCache.inboundLimit,
-            rateLimitCache.outboundWindow,
-            rateLimitCache.inboundWindow
-        ) = (
-            $.rateLimits[_configId].configBitmap,
-            $.rateLimits[_configId].outboundLimit,
-            $.rateLimits[_configId].inboundLimit,
-            $.rateLimits[_configId].outboundWindow,
-            $.rateLimits[_configId].inboundWindow
-        );
     }
 
     /**
@@ -468,11 +408,16 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
             _rateLimit.inboundLimit,
             _rateLimit.inboundWindow
         );
+
+        if (!RateLimiterUtils.decodeActive(_rateLimit.configBitmap)) {
+            (outboundAvailableAmount, inboundAvailableAmount) = (0, 0);
+        }
     }
 
     /**
      * @notice Calculates decayed usage and remaining capacity for a rate limit direction.
      * @dev Treats 0-windows as 1-second windows.
+     * @dev Treats `type(uint32).max` windows as windows without decay.
      * @dev Decay can be stalled due to precision loss if `_limit` is not significantly larger than `_window`.
      * @param _lastUpdated Last updated timestamp
      * @param _amountInFlight Amount in flight
@@ -489,7 +434,9 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
     ) internal view virtual returns (uint256 currentUsage, uint256 availableAmount) {
         uint256 timeSinceLastUpdate = block.timestamp - _lastUpdated;
         unchecked {
-            uint256 decay = (_limit * timeSinceLastUpdate) / (_window > 0 ? _window : 1);
+            uint256 decay = _window == type(uint32).max
+                ? 0
+                : (_limit * timeSinceLastUpdate) / (_window > 0 ? _window : 1);
             currentUsage = Math.saturatingSub(_amountInFlight, decay);
             availableAmount = Math.saturatingSub(_limit, currentUsage);
         }
@@ -549,7 +496,7 @@ abstract contract RateLimiterBaseUpgradeable is Initializable, IRateLimiter {
             RateLimit storage rateLimit = $.rateLimits[param.id];
 
             rateLimit.configBitmap = RateLimiterUtils.encodeConfigBitmap(
-                param.config.overrideDefaultConfig,
+                param.config.active,
                 param.config.outboundEnabled,
                 param.config.inboundEnabled,
                 param.config.netAccountingEnabled,

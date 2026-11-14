@@ -99,7 +99,7 @@ contract RateLimiterRBACUpgradeableHandler is Test {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: ID,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: true,
                 inboundEnabled: true,
                 netAccountingEnabled: newNet,
@@ -407,7 +407,7 @@ contract RateLimiterRBACUpgradeableInvariantTest is StdInvariant, Test {
         IRateLimiter.RateLimit memory rl = limiter.rateLimits(handler.ID());
         uint256 bitmap = rl.configBitmap;
 
-        assertTrue(bitmap & 1 != 0, "Override default config bit not set");
+        assertTrue(bitmap & 1 != 0, "Active bit not set");
         assertTrue(bitmap & 2 != 0, "Outbound enabled bit not set");
         assertTrue(bitmap & 4 != 0, "Inbound enabled bit not set");
 
@@ -440,5 +440,129 @@ contract RateLimiterRBACUpgradeableInvariantGlobalStateTest is RateLimiterRBACUp
         (uint256 activeOut, , uint256 activeIn, ) = limiter.getRateLimitUsages(handler.ID());
         assertEq(outUsage, activeOut, "Global state: pristine ID should mirror active ID outbound usage");
         assertEq(inUsage, activeIn, "Global state: pristine ID should mirror active ID inbound usage");
+    }
+}
+
+contract RateLimiterRBACUpgradeableHubLedgerHandler is Test {
+    RateLimiterRBACUpgradeableFuzzHarness public limiter;
+
+    uint96 public constant LEDGER_LIMIT = type(uint96).max;
+    uint256 public constant ID_COUNT = 3;
+    address public constant USER = address(0x123);
+
+    mapping(uint256 id => uint256 netOutflow) public ghost_netOutflow;
+    bool public ghost_revertMismatch;
+
+    constructor(RateLimiterRBACUpgradeableFuzzHarness _limiter) {
+        limiter = _limiter;
+
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](ID_COUNT);
+        IRateLimiter.SetRateLimitStateParam[] memory states = new IRateLimiter.SetRateLimitStateParam[](ID_COUNT);
+        for (uint256 i = 0; i < ID_COUNT; i++) {
+            configs[i] = IRateLimiter.SetRateLimitConfigParam({
+                id: id(i),
+                config: IRateLimiter.RateLimitConfig({
+                    active: true,
+                    outboundEnabled: false,
+                    inboundEnabled: true,
+                    netAccountingEnabled: true,
+                    addressExemptionEnabled: false,
+                    outboundLimit: 0,
+                    inboundLimit: LEDGER_LIMIT,
+                    outboundWindow: 0,
+                    inboundWindow: type(uint32).max
+                })
+            });
+            states[i] = IRateLimiter.SetRateLimitStateParam({
+                id: id(i),
+                state: IRateLimiter.RateLimitState({
+                    outboundUsage: 0,
+                    inboundUsage: LEDGER_LIMIT,
+                    lastUpdated: uint40(block.timestamp)
+                })
+            });
+        }
+
+        vm.startPrank(msg.sender);
+        limiter.setRateLimitConfigs(configs);
+        limiter.setRateLimitStates(states);
+        vm.stopPrank();
+    }
+
+    function id(uint256 _index) public pure returns (uint256) {
+        return uint256(keccak256(abi.encode("HUB_LEDGER_ID", _index)));
+    }
+
+    function outflow(uint256 index, uint96 amount) public {
+        uint256 ledgerId = id(index % ID_COUNT);
+        amount = uint96(bound(amount, 1, LEDGER_LIMIT / 4));
+
+        try limiter.outflow(ledgerId, USER, amount) {
+            ghost_netOutflow[ledgerId] = Math.min(ghost_netOutflow[ledgerId] + amount, LEDGER_LIMIT);
+        } catch {
+            ghost_revertMismatch = true;
+        }
+    }
+
+    function inflow(uint256 index, uint96 amount, bool exact) public {
+        uint256 ledgerId = id(index % ID_COUNT);
+        uint256 netOutflow = ghost_netOutflow[ledgerId];
+        amount = exact ? uint96(netOutflow) : uint96(bound(amount, 1, LEDGER_LIMIT / 4));
+        bool shouldSucceed = amount <= netOutflow;
+
+        try limiter.inflow(ledgerId, USER, amount) {
+            if (!shouldSucceed) {
+                ghost_revertMismatch = true;
+                return;
+            }
+            ghost_netOutflow[ledgerId] = netOutflow - amount;
+        } catch (bytes memory reason) {
+            bytes memory expected = abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, netOutflow, amount);
+            if (shouldSucceed || keccak256(reason) != keccak256(expected)) ghost_revertMismatch = true;
+        }
+    }
+
+    function warp(uint256 seconds_) public {
+        seconds_ = bound(seconds_, 1, 100 * 365 days);
+        vm.warp(block.timestamp + seconds_);
+    }
+}
+
+contract RateLimiterRBACUpgradeableHubLedgerInvariantTest is StdInvariant, Test {
+    RateLimiterRBACUpgradeableFuzzHarness limiter;
+    RateLimiterRBACUpgradeableHubLedgerHandler handler;
+
+    function setUp() public {
+        RateLimiterRBACUpgradeableFuzzHarness impl = new RateLimiterRBACUpgradeableFuzzHarness(0);
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
+            address(impl),
+            address(this),
+            abi.encodeWithSelector(RateLimiterRBACUpgradeableFuzzHarness.initialize.selector, false, address(this))
+        );
+        limiter = RateLimiterRBACUpgradeableFuzzHarness(address(proxy));
+        handler = new RateLimiterRBACUpgradeableHubLedgerHandler(limiter);
+
+        targetContract(address(handler));
+
+        bytes4[] memory selectors = new bytes4[](3);
+        selectors[0] = RateLimiterRBACUpgradeableHubLedgerHandler.outflow.selector;
+        selectors[1] = RateLimiterRBACUpgradeableHubLedgerHandler.inflow.selector;
+        selectors[2] = RateLimiterRBACUpgradeableHubLedgerHandler.warp.selector;
+        targetSelector(FuzzSelector({ addr: address(handler), selectors: selectors }));
+    }
+
+    /// @notice Inbound headroom must equal the ghost net outflow of each ID, capped at the ledger limit.
+    function invariant_HeadroomMatchesNetOutflow() public view {
+        for (uint256 i = 0; i < handler.ID_COUNT(); i++) {
+            uint256 ledgerId = handler.id(i);
+            (, , , uint256 inAvail) = limiter.getRateLimitUsages(ledgerId);
+            assertEq(inAvail, handler.ghost_netOutflow(ledgerId), "Headroom diverged from net outflow");
+            assertLe(inAvail, handler.LEDGER_LIMIT(), "Headroom exceeds ledger limit");
+        }
+    }
+
+    /// @notice Every outflow/inflow must succeed or revert exactly as predicted.
+    function invariant_RevertConsistency() public view {
+        assertFalse(handler.ghost_revertMismatch(), "Revert behavior diverged from predicted");
     }
 }

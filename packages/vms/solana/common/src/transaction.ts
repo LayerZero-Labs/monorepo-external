@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+    decimalStringSchema,
     hexSchema,
     minedTransactionSchema,
     normalizedHexSchema,
@@ -53,6 +54,7 @@ export const solanaTransactionSchema = transactionSchema.extend({
     additionalSigners: z.array(z.string()).optional(),
     shouldSimulate: z.boolean().optional(),
     replaceAllInjectedPubKeys: z.boolean().optional(),
+    oneSigLamportsAllowance: decimalStringSchema.optional(),
     meta: z
         .object({
             // accounts necessary to be recorded for deployments

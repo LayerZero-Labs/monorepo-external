@@ -34,7 +34,7 @@
         "build": "pnpm exec copy-artifacts && pnpm generate && tsup",
         "generate": "pnpm pre-generate-clean && mkdir -p ./src/generated && tsx ./src/scripts/generator.ts",
         "pre-generate-clean": "find ./src/generated -name '*.ts' -not -name 'index.ts' -delete || true",
-        "test": "vitest run tests/plan-v3.test.ts tests/transaction-v1.test.ts tests/transport-v1.test.ts",
+        "test": "vitest run tests/plan-v3.test.ts tests/rent.test.ts tests/transaction-v1.test.ts tests/transport-v1.test.ts",
         "test:regenerate-features": "mkdir -p target/programs && tsx ./src/scripts/generate-features.ts"
     },
     "dependencies": {

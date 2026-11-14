@@ -45,17 +45,6 @@ contract RateLimiterBaseUpgradeableHarness is RateLimiterBaseUpgradeable {
         _inflow(_id, _to, _amount);
     }
 
-    /// @dev Helper to bypass external visibility for permutation loop (try/catch needs external).
-    function runPermutationWrapper(
-        bool useDefaultConfig,
-        bool useGlobalState,
-        bool outboundEnabled,
-        bool inboundEnabled,
-        bool netAccounting,
-        bool isExempt,
-        bool isOutflow
-    ) external {}
-
     function getRateLimitUsage(
         uint40 _lastUpdated,
         uint96 _amountInFlight,
@@ -74,22 +63,16 @@ contract RateLimiterBaseUpgradeableTest is Test {
     RateLimiterBaseUpgradeableHarness rateLimiter;
     /// @dev Separate instance for global state tests to avoid warm storage overlap or conflict.
     RateLimiterBaseUpgradeableHarness rateLimiterGlobal;
-    /// @dev Separate instances for conflicting default config permutations.
-    RateLimiterBaseUpgradeableHarness rateLimiterDefaultNet;
-    RateLimiterBaseUpgradeableHarness rateLimiterDefaultDisabled;
 
     uint256 constant ID_1 = uint256(keccak256("ID_1"));
     uint256 constant ID_2 = uint256(keccak256("ID_2"));
-    uint256 constant DEFAULT_ID = 0;
+    uint256 constant GLOBAL_STATE_ID = 0;
+    uint32 constant NO_DECAY_WINDOW = type(uint32).max;
+    uint256 constant YEAR = 365 days;
+    uint96 constant HUB_LEDGER_LIMIT = type(uint96).max;
 
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
-
-    uint256 constant ID_SNAP_DEFAULT_OUTBOUND_GROSS = uint256(keccak256("ID_SNAP_DEFAULT_OUTBOUND_GROSS"));
-    uint256 constant ID_SNAP_DEFAULT_INBOUND_GROSS = uint256(keccak256("ID_SNAP_DEFAULT_INBOUND_GROSS"));
-    uint256 constant ID_SNAP_DEFAULT_BOTH_NET_OUT = uint256(keccak256("ID_SNAP_DEFAULT_BOTH_NET_OUT"));
-    uint256 constant ID_SNAP_DEFAULT_BOTH_NET_IN = uint256(keccak256("ID_SNAP_DEFAULT_BOTH_NET_IN"));
-    uint256 constant ID_SNAP_DEFAULT_DISABLED = uint256(keccak256("ID_SNAP_DEFAULT_DISABLED"));
 
     uint256 constant ID_SNAP_EXPLICIT_OUTBOUND_GROSS = uint256(keccak256("ID_SNAP_EXPLICIT_OUTBOUND_GROSS"));
     uint256 constant ID_SNAP_EXPLICIT_INBOUND_GROSS = uint256(keccak256("ID_SNAP_EXPLICIT_INBOUND_GROSS"));
@@ -99,24 +82,9 @@ contract RateLimiterBaseUpgradeableTest is Test {
     uint256 constant ID_SNAP_GLOBAL_OUTBOUND_GROSS = uint256(keccak256("ID_SNAP_GLOBAL_OUTBOUND_GROSS"));
     uint256 constant ID_SNAP_DISABLED = uint256(keccak256("ID_SNAP_DISABLED"));
 
-    struct PermutationParams {
-        /// @dev If true, `id` has `override=false`, config is on Default ID (only relevant if `useGlobalState=false`).
-        bool useDefaultConfig;
-        /// @dev If true, enable Global State flag.
-        bool useGlobalState;
-        bool outboundEnabled;
-        bool inboundEnabled;
-        bool netAccounting;
-        bool isExempt;
-        /// @dev True = Outflow, False = Inflow.
-        bool isOutflow;
-    }
-
     function setUp() public virtual {
         rateLimiter = _deployRateLimiter(0, false);
         rateLimiterGlobal = _deployRateLimiter(0, true);
-        rateLimiterDefaultNet = _deployRateLimiter(0, false);
-        rateLimiterDefaultDisabled = _deployRateLimiter(0, false);
 
         _setUpConfigs();
     }
@@ -142,33 +110,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
         uint96 limit = 1000;
         uint32 window = 1000;
 
-        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](2);
-        configs[0] = _createConfig(DEFAULT_ID, false, true, true, false, false, limit, limit, window, window);
-        configs[1] = _createConfig(ID_SNAP_DEFAULT_OUTBOUND_GROSS, false, false, false, false, false, 0, 0, 0, 0);
-        rateLimiter.setRateLimitConfigs(configs);
-
-        configs = new IRateLimiter.SetRateLimitConfigParam[](1);
-        configs[0] = _createConfig(ID_SNAP_DEFAULT_INBOUND_GROSS, false, false, false, false, false, 0, 0, 0, 0);
-        rateLimiter.setRateLimitConfigs(configs);
-
-        configs = new IRateLimiter.SetRateLimitConfigParam[](3);
-        configs[0] = _createConfig(DEFAULT_ID, false, true, true, true, false, limit, limit, window, window);
-        configs[1] = _createConfig(ID_SNAP_DEFAULT_BOTH_NET_OUT, false, false, false, false, false, 0, 0, 0, 0);
-        configs[2] = _createConfig(ID_SNAP_DEFAULT_BOTH_NET_IN, false, false, false, false, false, 0, 0, 0, 0);
-        rateLimiterDefaultNet.setRateLimitConfigs(configs);
-
-        IRateLimiter.SetRateLimitStateParam[] memory netStates = new IRateLimiter.SetRateLimitStateParam[](1);
-        netStates[0] = _createState(ID_SNAP_DEFAULT_BOTH_NET_OUT, 0, 50, uint40(block.timestamp));
-        rateLimiterDefaultNet.setRateLimitStates(netStates);
-        netStates[0] = _createState(ID_SNAP_DEFAULT_BOTH_NET_IN, 50, 0, uint40(block.timestamp));
-        rateLimiterDefaultNet.setRateLimitStates(netStates);
-
-        configs = new IRateLimiter.SetRateLimitConfigParam[](2);
-        configs[0] = _createConfig(DEFAULT_ID, false, false, false, false, false, limit, limit, window, window);
-        configs[1] = _createConfig(ID_SNAP_DEFAULT_DISABLED, false, false, false, false, false, 0, 0, 0, 0);
-        rateLimiterDefaultDisabled.setRateLimitConfigs(configs);
-
-        configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
         configs[0] = _createConfig(
             ID_SNAP_EXPLICIT_OUTBOUND_GROSS,
             true,
@@ -248,9 +190,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
         exemptions[0] = IRateLimiter.SetRateLimitAddressExemptionParam({ user: alice, isExempt: true });
         rateLimiter.setRateLimitAddressExemptions(exemptions);
 
-        configs = new IRateLimiter.SetRateLimitConfigParam[](2);
-        configs[0] = _createConfig(DEFAULT_ID, false, true, true, false, false, limit, limit, window, window);
-        configs[1] = _createConfig(ID_SNAP_GLOBAL_OUTBOUND_GROSS, false, false, false, false, false, 0, 0, 0, 0);
+        configs[0] = _createConfig(GLOBAL_STATE_ID, true, true, true, false, false, limit, limit, window, window);
         rateLimiterGlobal.setRateLimitConfigs(configs);
 
         configs[0] = _createConfig(ID_SNAP_DISABLED, true, false, true, false, false, limit, limit, window, window);
@@ -259,7 +199,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
     function _createConfig(
         uint256 _id,
-        bool _overrideDefaultConfig,
+        bool _active,
         bool _outboundEnabled,
         bool _inboundEnabled,
         bool _netAccountingEnabled,
@@ -273,7 +213,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
             IRateLimiter.SetRateLimitConfigParam({
                 id: _id,
                 config: IRateLimiter.RateLimitConfig({
-                    overrideDefaultConfig: _overrideDefaultConfig,
+                    active: _active,
                     outboundEnabled: _outboundEnabled,
                     inboundEnabled: _inboundEnabled,
                     netAccountingEnabled: _netAccountingEnabled,
@@ -301,6 +241,40 @@ contract RateLimiterBaseUpgradeableTest is Test {
                     lastUpdated: _lastUpdated
                 })
             });
+    }
+
+    function _setUpHubLedger(
+        RateLimiterBaseUpgradeableHarness _limiter,
+        uint256 _id,
+        bool _outboundEnabled,
+        uint96 _outboundLimit,
+        uint32 _outboundWindow
+    ) internal {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(
+            _id,
+            true,
+            _outboundEnabled,
+            true,
+            true,
+            false,
+            _outboundLimit,
+            HUB_LEDGER_LIMIT,
+            _outboundWindow,
+            NO_DECAY_WINDOW
+        );
+        _limiter.setRateLimitConfigs(configs);
+
+        IRateLimiter.SetRateLimitStateParam[] memory states = new IRateLimiter.SetRateLimitStateParam[](1);
+        states[0] = _createState(_id, 0, HUB_LEDGER_LIMIT, uint40(block.timestamp));
+        _limiter.setRateLimitStates(states);
+    }
+
+    function _inboundAvailable(
+        RateLimiterBaseUpgradeableHarness _limiter,
+        uint256 _id
+    ) internal view returns (uint256 inAvail) {
+        (, , , inAvail) = _limiter.getRateLimitUsages(_id);
     }
 
     // ============ Constructor / Initialization Tests ============
@@ -375,42 +349,42 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
     // ============ Global State Tests ============
 
-    function test_globalState_UsesDefaultIdForState() public {
+    function test_globalState_UsesGlobalStateIdForState() public {
         RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
 
         uint96 limit = 1000;
         uint32 window = 1000;
 
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
-        configs[0] = _createConfig(DEFAULT_ID, false, true, true, true, false, limit, limit, window, window);
+        configs[0] = _createConfig(GLOBAL_STATE_ID, true, true, true, true, false, limit, limit, window, window);
         globalLimiter.setRateLimitConfigs(configs);
 
         globalLimiter.outflow(ID_1, alice, 100);
 
-        IRateLimiter.RateLimit memory defaultState = globalLimiter.rateLimits(DEFAULT_ID);
+        IRateLimiter.RateLimit memory globalState = globalLimiter.rateLimits(GLOBAL_STATE_ID);
         IRateLimiter.RateLimit memory id1State = globalLimiter.rateLimits(ID_1);
 
-        assertEq(defaultState.outboundUsage, 100);
+        assertEq(globalState.outboundUsage, 100);
         assertEq(id1State.outboundUsage, 0);
     }
 
     function test_globalState_IgnoresIdSpecificConfig() public {
         RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
 
-        uint96 defaultLimit = 1000;
+        uint96 globalLimit = 1000;
         uint96 idSpecificLimit = 500;
         uint32 window = 1000;
 
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](2);
         configs[0] = _createConfig(
-            DEFAULT_ID,
+            GLOBAL_STATE_ID,
+            true,
+            true,
+            true,
+            true,
             false,
-            true,
-            true,
-            true,
-            false,
-            defaultLimit,
-            defaultLimit,
+            globalLimit,
+            globalLimit,
             window,
             window
         );
@@ -430,7 +404,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
         (, uint256 outAvail, , ) = globalLimiter.getRateLimitUsages(ID_1);
 
-        assertEq(outAvail, defaultLimit);
+        assertEq(outAvail, globalLimit);
     }
 
     function test_globalState_SharesStateAcrossIds() public {
@@ -440,7 +414,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
         uint32 window = 1000;
 
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
-        configs[0] = _createConfig(DEFAULT_ID, false, true, true, true, false, limit, limit, window, window);
+        configs[0] = _createConfig(GLOBAL_STATE_ID, true, true, true, true, false, limit, limit, window, window);
         globalLimiter.setRateLimitConfigs(configs);
 
         globalLimiter.outflow(ID_1, alice, 100);
@@ -483,7 +457,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
     function test_setRateLimitConfigs_Single() public {
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
-        configs[0] = _createConfig(ID_1, false, false, false, true, true, 100, 200, 300, 400);
+        configs[0] = _createConfig(ID_1, true, false, false, true, true, 100, 200, 300, 400);
 
         vm.expectEmit(false, false, false, true);
         emit IRateLimiter.RateLimitConfigUpdated(ID_1, configs[0].config);
@@ -495,14 +469,14 @@ contract RateLimiterBaseUpgradeableTest is Test {
         assertEq(rl.inboundLimit, 200);
         assertEq(rl.outboundWindow, 300);
         assertEq(rl.inboundWindow, 400);
-        // NetAccounting (bit 3) = 8, AddressExemption (bit 4) = 16 => 24 total.
-        assertEq(rl.configBitmap, 24);
+        // Active (bit 0) = 1, NetAccounting (bit 3) = 8, AddressExemption (bit 4) = 16 => 25 total.
+        assertEq(rl.configBitmap, 25);
     }
 
     function test_setRateLimitConfigs_Multiple() public {
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](2);
         configs[0] = _createConfig(ID_1, true, true, true, true, true, 10, 10, 10, 10);
-        configs[1] = _createConfig(ID_2, false, false, false, false, false, 20, 20, 20, 20);
+        configs[1] = _createConfig(ID_2, true, false, false, false, false, 20, 20, 20, 20);
 
         rateLimiter.setRateLimitConfigs(configs);
 
@@ -627,6 +601,26 @@ contract RateLimiterBaseUpgradeableTest is Test {
         assertEq(rl2.lastUpdated, block.timestamp);
     }
 
+    function test_checkpointRateLimits_NoDecayWindow() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, NO_DECAY_WINDOW, NO_DECAY_WINDOW);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.outflow(ID_1, alice, 600);
+        rateLimiter.inflow(ID_1, alice, 400);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+
+        uint256[] memory ids = new uint256[](1);
+        ids[0] = ID_1;
+        rateLimiter.checkpointRateLimits(ids);
+
+        IRateLimiter.RateLimit memory rl = rateLimiter.rateLimits(ID_1);
+        assertEq(rl.outboundUsage, 600);
+        assertEq(rl.inboundUsage, 400);
+        assertEq(rl.lastUpdated, block.timestamp);
+    }
+
     function test_checkpointRateLimits_Empty() public {
         uint256[] memory ids = new uint256[](0);
         rateLimiter.checkpointRateLimits(ids);
@@ -678,18 +672,110 @@ contract RateLimiterBaseUpgradeableTest is Test {
 
     // ============ Outflow/Inflow Tests ============
 
-    function test_outflow_DefaultConfig_SpecificState_Outbound_Gross_NotExempt() public {
-        rateLimiter.outflow(ID_SNAP_DEFAULT_OUTBOUND_GROSS, alice, 100);
-
-        (uint256 usage, , , ) = rateLimiter.getRateLimitUsages(ID_SNAP_DEFAULT_OUTBOUND_GROSS);
-        assertEq(usage, 100);
+    function test_outflow_Revert_UnconfiguredId() public {
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_2, bob, 100);
     }
 
-    function test_inflow_DefaultConfig_SpecificState_Inbound_Gross_NotExempt() public {
-        rateLimiter.inflow(ID_SNAP_DEFAULT_INBOUND_GROSS, alice, 100);
+    function test_inflow_Revert_UnconfiguredId() public {
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.inflow(ID_2, bob, 100);
+    }
 
-        (, , uint256 usage, ) = rateLimiter.getRateLimitUsages(ID_SNAP_DEFAULT_INBOUND_GROSS);
-        assertEq(usage, 100);
+    function test_outflow_Revert_UnconfiguredIdWithState() public {
+        IRateLimiter.SetRateLimitStateParam[] memory states = new IRateLimiter.SetRateLimitStateParam[](1);
+        states[0] = _createState(ID_2, 0, 50, uint40(block.timestamp));
+        rateLimiter.setRateLimitStates(states);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_2, bob, 100);
+    }
+
+    function test_outflow_Revert_UnconfiguredIdExemptAddress() public {
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_2, alice, 100);
+    }
+
+    function test_outflow_Revert_InactiveConfig() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, false, false, false, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_1, bob, 100);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.inflow(ID_1, bob, 100);
+    }
+
+    function test_outflow_Revert_DeactivatedConfig() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+        rateLimiter.outflow(ID_1, bob, 100);
+
+        configs[0] = _createConfig(ID_1, false, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_1, bob, 100);
+    }
+
+    function test_outflow_ReactivatedConfigKeepsDecay() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+        rateLimiter.outflow(ID_1, bob, 1000);
+
+        configs[0] = _createConfig(ID_1, false, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        vm.warp(block.timestamp + 10 * 1000);
+        uint256[] memory ids = new uint256[](1);
+        ids[0] = ID_1;
+        rateLimiter.checkpointRateLimits(ids);
+        rateLimiter.outflow(ID_1, bob, 0);
+
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        (, uint256 outAvail, , ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outAvail, 1000);
+        rateLimiter.outflow(ID_1, bob, 1000);
+    }
+
+    function test_getRateLimitUsages_InactiveUsageDecays() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+        rateLimiter.outflow(ID_1, bob, 1000);
+
+        configs[0] = _createConfig(ID_1, false, true, true, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+        vm.warp(block.timestamp + 500);
+
+        (uint256 outUsage, uint256 outAvail, , uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 500);
+        assertEq(outAvail, 0);
+        assertEq(inAvail, 0);
+    }
+
+    function test_outflow_Revert_GlobalStateUnconfigured() public {
+        RateLimiterBaseUpgradeableHarness globalLimiter = _deployRateLimiter(0, true);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        globalLimiter.outflow(ID_1, bob, 100);
+    }
+
+    function test_outflow_ConfiguredIdDoesNotOpenOtherIds() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, false, false, false, false, 0, 0, 0, 0);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.outflow(ID_1, bob, 100);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 100));
+        rateLimiter.outflow(ID_2, bob, 100);
     }
 
     function test_outflow_ExplicitConfig_SpecificState_Outbound_Gross_NotExempt() public {
@@ -730,6 +816,173 @@ contract RateLimiterBaseUpgradeableTest is Test {
         assertEq(inUsage, 0);
     }
 
+    function test_outflow_NoDecayWindow() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, NO_DECAY_WINDOW, NO_DECAY_WINDOW);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.outflow(ID_1, alice, 600);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 400, 401));
+        rateLimiter.outflow(ID_1, alice, 401);
+
+        rateLimiter.outflow(ID_1, alice, 400);
+
+        (uint256 outUsage, uint256 outAvail, , ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 1000);
+        assertEq(outAvail, 0);
+    }
+
+    function test_inflow_NoDecayWindow() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, NO_DECAY_WINDOW, NO_DECAY_WINDOW);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.inflow(ID_1, alice, 600);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 400, 401));
+        rateLimiter.inflow(ID_1, alice, 401);
+
+        rateLimiter.inflow(ID_1, alice, 400);
+
+        (, , uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(inUsage, 1000);
+        assertEq(inAvail, 0);
+    }
+
+    function test_inflow_HubLedger() public {
+        _setUpHubLedger(rateLimiter, ID_1, false, 0, 0);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 0);
+
+        rateLimiter.outflow(ID_1, alice, 300);
+        rateLimiter.inflow(ID_1, alice, 100);
+        rateLimiter.outflow(ID_1, alice, 50);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 250);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 250, 251));
+        rateLimiter.inflow(ID_1, alice, 251);
+
+        rateLimiter.inflow(ID_1, alice, 250);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 0);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1));
+        rateLimiter.inflow(ID_1, alice, 1);
+    }
+
+    function test_inflow_HubLedger_LongWarp() public {
+        _setUpHubLedger(rateLimiter, ID_1, false, 0, 0);
+        rateLimiter.outflow(ID_1, alice, 300);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 300);
+
+        vm.warp(block.timestamp + 10_000 * YEAR);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 300);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 300, 301));
+        rateLimiter.inflow(ID_1, alice, 301);
+
+        rateLimiter.inflow(ID_1, alice, 300);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 0);
+    }
+
+    function test_inflow_HubLedger_DecayingOutboundNetLimit() public {
+        _setUpHubLedger(rateLimiter, ID_1, true, 500, 100);
+
+        rateLimiter.outflow(ID_1, alice, 500);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 500);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1));
+        rateLimiter.outflow(ID_1, alice, 1);
+
+        vm.warp(block.timestamp + 50);
+        (uint256 outUsage, uint256 outAvail, , ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 250);
+        assertEq(outAvail, 250);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 500);
+
+        rateLimiter.inflow(ID_1, alice, 200);
+        (outUsage, outAvail, , ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 50);
+        assertEq(outAvail, 450);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 300);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+        (outUsage, , , ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 0);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 300);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 300, 301));
+        rateLimiter.inflow(ID_1, alice, 301);
+
+        rateLimiter.inflow(ID_1, alice, 300);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 0);
+    }
+
+    function test_inflow_HubLedger_WithScaleDecimals() public {
+        RateLimiterBaseUpgradeableHarness scaledLimiter = _deployRateLimiter(12, false);
+        _setUpHubLedger(scaledLimiter, ID_1, false, 0, 0);
+
+        scaledLimiter.outflow(ID_1, alice, 300_000_000e18 + 123_456e12);
+        scaledLimiter.inflow(ID_1, alice, 100_000_000e18);
+
+        uint256 headroom = 200_000_000e18 + 123_456e12;
+        assertEq(_inboundAvailable(scaledLimiter, ID_1), headroom);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+        assertEq(_inboundAvailable(scaledLimiter, ID_1), headroom);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, headroom / 1e12, headroom / 1e12 + 1)
+        );
+        scaledLimiter.inflow(ID_1, alice, headroom + 1);
+
+        scaledLimiter.inflow(ID_1, alice, headroom);
+        assertEq(_inboundAvailable(scaledLimiter, ID_1), 0);
+    }
+
+    function test_inflow_HubLedger_MaxLimit() public {
+        _setUpHubLedger(rateLimiter, ID_1, false, 0, 0);
+
+        rateLimiter.outflow(ID_1, alice, HUB_LEDGER_LIMIT);
+        rateLimiter.outflow(ID_1, alice, 1);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), HUB_LEDGER_LIMIT);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IRateLimiter.RateLimitExceeded.selector,
+                HUB_LEDGER_LIMIT,
+                uint256(HUB_LEDGER_LIMIT) + 1
+            )
+        );
+        rateLimiter.inflow(ID_1, alice, uint256(HUB_LEDGER_LIMIT) + 1);
+
+        rateLimiter.inflow(ID_1, alice, HUB_LEDGER_LIMIT);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 0);
+        assertEq(rateLimiter.rateLimits(ID_1).inboundUsage, HUB_LEDGER_LIMIT);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1));
+        rateLimiter.inflow(ID_1, alice, 1);
+    }
+
+    function test_outflow_HubLedger_PerIdIsolation() public {
+        _setUpHubLedger(rateLimiter, ID_1, false, 0, 0);
+        _setUpHubLedger(rateLimiter, ID_2, false, 0, 0);
+
+        rateLimiter.outflow(ID_1, alice, 300);
+        assertEq(_inboundAvailable(rateLimiter, ID_1), 300);
+        assertEq(_inboundAvailable(rateLimiter, ID_2), 0);
+
+        vm.expectRevert(abi.encodeWithSelector(IRateLimiter.RateLimitExceeded.selector, 0, 1));
+        rateLimiter.inflow(ID_2, alice, 1);
+
+        rateLimiter.inflow(ID_1, alice, 300);
+    }
+
     function test_outflow_Revert_RateLimitExceeded() public {
         IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
         configs[0] = _createConfig(ID_1, true, true, true, false, false, 100, 100, 100, 100);
@@ -760,8 +1013,87 @@ contract RateLimiterBaseUpgradeableTest is Test {
         assertEq(outAvailAfter, 500);
     }
 
+    function test_getRateLimitUsages_NoDecayWindow() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, NO_DECAY_WINDOW, NO_DECAY_WINDOW);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.outflow(ID_1, alice, 600);
+        rateLimiter.inflow(ID_1, alice, 400);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+
+        (uint256 outUsage, uint256 outAvail, uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 600);
+        assertEq(outAvail, 400);
+        assertEq(inUsage, 400);
+        assertEq(inAvail, 600);
+
+        vm.warp(type(uint40).max);
+
+        (outUsage, outAvail, inUsage, inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 600);
+        assertEq(outAvail, 400);
+        assertEq(inUsage, 400);
+        assertEq(inAvail, 600);
+    }
+
+    function test_getRateLimitUsages_MaxDecayingWindow() public {
+        uint32 window = NO_DECAY_WINDOW - 1;
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, true, true, false, false, 1000, 1000, window, window);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        rateLimiter.outflow(ID_1, alice, 1000);
+        rateLimiter.inflow(ID_1, alice, 1000);
+
+        vm.warp(block.timestamp + 100 * YEAR);
+
+        uint256 decay = (1000 * 100 * YEAR) / window;
+        (uint256 outUsage, , uint256 inUsage, ) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, 1000 - decay);
+        assertEq(inUsage, 1000 - decay);
+        assertGt(decay, 0);
+    }
+
+    function test_getRateLimitUsages_Fuzz_NoDecayWindow(
+        uint96 _outboundUsage,
+        uint96 _inboundUsage,
+        uint96 _limit,
+        uint256 _elapsed
+    ) public {
+        _elapsed = bound(_elapsed, 0, type(uint40).max - block.timestamp);
+
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(
+            ID_1,
+            true,
+            true,
+            true,
+            false,
+            false,
+            _limit,
+            _limit,
+            NO_DECAY_WINDOW,
+            NO_DECAY_WINDOW
+        );
+        rateLimiter.setRateLimitConfigs(configs);
+
+        IRateLimiter.SetRateLimitStateParam[] memory states = new IRateLimiter.SetRateLimitStateParam[](1);
+        states[0] = _createState(ID_1, _outboundUsage, _inboundUsage, uint40(block.timestamp));
+        rateLimiter.setRateLimitStates(states);
+
+        vm.warp(block.timestamp + _elapsed);
+
+        (uint256 outUsage, uint256 outAvail, uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+        assertEq(outUsage, _outboundUsage);
+        assertEq(outAvail, _limit > _outboundUsage ? _limit - _outboundUsage : 0);
+        assertEq(inUsage, _inboundUsage);
+        assertEq(inAvail, _limit > _inboundUsage ? _limit - _inboundUsage : 0);
+    }
+
     function test_getRateLimitUsages_OutboundDisabled() public view {
-        // ID_SNAP_DISABLED: override=true, outbound=false, inbound=true, limit=1000, window=1000.
+        // ID_SNAP_DISABLED: outbound=false, inbound=true, limit=1000, window=1000.
         (uint256 outUsage, uint256 outAvail, uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(
             ID_SNAP_DISABLED
         );
@@ -773,7 +1105,7 @@ contract RateLimiterBaseUpgradeableTest is Test {
     }
 
     function test_getRateLimitUsages_InboundDisabled() public view {
-        // ID_SNAP_EXPLICIT_OUTBOUND_GROSS: override=true, outbound=true, inbound=false, limit=1000, window=1000.
+        // ID_SNAP_EXPLICIT_OUTBOUND_GROSS: outbound=true, inbound=false, limit=1000, window=1000.
         (uint256 outUsage, uint256 outAvail, uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(
             ID_SNAP_EXPLICIT_OUTBOUND_GROSS
         );
@@ -784,14 +1116,35 @@ contract RateLimiterBaseUpgradeableTest is Test {
         assertEq(inAvail, type(uint256).max);
     }
 
-    function test_getRateLimitUsages_BothDisabled() public view {
-        // ID_SNAP_DEFAULT_DISABLED falls back to default which has outbound=false, inbound=false.
-        (, uint256 outAvail, , uint256 inAvail) = rateLimiterDefaultDisabled.getRateLimitUsages(
-            ID_SNAP_DEFAULT_DISABLED
-        );
+    function test_getRateLimitUsages_BothDisabled() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, true, false, false, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        (, uint256 outAvail, , uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
 
         assertEq(outAvail, type(uint256).max);
         assertEq(inAvail, type(uint256).max);
+    }
+
+    function test_getRateLimitUsages_Inactive() public {
+        IRateLimiter.SetRateLimitConfigParam[] memory configs = new IRateLimiter.SetRateLimitConfigParam[](1);
+        configs[0] = _createConfig(ID_1, false, false, false, false, false, 1000, 1000, 1000, 1000);
+        rateLimiter.setRateLimitConfigs(configs);
+
+        (, uint256 outAvail, , uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_1);
+
+        assertEq(outAvail, 0);
+        assertEq(inAvail, 0);
+    }
+
+    function test_getRateLimitUsages_Unconfigured() public view {
+        (uint256 outUsage, uint256 outAvail, uint256 inUsage, uint256 inAvail) = rateLimiter.getRateLimitUsages(ID_2);
+
+        assertEq(outUsage, 0);
+        assertEq(outAvail, 0);
+        assertEq(inUsage, 0);
+        assertEq(inAvail, 0);
     }
 
     function test_getRateLimitUsages_GloballyDisabled() public {
@@ -808,10 +1161,10 @@ contract RateLimiterBaseUpgradeableTest is Test {
     function test_initial_state_closed() public {
         RateLimiterBaseUpgradeableHarness freshLimiter = _deployRateLimiter(0, false);
 
-        IRateLimiter.RateLimit memory rl = freshLimiter.rateLimits(0);
+        IRateLimiter.RateLimit memory rl = freshLimiter.rateLimits(GLOBAL_STATE_ID);
 
-        // Bitmap = encode(false, true, true, true, false) = 0 | 2 | 4 | 8 | 0 = 14.
-        assertEq(rl.configBitmap, 14);
+        // All-zero bitmap, closed in both directions.
+        assertEq(rl.configBitmap, 0);
         assertEq(rl.outboundLimit, 0);
         assertEq(rl.inboundLimit, 0);
 
