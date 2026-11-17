@@ -25,10 +25,14 @@ ACL, the TokenManager, a pubkey policy) or off-chain. TokenManager-side duties a
    init and starts frozen like any new account; thaw it before traffic (a Thawer, or permissionless
    thaw while it is empty). The fee deposit and redirect escrow must be unfrozen when configured.
 4. **Rate limits.** The default limiter starts enabled with zero capacity in both directions, so
-   configure it (or disable it) before traffic. As on EVM, set each limit significantly larger than
-   its window (in seconds): decay is `limit * elapsed / window` rounded down, and every send,
-   receive or checkpoint restarts `elapsed`, so a limit near or below its window can stop decaying
-   under frequent traffic.
+   configure it (or disable it) before traffic. The EVM console contracts have no default limiter.
+   Unless rate limiting is globally disabled (`isGloballyDisabled`): with global state off, each
+   EVM pathway stays closed until its own config is set with `active`; with global state on, every
+   pathway uses the config at ID 0 (`GLOBAL_STATE_ID`) instead and shares its state, so all
+   pathways stay closed until that config is active. As on EVM, set
+   each limit significantly larger than its window (in seconds): decay is `limit * elapsed / window`
+   rounded down, and every send, receive or checkpoint restarts `elapsed`, so a limit near or below
+   its window can stop decaying under frequent traffic.
 5. **PermissionedBurn mints.** Before the mint's PB authority moves onto a TokenManager root, call
    `set_token_manager(root)` and have that root grant its Burner role to **`oft_escrow`** (not
    `oft_store`): the manager is only ever given the escrow's signature, approved for the send's

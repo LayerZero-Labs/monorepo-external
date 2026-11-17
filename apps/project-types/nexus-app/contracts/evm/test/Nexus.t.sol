@@ -249,7 +249,7 @@ contract NexusTest is NexusTestHelper {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: uint256(bEid),
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: false,
                 inboundEnabled: true,
                 netAccountingEnabled: false,
@@ -822,7 +822,7 @@ contract NexusTest is NexusTestHelper {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: uint256(aEid),
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: false,
                 inboundEnabled: true,
                 netAccountingEnabled: false,

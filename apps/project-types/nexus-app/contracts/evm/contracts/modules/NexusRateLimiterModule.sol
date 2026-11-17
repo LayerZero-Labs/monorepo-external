@@ -12,7 +12,7 @@ import { NexusModule } from "./NexusModule.sol";
 /**
  * @title NexusRateLimiterModule
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Independently upgradeable rate limiter module for Nexus.
  * @dev Rate limits are tracked per-EID (per destination chain). All tokens on the same chain share a single rate limit
  *      bucket. Token amounts are scaled to a common unit (e.g., USD) via per-token scales before consumption.

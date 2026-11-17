@@ -30,7 +30,7 @@ contract NexusRateLimiterModuleTest is NexusTestHelper {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: 1,
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: true,
                 inboundEnabled: true,
                 netAccountingEnabled: true,

@@ -250,7 +250,7 @@ abstract contract NexusTestHelper is TestHelperOz5 {
         configs[0] = IRateLimiter.SetRateLimitConfigParam({
             id: uint256(_dstEid),
             config: IRateLimiter.RateLimitConfig({
-                overrideDefaultConfig: true,
+                active: true,
                 outboundEnabled: true,
                 inboundEnabled: true,
                 netAccountingEnabled: true,

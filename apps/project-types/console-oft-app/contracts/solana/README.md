@@ -107,6 +107,12 @@ A per-ID `RateLimit` falls back to the default config unless its `override_defau
 State is a separate axis: with `use_global_state` disabled, usage lives in the per-ID PDA even when
 that ID uses the default configuration.
 
+The default rate-limit config is a non-EVM model. The EVM console contracts no longer have it: bit 0
+of an EVM config is `active`, and ID 0 (`GLOBAL_STATE_ID`) is only the global-state slot. With
+global state off, a pathway is closed until its own config is active, unless rate limiting is
+globally disabled (`isGloballyDisabled`). With global state on, every pathway uses the config at
+ID 0 instead of its own and shares its state.
+
 **Initialize the rate-limit account whenever you add or wire a peer.** Adding a peer does not create
 it. Without it, `quote_oft` and `get_rate_limit_usages` return `RateLimitNotInitialized`, and `send`
 and `lz_receive` do the same whenever they would touch state. An address-exempt send can still

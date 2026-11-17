@@ -15,100 +15,100 @@
     },
     "OFTBurnMint": {
         "evm": {
-            "runtimeSize": 24177,
-            "initcodeSize": 25140
+            "runtimeSize": 23440,
+            "initcodeSize": 24403
         },
         "tron": {
-            "runtimeSize": 24180,
-            "initcodeSize": 25155
+            "runtimeSize": 23347,
+            "initcodeSize": 24322
         },
         "zksync": {
-            "runtimeSize": 96224,
-            "initcodeSize": 96224
+            "runtimeSize": 91424,
+            "initcodeSize": 91424
         }
     },
     "OFTBurnMintAlt": {
         "evm": {
-            "runtimeSize": 24278,
-            "initcodeSize": 25405
+            "runtimeSize": 23541,
+            "initcodeSize": 24668
         },
         "tron": {
-            "runtimeSize": 24302,
-            "initcodeSize": 25462
+            "runtimeSize": 23469,
+            "initcodeSize": 24629
         },
         "zksync": {
-            "runtimeSize": 97952,
-            "initcodeSize": 97952
+            "runtimeSize": 93152,
+            "initcodeSize": 93152
         }
     },
     "OFTBurnSelfMint": {
         "evm": {
-            "runtimeSize": 24300,
-            "initcodeSize": 25257
+            "runtimeSize": 23563,
+            "initcodeSize": 24520
         },
         "tron": {
-            "runtimeSize": 24375,
-            "initcodeSize": 25354
+            "runtimeSize": 23542,
+            "initcodeSize": 24521
         },
         "zksync": {
-            "runtimeSize": 97376,
-            "initcodeSize": 97376
+            "runtimeSize": 92640,
+            "initcodeSize": 92640
         }
     },
     "OFTBurnSelfMintAlt": {
         "evm": {
-            "runtimeSize": 24401,
-            "initcodeSize": 25522
+            "runtimeSize": 23664,
+            "initcodeSize": 24785
         },
         "tron": {
-            "runtimeSize": 24469,
-            "initcodeSize": 25629
+            "runtimeSize": 23636,
+            "initcodeSize": 24796
         },
         "zksync": {
-            "runtimeSize": 99232,
-            "initcodeSize": 99232
+            "runtimeSize": 94432,
+            "initcodeSize": 94432
         }
     },
     "OFTLockUnlock": {
         "evm": {
-            "runtimeSize": 23939,
-            "initcodeSize": 24796
+            "runtimeSize": 23202,
+            "initcodeSize": 24059
         },
         "tron": {
-            "runtimeSize": 23949,
-            "initcodeSize": 24815
+            "runtimeSize": 23116,
+            "initcodeSize": 23982
         },
         "zksync": {
-            "runtimeSize": 95520,
-            "initcodeSize": 95520
+            "runtimeSize": 90720,
+            "initcodeSize": 90720
         }
     },
     "OFTLockUnlockAlt": {
         "evm": {
-            "runtimeSize": 24040,
-            "initcodeSize": 25061
+            "runtimeSize": 23303,
+            "initcodeSize": 24324
         },
         "tron": {
-            "runtimeSize": 24043,
-            "initcodeSize": 25089
+            "runtimeSize": 23210,
+            "initcodeSize": 24256
         },
         "zksync": {
-            "runtimeSize": 97440,
-            "initcodeSize": 97440
+            "runtimeSize": 92576,
+            "initcodeSize": 92576
         }
     },
     "OFTNative": {
         "evm": {
-            "runtimeSize": 23943,
-            "initcodeSize": 24634
+            "runtimeSize": 23206,
+            "initcodeSize": 23897
         },
         "tron": {
-            "runtimeSize": 23928,
-            "initcodeSize": 24612
+            "runtimeSize": 23095,
+            "initcodeSize": 23779
         },
         "zksync": {
-            "runtimeSize": 93728,
-            "initcodeSize": 93728
+            "runtimeSize": 88928,
+            "initcodeSize": 88928
         }
     }
 }

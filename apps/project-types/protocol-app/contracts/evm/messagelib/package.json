@@ -28,11 +28,12 @@
         "dist/**/*"
     ],
     "scripts": {
-        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && tsup",
+        "build": "pnpm compile:evm && pnpm compile:zksync && pnpm compile:tron && pnpm flatten && tsup",
         "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
         "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.cjs",
         "compile:tron": "pnpm lz-tool hardhat compile --config ./hardhat.config.cjs --network tron-mainnet",
         "compile:zksync": "pnpm lz-tool hardhat compile --config ./hardhat.config.cjs --network zksync-mainnet",
+        "flatten": "pnpm exec lz-tool -e flatten_dir.sh hardhat ./contracts ./artifacts-flattened-contracts/contracts",
         "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
         "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
         "test": "pnpm lz-tool forge test"

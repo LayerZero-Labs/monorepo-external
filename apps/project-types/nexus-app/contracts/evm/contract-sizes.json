@@ -127,16 +127,16 @@
     },
     "NexusRateLimiterModule": {
         "evm": {
-            "runtimeSize": 10946,
-            "initcodeSize": 11406
+            "runtimeSize": 10472,
+            "initcodeSize": 10932
         },
         "tron": {
-            "runtimeSize": 10976,
-            "initcodeSize": 11414
+            "runtimeSize": 10319,
+            "initcodeSize": 10757
         },
         "zksync": {
-            "runtimeSize": 34464,
-            "initcodeSize": 34464
+            "runtimeSize": 29600,
+            "initcodeSize": 29600
         }
     }
 }

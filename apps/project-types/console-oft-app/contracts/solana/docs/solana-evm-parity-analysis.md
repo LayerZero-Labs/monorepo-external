@@ -208,9 +208,17 @@ need full recovery should not enable confidential transfers, or should set
 
 ### D10 — Rate-limit configuration must exist before a pathway works
 
-EVM stores rate limits in a mapping, so an unconfigured EID reads as zero-valued and permits
-traffic. Solana requires the per-EID PDA to exist; absent it, both send and receive fail with
-`RateLimitNotInitialized`, and `quoteOFT` throws where EVM returns a number.
+EVM stores rate limits in a mapping, so an unconfigured EID reads as zero-valued: its config is not
+active. With `useGlobalState` off, that pathway is closed with zero capacity in both directions,
+unless rate limiting is globally disabled (`isGloballyDisabled`). With `useGlobalState` on, every
+pathway uses the config and state at ID 0 (`GLOBAL_STATE_ID`) and ignores its own, so a pathway
+with no config of its own can carry traffic. Solana requires the per-EID PDA to exist; absent it,
+both send and receive fail with `RateLimitNotInitialized`, and `quoteOFT` throws where EVM returns
+a number.
+
+Solana also keeps a default config (id 0) that a per-EID config falls back to unless its
+`override_default_config` is set. The EVM contracts have no default config: with global state off,
+an EVM pathway uses only its own config, and ID 0 is only the global-state slot.
 
 **Operator action:** initialising the rate limit for every destination EID, including the default
 id, is a deployment prerequisite rather than an optimisation.
@@ -230,6 +238,14 @@ once the bindings agree. Ordinary SPL transfers are screened only by the hook's 
 **Operator action:** keep the three bindings on the same policy, and change them together
 ([usage](usage.md)).
 
+### D13 — A rate-limit window never stops decay on Solana
+
+On EVM, a window of `type(uint32).max` stops decay for that direction. Solana has no such window:
+every window decays by `limit * elapsed / window` rounded down, including a `u64::MAX` window.
+
+**Operator action:** do not expect an EVM no-decay window to carry over to Solana; pick the Solana
+window for the decay rate you want.
+
 ## Matches — no divergence
 
 Confirmed field-for-field against the Extended EVM variant. Listed so nobody re-derives them:
@@ -240,7 +256,8 @@ removeDust(amountLD - fee)`, slippage check against `minAmountLD`
   deposit on both sides
 - return-zero-on-redirect: a redirected credit reports `0`, in both the `OFTReceived` event and
   the amount handed to compose, so neither can be read as proof of payment
-- the rate-limiter token bucket, branch for branch
+- the rate-limiter token bucket under the config that applies, except that only EVM has a no-decay
+  window (see D13); which config applies differs (see D10)
 - fee arithmetic, bounded by a 10 000 bps cap at every write site
 - pause semantics, including the Pauser/Unpauser split
 - `OFTSent` / `OFTReceived` / `CreditRedirected` field shape and emission points

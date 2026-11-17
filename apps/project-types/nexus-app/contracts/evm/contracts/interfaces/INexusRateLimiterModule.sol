@@ -10,7 +10,7 @@ import { ITokenScales } from "./ITokenScales.sol";
 /**
  * @title INexusRateLimiterModule
  * @author LayerZero Labs (tinom.eth)
- * @custom:version 1.0.0
+ * @custom:version 1.1.0
  * @notice Interface for the Nexus rate limiter module.
  */
 interface INexusRateLimiterModule is INexusRateLimiter, IRateLimiter, ITokenScales, INexusModule {}

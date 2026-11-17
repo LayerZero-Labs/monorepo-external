@@ -54,12 +54,12 @@ catalogs:
     '@layerzerolabs/lz-evm-messagelib-v2': workspace:@layerzerolabs/protocol-v2-messagelib-evm-contracts@*
     '@layerzerolabs/lz-evm-protocol-v2': workspace:@layerzerolabs/protocol-v2-evm-contracts@*
     '@layerzerolabs/lz-evm-v1-0.7': workspace:@layerzerolabs/protocol-v1-0.7-evm-contracts@*
-    '@layerzerolabs/oapp-evm-contracts': 1.2.20
-    '@layerzerolabs/oapp-upgradeable-evm-contracts': 1.2.20
-    '@layerzerolabs/oft-evm-contracts': 1.2.20
-    '@layerzerolabs/oft-upgradeable-evm-contracts': 1.2.20
-    '@layerzerolabs/utils-evm-contracts': 1.2.20
-    '@layerzerolabs/utils-upgradeable-evm-contracts': 1.2.20
+    '@layerzerolabs/oapp-evm-contracts': 4.0.4
+    '@layerzerolabs/oapp-upgradeable-evm-contracts': 4.0.4
+    '@layerzerolabs/oft-evm-contracts': 4.0.4
+    '@layerzerolabs/oft-upgradeable-evm-contracts': 4.0.4
+    '@layerzerolabs/utils-evm-contracts': 4.0.4
+    '@layerzerolabs/utils-upgradeable-evm-contracts': 4.0.4
     '@openzeppelin/contracts': 5.6.1
     '@openzeppelin/contracts-upgradeable': 5.6.1
   default:
