@@ -1,4 +1,4 @@
-import type z from 'zod';
+import { z } from 'zod';
 
 import type { AdvancedRecord } from '@layerzerolabs/typescript-utils';
 
@@ -22,4 +22,24 @@ export const extractSchemaFromFactory = <Dim extends z.ZodObject>(
     }
 
     return schema;
+};
+
+export const extractMethodInputSchema = ({
+    factory,
+    dimension,
+    methodName,
+}: {
+    factory: FactoryDefinition<any, any, any, any, any>;
+    dimension: object;
+    methodName: string;
+}): z.ZodTuple | undefined => {
+    const shape = extractSchemaFromFactory(factory, dimension).shape;
+    const input = Object.hasOwn(shape, methodName)
+        ? (shape[methodName] as { input?: z.ZodTuple }).input
+        : undefined;
+    const { spec, exempt } = factory.specialization;
+    if (!input || !Object.keys(spec.shape).length || exempt.includes(methodName)) return input;
+
+    const items = [spec, ...input.def.items] as [z.ZodType, ...z.ZodType[]];
+    return input.def.rest ? z.tuple(items, input.def.rest) : z.tuple(items);
 };

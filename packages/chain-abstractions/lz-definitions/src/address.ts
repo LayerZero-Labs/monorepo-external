@@ -23,7 +23,7 @@ export type EncodingByChainType = {
     [ChainType.SOLANA]: Base58String;
     [ChainType.STARKNET]: HexString;
     [ChainType.SUIMOVE]: HexString;
-    [ChainType.TON]: HexString;
+    [ChainType.TON]: TonString;
     [ChainType.STELLAR]: StellarString;
     [ChainType.CANTON]: CantonString;
 };

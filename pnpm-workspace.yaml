@@ -47,6 +47,9 @@ packages:
   - '!**/dist/daml/**'
   - '!**/.next/**'
   - '!tools/alarm-investigator/docker/**'
+  - '!tools/security-tools/patchlens-global/tools/**'
+  - '!tools/security-tools/patchlens-global/scripts/e2e/example-*/**'
+  - '!tools/security-tools/patchlens-global/src/fixtures/**'
   - '!packages/framework/registrars/cdk/src/dockerfile-templates/npm-lock/**'
   - '!migrated/offchain-monorepo/tools/turbo-cache-service-v2/npm-lock/**'
 catalogs:
