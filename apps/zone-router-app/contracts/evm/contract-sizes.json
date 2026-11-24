@@ -1,0 +1,14 @@
+{
+    "ZoneRouter": {
+        "evm": {
+            "runtimeSize": 15654,
+            "initcodeSize": 15867
+        }
+    },
+    "ZoneRouterFactory": {
+        "evm": {
+            "runtimeSize": 1876,
+            "initcodeSize": 2031
+        }
+    }
+}

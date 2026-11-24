@@ -1,10 +1,16 @@
 import z from 'zod';
 
 import { isHexString, trim0x } from '@layerzerolabs/common-encoding-utils';
-import type { HexString, NormalizedHexString } from '@layerzerolabs/typescript-utils';
+import type {
+    Bytes32String,
+    HexString,
+    NormalizedHexString,
+} from '@layerzerolabs/typescript-utils';
 import { brandSchema } from '@layerzerolabs/zod-utils';
 
-export type { HexString, NormalizedHexString };
+export type { Bytes32String, HexString, NormalizedHexString };
+
+const BYTES32_LENGTH = 32;
 
 export const hexSchema = z
     .string()
@@ -47,6 +53,24 @@ export const normalizedHexSchema = brandSchema(_rawNormalizedHexSchema, 'Normali
  */
 export const isNormalizedHex = (value: string): boolean =>
     normalizedHexSchema.safeParse(value).success;
+
+const isBytes32 = (value: unknown): value is Bytes32String =>
+    typeof value === 'string' && value.startsWith('0x') && isHexString(value, BYTES32_LENGTH);
+
+export const bytes32Schema = brandSchema(
+    z
+        .string()
+        .refine(isBytes32)
+        .overwrite((hex) => hex.toLowerCase() as Bytes32String) as any as z.ZodType<Bytes32String>,
+    'Bytes32Schema',
+);
+
+export const toBytes32 = (hex: HexString): Bytes32String => {
+    if (!isBytes32(hex)) {
+        throw new Error(`Expected a ${BYTES32_LENGTH}-byte hex string`);
+    }
+    return hex.toLowerCase() as Bytes32String;
+};
 
 export const normalizeHex = (address: HexString): NormalizedHexString => {
     const body = trim0x(address).replace(/^0+/, '');

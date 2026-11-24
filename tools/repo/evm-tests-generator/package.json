@@ -1,0 +1,32 @@
+{
+    "name": "@layerzerolabs/evm-tests-generator",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./tests/utils": "./tests/utils.ts"
+    },
+    "bin": {
+        "evm-tests-generator": "./dist/cli.js"
+    },
+    "scripts": {
+        "build": "tsup",
+        "evm-tests-generator": "tsx ./src/cli.ts",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-evm": "workspace:*",
+        "commander": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "viem": "catalog:",
+        "vitest": "catalog:"
+    }
+}

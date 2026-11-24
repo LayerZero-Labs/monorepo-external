@@ -1,0 +1,703 @@
+[
+    {
+        "name": "external_prepare_create__get_synchronizers",
+        "timestamp": "2026-01-21T21:25:37.493Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/connected-synchronizers",
+            "path": "/v2/state/connected-synchronizers",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "201",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:37 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "connectedSynchronizers": [
+                    {
+                        "synchronizerAlias": "sync",
+                        "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                        "permission": "PARTICIPANT_PERMISSION_UNSPECIFIED"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "name": "external_prepare_create__prepare_signing",
+        "timestamp": "2026-01-21T21:25:37.502Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/prepare",
+            "path": "/v2/interactive-submission/prepare",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "bob-user",
+                "commandId": "0fc72085-9353-4e65-aafb-7691893ece1d",
+                "commands": [
+                    {
+                        "CreateCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "createArguments": {
+                                "owner": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                "value": "200",
+                                "description": "Test asset for external party flow"
+                            }
+                        }
+                    }
+                ],
+                "actAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "readAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                "packageIdSelectionPreference": [],
+                "verboseHashing": false
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1529",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:37 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "preparedTransaction": "CvUECgMyLjESATAaxgQKATDCPr8ECrwECgMyLjESQjAwMTFiMjRlMmJkMTMxNjM5MDBmZDJiM2Y2ODRiOTE4NGY4MThkM2JkZGFhOWIyMjQ3NThlZWYyOWM1M2QwZjU3NRoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq9gFy8wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEjMKC2Rlc2NyaXB0aW9uEiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiIhIglUPYvR6niT5tjCl/c/a0gipC1LzGL7vg5D0RUu0Bkd8S7gEScQpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIkMGZjNzIwODUtOTM1My00ZTY1LWFhZmItNzY5MTg5M2VjZTFkGkpzeW5jOjoxMjIwMTZlOWMxNTI5NWY3MTFjMDYwYzU3MjIzOThhZmYxOTdhMjM5NDc0OTQ5ZTIyMzUzMzUxMWQ3MmI5M2JhNGNlOCokZDVmM2VjM2ItNjg3OS00MmEwLWIyMDgtNTE0Y2VkY2RjMTc1MNOe0oXJnZID",
+                "preparedTransactionHash": "hYUuto4LKb0FadJCad/iYXQSIh7ndx48ykWfnnrqvfA=",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2",
+                "hashingDetails": null,
+                "costEstimation": {
+                    "estimationTimestamp": "2026-01-21T21:25:31.906117Z",
+                    "confirmationRequestTrafficCostEstimation": 0,
+                    "confirmationResponseTrafficCostEstimation": 0,
+                    "totalTrafficCostEstimation": 0
+                }
+            }
+        }
+    },
+    {
+        "name": "external_submit_create__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:37.531Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:37 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 320
+            }
+        }
+    },
+    {
+        "name": "external_submit_create__submit_signed",
+        "timestamp": "2026-01-21T21:25:37.536Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/execute",
+            "path": "/v2/interactive-submission/execute",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "preparedTransaction": "CvUECgMyLjESATAaxgQKATDCPr8ECrwECgMyLjESQjAwMTFiMjRlMmJkMTMxNjM5MDBmZDJiM2Y2ODRiOTE4NGY4MThkM2JkZGFhOWIyMjQ3NThlZWYyOWM1M2QwZjU3NRoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq9gFy8wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEjMKC2Rlc2NyaXB0aW9uEiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiIhIglUPYvR6niT5tjCl/c/a0gipC1LzGL7vg5D0RUu0Bkd8S7gEScQpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIkMGZjNzIwODUtOTM1My00ZTY1LWFhZmItNzY5MTg5M2VjZTFkGkpzeW5jOjoxMjIwMTZlOWMxNTI5NWY3MTFjMDYwYzU3MjIzOThhZmYxOTdhMjM5NDc0OTQ5ZTIyMzUzMzUxMWQ3MmI5M2JhNGNlOCokZDVmM2VjM2ItNjg3OS00MmEwLWIyMDgtNTE0Y2VkY2RjMTc1MNOe0oXJnZID",
+                "partySignatures": {
+                    "signatures": [
+                        {
+                            "party": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                            "signatures": [
+                                {
+                                    "format": "SIGNATURE_FORMAT_DER",
+                                    "signature": "MEQCIBdPNS7PG414Got7C1Yrq1Tsw1m33S5vDmCyML5k5l+7AiAQm9/BUPfvOe+0nbBcrLc5l1nGbagvyP067GRdWkh+tA==",
+                                    "signedBy": "1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                    "signingAlgorithmSpec": "SIGNING_ALGORITHM_SPEC_EC_DSA_SHA_256"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "deduplicationPeriod": {
+                    "DeduplicationDuration": {
+                        "value": {
+                            "seconds": 3600,
+                            "nanos": 0
+                        }
+                    }
+                },
+                "submissionId": "00ab2ef6-6f14-411d-87a0-fbcf3531c9b3",
+                "userId": "bob-user",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2"
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "2",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:37 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {}
+        }
+    },
+    {
+        "name": "external_wait_create__wait_completion",
+        "timestamp": "2026-01-21T21:25:39.041Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "bob-user",
+                "parties": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "beginExclusive": 320
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "726",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "0fc72085-9353-4e65-aafb-7691893ece1d",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12202c64e4fead81602bfe4b4628a52653c2d9533be83ec2316ab850eb9a7fd99587",
+                                "userId": "bob-user",
+                                "actAs": [
+                                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                                ],
+                                "submissionId": "00ab2ef6-6f14-411d-87a0-fbcf3531c9b3",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-c778695c8828883e4083ef17f2563600-fe704d998e1d858c-01",
+                                    "tracestate": null
+                                },
+                                "offset": 321,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:36.797442Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "name": "external_fetch_created_contract_id__fetch_update",
+        "timestamp": "2026-01-21T21:25:39.050Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/updates/update-by-id",
+            "path": "/v2/updates/update-by-id",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "updateId": "12202c64e4fead81602bfe4b4628a52653c2d9533be83ec2316ab850eb9a7fd99587",
+                "updateFormat": {
+                    "includeTransactions": {
+                        "eventFormat": {
+                            "filtersByParty": {
+                                "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863": {
+                                    "cumulative": [
+                                        {
+                                            "identifierFilter": {
+                                                "WildcardFilter": {
+                                                    "value": {
+                                                        "includeCreatedEventBlob": false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "verbose": false
+                        },
+                        "transactionShape": "TRANSACTION_SHAPE_LEDGER_EFFECTS"
+                    }
+                }
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1496",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "update": {
+                    "Transaction": {
+                        "value": {
+                            "updateId": "12202c64e4fead81602bfe4b4628a52653c2d9533be83ec2316ab850eb9a7fd99587",
+                            "commandId": "0fc72085-9353-4e65-aafb-7691893ece1d",
+                            "workflowId": "",
+                            "effectiveAt": "2026-01-21T21:25:37.533061Z",
+                            "events": [
+                                {
+                                    "CreatedEvent": {
+                                        "offset": 321,
+                                        "nodeId": 0,
+                                        "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                                        "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                                        "contractKey": null,
+                                        "createArgument": {
+                                            "owner": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                            "value": "200",
+                                            "description": "Test asset for external party flow"
+                                        },
+                                        "createdEventBlob": "",
+                                        "interfaceViews": [],
+                                        "witnessParties": [
+                                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                                        ],
+                                        "signatories": [
+                                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                                        ],
+                                        "observers": [],
+                                        "createdAt": "2026-01-21T21:25:37.533061Z",
+                                        "packageName": "sdk-test",
+                                        "representativePackageId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60",
+                                        "acsDelta": true
+                                    }
+                                }
+                            ],
+                            "offset": 321,
+                            "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                            "traceContext": {
+                                "traceparent": "00-c778695c8828883e4083ef17f2563600-fe704d998e1d858c-01",
+                                "tracestate": null
+                            },
+                            "recordTime": "2026-01-21T21:25:36.797442Z",
+                            "externalTransactionHash": "85852eb68e0b29bd0569d24269dfe2617412221ee7771e3cca459f9e7aeabdf0"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "name": "external_query_contract__get_contract",
+        "timestamp": "2026-01-21T21:25:39.056Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/events/events-by-contract-id",
+            "path": "/v2/events/events-by-contract-id",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                "eventFormat": {
+                    "filtersByParty": {
+                        "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863": {
+                            "cumulative": [
+                                {
+                                    "identifierFilter": {
+                                        "WildcardFilter": {
+                                            "value": {
+                                                "includeCreatedEventBlob": false
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "verbose": false
+                }
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1025",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "created": {
+                    "createdEvent": {
+                        "offset": 321,
+                        "nodeId": 0,
+                        "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                        "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                        "contractKey": null,
+                        "createArgument": {
+                            "owner": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                            "value": "200",
+                            "description": "Test asset for external party flow"
+                        },
+                        "createdEventBlob": "",
+                        "interfaceViews": [],
+                        "witnessParties": [
+                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                        ],
+                        "signatories": [
+                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                        ],
+                        "observers": [],
+                        "createdAt": "2026-01-21T21:25:37.533061Z",
+                        "packageName": "sdk-test",
+                        "representativePackageId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60",
+                        "acsDelta": true
+                    },
+                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+                },
+                "archived": null
+            }
+        }
+    },
+    {
+        "name": "external_prepare_archive__prepare_signing",
+        "timestamp": "2026-01-21T21:25:39.065Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/prepare",
+            "path": "/v2/interactive-submission/prepare",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "bob-user",
+                "commandId": "ba1a7214-b391-4f52-8e25-86be6d6eda82",
+                "commands": [
+                    {
+                        "ExerciseCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                            "choice": "Archive",
+                            "choiceArgument": {}
+                        }
+                    }
+                ],
+                "actAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "readAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                "packageIdSelectionPreference": [],
+                "verboseHashing": false
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "3025",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "preparedTransaction": "CoYFCgMyLjESATAa1wQKATDCPtAEGs0ECgMyLjESigEwMDExYjI0ZTJiZDEzMTYzOTAwZmQyYjNmNjg0YjkxODRmODE4ZDNiZGRhYTliMjI0NzU4ZWVmMjljNTNkMGY1NzVjYTEyMTIyMDgzZDZlZjkxNTVhMWE5ODZkYWE3MDYzM2I5NTRjYjhkZTQ2NTQ3MjYzZGFlMWUyM2FkMzkwOTdjYTFkYmJkNWEaCHNkay10ZXN0IlgKQGIxNTlhMjUwZWJhYWU3ZmFjNzA2OGQ2N2I0M2EzZTk0ZTUwYzVmMjU0NWFiN2NkOTU1YzMyZDAwZWFiMmNlNjASB1Nka1Rlc3QaC1NpbXBsZUFzc2V0Kklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzMklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzOklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzSgdBcmNoaXZlUmVyYwphCkA5ZTcwYThiMzUxMGQ2MTdmOGExMzYyMTNmMzNkNmE5MDNhMTBjYTBlZWVjNzZiYjA2YmE1NWQxZWQ5NjgwZjY5EhREQS5JbnRlcm5hbC5UZW1wbGF0ZRoHQXJjaGl2ZVgBagIKACIiEiDX8VNVGhrwzox6orC6jFFs6UNc9uYddg86QIuH56f0BBK9ChJxCklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzEiRiYTFhNzIxNC1iMzkxLTRmNTItOGUyNS04NmJlNmQ2ZWRhODIaSnN5bmM6OjEyMjAxNmU5YzE1Mjk1ZjcxMWMwNjBjNTcyMjM5OGFmZjE5N2EyMzk0NzQ5NDllMjIzNTMzNTExZDcyYjkzYmE0Y2U4KiQzYzcwYTdlOS03Zjg2LTQxYmYtYjRmNy1lOGEyZGE4ZTQ5ZDIwnsWxhsmdkgM6zAgKhQUKAzIuMRKKATAwMTFiMjRlMmJkMTMxNjM5MDBmZDJiM2Y2ODRiOTE4NGY4MThkM2JkZGFhOWIyMjQ3NThlZWYyOWM1M2QwZjU3NWNhMTIxMjIwODNkNmVmOTE1NWExYTk4NmRhYTcwNjMzYjk1NGNiOGRlNDY1NDcyNjNkYWUxZTIzYWQzOTA5N2NhMWRiYmQ1YRoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq9gFy8wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEjMKC2Rlc2NyaXB0aW9uEiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjPAPoWx1IXJnZID0j62AwoDMi4xEq4DCkUAEbJOK9ExY5AP0rP2hLkYT4GNO92qmyJHWO7ynFPQ9XXKEhIgg9bvkVWhqYbapwYzuVTLjeRlRyY9rh4jrTkJfKHbvVoSCHNkay10ZXN0GlgKQGIxNTlhMjUwZWJhYWU3ZmFjNzA2OGQ2N2I0M2EzZTk0ZTUwYzVmMjU0NWFiN2NkOTU1YzMyZDAwZWFiMmNlNjASB1Nka1Rlc3QaC1NpbXBsZUFzc2V0IoABan4KTQpLOklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzCgUKAxiQAwomCiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cqSWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM5hRi1kOxIBgBCKgomCiQIARIgJNexz/SPDCaaepl2A3om+ExqTTLJd1zMusTYncdRLb8QHg==",
+                "preparedTransactionHash": "cfT/JPQmHI+U8hwKu/teV5mPMQJemueZyUOqtaN+Mcg=",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2",
+                "hashingDetails": null,
+                "costEstimation": {
+                    "estimationTimestamp": "2026-01-21T21:25:38.016246Z",
+                    "confirmationRequestTrafficCostEstimation": 0,
+                    "confirmationResponseTrafficCostEstimation": 0,
+                    "totalTrafficCostEstimation": 0
+                }
+            }
+        }
+    },
+    {
+        "name": "external_submit_archive__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:39.081Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 323
+            }
+        }
+    },
+    {
+        "name": "external_submit_archive__submit_signed",
+        "timestamp": "2026-01-21T21:25:39.086Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/execute",
+            "path": "/v2/interactive-submission/execute",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "preparedTransaction": "CoYFCgMyLjESATAa1wQKATDCPtAEGs0ECgMyLjESigEwMDExYjI0ZTJiZDEzMTYzOTAwZmQyYjNmNjg0YjkxODRmODE4ZDNiZGRhYTliMjI0NzU4ZWVmMjljNTNkMGY1NzVjYTEyMTIyMDgzZDZlZjkxNTVhMWE5ODZkYWE3MDYzM2I5NTRjYjhkZTQ2NTQ3MjYzZGFlMWUyM2FkMzkwOTdjYTFkYmJkNWEaCHNkay10ZXN0IlgKQGIxNTlhMjUwZWJhYWU3ZmFjNzA2OGQ2N2I0M2EzZTk0ZTUwYzVmMjU0NWFiN2NkOTU1YzMyZDAwZWFiMmNlNjASB1Nka1Rlc3QaC1NpbXBsZUFzc2V0Kklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzMklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzOklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzSgdBcmNoaXZlUmVyYwphCkA5ZTcwYThiMzUxMGQ2MTdmOGExMzYyMTNmMzNkNmE5MDNhMTBjYTBlZWVjNzZiYjA2YmE1NWQxZWQ5NjgwZjY5EhREQS5JbnRlcm5hbC5UZW1wbGF0ZRoHQXJjaGl2ZVgBagIKACIiEiDX8VNVGhrwzox6orC6jFFs6UNc9uYddg86QIuH56f0BBK9ChJxCklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzEiRiYTFhNzIxNC1iMzkxLTRmNTItOGUyNS04NmJlNmQ2ZWRhODIaSnN5bmM6OjEyMjAxNmU5YzE1Mjk1ZjcxMWMwNjBjNTcyMjM5OGFmZjE5N2EyMzk0NzQ5NDllMjIzNTMzNTExZDcyYjkzYmE0Y2U4KiQzYzcwYTdlOS03Zjg2LTQxYmYtYjRmNy1lOGEyZGE4ZTQ5ZDIwnsWxhsmdkgM6zAgKhQUKAzIuMRKKATAwMTFiMjRlMmJkMTMxNjM5MDBmZDJiM2Y2ODRiOTE4NGY4MThkM2JkZGFhOWIyMjQ3NThlZWYyOWM1M2QwZjU3NWNhMTIxMjIwODNkNmVmOTE1NWExYTk4NmRhYTcwNjMzYjk1NGNiOGRlNDY1NDcyNjNkYWUxZTIzYWQzOTA5N2NhMWRiYmQ1YRoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq9gFy8wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEjMKC2Rlc2NyaXB0aW9uEiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjPAPoWx1IXJnZID0j62AwoDMi4xEq4DCkUAEbJOK9ExY5AP0rP2hLkYT4GNO92qmyJHWO7ynFPQ9XXKEhIgg9bvkVWhqYbapwYzuVTLjeRlRyY9rh4jrTkJfKHbvVoSCHNkay10ZXN0GlgKQGIxNTlhMjUwZWJhYWU3ZmFjNzA2OGQ2N2I0M2EzZTk0ZTUwYzVmMjU0NWFiN2NkOTU1YzMyZDAwZWFiMmNlNjASB1Nka1Rlc3QaC1NpbXBsZUFzc2V0IoABan4KTQpLOklib2I6OjEyMjBmZGFmZjc3ODgzYWM1MWZiNzM2NWQxZWE4ZDI4NDZkZTAxOGU0YjBmOTY0ZjlmM2U0NmNlNWQ5YjNhYmFiODYzCgUKAxiQAwomCiRCIlRlc3QgYXNzZXQgZm9yIGV4dGVybmFsIHBhcnR5IGZsb3cqSWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM5hRi1kOxIBgBCKgomCiQIARIgJNexz/SPDCaaepl2A3om+ExqTTLJd1zMusTYncdRLb8QHg==",
+                "partySignatures": {
+                    "signatures": [
+                        {
+                            "party": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                            "signatures": [
+                                {
+                                    "format": "SIGNATURE_FORMAT_DER",
+                                    "signature": "MEQCIEBhm5MwUnBqJEdKzRhVqZU0GDHSVok8/fFlSd7swwTiAiAKAq2joM6qnckrthJG30rS9x1njTCbdbyVibzCQJW4QQ==",
+                                    "signedBy": "1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                    "signingAlgorithmSpec": "SIGNING_ALGORITHM_SPEC_EC_DSA_SHA_256"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "deduplicationPeriod": {
+                    "DeduplicationDuration": {
+                        "value": {
+                            "seconds": 3600,
+                            "nanos": 0
+                        }
+                    }
+                },
+                "submissionId": "20beb546-4b1d-4d4c-a38f-97ff4cbe09ea",
+                "userId": "bob-user",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2"
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "2",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:38 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {}
+        }
+    },
+    {
+        "name": "external_wait_archive__wait_completion",
+        "timestamp": "2026-01-21T21:25:40.591Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "bob-user",
+                "parties": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "beginExclusive": 323
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "726",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:40 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "ba1a7214-b391-4f52-8e25-86be6d6eda82",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220762a83a3a4db5a866b95ca55a9558ab2cae2fed1a0c6726df9580b015d432445",
+                                "userId": "bob-user",
+                                "actAs": [
+                                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                                ],
+                                "submissionId": "20beb546-4b1d-4d4c-a38f-97ff4cbe09ea",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-bf25bce1301480ca771d5852bfc1eeed-cabeb547c2f26e18-01",
+                                    "tracestate": null
+                                },
+                                "offset": 324,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:37.887162Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "name": "external_verify_archived__get_contract",
+        "timestamp": "2026-01-21T21:25:40.602Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/events/events-by-contract-id",
+            "path": "/v2/events/events-by-contract-id",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                "eventFormat": {
+                    "filtersByParty": {
+                        "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863": {
+                            "cumulative": [
+                                {
+                                    "identifierFilter": {
+                                        "WildcardFilter": {
+                                            "value": {
+                                                "includeCreatedEventBlob": false
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "verbose": false
+                }
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1559",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:40 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "created": {
+                    "createdEvent": {
+                        "offset": 321,
+                        "nodeId": 0,
+                        "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                        "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                        "contractKey": null,
+                        "createArgument": {
+                            "owner": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                            "value": "200",
+                            "description": "Test asset for external party flow"
+                        },
+                        "createdEventBlob": "",
+                        "interfaceViews": [],
+                        "witnessParties": [
+                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                        ],
+                        "signatories": [
+                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                        ],
+                        "observers": [],
+                        "createdAt": "2026-01-21T21:25:37.533061Z",
+                        "packageName": "sdk-test",
+                        "representativePackageId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60",
+                        "acsDelta": true
+                    },
+                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+                },
+                "archived": {
+                    "archivedEvent": {
+                        "offset": 324,
+                        "nodeId": 0,
+                        "contractId": "0011b24e2bd13163900fd2b3f684b9184f818d3bddaa9b224758eef29c53d0f575ca12122083d6ef9155a1a986daa70633b954cb8de46547263dae1e23ad39097ca1dbbd5a",
+                        "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                        "witnessParties": [
+                            "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                        ],
+                        "packageName": "sdk-test",
+                        "implementedInterfaces": []
+                    },
+                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+                }
+            }
+        }
+    }
+]

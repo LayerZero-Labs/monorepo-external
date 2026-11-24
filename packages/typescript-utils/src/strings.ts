@@ -20,6 +20,8 @@ export declare const _NormalizedHexString: unique symbol;
 
 export type NormalizedHexString = Branded<typeof _NormalizedHexString, 'NormalizedHexString'>;
 
+export type Bytes32String = Branded<HexString, 'Bytes32String'>;
+
 /**
  * Guarantees that a hex string is trimmed.
  *

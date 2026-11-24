@@ -1,0 +1,72 @@
+{
+    "name": "@layerzerolabs/common-canton",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Canton VM client and utilities",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./browser": {
+            "types": "./dist/browser.d.ts",
+            "import": "./dist/browser.js",
+            "default": "./dist/browser.js"
+        },
+        "./types": {
+            "types": "./dist/types.d.ts",
+            "import": "./dist/types.js",
+            "default": "./dist/types.js"
+        }
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "scripts": {
+        "build": "pnpm generate:openapi && tsup",
+        "clean": "rm -rf dist src/open-api tsconfig.tsbuildinfo node_modules",
+        "generate:openapi": "lz-tool extra canton generate-openapi",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "pnpm generate:openapi && vitest --run",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@canton-network/core-ledger-proto": "catalog:",
+        "@daml/types": "catalog:",
+        "@grpc/grpc-js": "catalog:",
+        "@layerzerolabs/common-chain-model": "workspace:*",
+        "@layerzerolabs/common-encoding-utils": "workspace:*",
+        "@layerzerolabs/common-error-utils": "workspace:*",
+        "@layerzerolabs/typescript-utils": "workspace:*",
+        "@mojotech/json-type-validation": "catalog:",
+        "@noble/hashes": "catalog:",
+        "@noble/secp256k1": "catalog:",
+        "@protobuf-ts/grpc-transport": "catalog:",
+        "@protobuf-ts/runtime": "catalog:",
+        "@protobuf-ts/runtime-rpc": "catalog:",
+        "es-toolkit": "catalog:",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/eslint-configuration": "workspace:^",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/vitest-configuration": "workspace:*",
+        "@layerzerolabs/vm-tooling-canton": "workspace:*",
+        "@vitest/coverage-v8": "catalog:",
+        "eslint": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

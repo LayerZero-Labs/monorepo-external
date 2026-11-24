@@ -1,0 +1,17 @@
+{
+    "config": {
+        "byChainType": ["evm"]
+    },
+    "contracts": {
+        "@layerzerolabs/zone-composer-evm-contracts": [
+            {
+                "name": "ZoneComposer",
+                "file": "contracts"
+            },
+            {
+                "name": "ZoneComposerNative",
+                "file": "contracts"
+            }
+        ]
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "name": "@layerzerolabs/zone-composer-evm-contracts",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "scripts": {
+        "build": "pnpm compile:evm && pnpm contract-sizes",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.js",
+        "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
+        "test": "pnpm lz-tool --env FOUNDRY_PROFILE=test forge test",
+        "test:gas:update": "pnpm lz-tool --env FOUNDRY_PROFILE=test --env FORGE_SNAPSHOT_CHECK=false --env FORGE_SNAPSHOT_EMIT=true forge test --match-test _Gas"
+    },
+    "devDependencies": {
+        "@layerzerolabs/contract-sizes-evm": "workspace:*",
+        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:zone-composer",
+        "@layerzerolabs/lz-evm-protocol-v2": "catalog:zone-composer",
+        "@layerzerolabs/lz-evm-v1-0.7": "catalog:zone-composer",
+        "@layerzerolabs/oapp-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/oapp-upgradeable-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/oft-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/oft-upgradeable-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/test-utils-evm-contracts": "workspace:*",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/utils-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/utils-upgradeable-evm-contracts": "catalog:zone-composer",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@layerzerolabs/zone-router-evm-contracts": "workspace:*",
+        "@openzeppelin/contracts": "catalog:zone-composer",
+        "@openzeppelin/contracts-upgradeable": "catalog:zone-composer",
+        "hardhat": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

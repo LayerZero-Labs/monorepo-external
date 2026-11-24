@@ -1,0 +1,31 @@
+{
+    "name": "@layerzerolabs/evm-ts-artifacts-generator",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "main": "./src/run.ts",
+    "module": "./src/run.ts",
+    "bin": {
+        "generate-ts-artifacts": "./src/run.ts"
+    },
+    "scripts": {
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-evm": "workspace:*",
+        "@layerzerolabs/ts-command-line-args": "workspace:*",
+        "handlebars": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/repo-utils": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "typescript": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

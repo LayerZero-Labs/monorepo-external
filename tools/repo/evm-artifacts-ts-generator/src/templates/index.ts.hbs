@@ -1,0 +1,84 @@
+// Auto-generated file, please do not edit.
+/* eslint-disable */
+import type { BuildInfoJson, EnhancedContract, EvmArtifact, ExtractConstructorArgs, Hex } from '@layerzerolabs/common-evm';
+import { EVMBuildTarget, enhancedContractGetter, generateGetDeployData } from '@layerzerolabs/common-evm';
+
+{{#each contracts}}
+import { {{{abiId}}} } from '{{{abiImportPath}}}';
+{{#each buildTargets}}
+import { {{{../name}}}Artifact as {{{alias}}} } from './{{{artifactFileName}}}';
+{{/each}}
+
+/**
+ * {{name}}
+ */
+export interface {{{name}}} extends EnhancedContract<typeof {{{abiId}}}> {}
+const _get{{{name}}}Contract = enhancedContractGetter({{{abiId}}});
+export const get{{{name}}}Contract: (...args: Parameters<typeof _get{{{name}}}Contract>) => {{{name}}} = _get{{{name}}}Contract;
+
+/**
+ * get{{name}}DeployData
+ * @param buildTarget EVM build target (DEFAULT, TRON, ZKSYNC)
+ * @param args Named constructor parameters (required if constructor has inputs)
+ * @returns Hex-encoded deploy data
+ */
+export function get{{{name}}}DeployData(buildTarget: EVMBuildTarget, ...args: ExtractConstructorArgs<typeof {{{abiId}}}>): Hex {
+{{#each buildTargets}}
+    if (buildTarget === EVMBuildTarget.{{{enumKey}}}) return generateGetDeployData({{{../abiId}}}, {{{alias}}}.bytecode, { isZkChain: {{{isZkChain}}} })(...args);
+{{/each}}
+    throw new Error(`No ${buildTarget} artifact available for {{{name}}}`);
+}
+
+/**
+ * get{{name}}Artifact
+ * @param buildTarget EVM build target (DEFAULT, TRON, ZKSYNC)
+ * @returns Artifact with abi, bytecode, metadata
+ */
+export function get{{{name}}}Artifact(buildTarget: EVMBuildTarget): EvmArtifact<typeof {{{abiId}}}> {
+{{#each buildTargets}}
+    if (buildTarget === EVMBuildTarget.{{{enumKey}}}) return {{{alias}}};
+{{/each}}
+    throw new Error(`No ${buildTarget} artifact available for {{{name}}}`);
+}
+
+/**
+ * get{{name}}BuildInfo
+ * @param buildTarget EVM build target (DEFAULT, TRON, ZKSYNC)
+ * @returns Full Hardhat build info
+ */
+export function get{{{name}}}BuildInfo(buildTarget: EVMBuildTarget): BuildInfoJson | undefined {
+{{#each buildTargets}}
+    if (buildTarget === EVMBuildTarget.{{{enumKey}}}) return {{{alias}}}.buildInfo;
+{{/each}}
+    throw new Error(`No ${buildTarget} artifact available for {{{name}}}`);
+}
+
+/**
+ * get{{name}}Bytecode
+ * @param buildTarget EVM build target (DEFAULT, TRON, ZKSYNC)
+ * @returns Bytecode
+ */
+export function get{{{name}}}Bytecode(buildTarget: EVMBuildTarget): Hex {
+{{#each buildTargets}}
+    if (buildTarget === EVMBuildTarget.{{{enumKey}}}) return {{{alias}}}.bytecode;
+{{/each}}
+    throw new Error(`No ${buildTarget} artifact available for {{{name}}}`);
+}
+
+{{#if anyHasFlattenedSol}}
+/**
+ * get{{name}}FlattenedSol
+ * @param buildTarget EVM build target (DEFAULT, TRON, ZKSYNC)
+ * @returns Flattened sol json with base64 source
+ */
+export function get{{{name}}}FlattenedSol(buildTarget: EVMBuildTarget) {
+{{#each buildTargets}}
+{{#if hasFlattenedSol}}
+    if (buildTarget === EVMBuildTarget.{{{enumKey}}}) return {{{alias}}}.flattenedSol;
+{{/if}}
+{{/each}}
+    throw new Error(`No ${buildTarget} flattened source available for {{{name}}}`);
+}
+
+{{/if}}
+{{/each}}

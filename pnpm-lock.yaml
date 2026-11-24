@@ -213,6 +213,9 @@ catalogs:
     '@coral-xyz/anchor':
       specifier: 0.31.0
       version: 0.31.0
+    '@daml/types':
+      specifier: 3.4.8
+      version: 3.4.8
     '@eslint/js':
       specifier: ^9.37.0
       version: 9.39.1
@@ -228,6 +231,9 @@ catalogs:
     '@ethersproject/solidity':
       specifier: ^5.8.0
       version: 5.8.0
+    '@initia/initia.js':
+      specifier: 1.0.4
+      version: 1.0.4
     '@jest/globals':
       specifier: ^29.7.0
       version: 29.7.0
@@ -291,6 +297,9 @@ catalogs:
     '@metaplex-foundation/umi-web3js-adapters':
       specifier: ^0.9.2
       version: 0.9.2
+    '@mojotech/json-type-validation':
+      specifier: ^3.1.0
+      version: 3.1.0
     '@mysten/sui':
       specifier: ^1.45.1
       version: 1.45.2
@@ -317,6 +326,9 @@ catalogs:
       version: 5.6.1
     '@protobuf-ts/grpc-transport':
       specifier: ^2.9.4
+      version: 2.11.1
+    '@protobuf-ts/runtime':
+      specifier: ^2.11.1
       version: 2.11.1
     '@protobuf-ts/runtime-rpc':
       specifier: ^2.11.1
@@ -357,6 +369,9 @@ catalogs:
     '@types/lodash-es':
       specifier: 4.17.12
       version: 4.17.12
+    '@types/lodash.isequal':
+      specifier: ^4.5.8
+      version: 4.5.8
     '@types/ms':
       specifier: ^2.1.0
       version: 2.1.0
@@ -378,6 +393,15 @@ catalogs:
     '@typescript/typescript6':
       specifier: ^6.0.2
       version: 6.0.2
+    '@vitest/coverage-v8':
+      specifier: 4.1.10
+      version: 4.1.10
+    '@wagmi/cli':
+      specifier: ^2.3.1
+      version: 2.8.0
+    abitype:
+      specifier: ^1.0.8
+      version: 1.2.3
     axios:
       specifier: ^1.20.0
       version: 1.20.0
@@ -466,8 +490,8 @@ catalogs:
       specifier: ^7.0.5
       version: 7.0.5
     isomorphic-git:
-      specifier: 1.30.1
-      version: 1.30.1
+      specifier: 1.38.6
+      version: 1.38.6
     jest:
       specifier: ^29.7.0
       version: 29.7.0
@@ -540,6 +564,9 @@ catalogs:
     typescript:
       specifier: ^7.0.2
       version: 7.0.2
+    viem:
+      specifier: ^2.43.1
+      version: 2.45.0
     vitest:
       specifier: ^4.1.10
       version: 4.1.10
@@ -600,11 +627,60 @@ catalogs:
     typescript:
       specifier: npm:@typescript/typescript6@^6.0.2
       version: 6.0.2
+  zone-composer:
+    '@layerzerolabs/lz-evm-messagelib-v2':
+      specifier: 3.0.168
+      version: 3.0.168
+    '@layerzerolabs/lz-evm-protocol-v2':
+      specifier: 3.0.168
+      version: 3.0.168
+    '@layerzerolabs/lz-evm-v1-0.7':
+      specifier: 3.0.168
+      version: 3.0.168
+    '@layerzerolabs/oapp-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@layerzerolabs/oapp-upgradeable-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@layerzerolabs/oft-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@layerzerolabs/oft-upgradeable-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@layerzerolabs/utils-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@layerzerolabs/utils-upgradeable-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@openzeppelin/contracts':
+      specifier: 5.6.1
+      version: 5.6.1
+    '@openzeppelin/contracts-upgradeable':
+      specifier: 5.6.1
+      version: 5.6.1
+  zone-router:
+    '@layerzerolabs/lz-evm-protocol-v2':
+      specifier: 3.0.168
+      version: 3.0.168
+    '@layerzerolabs/utils-evm-contracts':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@openzeppelin/contracts':
+      specifier: 5.6.1
+      version: 5.6.1
+    '@openzeppelin/contracts-upgradeable':
+      specifier: 5.6.1
+      version: 5.6.1
 
 overrides:
   js-yaml@3: 3.15.2
   js-yaml@4: 4.3.2
   '@canton-network/core-tx-visualizer>@types/node': 25.5.0
+  '@canton-network/core-ledger-proto': 1.7.0
+  '@canton-network/core-tx-visualizer@1.9.1>@canton-network/core-ledger-proto': 1.9.1
   '@ethereumjs/util@10>@noble/curves': 1.9.7
   '@grpc/grpc-js': ^1.14.5
   '@iota/iota-sdk': 1.10.1
@@ -1701,6 +1777,188 @@ importers:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
 
+  apps/zone-composer-app/contracts/evm:
+    devDependencies:
+      '@layerzerolabs/contract-sizes-evm':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-utils/evm/contract-sizes
+      '@layerzerolabs/lz-evm-messagelib-v2':
+        specifier: catalog:zone-composer
+        version: 3.0.168(fe1837057cb0d93cd24e2e7d37994cc0)
+      '@layerzerolabs/lz-evm-protocol-v2':
+        specifier: catalog:zone-composer
+        version: 3.0.168(@openzeppelin/contracts-upgradeable@5.6.1(@openzeppelin/contracts@5.6.1))(@openzeppelin/contracts@5.6.1)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(solidity-bytes-utils@0.8.4)
+      '@layerzerolabs/lz-evm-v1-0.7':
+        specifier: catalog:zone-composer
+        version: 3.0.168(@openzeppelin/contracts-upgradeable@5.6.1(@openzeppelin/contracts@5.6.1))(@openzeppelin/contracts@5.6.1)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))
+      '@layerzerolabs/oapp-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/oapp-upgradeable-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/oft-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/oft-upgradeable-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/solhint-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/solhint
+      '@layerzerolabs/test-devtools-evm-foundry':
+        specifier: 'catalog:'
+        version: 8.0.1(05099dc9af96d5027eeb1c6feb6d163c)
+      '@layerzerolabs/test-utils-evm-contracts':
+        specifier: workspace:*
+        version: link:../../../../contracts/common/test-utils/evm
+      '@layerzerolabs/toolbox-foundry':
+        specifier: 'catalog:'
+        version: 0.1.13
+      '@layerzerolabs/utils-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/utils-upgradeable-evm-contracts':
+        specifier: catalog:zone-composer
+        version: 4.0.4
+      '@layerzerolabs/vm-tooling-evm':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-evm
+      '@layerzerolabs/zone-router-evm-contracts':
+        specifier: workspace:*
+        version: link:../../../zone-router-app/contracts/evm
+      '@openzeppelin/contracts':
+        specifier: catalog:zone-composer
+        version: 5.6.1
+      '@openzeppelin/contracts-upgradeable':
+        specifier: catalog:zone-composer
+        version: 5.6.1(@openzeppelin/contracts@5.6.1)
+      hardhat:
+        specifier: 2.27.0
+        version: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10)
+      solhint:
+        specifier: 'catalog:'
+        version: 6.0.1(typescript@7.0.2)
+
+  apps/zone-composer-app/packages/zone-composer-evm-sdk:
+    dependencies:
+      '@layerzerolabs/common-evm':
+        specifier: workspace:*
+        version: link:../../../../packages/vms/evm/common
+      viem:
+        specifier: 'catalog:'
+        version: 2.45.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
+    devDependencies:
+      '@layerzerolabs/artifacts-copier':
+        specifier: workspace:*
+        version: link:../../../../tools/artifacts-copier
+      '@layerzerolabs/evm-abi-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-abi-generator
+      '@layerzerolabs/evm-tests-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-tests-generator
+      '@layerzerolabs/evm-ts-artifacts-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-artifacts-ts-generator
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/wagmi-config':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/wagmi-config
+      '@layerzerolabs/zone-composer-evm-contracts':
+        specifier: workspace:*
+        version: link:../../contracts/evm
+      '@wagmi/cli':
+        specifier: 'catalog:'
+        version: 2.8.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  apps/zone-router-app/contracts/evm:
+    devDependencies:
+      '@layerzerolabs/contract-sizes-evm':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-utils/evm/contract-sizes
+      '@layerzerolabs/lz-evm-protocol-v2':
+        specifier: catalog:zone-router
+        version: 3.0.168(@openzeppelin/contracts-upgradeable@5.6.1(@openzeppelin/contracts@5.6.1))(@openzeppelin/contracts@5.6.1)(hardhat-deploy@0.12.4(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(solidity-bytes-utils@0.8.4)
+      '@layerzerolabs/solhint-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/solhint
+      '@layerzerolabs/test-utils-evm-contracts':
+        specifier: workspace:*
+        version: link:../../../../contracts/common/test-utils/evm
+      '@layerzerolabs/toolbox-foundry':
+        specifier: 'catalog:'
+        version: 0.1.13
+      '@layerzerolabs/utils-evm-contracts':
+        specifier: catalog:zone-router
+        version: 4.0.4
+      '@layerzerolabs/vm-tooling-evm':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-evm
+      '@openzeppelin/contracts':
+        specifier: catalog:zone-router
+        version: 5.6.1
+      '@openzeppelin/contracts-upgradeable':
+        specifier: catalog:zone-router
+        version: 5.6.1(@openzeppelin/contracts@5.6.1)
+      hardhat:
+        specifier: 2.27.0
+        version: 2.27.0(bufferutil@4.0.9)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)(utf-8-validate@5.0.10)
+      solhint:
+        specifier: 'catalog:'
+        version: 6.0.1(typescript@7.0.2)
+
+  apps/zone-router-app/packages/zone-router-evm-sdk:
+    dependencies:
+      '@layerzerolabs/common-evm':
+        specifier: workspace:*
+        version: link:../../../../packages/vms/evm/common
+    devDependencies:
+      '@layerzerolabs/artifacts-copier':
+        specifier: workspace:*
+        version: link:../../../../tools/artifacts-copier
+      '@layerzerolabs/evm-abi-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-abi-generator
+      '@layerzerolabs/evm-tests-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-tests-generator
+      '@layerzerolabs/evm-ts-artifacts-generator':
+        specifier: workspace:*
+        version: link:../../../../tools/repo/evm-artifacts-ts-generator
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/wagmi-config':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/wagmi-config
+      '@layerzerolabs/zone-router-evm-contracts':
+        specifier: workspace:*
+        version: link:../../contracts/evm
+      '@wagmi/cli':
+        specifier: 'catalog:'
+        version: 2.8.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   contracts/common/framework/solana/anchor-trait:
     devDependencies:
       '@layerzerolabs/build-utils-solana':
@@ -1915,6 +2173,61 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
+  packages/chain-abstractions/chain-utils:
+    dependencies:
+      '@initia/initia.js':
+        specifier: 'catalog:'
+        version: 1.0.4(bufferutil@4.0.9)(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@7.0.2)(utf-8-validate@5.0.10)
+      '@layerzerolabs/address-utils-stellar':
+        specifier: workspace:*
+        version: link:../../vms/stellar/address-utils-stellar
+      '@layerzerolabs/address-utils-ton':
+        specifier: workspace:*
+        version: link:../../vms/ton/address-utils-ton
+      '@layerzerolabs/common-canton':
+        specifier: workspace:*
+        version: link:../../vms/canton/common
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../common/common-chain-model
+      '@layerzerolabs/common-encoding-utils':
+        specifier: workspace:*
+        version: link:../../common/common-encoding-utils
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../lz-definitions
+      '@layerzerolabs/static-chain-info':
+        specifier: workspace:*
+        version: link:../static-chain-info
+      '@layerzerolabs/typescript-utils':
+        specifier: workspace:*
+        version: link:../../typescript-utils
+      '@stellar/stellar-sdk':
+        specifier: 'catalog:'
+        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@ton/core':
+        specifier: 0.59.1
+        version: 0.59.1(@ton/crypto@3.3.0)
+      bs58:
+        specifier: 'catalog:'
+        version: 5.0.0
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   packages/chain-abstractions/lz-definitions:
     dependencies:
       '@layerzerolabs/context-node':
@@ -1961,6 +2274,28 @@ importers:
       typescript:
         specifier: catalog:typescript6
         version: '@typescript/typescript6@6.0.2'
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/chain-abstractions/static-chain-info:
+    dependencies:
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../lz-definitions
+      '@layerzerolabs/lz-definitions':
+        specifier: workspace:*
+        version: link:../lz-definitions-legacy
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
       vitest:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
@@ -2066,6 +2401,46 @@ importers:
       '@layerzerolabs/vitest-configuration':
         specifier: workspace:*
         version: link:../../../tooling-configs/vitest
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/dw/dw-model:
+    dependencies:
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../common/common-chain-model
+      '@layerzerolabs/common-error-utils':
+        specifier: workspace:*
+        version: link:../../common/common-error-utils
+      '@layerzerolabs/gated-transaction':
+        specifier: workspace:*
+        version: link:../../transactions/gated-transaction
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../../chain-abstractions/lz-definitions
+      '@layerzerolabs/typescript-utils':
+        specifier: workspace:*
+        version: link:../../typescript-utils
+      '@layerzerolabs/zod-utils':
+        specifier: workspace:*
+        version: link:../../zod-utils
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@layerzerolabs/chain-utils':
+        specifier: workspace:*
+        version: link:../../chain-abstractions/chain-utils
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
@@ -2654,6 +3029,43 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
+  packages/transactions/gated-transaction:
+    dependencies:
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../common/common-chain-model
+      '@layerzerolabs/function-pointer':
+        specifier: workspace:*
+        version: link:../../framework/definitions/function-pointer
+      '@layerzerolabs/typescript-utils':
+        specifier: workspace:*
+        version: link:../../typescript-utils
+      '@layerzerolabs/zod-utils':
+        specifier: workspace:*
+        version: link:../../zod-utils
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@layerzerolabs/base-definitions':
+        specifier: workspace:*
+        version: link:../../framework/definitions/base-definitions
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      '@types/lodash.isequal':
+        specifier: 'catalog:'
+        version: 4.5.8
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   packages/typescript-utils:
     devDependencies:
       '@layerzerolabs/tsup-configuration':
@@ -2665,6 +3077,174 @@ importers:
       '@layerzerolabs/vitest-configuration':
         specifier: workspace:*
         version: link:../../tooling-configs/vitest
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/vms/canton/common:
+    dependencies:
+      '@canton-network/core-ledger-proto':
+        specifier: 1.7.0
+        version: 1.7.0
+      '@daml/types':
+        specifier: 'catalog:'
+        version: 3.4.8
+      '@grpc/grpc-js':
+        specifier: ^1.14.5
+        version: 1.14.5
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../../common/common-chain-model
+      '@layerzerolabs/common-encoding-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-encoding-utils
+      '@layerzerolabs/common-error-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-error-utils
+      '@layerzerolabs/typescript-utils':
+        specifier: workspace:*
+        version: link:../../../typescript-utils
+      '@mojotech/json-type-validation':
+        specifier: 'catalog:'
+        version: 3.1.0
+      '@noble/hashes':
+        specifier: 'catalog:'
+        version: 1.8.0
+      '@noble/secp256k1':
+        specifier: 'catalog:'
+        version: 1.7.1
+      '@protobuf-ts/grpc-transport':
+        specifier: 'catalog:'
+        version: 2.11.1(@grpc/grpc-js@1.14.5)
+      '@protobuf-ts/runtime':
+        specifier: 'catalog:'
+        version: 2.11.1
+      '@protobuf-ts/runtime-rpc':
+        specifier: 'catalog:'
+        version: 2.11.1
+      es-toolkit:
+        specifier: 'catalog:'
+        version: 1.46.1
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@layerzerolabs/eslint-configuration':
+        specifier: workspace:^
+        version: link:../../../../tooling-configs/eslint
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/vitest
+      '@layerzerolabs/vm-tooling-canton':
+        specifier: workspace:*
+        version: link:../../../../tools/vm-tooling/vm-tooling-canton
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.10(vitest@4.1.10)
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.7.0)(supports-color@8.1.1)
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/vms/evm/common:
+    dependencies:
+      '@layerzerolabs/chain-utils':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/chain-utils
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../../common/common-chain-model
+      '@layerzerolabs/common-concurrency-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-concurrency-utils
+      '@layerzerolabs/common-encoding-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-encoding-utils
+      '@layerzerolabs/common-error-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-error-utils
+      '@layerzerolabs/dw-model':
+        specifier: workspace:*
+        version: link:../../../dw/dw-model
+      '@layerzerolabs/evm-gas-limits':
+        specifier: workspace:*
+        version: link:../evm-gas-limits
+      '@layerzerolabs/function-pointer':
+        specifier: workspace:*
+        version: link:../../../framework/definitions/function-pointer
+      '@layerzerolabs/gated-transaction':
+        specifier: workspace:*
+        version: link:../../../transactions/gated-transaction
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/lz-definitions
+      '@layerzerolabs/static-chain-info':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/static-chain-info
+      '@layerzerolabs/typescript-utils':
+        specifier: workspace:*
+        version: link:../../../typescript-utils
+      abitype:
+        specifier: 'catalog:'
+        version: 1.2.3(typescript@7.0.2)(zod@4.6.7)
+      axios:
+        specifier: 'catalog:'
+        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      viem:
+        specifier: 'catalog:'
+        version: 2.45.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/vms/evm/evm-gas-limits:
+    dependencies:
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../../common/common-chain-model
+      '@layerzerolabs/layerzero-definitions':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/lz-definitions
+      '@layerzerolabs/static-chain-info':
+        specifier: workspace:*
+        version: link:../../../chain-abstractions/static-chain-info
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
@@ -2751,6 +3331,31 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
+  packages/vms/stellar/address-utils-stellar:
+    dependencies:
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../../common/common-chain-model
+      '@layerzerolabs/common-encoding-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-encoding-utils
+      '@stellar/stellar-sdk':
+        specifier: 'catalog:'
+        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   packages/vms/stellar/ts-bindings-gen:
     dependencies:
       '@layerzerolabs/vm-tooling-stellar':
@@ -2817,6 +3422,31 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.6.7
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/vms/ton/address-utils-ton:
+    dependencies:
+      '@layerzerolabs/common-chain-model':
+        specifier: workspace:*
+        version: link:../../../common/common-chain-model
+      '@layerzerolabs/common-encoding-utils':
+        specifier: workspace:*
+        version: link:../../../common/common-encoding-utils
+      '@ton/core':
+        specifier: 0.59.1
+        version: 0.59.1(@ton/crypto@3.3.0)
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -2926,6 +3556,19 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
+  tooling-configs/wagmi-config:
+    dependencies:
+      '@wagmi/cli':
+        specifier: 'catalog:'
+        version: 2.8.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../typescript
+
   tools/args:
     dependencies:
       '@layerzerolabs/ts-command-line-args':
@@ -2995,7 +3638,7 @@ importers:
         version: 7.0.5
       isomorphic-git:
         specifier: 'catalog:'
-        version: 1.30.1
+        version: 1.38.6
       js-yaml:
         specifier: 'catalog:'
         version: 4.3.2
@@ -3027,6 +3670,90 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  tools/repo/evm-abi-generator:
+    dependencies:
+      '@layerzerolabs/ts-command-line-args':
+        specifier: workspace:*
+        version: link:../../ts-command-line-args
+      '@wagmi/cli':
+        specifier: 'catalog:'
+        version: 2.8.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)
+      glob:
+        specifier: 'catalog:'
+        version: 10.5.0
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  tools/repo/evm-artifacts-ts-generator:
+    dependencies:
+      '@layerzerolabs/common-evm':
+        specifier: workspace:*
+        version: link:../../../packages/vms/evm/common
+      '@layerzerolabs/ts-command-line-args':
+        specifier: workspace:*
+        version: link:../../ts-command-line-args
+      handlebars:
+        specifier: 4.7.10
+        version: 4.7.10
+    devDependencies:
+      '@layerzerolabs/repo-utils':
+        specifier: workspace:*
+        version: link:../repo-utils
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  tools/repo/evm-tests-generator:
+    dependencies:
+      '@layerzerolabs/common-evm':
+        specifier: workspace:*
+        version: link:../../../packages/vms/evm/common
+      commander:
+        specifier: 'catalog:'
+        version: 13.1.0
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.21.0
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      viem:
+        specifier: 'catalog:'
+        version: 2.45.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
       vitest:
         specifier: 'catalog:'
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
@@ -3150,6 +3877,43 @@ importers:
       ts-jest:
         specifier: 'catalog:'
         version: 29.4.7(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@29.7.0(supports-color@8.1.1))(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.25.4)(jest-util@29.7.0)(jest@29.7.0(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.23))(@types/node@24.13.3)(typescript@7.0.2)))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.21.0
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  tools/vm-tooling/vm-tooling-canton:
+    dependencies:
+      '@layerzerolabs/vm-tooling':
+        specifier: workspace:*
+        version: link:../core
+      semver:
+        specifier: 'catalog:'
+        version: 7.8.5
+    devDependencies:
+      '@layerzerolabs/tsup-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/tsup
+      '@layerzerolabs/typescript-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/typescript
+      '@layerzerolabs/vitest-configuration':
+        specifier: workspace:*
+        version: link:../../../tooling-configs/vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      '@types/semver':
+        specifier: 'catalog:'
+        version: 7.7.1
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(@swc/core@1.15.2(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.26)(supports-color@8.1.1)(tsx@4.21.0)(typescript@7.0.2)(yaml@2.9.1)
@@ -3460,6 +4224,9 @@ packages:
   '@adraffy/ens-normalize@1.10.1':
     resolution: {integrity: sha512-96Z2IP3mYmF1Xg2cDm8f1gWGf/HUVedQ3FMifV4kG/PQ4yEP51xDtRAEfhVNt5f/uzpNkZHwWQuUcu6D6K+Ekw==}
 
+  '@adraffy/ens-normalize@1.11.1':
+    resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
+
   '@aptos-labs/aptos-client@2.2.0':
     resolution: {integrity: sha512-lYgHI8ehgD+Ykhix0IwzLaTCknHp1KNmExbq2bPZk8IeTwQg79D5BOkD46MjW0jGbJbl+J/RBtVF9vM7Te/hWA==}
     engines: {node: '>=20.0.0'}
@@ -3697,6 +4464,9 @@ packages:
   '@bytecodealliance/preview2-shim@0.17.2':
     resolution: {integrity: sha512-mNm/lblgES8UkVle8rGImXOz4TtL3eU3inHay/7TVchkKrb/lgcVvTK0+VAw8p5zQ0rgQsXm1j5dOlAAd+MeoA==}
 
+  '@canton-network/core-ledger-proto@1.7.0':
+    resolution: {integrity: sha512-Ls23TpHqkiCXjsX/CiIw3lGw6vxXULveYpj+YY3SKDg0wxZ5kKKQ0z+lu8mX1CXOYA1uDD4uwOaOAhwoZRv9Fg==}
+
   '@chainlink/contracts-ccip@0.7.6':
     resolution: {integrity: sha512-yNbCBFpLs3R+ALymto9dQYKz3vatnjqYGu1pnMD0i2fHEMthiXe0+otaNCGNht6n8k7ruNaA0DNpz3F+2jHQXw==}
 
@@ -3853,6 +4623,9 @@ packages:
   '@csstools/css-tokenizer@3.0.4':
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
+
+  '@daml/types@3.4.8':
+    resolution: {integrity: sha512-w9rxMJsG8+1T/R15r+FmBJl5Oci29A6KugMmVW6mCY2y5WlcRTs57xiIOHinY8tXgog+D5Lu0uam0yQCqU6prQ==}
 
   '@esbuild/aix-ppc64@0.25.4':
     resolution: {integrity: sha512-1VCICWypeQKhVbE9oW/sJaAmjLxhVqacdkvPLEjwlttjfwENRSClS8EjBz0KzRyFSCPDIkuXW34Je/vk7zdB7Q==}
@@ -4927,6 +5700,10 @@ packages:
   '@metaplex-foundation/umi@0.9.2':
     resolution: {integrity: sha512-9i4Acm4pruQfJcpRrc2EauPBwkfDN0I9QTvJyZocIlKgoZwD6A6wH0PViH1AjOVG5CQCd1YI3tJd5XjYE1ElBw==}
 
+  '@mojotech/json-type-validation@3.1.0':
+    resolution: {integrity: sha512-ThH2EbHEUCPMHhXAtmYcDi0gmV+PZak4uvuWBMiBDqUuz7gGQUrsE5o1J6kKNLDX5cXAPqsfJ7uTfTcNdCDXxA==}
+    engines: {node: '>=6.0.0'}
+
   '@mysten/bcs@1.9.2':
     resolution: {integrity: sha512-kBk5xrxV9OWR7i+JhL/plQrgQ2/KJhB2pB5gj+w6GXhbMQwS3DPpOvi/zN0Tj84jwPvHMllpEl0QHj6ywN7/eQ==}
 
@@ -4954,6 +5731,10 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@noble/ciphers@1.3.0':
+    resolution: {integrity: sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/curves@1.2.0':
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
 
@@ -4962,6 +5743,10 @@ packages:
 
   '@noble/curves@1.8.2':
     resolution: {integrity: sha512-vnI7V6lFNe0tLAuJMu+2sX+FcL14TaCWy1qiczg1VwRmPrpQCdq5ESXQMqUc2tluRNf6irBXrWbl1mGN8uaU/g==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/curves@1.9.1':
+    resolution: {integrity: sha512-k11yZxZg+t+gWvBbIswW0yoJlu8cHOC7dhunwOzoWH/mXGBiYyR4YY6hAEK/3EUs4UpB8la1RfdRpeGsFHkWsA==}
     engines: {node: ^14.21.3 || >=16}
 
   '@noble/curves@1.9.4':
@@ -6284,6 +7069,9 @@ packages:
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
+  '@types/lodash.isequal@4.5.8':
+    resolution: {integrity: sha512-uput6pg4E/tj2LGxCZo9+y27JNyB2OZuuI/T5F+ylVDYuqICLG2/ktjxx0v6GvVntAf8TvEzeQLcV0ffRirXuA==}
+
   '@types/lodash@4.17.20':
     resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
@@ -6577,6 +7365,15 @@ packages:
   '@vue/shared@3.5.24':
     resolution: {integrity: sha512-9cwHL2EsJBdi8NY22pngYYWzkTDhld6fAD6jlaeloNGciNSJL6bLpbxVgXl96X00Jtc6YWQv96YA/0sxex/k1A==}
 
+  '@wagmi/cli@2.8.0':
+    resolution: {integrity: sha512-2VhDj8u8vwLZwMZ8CX4pTuO0Qm28Z9uH9qOEWgF/xXUCeVV+4e4YsknEyGcoxYwEmTkdlCmuCvMj4up2XK6vxQ==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@yarnpkg/lockfile@1.1.0':
     resolution: {integrity: sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==}
 
@@ -6589,6 +7386,17 @@ packages:
 
   abbrev@1.0.9:
     resolution: {integrity: sha512-LEyx4aLEC3x6T0UguF6YILf+ntvmOaWsVfENmIW0E9H09vKlLDGelMjjSm0jkDHALj8A8quZ/HapKNigzwge+Q==}
+
+  abitype@1.2.3:
+    resolution: {integrity: sha512-Ofer5QUnuUdTFsBRwARMoWKOH1ND5ehwYhJ3OJ/BQO+StkwQjHw0XyVh4vDttzHB7QOFhPHa/o413PJ82gU/Tg==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+      zod: 4.6.7
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -7061,6 +7869,9 @@ packages:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
+  change-case@5.4.4:
+    resolution: {integrity: sha512-HRQyTk2/YPEkt9TnUPbOpr64Uw3KOicFWPVBb+xiHvd6eBx/qPr9xqfBFDT8P2vWsvvz4jbEkfDe71W3VyNu2w==}
+
   char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
@@ -7075,6 +7886,10 @@ packages:
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
+
+  chokidar@4.0.1:
+    resolution: {integrity: sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==}
+    engines: {node: '>= 14.16.0'}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -7337,6 +8152,9 @@ packages:
     resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
     engines: {node: '>=10'}
 
+  dedent@0.7.0:
+    resolution: {integrity: sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA==}
+
   dedent@1.7.0:
     resolution: {integrity: sha512-HGFtf8yhuhGhqO07SV79tRp+br4MnbdjeVxotpn1QBl30pcLLCQjX5b2295ll0fv8RKDKsmWYrl05usHM9CewQ==}
     peerDependencies:
@@ -7456,6 +8274,10 @@ packages:
 
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
+
+  dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
 
   dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
@@ -7716,6 +8538,9 @@ packages:
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+
+  eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
 
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
@@ -8354,13 +9179,18 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  isomorphic-git@1.30.1:
-    resolution: {integrity: sha512-eWBlPIPDOctGY/bTUc/whs6EZ8YvnG1H2kOjTCJ/AkvBWUzODXcfulhpiA8Y4Px9e+bRYYkifE5fSE8FcRk8Ew==}
+  isomorphic-git@1.38.6:
+    resolution: {integrity: sha512-lCmZ1m2R0LqbZ4QATtLCxhwNBQPNJc74R81dfyF90yLqP8xs2DZLedcnkVuRj6th/L2HYoIvWP5lBpS1ooAagw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
   isomorphic-ws@4.0.1:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
+    peerDependencies:
+      ws: ^7.5.11
+
+  isows@1.0.7:
+    resolution: {integrity: sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==}
     peerDependencies:
       ws: ^7.5.11
 
@@ -8967,6 +9797,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanospinner@1.2.2:
+    resolution: {integrity: sha512-Zt/AmG6qRU3e+WnzGGLuMCEAO/dAu45stNbHY223tUxldaDAeE+FxSPsd9Q+j+paejmm0ZbrNVs5Sraqy3dRxA==}
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -9108,6 +9941,14 @@ packages:
   ordinal@1.0.3:
     resolution: {integrity: sha512-cMddMgb2QElm8G7vdaa02jhUNbTSrhsgAGUz1OokD83uJTwSUn+nKoNoKVVaRa08yF6sgfO7Maou1+bgLd9rdQ==}
 
+  ox@0.11.3:
+    resolution: {integrity: sha512-1bWYGk/xZel3xro3l8WGg6eq4YEKlaqvyMtVhfMFpbJzK2F6rj4EDRtqDCWVEJMkzcmEi9uW2QxsqELokOlarw==}
+    peerDependencies:
+      typescript: '>=5.4.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   p-cancelable@2.1.1:
     resolution: {integrity: sha512-BZOr3nRQHOntUjTrH8+Lh54smKHoHyur8We1V8DSMVrl5A2malOOwuJRnKRDjSnkoeBh4at6BwEnb5I7Jl31wg==}
     engines: {node: '>=8'}
@@ -9177,9 +10018,6 @@ packages:
     engines: {node: '>=10', npm: '>5'}
     hasBin: true
 
-  path-browserify@1.0.1:
-    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
-
   path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -9210,6 +10048,9 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
 
+  pathe@1.1.2:
+    resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
+
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
@@ -9229,6 +10070,10 @@ packages:
   picomatch@2.3.2:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
+
+  picomatch@3.0.2:
+    resolution: {integrity: sha512-cfDHL6LStTEKlNilboNtobT/kEa30PtAf2Q1OgszfrG/rpVl1xaFWT9ktfkS306GmHgmnad1Sw4wabhlvFtsTw==}
+    engines: {node: '>=10'}
 
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
@@ -10339,6 +11184,14 @@ packages:
     resolution: {integrity: sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==}
     engines: {node: '>= 0.10'}
 
+  viem@2.45.0:
+    resolution: {integrity: sha512-iVA9qrAgRdtpWa80lCZ6Jri6XzmLOwwA1wagX2HnKejKeliFLpON0KOdyfqvcy+gUpBVP59LBxP2aKiL3aj8fg==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   vite@7.3.7:
     resolution: {integrity: sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -10631,6 +11484,8 @@ snapshots:
 
   '@adraffy/ens-normalize@1.10.1': {}
 
+  '@adraffy/ens-normalize@1.11.1': {}
+
   '@aptos-labs/aptos-client@2.2.0(got@11.8.6)':
     dependencies:
       got: 11.8.6
@@ -10911,14 +11766,18 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bcoe/v8-coverage@1.0.2':
-    optional: true
+  '@bcoe/v8-coverage@1.0.2': {}
 
   '@bitcoinerlab/secp256k1@1.2.0':
     dependencies:
       '@noble/curves': 1.9.7
 
   '@bytecodealliance/preview2-shim@0.17.2': {}
+
+  '@canton-network/core-ledger-proto@1.7.0':
+    dependencies:
+      '@protobuf-ts/runtime': 2.11.1
+      '@protobuf-ts/runtime-rpc': 2.11.1
 
   '@chainlink/contracts-ccip@0.7.6(bufferutil@4.0.9)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
     dependencies:
@@ -11228,6 +12087,12 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4':
     optional: true
+
+  '@daml/types@3.4.8':
+    dependencies:
+      '@mojotech/json-type-validation': 3.1.0
+      '@types/lodash': 4.17.20
+      lodash: 4.18.1
 
   '@esbuild/aix-ppc64@0.25.4':
     optional: true
@@ -12716,6 +13581,10 @@ snapshots:
       '@metaplex-foundation/umi-public-keys': 0.8.9
       '@metaplex-foundation/umi-serializers': 0.9.0
 
+  '@mojotech/json-type-validation@3.1.0':
+    dependencies:
+      lodash.isequal: 4.5.0
+
   '@mysten/bcs@1.9.2':
     dependencies:
       '@mysten/utils': 0.2.0
@@ -12781,6 +13650,8 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
+  '@noble/ciphers@1.3.0': {}
+
   '@noble/curves@1.2.0':
     dependencies:
       '@noble/hashes': 1.3.2
@@ -12792,6 +13663,10 @@ snapshots:
   '@noble/curves@1.8.2':
     dependencies:
       '@noble/hashes': 1.7.2
+
+  '@noble/curves@1.9.1':
+    dependencies:
+      '@noble/hashes': 1.8.0
 
   '@noble/curves@1.9.4':
     dependencies:
@@ -14231,6 +15106,10 @@ snapshots:
     dependencies:
       '@types/lodash': 4.17.20
 
+  '@types/lodash.isequal@4.5.8':
+    dependencies:
+      '@types/lodash': 4.17.20
+
   '@types/lodash@4.17.20': {}
 
   '@types/minimatch@3.0.5': {}
@@ -14459,7 +15338,6 @@ snapshots:
       std-env: 4.2.0
       tinyrainbow: 3.1.1
       vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@25.0.1(bufferutil@4.0.9)(supports-color@8.1.1)(utf-8-validate@5.0.10))(vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
-    optional: true
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -14546,6 +15424,32 @@ snapshots:
 
   '@vue/shared@3.5.24': {}
 
+  '@wagmi/cli@2.8.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)':
+    dependencies:
+      abitype: 1.2.3(typescript@7.0.2)(zod@4.6.7)
+      bundle-require: 5.1.0(esbuild@0.25.4)
+      cac: 6.7.14
+      change-case: 5.4.4
+      chokidar: 4.0.1
+      dedent: 0.7.0
+      dotenv: 16.4.7
+      dotenv-expand: 10.0.0
+      esbuild: 0.25.4
+      escalade: 3.2.0
+      fdir: 6.5.0(picomatch@3.0.2)
+      nanospinner: 1.2.2
+      pathe: 1.1.2
+      picocolors: 1.1.1
+      picomatch: 3.0.2
+      prettier: 3.6.2
+      viem: 2.45.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7)
+      zod: 4.6.7
+    optionalDependencies:
+      typescript: 7.0.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@yarnpkg/lockfile@1.1.0': {}
 
   JSONStream@1.3.2:
@@ -14556,6 +15460,11 @@ snapshots:
   a-sync-waterfall@1.0.1: {}
 
   abbrev@1.0.9: {}
+
+  abitype@1.2.3(typescript@7.0.2)(zod@4.6.7):
+    optionalDependencies:
+      typescript: 7.0.2
+      zod: 4.6.7
 
   abort-controller@3.0.0:
     dependencies:
@@ -14706,7 +15615,6 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       estree-walker: 3.0.3
       js-tokens: 10.0.0
-    optional: true
 
   astral-regex@2.0.0: {}
 
@@ -14978,6 +15886,11 @@ snapshots:
   buildcheck@0.0.6:
     optional: true
 
+  bundle-require@5.1.0(esbuild@0.25.4):
+    dependencies:
+      esbuild: 0.25.4
+      load-tsconfig: 0.2.5
+
   bundle-require@5.1.0(esbuild@0.27.2):
     dependencies:
       esbuild: 0.27.2
@@ -15077,6 +15990,8 @@ snapshots:
 
   chalk@5.6.2: {}
 
+  change-case@5.4.4: {}
+
   char-regex@1.0.2: {}
 
   check-error@1.0.3:
@@ -15097,6 +16012,10 @@ snapshots:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+
+  chokidar@4.0.1:
+    dependencies:
+      readdirp: 4.1.2
 
   chokidar@4.0.3:
     dependencies:
@@ -15362,6 +16281,8 @@ snapshots:
     dependencies:
       mimic-response: 3.1.0
 
+  dedent@0.7.0: {}
+
   dedent@1.7.0(babel-plugin-macros@3.1.0):
     optionalDependencies:
       babel-plugin-macros: 3.1.0
@@ -15498,6 +16419,8 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.8.1
+
+  dotenv-expand@10.0.0: {}
 
   dotenv@16.0.3: {}
 
@@ -15902,6 +16825,8 @@ snapshots:
 
   eventemitter3@4.0.7: {}
 
+  eventemitter3@5.0.1: {}
+
   eventemitter3@5.0.4: {}
 
   events@3.3.0: {}
@@ -15979,6 +16904,10 @@ snapshots:
   fb-watchman@2.0.2:
     dependencies:
       bser: 2.1.1
+
+  fdir@6.5.0(picomatch@3.0.2):
+    optionalDependencies:
+      picomatch: 3.0.2
 
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
@@ -16644,7 +17573,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  isomorphic-git@1.30.1:
+  isomorphic-git@1.38.6:
     dependencies:
       async-lock: 1.4.1
       clean-git-ref: 2.0.1
@@ -16653,15 +17582,18 @@ snapshots:
       ignore: 5.3.2
       minimisted: 2.0.1
       pako: 1.0.11
-      path-browserify: 1.0.1
       pify: 4.0.1
-      readable-stream: 3.6.2
+      readable-stream: 4.7.0
       sha.js: 2.4.12
       simple-get: 4.0.1
 
   isomorphic-ws@4.0.1(ws@7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       ws: 7.5.11(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+
+  isows@1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+    dependencies:
+      ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 
   istanbul-lib-coverage@3.2.2: {}
 
@@ -17047,8 +17979,7 @@ snapshots:
 
   js-sha3@0.8.0: {}
 
-  js-tokens@10.0.0:
-    optional: true
+  js-tokens@10.0.0: {}
 
   js-tokens@4.0.0: {}
 
@@ -17298,7 +18229,6 @@ snapshots:
       '@babel/parser': 7.29.7
       '@babel/types': 7.29.7
       source-map-js: 1.2.2
-    optional: true
 
   make-dir@4.0.0:
     dependencies:
@@ -17474,6 +18404,10 @@ snapshots:
 
   nanoid@3.3.18: {}
 
+  nanospinner@1.2.2:
+    dependencies:
+      picocolors: 1.1.1
+
   natural-compare@1.4.0: {}
 
   neo-async@2.6.2: {}
@@ -17606,6 +18540,21 @@ snapshots:
 
   ordinal@1.0.3: {}
 
+  ox@0.11.3(typescript@7.0.2)(zod@4.6.7):
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.1
+      '@noble/ciphers': 1.3.0
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@7.0.2)(zod@4.6.7)
+      eventemitter3: 5.0.1
+    optionalDependencies:
+      typescript: 7.0.2
+    transitivePeerDependencies:
+      - zod
+
   p-cancelable@2.1.1: {}
 
   p-cancelable@3.0.0: {}
@@ -17684,8 +18633,6 @@ snapshots:
       tmp: 0.2.7
       yaml: 1.10.2
 
-  path-browserify@1.0.1: {}
-
   path-exists@4.0.0: {}
 
   path-is-absolute@1.0.1: {}
@@ -17705,6 +18652,8 @@ snapshots:
 
   path-type@4.0.0: {}
 
+  pathe@1.1.2: {}
+
   pathe@2.0.3: {}
 
   pathval@1.1.1: {}
@@ -17717,6 +18666,8 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@2.3.2: {}
+
+  picomatch@3.0.2: {}
 
   picomatch@4.0.7: {}
 
@@ -18911,6 +19862,23 @@ snapshots:
       typescript: 7.0.2
 
   validator@13.15.26: {}
+
+  viem@2.45.0(bufferutil@4.0.9)(typescript@7.0.2)(utf-8-validate@5.0.10)(zod@4.6.7):
+    dependencies:
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@7.0.2)(zod@4.6.7)
+      isows: 1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      ox: 0.11.3(typescript@7.0.2)(zod@4.6.7)
+      ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    optionalDependencies:
+      typescript: 7.0.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
 
   vite@7.3.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.30.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1):
     dependencies:

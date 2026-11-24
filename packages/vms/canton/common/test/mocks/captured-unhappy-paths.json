@@ -1,0 +1,2980 @@
+[
+    {
+        "name": "error_query_nonexistent_contract__get_contract",
+        "timestamp": "2026-01-21T21:25:47.525Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/events/events-by-contract-id",
+            "path": "/v2/events/events-by-contract-id",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "contractId": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ca1212200000000000000000000000000000000000000000000000000000000000000000",
+                "eventFormat": {
+                    "filtersByParty": {
+                        "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b": {
+                            "cumulative": [
+                                {
+                                    "identifierFilter": {
+                                        "WildcardFilter": {
+                                            "value": {
+                                                "includeCreatedEventBlob": false
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "verbose": false
+                }
+            }
+        },
+        "response": {
+            "status": 404,
+            "statusText": "Not Found",
+            "headers": {
+                "content-length": "609",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "code": "CONTRACT_EVENTS_NOT_FOUND",
+                "cause": "Contract events not found, or not visible.",
+                "correlationId": null,
+                "traceId": "5848565a7b56439ea3632a5705e5c1b5",
+                "context": {
+                    "participant": "'participant1'",
+                    "definite_answer": "false",
+                    "tid": "5848565a7b56439ea3632a5705e5c1b5",
+                    "category": "11"
+                },
+                "resources": [
+                    [
+                        "ErrorResource(CONTRACT_ID)",
+                        "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ca1212200000000000000000000000000000000000000000000000000000000000000000"
+                    ]
+                ],
+                "errorCategory": 11,
+                "grpcCodeValue": 5,
+                "retryInfo": null,
+                "definiteAnswer": null
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_invalid_template_id__get_synchronizers",
+        "timestamp": "2026-01-21T21:25:47.528Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/connected-synchronizers",
+            "path": "/v2/state/connected-synchronizers",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "201",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "connectedSynchronizers": [
+                    {
+                        "synchronizerAlias": "sync",
+                        "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                        "permission": "PARTICIPANT_PERMISSION_UNSPECIFIED"
+                    }
+                ]
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_invalid_template_id__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:47.529Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 326
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_invalid_template_id__submit_command",
+        "timestamp": "2026-01-21T21:25:47.531Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/async/submit",
+            "path": "/v2/commands/async/submit",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "commands": [
+                    {
+                        "CreateCommand": {
+                            "templateId": "invalid-package-id:SdkTest:SimpleAsset",
+                            "createArguments": {
+                                "owner": "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b",
+                                "value": "100",
+                                "description": "test"
+                            }
+                        }
+                    }
+                ],
+                "commandId": "f90ce757-9376-46d0-9d25-648ea908cb60",
+                "actAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "userId": "alice-user",
+                "readAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+            }
+        },
+        "response": {
+            "status": 404,
+            "statusText": "Not Found",
+            "headers": {
+                "content-length": "472",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "code": "TEMPLATES_OR_INTERFACES_NOT_FOUND",
+                "cause": "Templates do not exist: [invalid-package-id:SdkTest:SimpleAsset].",
+                "correlationId": null,
+                "traceId": "aaa024afdb2dd9dd73d50a6cf92ec08a",
+                "context": {
+                    "participant": "participant1",
+                    "definite_answer": "false",
+                    "tid": "aaa024afdb2dd9dd73d50a6cf92ec08a",
+                    "category": "11"
+                },
+                "resources": [
+                    ["ErrorResource(TEMPLATE_ID)", "invalid-package-id:SdkTest:SimpleAsset"]
+                ],
+                "errorCategory": 11,
+                "grpcCodeValue": 5,
+                "retryInfo": null,
+                "definiteAnswer": null
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_setup_create__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:47.533Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 326
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_setup_create__submit_command",
+        "timestamp": "2026-01-21T21:25:47.538Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/async/submit",
+            "path": "/v2/commands/async/submit",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "commands": [
+                    {
+                        "CreateCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "createArguments": {
+                                "owner": "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b",
+                                "value": "100",
+                                "description": "double archive test"
+                            }
+                        }
+                    }
+                ],
+                "commandId": "26afe772-6033-42c1-aa1a-bde3de74b0bc",
+                "actAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "userId": "alice-user",
+                "readAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "2",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:47 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {}
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_setup_wait__wait_completion",
+        "timestamp": "2026-01-21T21:25:48.879Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "alice-user",
+                "parties": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "beginExclusive": 326
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "960",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:48 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "OffsetCheckpoint": {
+                            "value": {
+                                "offset": 326,
+                                "synchronizerTimes": [
+                                    {
+                                        "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                        "recordTime": "2026-01-21T21:25:39.325770Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "26afe772-6033-42c1-aa1a-bde3de74b0bc",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220a4a5b077129e425769b07877dbc8830fe58520b490b21e8f1f2518da003c5c29",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "336979b5-f314-4e2c-a711-a052ee171e3c",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-e913c228a75f3efd7a4b49adc35b69bb-9cca80babb2e3e6b-01",
+                                    "tracestate": null
+                                },
+                                "offset": 327,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:44.466297Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_setup_fetch_id__fetch_update",
+        "timestamp": "2026-01-21T21:25:48.894Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/updates/update-by-id",
+            "path": "/v2/updates/update-by-id",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "updateId": "1220a4a5b077129e425769b07877dbc8830fe58520b490b21e8f1f2518da003c5c29",
+                "updateFormat": {
+                    "includeTransactions": {
+                        "eventFormat": {
+                            "filtersByParty": {
+                                "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b": {
+                                    "cumulative": [
+                                        {
+                                            "identifierFilter": {
+                                                "WildcardFilter": {
+                                                    "value": {
+                                                        "includeCreatedEventBlob": false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "verbose": false
+                        },
+                        "transactionShape": "TRANSACTION_SHAPE_LEDGER_EFFECTS"
+                    }
+                }
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1425",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:48 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "update": {
+                    "Transaction": {
+                        "value": {
+                            "updateId": "1220a4a5b077129e425769b07877dbc8830fe58520b490b21e8f1f2518da003c5c29",
+                            "commandId": "26afe772-6033-42c1-aa1a-bde3de74b0bc",
+                            "workflowId": "",
+                            "effectiveAt": "2026-01-21T21:25:47.534736Z",
+                            "events": [
+                                {
+                                    "CreatedEvent": {
+                                        "offset": 327,
+                                        "nodeId": 0,
+                                        "contractId": "00053157b7b550dbff2246947e42dfda943d06b20616cc0da4be5a7cf6e5e02d90ca1212201323231716046d0f196e7fdb551d33b1abe7c2ae2c2a4efe8c9b6808515e6494",
+                                        "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                                        "contractKey": null,
+                                        "createArgument": {
+                                            "owner": "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b",
+                                            "value": "100",
+                                            "description": "double archive test"
+                                        },
+                                        "createdEventBlob": "",
+                                        "interfaceViews": [],
+                                        "witnessParties": [
+                                            "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                        ],
+                                        "signatories": [
+                                            "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                        ],
+                                        "observers": [],
+                                        "createdAt": "2026-01-21T21:25:47.534736Z",
+                                        "packageName": "sdk-test",
+                                        "representativePackageId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60",
+                                        "acsDelta": true
+                                    }
+                                }
+                            ],
+                            "offset": 327,
+                            "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                            "traceContext": {
+                                "traceparent": "00-e913c228a75f3efd7a4b49adc35b69bb-9cca80babb2e3e6b-01",
+                                "tracestate": null
+                            },
+                            "recordTime": "2026-01-21T21:25:44.466297Z",
+                            "externalTransactionHash": null
+                        }
+                    }
+                }
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_first_archive__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:48.900Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:48 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 329
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_first_archive__submit_command",
+        "timestamp": "2026-01-21T21:25:48.912Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/async/submit",
+            "path": "/v2/commands/async/submit",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "commands": [
+                    {
+                        "ExerciseCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "contractId": "00053157b7b550dbff2246947e42dfda943d06b20616cc0da4be5a7cf6e5e02d90ca1212201323231716046d0f196e7fdb551d33b1abe7c2ae2c2a4efe8c9b6808515e6494",
+                            "choice": "Archive",
+                            "choiceArgument": {}
+                        }
+                    }
+                ],
+                "commandId": "66e1205c-47ec-4c8f-834b-d391d9d8f86c",
+                "actAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "userId": "alice-user",
+                "readAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "2",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:48 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {}
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "double_archive_first_wait__wait_completion",
+        "timestamp": "2026-01-21T21:25:50.410Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "alice-user",
+                "parties": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "beginExclusive": 329
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "730",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:49 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "66e1205c-47ec-4c8f-834b-d391d9d8f86c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12201049f00fb9576e6ffedd50c3223cb5620438b7cf4acc85abf9dbc1b914de601a",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "936d9514-ebcf-451f-981e-4b10b26a4843",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-2935fce96efd9127d81e44b77a89b108-3764c130d550be61-01",
+                                    "tracestate": null
+                                },
+                                "offset": 330,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:47.834972Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_double_archive__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:50.419Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:49 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 332
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_double_archive__submit_command",
+        "timestamp": "2026-01-21T21:25:50.434Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/async/submit",
+            "path": "/v2/commands/async/submit",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "commands": [
+                    {
+                        "ExerciseCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "contractId": "00053157b7b550dbff2246947e42dfda943d06b20616cc0da4be5a7cf6e5e02d90ca1212201323231716046d0f196e7fdb551d33b1abe7c2ae2c2a4efe8c9b6808515e6494",
+                            "choice": "Archive",
+                            "choiceArgument": {}
+                        }
+                    }
+                ],
+                "commandId": "14ce5981-f65c-4784-9a44-96da4d490780",
+                "actAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "userId": "alice-user",
+                "readAs": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+            }
+        },
+        "response": {
+            "status": 404,
+            "statusText": "Not Found",
+            "headers": {
+                "content-length": "1044",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:49 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "code": "CONTRACT_NOT_FOUND",
+                "cause": "Contract could not be found with id 00053157b7b550dbff2246947e42dfda943d06b20616cc0da4be5a7cf6e5e02d90ca1212201323231716046d0f196e7fdb551d33b1abe7c2ae2c2a4efe8c9b6808515e6494",
+                "correlationId": "0bde5860-7f93-4a4c-bdab-565cce2fe90d",
+                "traceId": "d2d9f56642e26e7f6acefa0097f1e2f1",
+                "context": {
+                    "participant": "'participant1'",
+                    "category": "11",
+                    "tid": "d2d9f56642e26e7f6acefa0097f1e2f1",
+                    "definite_answer": "false",
+                    "commands": "{readAs: [], deduplicationPeriod: {duration: 'PT168H'}, submittedAt: '2026-01-21T21:25:50.425147Z', submissionId: '0bde5860-7f93-4a4c-bdab-565cce2fe90d', actAs: ['alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b'], commandId: '14ce5981-f65c-4784-9a44-96da4d490780', userId: 'alice-user', workflowId: }"
+                },
+                "resources": [
+                    [
+                        "ErrorResource(CONTRACT_ID)",
+                        "00053157b7b550dbff2246947e42dfda943d06b20616cc0da4be5a7cf6e5e02d90ca1212201323231716046d0f196e7fdb551d33b1abe7c2ae2c2a4efe8c9b6808515e6494"
+                    ]
+                ],
+                "errorCategory": 11,
+                "grpcCodeValue": 5,
+                "retryInfo": null,
+                "definiteAnswer": null
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_command_timeout__wait_completion",
+        "timestamp": "2026-01-21T21:25:50.448Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "alice-user",
+                "parties": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "beginExclusive": 0
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "36440",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:49 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "e0a95970-cee7-4970-854d-cacf09b1294b",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220b7d7a2124b6457b4eb02057073b9dcf19dba5b8d24072c47853578927936cd72",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "3471813a-546a-47b8-b179-f70138f30bed",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-3041c3be80a7cdc8dcf6eca252eabc93-dc2929e0a909bd7d-01",
+                                    "tracestate": null
+                                },
+                                "offset": 42,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:22:31.045950Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "68bb80d3-9bb7-4a00-876d-a8866c2835cb",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220ce72c950b54bf3c066bc3852d0c6cad31e8a9caec58ce8f397a75a284e9b345e",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "5b646e3c-a306-4ee6-ab94-034c98232261",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-5a361ccc7fc5e5f0356783e2f104ba5d-0d59372ec20b2c6a-01",
+                                    "tracestate": null
+                                },
+                                "offset": 45,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:26:16.557809Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "0debd09c-ccc9-417a-8f53-9ef37d63ff65",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12208b64336d54333ae312b3180932c589ec28f368b7d3a33ed3cebc7f5010aeab28",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "c45499c8-9e12-4924-9435-cd41ff14acab",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-c585f458eb345f9f4538d51713ea61c1-9d9cac4167fa061a-01",
+                                    "tracestate": null
+                                },
+                                "offset": 60,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:54:32.846127Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "e42f1455-fb94-4460-918c-57ac591062e8",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220c534cdbeb2ec03c2ef1907573ad0deeceb3d168bc5d9fed77fff48869ada8c29",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "e08ea9cf-4c2a-4e87-a445-4b98e29fd8d7",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-9322d270791e05eab588297785dbc0a2-c38fb40187ab1734-01",
+                                    "tracestate": null
+                                },
+                                "offset": 63,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:55:22.804363Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "1b507e08-ad0a-4e72-80e8-08e19be2e17c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220b7b9fa8ceef68cd5229191bd9b6bdd1edb6a8e2e78a5dcf9027994c97b32a7e7",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "06723027-b0df-464a-92e0-bf985b648488",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-87ab45df040461718a092db136916cfe-e0bd01a123b93764-01",
+                                    "tracestate": null
+                                },
+                                "offset": 69,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:55:47.586375Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "2b78b638-bda0-481e-86f2-f812832e843f",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220bc491931aea2aba8e34dec2b854688538aaad72770c09248688824c381ee9b1f",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "aa96d247-696f-475d-890b-df3b184c2775",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-e88051826b632e92cad5502e2ff19503-d4e8f84cd2280c0a-01",
+                                    "tracestate": null
+                                },
+                                "offset": 72,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:56:37.863987Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "d9ebbb00-8c59-4347-977f-49dfb6402e2e",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122071ecde4c73ed55e4e3f7608299871c8702949cbb6afc121c5033c71059ab82d0",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "eb795061-1b23-4d8f-acc3-dff8a90e568e",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-df57e563e26d497068ebb8ab95813271-620f04f32168e92e-01",
+                                    "tracestate": null
+                                },
+                                "offset": 75,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:57:02.724038Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "5a82c098-a3fb-468e-86f6-401121306d43",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12200f80390638916616f95dfe1249183cccf45542634b2acb7f7569ee4b237600e3",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "f5c7581c-eec1-48a5-99ea-8ca1358b5659",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-0c98839726b62a9b787d6bc71c457b4d-3bfa66fe1a6ea219-01",
+                                    "tracestate": null
+                                },
+                                "offset": 78,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T01:58:32.864962Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "1cb071e6-220d-4293-9286-2c557d57d274",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220cc5edf3895cf9e8761809624af1fe0a3ffb0774694ffbd9bdcefb3172331d160",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "2cdc2c0d-973a-4c21-8282-b9a7013e9a2c",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-068b8942016ac65ac690eeb2cc99194b-443c915dd8a5b1cf-01",
+                                    "tracestate": null
+                                },
+                                "offset": 81,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T02:03:23.804583Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "1c2a9afb-26d8-4ae2-ac76-dbfef1000fa4",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12200a6e986163a29067019677e473a31b4ae17c02d3a43e012f2d0440b3061525e6",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "42a32fce-d84b-475f-a3e5-e9ccbdd7496d",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-c2a92fad5e9f3cc5c2af66a8aa7aa432-f4bf076102653f6a-01",
+                                    "tracestate": null
+                                },
+                                "offset": 90,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T02:05:27.185681Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "c4b9b3ba-52f5-439f-a3e9-d74408209803",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12208bc1711ef838018fb86ba6b02ed8c45f78ff93390e8a5375137774c61ab9024c",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "640c2094-4f98-461f-955e-065705b27b21",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-8170cbd98c362bb84e24d27dd074ab9d-7c772c9a5e993f38-01",
+                                    "tracestate": null
+                                },
+                                "offset": 93,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T02:05:27.686337Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "b2bf399b-016b-4b7d-8eb1-f9a0615ed822",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122060cb9b451549dcdf4887b5a68649497d34885d99c231a8f586b53bec0e055474",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "1dc1c583-ea5b-436a-89c1-22e3346ad72e",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-15fadacb86ce8d9aa95fa3cd9223938d-49631f2f87b3d7ed-01",
+                                    "tracestate": null
+                                },
+                                "offset": 108,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:40:51.384529Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "df6e6e98-677e-4f27-8a7b-a9889096e177",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122046537051e1d1e28136afd9e9e03c667a2f5aa947d6ff6a563228fd516bf46957",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "784c3796-d995-47bf-8e37-bde3e367002c",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-2ce68437a007d4bcd395a176530380f8-07885dd668d2cfb6-01",
+                                    "tracestate": null
+                                },
+                                "offset": 111,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:40:54.625924Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "ad8fccf8-6af4-4226-ad85-2ea9180c595c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122074af5f7c82e4f32895e5d7166be98d0ce1ca63d681add996bc8185199320966f",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "38219532-c968-4fe5-8d07-4117696db195",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-2c319e799828d7d279ef6b3397e6453f-aae1e35e13129614-01",
+                                    "tracestate": null
+                                },
+                                "offset": 126,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:41:55.213038Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "d590e2b4-c847-4d6a-bed9-220ce9e7302f",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12201e23a89d17c0dbe80687c06401490515a20fad58afd41c709e75d6d3c6fc3b7c",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "8717d693-f381-4596-a0c9-094f23523510",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-927db3efefa76528cf6550fbcc154abb-3b9d089dc3e5bef3-01",
+                                    "tracestate": null
+                                },
+                                "offset": 129,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:42:00.032948Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "75d69fdf-f070-4577-a114-e8cb5a927661",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122088f44a76e69734255f6915f2f8da5eb338bfd2d9f1f0cb7d600ab49ee9213c86",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "39356191-5419-4ac5-9d00-49aa569e28d1",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-f6749a44130f37e19b9d8486fc1f3acb-58b4767473938a98-01",
+                                    "tracestate": null
+                                },
+                                "offset": 132,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:46:31.070660Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "261b7631-099d-42da-b7d3-ce75b3194f6d",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220e3d2e31c5d2582a811065f954d9fb283e24c57fe785532c61caec787753e7cdf",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "31404562-43ab-426a-a3d8-4abca7b32352",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-d3ea8b4d74db4e8289728b62551cbb76-2daa12f9eec4693f-01",
+                                    "tracestate": null
+                                },
+                                "offset": 135,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:46:35.792538Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "abdd8dc0-dcd4-4c9b-bfb1-76098dc98c14",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220ff6417283af1c435b3c1d19942e217a0865e994f8655b7494f29a02037189771",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "3eb29f0b-4fda-4517-a32e-648dfe268682",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-fa8ddb524befe05faf017d2f66e1c6d2-abc6826a3484b43f-01",
+                                    "tracestate": null
+                                },
+                                "offset": 138,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:49:30.591197Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "a83b9202-1935-4816-a4dc-925e14b6c30d",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220ed5506e7f077d29a7f92f57187f6e62b4f35bfac235533824b3fed769d9602a8",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "206c3516-abe6-4409-b4e4-131ee622d83a",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-a1b26c94ea8570b40062fd5cf1c86898-3b65b3073f0cd0ce-01",
+                                    "tracestate": null
+                                },
+                                "offset": 141,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:49:33.252397Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "022c6033-497b-43dd-8140-2d7a2ce4fb9b",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122014526a47643891aaeea84450b29b7a5bfdc586b8868c849743c00439a5a36130",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "7a86f647-a3ff-4ba1-9a19-ec0435091bd9",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-674b4284ef2e4925c1b9ff1ce092fd2b-e816fb23de7dc691-01",
+                                    "tracestate": null
+                                },
+                                "offset": 144,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:55:21.434660Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "3cb2f3e7-7c4d-47eb-83a2-c6f29ab20952",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220aae99ced149915bed1e108ce680eebb3a8de1814d6930fb9615879dc1218e6c0",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "2bed6bdb-fbed-4684-b58e-03c13b395642",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-6f3fb03e3c1f089316478dc46dc83b1d-a03eff3bd6a528e4-01",
+                                    "tracestate": null
+                                },
+                                "offset": 147,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:55:24.757283Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "78a73b68-303c-4c16-977a-3ae181a447e5",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220a667fbcf6400a7dc264ec05604b886029c7d019aafb7edfb5e1b011d5e520437",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "e77a18c7-23d2-4924-8a79-ada6f64110d0",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-56ba6ae2155e2d74bb778a2df2109f7e-d82ce8c967189615-01",
+                                    "tracestate": null
+                                },
+                                "offset": 156,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:55:38.777886Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "83276f83-816f-4793-9c56-cd7aec05c582",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220598343682ce6cfbbddfc4832a5b9a14e3e1cbb4f8c1669d98e819d23b451d4cf",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "c2afcdcd-f409-4166-903f-defa1cc8dc92",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-268d3b8063f763e1928d657c14f9e7f9-c6affd858a3efa06-01",
+                                    "tracestate": null
+                                },
+                                "offset": 159,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:55:40.600363Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "7e6b527b-4d51-4f15-9623-7b82f9922ab0",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122014665c63125f487141ecc93288cfe3d25af3bf8da429f579ed9236b9c6f0809c",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "cc804c3f-20fd-41cb-aa90-72d8730b50e1",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-7bf6c27ba03a401c525d8dd0b6b30fbf-5c756d10fe2eec14-01",
+                                    "tracestate": null
+                                },
+                                "offset": 162,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:59:45.914999Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "d38425c6-2ece-4b63-b783-6c2463147527",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220dec2c38d9db994271fc018bb8d5da6f9c5d38fef6805126aa2567a9d9ccb4b44",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "30443a9f-2ebc-4e8f-b627-672fc093d7df",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-99acff6fa74c85f613c324570dae59fd-7f58313eae8e965e-01",
+                                    "tracestate": null
+                                },
+                                "offset": 165,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T17:59:47.095077Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "0b30782f-1558-4673-a5e7-91af2c42f3a7",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220ec0b7c70b59535442575f7da1e39023961ab9255a7e07846bc9946cd29ed2238",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "d7dd2aac-c21f-4067-9ee8-eec6fa5cf7fd",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-698563dc61d81976794bbf2a7d0d793e-e011f4b7ff123da6-01",
+                                    "tracestate": null
+                                },
+                                "offset": 168,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:30:54.012867Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "c846b19f-81b1-4471-b147-c42afd8c10e1",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122001c28ebee39e6b817a6561fe941c281312bdea72e96a406b9f8454f123e7e75d",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "af10ebff-923a-4c79-b531-1636b6456832",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-ac7e08bc64e233025081f4b715eb4600-f0348765f7a460a5-01",
+                                    "tracestate": null
+                                },
+                                "offset": 171,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:30:55.292300Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "8e58e1bf-50b9-41d2-9def-278846ff1699",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12202461d0a96a93b5b16b1bd10030fce21bc7d11e9affc5783fc483b5e4e84dd604",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "7bb075de-4aad-477f-be3b-7ea3c14e1a03",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-5042fcffb4216f34aa1dc8271365a220-363f9ff78a773c7e-01",
+                                    "tracestate": null
+                                },
+                                "offset": 180,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:31:03.935379Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "78197b20-b109-45fe-978a-f193b6443599",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122006969da5ae20f41290db96fb38b43680a3e0bd3081fe356276e18ab52c846997",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "37fb3287-af4c-4f92-8d62-8fd261708657",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-c175afe843d9ffb4753cea152bd64e36-47873b4c2da18e5f-01",
+                                    "tracestate": null
+                                },
+                                "offset": 183,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:31:07.413521Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "d793b622-35d6-4b23-8fa8-40d64d369fde",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220876df40eb4adcd4479a76b942189b827f34ef657040a4508a9c916579784524e",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "4c0fad9a-4b0d-4bb1-afce-89af37aadebb",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-3265d840e312f3f269c04b46b5175c5d-e7d0ae3403b1a49c-01",
+                                    "tracestate": null
+                                },
+                                "offset": 192,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:35:20.353836Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "28aff503-9700-4901-8080-294fb48728de",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220c78ff32d81b1b1f90fbb4beadde1a1be84621d9eda5f746e278cfdbe68964f4a",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "d1f52842-3537-42df-9e1c-28a78b114edf",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-7374255dddbc3be117d6e6db185d7915-dfca24576f3e1807-01",
+                                    "tracestate": null
+                                },
+                                "offset": 195,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:35:22.754352Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "db9f09bc-bc54-4c44-8ba5-8e45aa376e9c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12204c1936a13dd0b5b7b623c1eaac5adc71d26e9f01d5d167f2ae044ef63e399501",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "18a05257-26ea-4da4-b078-565e4049fef4",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-836ad4832e9c0d84c93e7773f6e0ada7-bf0b1e86358321d4-01",
+                                    "tracestate": null
+                                },
+                                "offset": 198,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:36:50.474700Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "10e8a721-9d6a-4822-84fa-ddf2a55da499",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220c6db0f373d4bcf5a10a9c4d18a08a3161986f06a12b5fc5313597f958848f873",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "4aaa8332-b3af-40bf-bcd6-0357b3db6955",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-9847088ea6df6e448a907ec6aefc3404-e0570fe9ef106961-01",
+                                    "tracestate": null
+                                },
+                                "offset": 201,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:36:55.525247Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "a44fc4bb-7826-4594-b04a-3c74c713d9b8",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220765847ddddfed52e7c70ac26a8c3002d7a7b1519557614d20cfffd25c4b86c2f",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "77d8aa51-486b-481d-97d9-0f522b2c7638",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-562ebbd4a34bb222bfc667be93822be7-212f0776ec755efa-01",
+                                    "tracestate": null
+                                },
+                                "offset": 204,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:36:57.083721Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "94c15fd3-bf74-4638-a8ea-4fe5d87feb35",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220b337d7417b9c059839edc8347b4ae761f8dda7d34496ef97ca741d7eec4852e9",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "25f5260f-be09-40ce-85f6-7c0a0b3a3bbe",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-3b486a86eabe48af8a32a63662d37e3a-5f6a09ec1c4ad7fc-01",
+                                    "tracestate": null
+                                },
+                                "offset": 213,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:37:15.923784Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "851b8eda-124c-4265-b3ce-aaa771c58046",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220b82747f3d4bae688757d4319d0bcb28cec22aa2a00bff1ade72872d060b50bd6",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "b058b709-df08-4bd7-b73c-71b6dcc0f530",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-0c97a36b424ca134749a9d30719e5f15-19c1fad1be846e7e-01",
+                                    "tracestate": null
+                                },
+                                "offset": 216,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:37:16.403845Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "4f1d78b6-6fff-45d1-8bf3-db314c9b60af",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220feb24341f996e89d3d0fb8991ba18282b8d41b5c3641a6e375f5eba0dfe1843b",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "628ec2e6-e228-48de-92a9-0c9a5a83cdd9",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-947059f234ee1cba7e67a277bd86556a-3f7cf12bd512989a-01",
+                                    "tracestate": null
+                                },
+                                "offset": 219,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:43:02.065444Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "10c205b4-fc9d-40cc-8408-6474948ae08f",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220199ceb612f43b9f4d689d1f7c0ac6cc59875d1af56503b0742fdcea2c4187cfb",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "e6ba29ad-0c1b-47bb-b7cc-868f78720519",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-76e0470ea2fae5939e224cde3390a1b7-cff10543b1778788-01",
+                                    "tracestate": null
+                                },
+                                "offset": 222,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:43:02.975984Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "76d4e922-3f4b-44d3-b2af-5fa0be384ea7",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220900b3d702824db2d2e9d35235533f4db210637a46f93a2f75c917b40b2a80394",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "5450975b-1d2d-464c-85bd-ed111dd81d35",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-baf6ec9b209dc7ca0a8ec13efe585295-cac731c500822ee1-01",
+                                    "tracestate": null
+                                },
+                                "offset": 231,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:43:15.937102Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "5c690089-bd3c-4e53-9dd8-80140803c158",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12206e679531e7b0eae27e720b548b84fa36a0a8cca9170b04b75c6f51a3320232a4",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "2fddbc12-bb02-44bf-90b6-dbb51747fff0",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-6c7c399903b6ccae6daf0e3d4662ba8b-6613ca0ccae3030d-01",
+                                    "tracestate": null
+                                },
+                                "offset": 234,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:43:18.697756Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "b327c6b2-a087-4344-8647-de2ed1ee6327",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122079e324390b7b4478919ebaacead2ddfc4cdc2a4c16dbb0023123568235700ecc",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "6d41b5e6-625f-42b9-a585-482340d4fb49",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-a9c62f10807d3cd9991bc2422fc0927c-800b713bc9b390d8-01",
+                                    "tracestate": null
+                                },
+                                "offset": 237,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:49:17.134764Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "1056e958-45d4-4686-badb-15a3987d56ec",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220d16b8eb15575a16c3a05b7d523282b39acc2e6971d8f43977cc79630cd9d7af5",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "ad4abc2a-c785-4a84-954b-062e15210d20",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-9788756eed0b844b766125c5bf0ce4bb-3048da01b19dd46c-01",
+                                    "tracestate": null
+                                },
+                                "offset": 240,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:49:17.990122Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "8c356377-85e0-4510-ab07-ea4b9447ea80",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220f0b3083838ea0a7034f7ed35334a3161f90aa785518c2ee7ef699192c3d8c377",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "0300e952-90c6-4842-b454-5f58522d2f05",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-8f71fd5314a7bd4221b65a2e1b79266a-2c1826c1871697f4-01",
+                                    "tracestate": null
+                                },
+                                "offset": 249,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:49:34.657300Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "cc642280-6c92-4080-86ab-4367f31619ca",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220d2236a4c9cd8e7691881e53fcf45129458ce73ee08995d6a8ddd421d650c0bb9",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "964387e5-2558-463b-8202-2ba61633b63a",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-c6017e5dfc1f3cbbaca444b478a45ea5-125cef438e17c68e-01",
+                                    "tracestate": null
+                                },
+                                "offset": 252,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T18:49:36.478063Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "d54c2742-74fa-4463-8257-4e38e7f0fbbf",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220290ebfb84b8ebce518098b16ea4b47d6b836464b82a93b1d8b59ea57020cb95f",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "9aa9e906-07de-4912-a0d8-cba5e689065c",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-0cd1e969bf4a7329791cd113953f0f85-e456639f0c35a94f-01",
+                                    "tracestate": null
+                                },
+                                "offset": 257,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:30:34.269213Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "70be8543-140f-47b9-b183-04fd1460b419",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220e7cd7aaf6188b5866596d032b2acf99d28e09d4ee18b041d3649c28263c2e0e1",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "242abf45-cab3-496c-ae9c-ffa854e96b40",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-ba770500ab29cfc8d72acd3a1caf2b2a-f0041d439722f037-01",
+                                    "tracestate": null
+                                },
+                                "offset": 260,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:30:55.511398Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "0e194bca-3b68-4ce7-84e8-e1d5bb56dd58",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220350f9b14e35e85e86b4dfd4e23b67464934fde64eea50e0030f1af16c814210d",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "d345dd2b-bb05-4eb8-8fcf-e6e1dbd0086b",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-df2081ac3fa1a7e0578e812a1487c7bd-78573f26d5bc2511-01",
+                                    "tracestate": null
+                                },
+                                "offset": 263,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:33:00.769430Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "7c9bce59-477d-49d7-a59b-0462f8ee010f",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220baef6dede999e0b78a7d44f35560b239d600f7a0f2a3bbfc0a2cd7e049a24913",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "25895cfa-6e13-436f-8fba-0004712b66da",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-67de8c119028b435cf7175a0f6dd44ca-5b6c2791ad6be7a9-01",
+                                    "tracestate": null
+                                },
+                                "offset": 272,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:36:24.710871Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "32065215-1fad-4c5b-bdd5-9044a16580f9",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12208a141aaae5dc2ff119df9fc385fcbc9de021bf554508ac5463561719401700cd",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "9f9e0da0-cecd-4743-b419-a5ee6b65548f",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-a7cbf73279b30c1bd016a7104bf6282b-e368d20abc01bcc4-01",
+                                    "tracestate": null
+                                },
+                                "offset": 281,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:37:44.301583Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "25ac3f16-c2d9-4f0c-ba91-7dc3b466cb0c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220b1cd0c0cf497c98f9abf0084dac67405c9eb7374e794585f0f31e3397293e805",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "8004f6be-b938-469f-bad5-7c9b219da4c8",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-fcd0ea596d2246db8050ad57a367c568-4446fbb3bac2bbb5-01",
+                                    "tracestate": null
+                                },
+                                "offset": 292,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T20:48:55.203701Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_command_timeout__wait_completion",
+        "timestamp": "2026-01-21T21:25:51.602Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "alice-user",
+                "parties": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "beginExclusive": 292
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "4605",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:51 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": [
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "26efed13-e504-40f4-9cbd-45e92c2cc47b",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12200393bfa2ba9f3e41935c84c73348b551978f148452f654a65158094971ff8c6d",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "0ee08f15-590b-4b72-8d9f-3474f2897124",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-62634317908e29fd93abea22c5ca1603-84ea82b2e317415d-01",
+                                    "tracestate": null
+                                },
+                                "offset": 303,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:21:23.793842Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "475ece70-68a4-45c6-ab06-09bb88674dbb",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12202ffd25066aaf1e84c71d45e285824a525d5454c3745ee6b4cc33a61035536886",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "87e09a19-19aa-47a8-bc1b-a2e7ad0e6afb",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-5d6f457b1abb9fdd91951b7a105589ec-0f95b84417d2f0b5-01",
+                                    "tracestate": null
+                                },
+                                "offset": 309,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:15.275343Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "4fbb5dfc-5f32-4538-8df4-814d829ba7b7",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122054b7cc13ed37683742be630a397114aa4a8d1cf6279d6a6f87df32880f200b77",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "a6e0e0aa-d4d4-418e-bd7b-2049ae408090",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-1b7e54d7f47644b5af79b27e1ef960d7-c7475d07dc3e47fd-01",
+                                    "tracestate": null
+                                },
+                                "offset": 315,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:26.354118Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "ca8618b4-a96a-41bb-854c-8d5095941aa8",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "122051bb766d5e047c8b0786d8343410810e875587a3190b088d9a40478411a99d68",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "c3ab9b43-ce33-4af1-86da-cddd3f880333",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-7bf24e3d0fb3ca137997f893ef9eeca1-b31c4f3c7fcbb6c4-01",
+                                    "tracestate": null
+                                },
+                                "offset": 318,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:30.334732Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "OffsetCheckpoint": {
+                            "value": {
+                                "offset": 326,
+                                "synchronizerTimes": [
+                                    {
+                                        "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                        "recordTime": "2026-01-21T21:25:39.325770Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "26afe772-6033-42c1-aa1a-bde3de74b0bc",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "1220a4a5b077129e425769b07877dbc8830fe58520b490b21e8f1f2518da003c5c29",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "336979b5-f314-4e2c-a711-a052ee171e3c",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-e913c228a75f3efd7a4b49adc35b69bb-9cca80babb2e3e6b-01",
+                                    "tracestate": null
+                                },
+                                "offset": 327,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:44.466297Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "completionResponse": {
+                        "Completion": {
+                            "value": {
+                                "commandId": "66e1205c-47ec-4c8f-834b-d391d9d8f86c",
+                                "status": {
+                                    "code": 0,
+                                    "message": "",
+                                    "details": []
+                                },
+                                "updateId": "12201049f00fb9576e6ffedd50c3223cb5620438b7cf4acc85abf9dbc1b914de601a",
+                                "userId": "alice-user",
+                                "actAs": [
+                                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                                ],
+                                "submissionId": "936d9514-ebcf-451f-981e-4b10b26a4843",
+                                "deduplicationPeriod": {
+                                    "DeduplicationOffset": {
+                                        "value": 0
+                                    }
+                                },
+                                "traceContext": {
+                                    "traceparent": "00-2935fce96efd9127d81e44b77a89b108-3764c130d550be61-01",
+                                    "tracestate": null
+                                },
+                                "offset": 330,
+                                "synchronizerTime": {
+                                    "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                                    "recordTime": "2026-01-21T21:25:47.834972Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_command_timeout__wait_completion",
+        "timestamp": "2026-01-21T21:25:52.859Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/completions?limit=50&stream_idle_timeout_ms=1000",
+            "path": "/v2/commands/completions",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "alice-user",
+                "parties": [
+                    "alice::1220663000baaabef30c3fa7cfe8f1b29f0a40fa1643992ba4ba98a01973930eed5b"
+                ],
+                "beginExclusive": 330
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "2",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": []
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_unauthorized_party__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:52.867Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 332
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "error_unauthorized_party__submit_command",
+        "timestamp": "2026-01-21T21:25:52.873Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/commands/async/submit",
+            "path": "/v2/commands/async/submit",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGljZS11c2VyIiwiaWF0IjoxNzY5MDE3MTAyLCJleHAiOjE3NjkzNzcxMDIsImF1ZCI6Imh0dHBzOi8vZGFtbC5jb20vand0L2F1ZC9wYXJ0aWNpcGFudC9wYXJ0aWNpcGFudDE6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIiwiaHR0cHM6Ly9kYW1sLmNvbS9sZWRnZXItYXBpIjp7ImFkbWluIjpmYWxzZSwiYWN0QXMiOlsiYWxpY2U6OjEyMjA2NjMwMDBiYWFhYmVmMzBjM2ZhN2NmZThmMWIyOWYwYTQwZmExNjQzOTkyYmE0YmE5OGEwMTk3MzkzMGVlZDViIl0sInJlYWRBcyI6WyJhbGljZTo6MTIyMDY2MzAwMGJhYWFiZWYzMGMzZmE3Y2ZlOGYxYjI5ZjBhNDBmYTE2NDM5OTJiYTRiYTk4YTAxOTczOTMwZWVkNWIiXX19.FmDAzuz1PcjaaHS8TcO7lWfTXJbvy5bmph7A-UqKi2C5lpEkaq2PWZC9J6LdZ6u3ep3HWT8QKzZoGmw2_QJT1kUdlXyD7KNN83hFzi-EW_0HzPtgNdITYrKHiSVdwx-dEMz4gr43A6uqW-jCiJHOHjMtJTp8FRd0tL6R2W_nzlkO92toxQGZjtORHJKX4g8AI3l3_7wZWBcfFNm2YSfiQXKUhUevVyAqLYm65LpE1nWsqUldPsfXSONZYmuCnh8kxrmR-7OF6Ph6wMg6qiD6OxGfdtF20P6cZ3Yi1C2aiwgxHHh6Bme-8LgeUe61OJF-mKuECgZTTQu5vb3sR3yS8g",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "commands": [
+                    {
+                        "CreateCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "createArguments": {
+                                "owner": "fake-party::12200000000000000000000000000000000000000000000000000000000000000000",
+                                "value": "100",
+                                "description": "unauthorized test"
+                            }
+                        }
+                    }
+                ],
+                "commandId": "a0fed593-ec7d-4c21-8f21-340cd3089544",
+                "actAs": [
+                    "fake-party::12200000000000000000000000000000000000000000000000000000000000000000"
+                ],
+                "userId": "alice-user",
+                "readAs": [
+                    "fake-party::12200000000000000000000000000000000000000000000000000000000000000000"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8"
+            }
+        },
+        "response": {
+            "status": 403,
+            "statusText": "Forbidden",
+            "headers": {
+                "content-length": "268",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "code": "NA",
+                "cause": "A security-sensitive error has been received",
+                "correlationId": "97b842ea65cb1b1cfe118977da55b3e5",
+                "traceId": "97b842ea65cb1b1cfe118977da55b3e5",
+                "context": {},
+                "resources": [],
+                "errorCategory": -1,
+                "grpcCodeValue": 7,
+                "retryInfo": null,
+                "definiteAnswer": null
+            }
+        },
+        "scenario": "internal"
+    },
+    {
+        "name": "invalid_signature_prepare__get_synchronizers",
+        "timestamp": "2026-01-21T21:25:52.878Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/connected-synchronizers",
+            "path": "/v2/state/connected-synchronizers",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "201",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "connectedSynchronizers": [
+                    {
+                        "synchronizerAlias": "sync",
+                        "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                        "permission": "PARTICIPANT_PERMISSION_UNSPECIFIED"
+                    }
+                ]
+            }
+        },
+        "scenario": "external"
+    },
+    {
+        "name": "invalid_signature_prepare__prepare_signing",
+        "timestamp": "2026-01-21T21:25:52.888Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/prepare",
+            "path": "/v2/interactive-submission/prepare",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "userId": "bob-user",
+                "commandId": "c4ffc3ca-09ea-4d23-a057-949a3590b14d",
+                "commands": [
+                    {
+                        "CreateCommand": {
+                            "templateId": "b159a250ebaae7fac7068d67b43a3e94e50c5f2545ab7cd955c32d00eab2ce60:SdkTest:SimpleAsset",
+                            "createArguments": {
+                                "owner": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                "value": "200",
+                                "description": "invalid signature test"
+                            }
+                        }
+                    }
+                ],
+                "actAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "readAs": [
+                    "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863"
+                ],
+                "synchronizerId": "sync::122016e9c15295f711c060c5722398aff197a239474949e223533511d72b93ba4ce8",
+                "packageIdSelectionPreference": [],
+                "verboseHashing": false
+            }
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "1513",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "preparedTransaction": "CukECgMyLjESATAaugQKATDCPrMECrAECgMyLjESQjAwMzg5NDkwYWIxMWJiZTVjNGY0MGNhZmIyNGE4YTM5MWVlNzQwZDYzMmQxNWU1MzFjYjQ5M2RmZTE3MmMxZjcyZhoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq6gFy5wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEicKC2Rlc2NyaXB0aW9uEhhCFmludmFsaWQgc2lnbmF0dXJlIHRlc3QySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiIhIgWNyBHua8MX7AVe0UV4pFVWC1EwZoAqcQSXVCnOXfUYoS7gEScQpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIkYzRmZmMzY2EtMDllYS00ZDIzLWEwNTctOTQ5YTM1OTBiMTRkGkpzeW5jOjoxMjIwMTZlOWMxNTI5NWY3MTFjMDYwYzU3MjIzOThhZmYxOTdhMjM5NDc0OTQ5ZTIyMzUzMzUxMWQ3MmI5M2JhNGNlOCokNGJjMjdjMTgtOTc5Mi00YWRlLWFhY2QtNWYwYTA3MDljNGFkMNSf/YzJnZID",
+                "preparedTransactionHash": "SqghQaq0Nssacb14SiNOh/OgDOAwxTn9VMAXQVIaHvU=",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2",
+                "hashingDetails": null,
+                "costEstimation": {
+                    "estimationTimestamp": "2026-01-21T21:25:49.409274Z",
+                    "confirmationRequestTrafficCostEstimation": 0,
+                    "confirmationResponseTrafficCostEstimation": 0,
+                    "totalTrafficCostEstimation": 0
+                }
+            }
+        },
+        "scenario": "external"
+    },
+    {
+        "name": "error_invalid_signature__get_ledger_end",
+        "timestamp": "2026-01-21T21:25:52.927Z",
+        "request": {
+            "method": "GET",
+            "url": "http://127.0.0.1:5013/v2/state/ledger-end",
+            "path": "/v2/state/ledger-end",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ"
+            },
+            "body": null
+        },
+        "response": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+                "content-length": "14",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "offset": 332
+            }
+        },
+        "scenario": "external"
+    },
+    {
+        "name": "error_invalid_signature__submit_signed",
+        "timestamp": "2026-01-21T21:25:52.930Z",
+        "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:5013/v2/interactive-submission/execute",
+            "path": "/v2/interactive-submission/execute",
+            "headers": {
+                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2ItdXNlciIsImlhdCI6MTc2OTAxNzExMCwiZXhwIjoxNzY5Mzc3MTEwLCJhdWQiOiJodHRwczovL2RhbWwuY29tL2p3dC9hdWQvcGFydGljaXBhbnQvcGFydGljaXBhbnQxOjoxMjIwNjYzMDAwYmFhYWJlZjMwYzNmYTdjZmU4ZjFiMjlmMGE0MGZhMTY0Mzk5MmJhNGJhOThhMDE5NzM5MzBlZWQ1YiIsImh0dHBzOi8vZGFtbC5jb20vbGVkZ2VyLWFwaSI6eyJhZG1pbiI6ZmFsc2UsImFjdEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXSwicmVhZEFzIjpbImJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiXX19.mGH7-EdwZfw_5c_qoF4vn4KOAk0c4VftLQ4d2Nf8CqVcmK4ww3DBLCQEtgr6EOwfdpVPaV5rk1po_v8TH_DgUMHVz8a4LkCvHgh3uz2wSInRSl9ZEesOoc5Z0JOytjuiEI3BQCyc2ViyJkzbpReK3sNPu5refkxTyc-e3XxmwUOtMI5vPFCGwlIUgusiBE-myshhUbqUWRlanJLvX02FxoTmczB854z263reohcWFHEPjwBaxCZvva5Xm88-qP13rdMQoappRHtdTVPQnytLMzib2Hkmcz3xn0fyQKIGCLjzIa65bkB3PKNAEjdSvjl0v93hqRemwqBLM076t5O8EQ",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "preparedTransaction": "CukECgMyLjESATAaugQKATDCPrMECrAECgMyLjESQjAwMzg5NDkwYWIxMWJiZTVjNGY0MGNhZmIyNGE4YTM5MWVlNzQwZDYzMmQxNWU1MzFjYjQ5M2RmZTE3MmMxZjcyZhoIc2RrLXRlc3QiWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQq6gFy5wEKWApAYjE1OWEyNTBlYmFhZTdmYWM3MDY4ZDY3YjQzYTNlOTRlNTBjNWYyNTQ1YWI3Y2Q5NTVjMzJkMDBlYWIyY2U2MBIHU2RrVGVzdBoLU2ltcGxlQXNzZXQSVAoFb3duZXISSzpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIMCgV2YWx1ZRIDGJADEicKC2Rlc2NyaXB0aW9uEhhCFmludmFsaWQgc2lnbmF0dXJlIHRlc3QySWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjM6SWJvYjo6MTIyMGZkYWZmNzc4ODNhYzUxZmI3MzY1ZDFlYThkMjg0NmRlMDE4ZTRiMGY5NjRmOWYzZTQ2Y2U1ZDliM2FiYWI4NjMiIhIgWNyBHua8MX7AVe0UV4pFVWC1EwZoAqcQSXVCnOXfUYoS7gEScQpJYm9iOjoxMjIwZmRhZmY3Nzg4M2FjNTFmYjczNjVkMWVhOGQyODQ2ZGUwMThlNGIwZjk2NGY5ZjNlNDZjZTVkOWIzYWJhYjg2MxIkYzRmZmMzY2EtMDllYS00ZDIzLWEwNTctOTQ5YTM1OTBiMTRkGkpzeW5jOjoxMjIwMTZlOWMxNTI5NWY3MTFjMDYwYzU3MjIzOThhZmYxOTdhMjM5NDc0OTQ5ZTIyMzUzMzUxMWQ3MmI5M2JhNGNlOCokNGJjMjdjMTgtOTc5Mi00YWRlLWFhY2QtNWYwYTA3MDljNGFkMNSf/YzJnZID",
+                "partySignatures": {
+                    "signatures": [
+                        {
+                            "party": "bob::1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                            "signatures": [
+                                {
+                                    "format": "SIGNATURE_FORMAT_DER",
+                                    "signature": "MEUCIQDnh0LaxbkelsexwAnZeMr0VNf5nK16kwbiqR+HSXUxxgIgWaYoCcYl1nDu8TfL86mN5S9XADfTERFlcjUEHnZbdEE=",
+                                    "signedBy": "1220fdaff77883ac51fb7365d1ea8d2846de018e4b0f964f9f3e46ce5d9b3abab863",
+                                    "signingAlgorithmSpec": "SIGNING_ALGORITHM_SPEC_EC_DSA_SHA_256"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "deduplicationPeriod": {
+                    "DeduplicationDuration": {
+                        "value": {
+                            "seconds": 3600,
+                            "nanos": 0
+                        }
+                    }
+                },
+                "submissionId": "451d9cef-64d4-4c44-bc04-ff1adbcafc2b",
+                "userId": "bob-user",
+                "hashingSchemeVersion": "HASHING_SCHEME_VERSION_V2"
+            }
+        },
+        "response": {
+            "status": 400,
+            "statusText": "Bad Request",
+            "headers": {
+                "content-length": "649",
+                "content-type": "application/json",
+                "date": "Wed, 21 Jan 2026 21:25:52 GMT",
+                "server": "pekko-http/1.1.0"
+            },
+            "body": {
+                "code": "FAILED_TO_EXECUTE_TRANSACTION",
+                "cause": "The participant failed to execute the transaction: Received 0 valid signatures (1 invalid), but expected at least 1 valid for bob::1220fdaff778.... Transaction hash to be signed: 12204aa82141aab436cb1a71bd784a234e87f3a00ce030c539fd54c01741521a1ef5. Ensure the correct transaction hash is signed with the correct key(s).",
+                "correlationId": null,
+                "traceId": "f8557fec6a137a26a97d7291c0d5c9d9",
+                "context": {
+                    "participant": "participant1",
+                    "definite_answer": "false",
+                    "tid": "f8557fec6a137a26a97d7291c0d5c9d9",
+                    "category": "8"
+                },
+                "resources": [],
+                "errorCategory": 8,
+                "grpcCodeValue": 3,
+                "retryInfo": null,
+                "definiteAnswer": null
+            }
+        },
+        "scenario": "external"
+    }
+]

@@ -1,0 +1,33 @@
+{
+    "name": "@layerzerolabs/evm-abi-generator",
+    "version": "0.0.0",
+    "private": false,
+    "license": "MIT",
+    "type": "module",
+    "main": "./src/wagmi-generate.ts",
+    "module": "./src/wagmi-generate.ts",
+    "bin": {
+        "wagmi-generate": "./src/wagmi-generate.ts"
+    },
+    "scripts": {
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)"
+    },
+    "dependencies": {
+        "@layerzerolabs/ts-command-line-args": "workspace:*",
+        "@wagmi/cli": "catalog:",
+        "glob": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "tsup": "catalog:",
+        "typescript": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@wagmi/cli": "catalog:"
+    }
+}

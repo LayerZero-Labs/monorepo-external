@@ -1,0 +1,23 @@
+// Auto-generated file, please do not edit.
+/* eslint-disable */
+import type { EvmArtifact } from '@layerzerolabs/common-evm';
+import { {{{abiIdentifier}}} } from '{{{abiImportPath}}}';
+
+export const {{{contractName}}}Artifact = {
+name: {{{jsonStringify contractName}}},
+abi: {{{abiIdentifier}}},
+bytecode: {{{jsonStringify bytecode}}} as `0x${string}`,
+contractName: {{{jsonStringify contractName}}} as const,
+{{#if sourceName}}
+sourceName: {{{jsonStringify sourceName}}} as const,
+{{/if}}
+{{#if deployedBytecode}}
+deployedBytecode: {{{jsonStringify deployedBytecode}}} as `0x${string}`,
+{{/if}}
+{{#if buildInfo}}
+buildInfo: {{{jsonStringify buildInfo}}} as const,
+{{/if}}
+{{#if flattenedSol}}
+flattenedSol: {{{jsonStringify flattenedSol}}} as const,
+{{/if}}
+} satisfies EvmArtifact<typeof {{{abiIdentifier}}}>;

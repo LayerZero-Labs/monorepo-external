@@ -1,0 +1,20 @@
+{
+    "ZoneComposer": {
+        "evm": {
+            "runtimeSize": 5082,
+            "initcodeSize": 6409
+        }
+    },
+    "ZoneComposerMsgCodec": {
+        "evm": {
+            "runtimeSize": 57,
+            "initcodeSize": 85
+        }
+    },
+    "ZoneComposerNative": {
+        "evm": {
+            "runtimeSize": 5019,
+            "initcodeSize": 5664
+        }
+    }
+}

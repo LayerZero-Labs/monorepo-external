@@ -1,0 +1,9 @@
+#downloaded api docs
+grpc-api-docs/
+
+#generated api client
+src/open-api.ts
+src/open-api/
+
+#generated grpc client
+src/grpc/
