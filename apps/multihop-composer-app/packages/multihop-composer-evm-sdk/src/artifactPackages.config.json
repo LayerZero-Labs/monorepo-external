@@ -1,0 +1,17 @@
+{
+    "config": {
+        "byChainType": ["evm"]
+    },
+    "contracts": {
+        "@layerzerolabs/multihop-composer-evm-contracts": [
+            {
+                "name": "MultiHopComposer",
+                "file": "contracts"
+            },
+            {
+                "name": "MultiHopComposerNative",
+                "file": "contracts"
+            }
+        ]
+    }
+}

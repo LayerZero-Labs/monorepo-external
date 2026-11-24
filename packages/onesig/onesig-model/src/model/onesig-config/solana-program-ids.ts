@@ -10,6 +10,7 @@ const programIdPerEnvironment: Partial<Record<Environment, string>> = {
     [Environment.MAINNET]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
     // Solana devnet, which is what the wallet `testnet` stage points at.
     [Environment.TESTNET]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
+    [Environment.SANDBOX]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
 };
 
 const isEnvironment = (value: string): value is Environment =>

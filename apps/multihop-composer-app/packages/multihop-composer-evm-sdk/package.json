@@ -1,0 +1,56 @@
+{
+    "name": "@layerzerolabs/multihop-composer-evm-sdk",
+    "version": "0.0.0",
+    "private": false,
+    "description": "TypeScript SDK for MultiHop Composer EVM contracts",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "scripts": {
+        "artifacts:clean": "rm -rf ./artifacts ./artifacts-tron ./artifacts-zk",
+        "artifacts:copy": "pnpm artifacts:clean && pnpm exec copy-artifacts",
+        "artifacts:prepare": "pnpm artifacts:copy && pnpm wagmi:generate && pnpm tsbindings:generate",
+        "build": "pnpm artifacts:prepare && tsup",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "generated:clean": "pnpm artifacts:clean && pnpm wagmi:clean && pnpm tsbindings:clean",
+        "lint": "eslint . --max-warnings 0 || (eslint . --fix --max-warnings 0 && false)",
+        "test": "vitest --run --pass-with-no-tests --typecheck",
+        "tsbindings:clean": "rm -rf ./src/generated-artifacts",
+        "tsbindings:generate": "pnpm exec generate-ts-artifacts -p $(pwd)",
+        "wagmi:clean": "rm -rf ./src/generated-abi",
+        "wagmi:generate": "pnpm exec wagmi-generate --cfg ./wagmi.config.ts"
+    },
+    "dependencies": {
+        "@layerzerolabs/common-evm": "workspace:*"
+    },
+    "devDependencies": {
+        "@layerzerolabs/artifacts-copier": "workspace:*",
+        "@layerzerolabs/evm-abi-generator": "workspace:*",
+        "@layerzerolabs/evm-tests-generator": "workspace:*",
+        "@layerzerolabs/evm-ts-artifacts-generator": "workspace:*",
+        "@layerzerolabs/multihop-composer-evm-contracts": "workspace:*",
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@layerzerolabs/wagmi-config": "workspace:*",
+        "@wagmi/cli": "catalog:",
+        "tsup": "catalog:",
+        "vitest": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "implicitDependencies": {
+        "@layerzerolabs/common-evm": "workspace:*"
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "name": "@layerzerolabs/multihop-composer-evm-contracts",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "build": "pnpm compile:evm",
+        "clean": "rm -rf ./node_modules .turbo ./dist && pnpm generated:clean",
+        "compile:evm": "pnpm lz-tool hardhat compile --config ./hardhat.config.js",
+        "generated:clean": "rm -rf ./artifacts* ./hh-cache* ./out ./cache",
+        "lint": "solhint --config solhint.config.js 'contracts/**/*.sol' 'test/**/*.sol' --fix --noPrompt",
+        "test": "pnpm lz-tool --env FOUNDRY_PROFILE=test forge test",
+        "test:gas:update": "pnpm lz-tool --env FOUNDRY_PROFILE=test --env FORGE_SNAPSHOT_CHECK=false --env FORGE_SNAPSHOT_EMIT=true forge test --match-contract 'MultiHopComposer(Native)?GasTest'"
+    },
+    "devDependencies": {
+        "@layerzerolabs/lz-evm-messagelib-v2": "catalog:multihop-composer",
+        "@layerzerolabs/lz-evm-protocol-v2": "catalog:multihop-composer",
+        "@layerzerolabs/lz-evm-v1-0.7": "catalog:multihop-composer",
+        "@layerzerolabs/oapp-evm": "catalog:multihop-composer",
+        "@layerzerolabs/oapp-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/oapp-upgradeable-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/oft-evm": "catalog:multihop-composer",
+        "@layerzerolabs/oft-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/oft-upgradeable-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/protocol-v2-messagelib-evm-contracts": "workspace:*",
+        "@layerzerolabs/solhint-configuration": "workspace:*",
+        "@layerzerolabs/test-devtools-evm-foundry": "catalog:",
+        "@layerzerolabs/test-utils-evm-contracts": "workspace:*",
+        "@layerzerolabs/toolbox-foundry": "catalog:",
+        "@layerzerolabs/utils-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/utils-upgradeable-evm-contracts": "catalog:multihop-composer",
+        "@layerzerolabs/vm-tooling-evm": "workspace:*",
+        "@openzeppelin/contracts": "catalog:multihop-composer",
+        "@openzeppelin/contracts-upgradeable": "catalog:multihop-composer",
+        "hardhat": "catalog:",
+        "solhint": "catalog:"
+    },
+    "publishConfig": {
+        "access": "restricted"
+    }
+}

@@ -1,0 +1,18 @@
+# Build output
+dist/
+*.tsbuildinfo
+
+src/generated*/**
+
+# Artifacts copied from contracts package at build time
+artifacts/
+
+# Dependencies
+node_modules/
+
+# Turbo
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -28,13 +28,19 @@ describe('oneSigPerChainConfigSchema', () => {
 });
 
 describe('findOneSigSolanaProgramAddress', () => {
-    it('returns the program address where deployed', () => {
-        expect(findOneSigSolanaProgramAddress('testnet')).toEqual(
-            getOneSigSolanaProgramAddress('testnet'),
-        );
-    });
+    it.each(['mainnet', 'testnet', 'sandbox'])(
+        'returns the program address for %s',
+        (environment) => {
+            expect(findOneSigSolanaProgramAddress(environment)).toEqual(
+                '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
+            );
+            expect(getOneSigSolanaProgramAddress(environment)).toEqual(
+                '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
+            );
+        },
+    );
 
-    it.each(['sandbox', 'localnet', 'unknown'])('returns undefined for %s', (environment) => {
+    it.each(['localnet', 'unknown'])('returns undefined for %s', (environment) => {
         expect(findOneSigSolanaProgramAddress(environment)).toBeUndefined();
         expect(() => getOneSigSolanaProgramAddress(environment)).toThrow(
             `not deployed for environment ${environment}`,

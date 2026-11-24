@@ -1,0 +1,29 @@
+[profile.default]
+solc = '0.8.26'
+evm_version = 'cancun'
+verbosity = 3
+src = "contracts"
+test = "test"
+out = "out"
+cache_path = "cache"
+snapshots = "generated/snapshots"
+gas_snapshot_emit = false
+libs = ['node_modules', 'node_modules/@layerzerolabs/toolbox-foundry/lib']
+optimizer = true
+optimizer_runs = 20_000
+via_ir = true
+
+remappings = [
+    'ds-test/=node_modules/@layerzerolabs/toolbox-foundry/lib/ds-test/',
+    'forge-std/=node_modules/@layerzerolabs/toolbox-foundry/lib/forge-std/',
+    'solidity-bytes-utils/contracts/=node_modules/@layerzerolabs/toolbox-foundry/lib/solidity-bytes-utils/',
+    '@openzeppelin/=node_modules/@openzeppelin/',
+    '@layerzerolabs/=node_modules/@layerzerolabs/',
+]
+
+[profile.test]
+via_ir = false
+gas_snapshot_check = true
+
+[fuzz]
+runs = 1000
