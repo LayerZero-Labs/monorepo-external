@@ -13,11 +13,20 @@ const programIdPerEnvironment: Partial<Record<Environment, string>> = {
     [Environment.SANDBOX]: '6VhT6ASR4Ytg2AZbrKAcn1YFzRwaUJ2ANiTB9hueVPpr',
 };
 
+const eventAuthorityPerEnvironment: Partial<Record<Environment, string>> = {
+    [Environment.MAINNET]: '4CHZdrgHoffEiDqjJHRTfU26zQtRLGYRjgYHtrea7uCc',
+    [Environment.TESTNET]: '4CHZdrgHoffEiDqjJHRTfU26zQtRLGYRjgYHtrea7uCc',
+    [Environment.SANDBOX]: '4CHZdrgHoffEiDqjJHRTfU26zQtRLGYRjgYHtrea7uCc',
+};
+
 const isEnvironment = (value: string): value is Environment =>
     (Object.values(Environment) as string[]).includes(value);
 
 export const findOneSigSolanaProgramAddress = (environment: string): string | undefined =>
     isEnvironment(environment) ? programIdPerEnvironment[environment] : undefined;
+
+export const findOneSigSolanaEventAuthorityAddress = (environment: string): string | undefined =>
+    isEnvironment(environment) ? eventAuthorityPerEnvironment[environment] : undefined;
 
 /** Takes a string because the wallet threads `environment` as one down to `BootstrapChainConfig`. */
 export function getOneSigSolanaProgramAddress(environment: string): string {
