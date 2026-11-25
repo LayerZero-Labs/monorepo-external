@@ -67,6 +67,7 @@ const GAS_LIMIT_PREMIUM_PER_CHAIN: Partial<Record<ChainName, bigint>> = {
     // 3.6x `SSTORE` cost, the rest of the operations cost the same. 3x is a middle ground.
     // https://docs.sei.io/evm/differences-with-ethereum#sstore-gas-cost
     [ChainName.SEI]: 3_00n,
+    [ChainName.SEPOLIA]: 5_00n,
     [ChainName.SOMNIA]: 20_00n,
     // Equivalent transactions:
     // - 1,044,015 gas: https://explore.tempo.xyz/tx/0x81e7f78c35c58cee97014588ab28e9b7f1a48c36b46c81d1711c23c56af63057

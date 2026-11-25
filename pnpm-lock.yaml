@@ -526,8 +526,8 @@ catalogs:
       specifier: ^7.5.4
       version: 7.8.5
     smol-toml:
-      specifier: 1.7.2
-      version: 1.7.2
+      specifier: 1.9.1
+      version: 1.9.1
     solhint:
       specifier: ^6.0.1
       version: 6.0.1
@@ -782,7 +782,7 @@ overrides:
   rollup@^2: ^2.80.0
   rollup@^4: ^4.59.0
   serialize-javascript: ^7.0.3
-  smol-toml@^1: 1.7.2
+  smol-toml@^1: 1.9.1
   sonner>@types/react: 19.2.6
   source-map-js@1: 1.2.2
   string-width: 4.1.0
@@ -4281,7 +4281,7 @@ importers:
         version: 13.1.0
       smol-toml:
         specifier: 'catalog:'
-        version: 1.7.2
+        version: 1.9.1
     devDependencies:
       '@layerzerolabs/tsup-configuration':
         specifier: workspace:*
@@ -10745,8 +10745,8 @@ packages:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
 
-  smol-toml@1.7.2:
-    resolution: {integrity: sha512-pXFZ9B2WinEPzxWkMmlYE/oYx2BP+qLrE95wP8tCuK901uLSMGdCb6QSr82z+wnhXkG4+cO+OMLbZB2Cn+97zw==}
+  smol-toml@1.9.1:
+    resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
     engines: {node: '>= 18'}
 
   snake-case@3.0.4:
@@ -15013,7 +15013,7 @@ snapshots:
       commander: 14.0.3
       eventsource: 4.1.0
       feaxios: 0.0.23
-      smol-toml: 1.7.2
+      smol-toml: 1.9.1
       uint8array-extras: 1.5.0
     transitivePeerDependencies:
       - debug
@@ -19340,7 +19340,7 @@ snapshots:
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
 
-  smol-toml@1.7.2: {}
+  smol-toml@1.9.1: {}
 
   snake-case@3.0.4:
     dependencies:

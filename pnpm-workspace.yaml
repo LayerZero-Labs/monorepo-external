@@ -185,7 +185,7 @@ catalogs:
     prettier-plugin-solidity: 2.1.0
     prettier-plugin-tailwindcss: 0.6.8
     semver: ^7.5.4
-    smol-toml: 1.7.2
+    smol-toml: 1.9.1
     solhint: ^6.0.1
     solidity-bytes-utils: ^0.8.4
     solidity-coverage: ^0.8.12
@@ -418,7 +418,7 @@ overrides:
   rollup@^2: ^2.80.0
   rollup@^4: ^4.59.0
   serialize-javascript: ^7.0.3
-  smol-toml@^1: 1.7.2
+  smol-toml@^1: 1.9.1
   sonner>@types/react: 19.2.6
   source-map-js@1: 1.2.2
   string-width: 4.1.0
