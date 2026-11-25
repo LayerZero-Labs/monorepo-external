@@ -61,6 +61,10 @@ export const main = (): Promise<void> =>
                 'Directory for contracts-source.zip and *.wasm',
                 DEFAULT_OUTPUT_DIR,
             )
+            .option(
+                '--root-dir-name <name>',
+                'Top-level folder of the source archive (default: the basename of the cwd)',
+            )
             .action(
                 async ({
                     stellarVersion,
@@ -68,12 +72,14 @@ export const main = (): Promise<void> =>
                     archive,
                     package: packageSpecs,
                     outputDir,
+                    rootDirName,
                 }: {
                     stellarVersion: string;
                     rustVersion?: string;
                     archive: string;
                     package: string[];
                     outputDir: string;
+                    rootDirName?: string;
                 }) => {
                     const options = await parseGlobalOptions(program);
                     await runVerifiableBuildFromArchive(
@@ -83,6 +89,7 @@ export const main = (): Promise<void> =>
                             outputDir: path.resolve(options.cwd, outputDir),
                             stellarVersion,
                             rustVersion,
+                            rootDirName,
                         },
                         { cwd: options.cwd },
                     );
@@ -112,16 +119,25 @@ export const main = (): Promise<void> =>
                 'Native Node glob patterns to exclude (always wins over the allow-list and --include)',
                 [],
             )
+            .option(
+                '--root-dir-name <name>',
+                'Top-level folder of the source archive (default: the basename of the cwd)',
+            )
             .action(
                 async ({
                     output,
                     include,
                     exclude,
+                    rootDirName,
                 }: {
                     output?: string;
                     include?: string[];
                     exclude?: string[];
+                    rootDirName?: string;
                 }) =>
-                    packageSource({ output, include, exclude }, await parseGlobalOptions(program)),
+                    packageSource(
+                        { output, include, exclude, rootDirName },
+                        await parseGlobalOptions(program),
+                    ),
             );
     });

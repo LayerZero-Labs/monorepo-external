@@ -1,5 +1,6 @@
 import type { PublicClient } from 'viem';
 
+import type { FunctionPointer } from '@layerzerolabs/function-pointer';
 import type { ChainType, InferChainNamesForChainType } from '@layerzerolabs/layerzero-definitions';
 import type {
     DecimalString,
@@ -78,3 +79,7 @@ export type EvmAccessControl2StepContractGetter = (
     address: NormalizedHexString,
     viemClient: PublicClient,
 ) => AccessControl2StepContract;
+
+export type IsRoleManagerFunctionPointer = FunctionPointer<
+    (spec: { address: NormalizedHexString }, caller: NormalizedHexString) => Promise<boolean>
+>;

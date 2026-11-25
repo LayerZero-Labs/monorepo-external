@@ -1,6 +1,7 @@
 import { keccak256 } from 'viem';
 
 import { addressParser } from '@layerzerolabs/chain-utils';
+import { NORMALIZED_HEX_ZERO } from '@layerzerolabs/common-chain-model';
 import { BaseContractRole } from '@layerzerolabs/dw-model';
 import { withGasLimit } from '@layerzerolabs/evm-gas-limits';
 import {
@@ -17,6 +18,7 @@ import type {
     EvmAccessControl2StepContractGetter,
     EvmContractGetter,
     EvmEnumerableContractGetter,
+    IsRoleManagerFunctionPointer,
 } from './types';
 
 const formatRoleForDisplay = (role: string): string =>
@@ -62,6 +64,7 @@ export const createSetRoleTransaction = async <R extends string>({
     contractGetter,
     providerAdapter,
     hasRoleFunctionPointer,
+    isRoleManagerFunctionPointer,
     contractName,
     address,
     role,
@@ -78,6 +81,7 @@ export const createSetRoleTransaction = async <R extends string>({
             args: { role: R; accountAddress: NormalizedHexString },
         ) => Promise<boolean>
     >;
+    isRoleManagerFunctionPointer?: IsRoleManagerFunctionPointer;
     contractName: string;
     address: NormalizedHexString;
     role: R;
@@ -126,6 +130,14 @@ export const createSetRoleTransaction = async <R extends string>({
                     comparisonValue: shouldGrant,
                 },
             },
+            ...(isRoleManagerFunctionPointer && {
+                hasPermission: {
+                    type: 'function' as const,
+                    functionPointer: partiallyApplyFunctionPointer(isRoleManagerFunctionPointer)({
+                        address,
+                    }),
+                },
+            }),
         }),
     ];
 };
@@ -222,6 +234,26 @@ export const getPendingAdmin = async ({
     return localAddressParser.nativeToNormalized(pending);
 };
 
+export const isRoleManager = async ({
+    contractGetter,
+    providerAdapter,
+    address,
+    adminRole,
+    caller,
+    chainName,
+}: {
+    contractGetter: EvmAccessControl2StepContractGetter;
+    providerAdapter: IViemClientWrapper;
+    address: NormalizedHexString;
+    adminRole: string;
+    caller: NormalizedHexString;
+    chainName: InferChainNamesForChainType<ChainType.EVM>;
+}): Promise<boolean> =>
+    contractGetter(chainName, address, providerAdapter.viem).oRead.hasRole({
+        role: getRoleHash(adminRole),
+        account: addressParser(chainName).normalizedToNativeString(caller),
+    });
+
 export const isAdminTransferStartedOrComplete = async ({
     contractGetter,
     providerAdapter,
@@ -246,7 +278,8 @@ export const isAdminTransferStartedOrComplete = async ({
             account: localAddressParser.normalizedToNativeString(newAdmin),
         }),
     ]);
-    return isAdmin || localAddressParser.nativeToNormalized(pending) === newAdmin;
+    const pendingAdmin = localAddressParser.nativeToNormalized(pending);
+    return pendingAdmin === newAdmin || (isAdmin && pendingAdmin === NORMALIZED_HEX_ZERO);
 };
 
 export const createBeginAdminTransferTransaction = async ({

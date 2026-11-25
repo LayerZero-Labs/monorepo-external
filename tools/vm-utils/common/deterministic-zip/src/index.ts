@@ -31,6 +31,7 @@ export interface ZipDirectoryOptions {
      * Symlinks are not supported and always throw.
      */
     pathInclusionPredicate?: PathInclusionPredicate;
+    rootName?: string;
 }
 
 /**
@@ -111,14 +112,18 @@ export const zipDirectoryToUint8Array = async (
     sourceDir: string,
     options?: ZipDirectoryOptions,
 ): Promise<Uint8Array> => {
-    const entries = await collectSortedEntries(
-        sourceDir,
-        options?.pathInclusionPredicate ?? INCLUDE_EVERYTHING,
+    const predicate = options?.pathInclusionPredicate ?? INCLUDE_EVERYTHING;
+    const prefix = options?.rootName === undefined ? '' : `${options.rootName}/`;
+    const entries = await collectSortedEntries(sourceDir, (entry) =>
+        predicate({ ...entry, relPath: `${prefix}${entry.relPath}` }),
     );
     const fileMap: Zippable = {};
+    if (prefix !== '' && entries.length > 0) {
+        fileMap[prefix] = new Uint8Array(0);
+    }
 
     for (const entry of entries) {
-        fileMap[entry.relPath] = entry.isDirectory
+        fileMap[`${prefix}${entry.relPath}`] = entry.isDirectory
             ? new Uint8Array(0)
             : new Uint8Array(await fs.readFile(path.join(sourceDir, entry.relPath)));
     }

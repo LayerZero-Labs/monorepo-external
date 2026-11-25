@@ -1,6 +1,6 @@
 import { unzipSync } from 'fflate';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'vitest';
@@ -266,6 +266,33 @@ describe('packageSource', () => {
             expect(await sha()).toBe(first);
         } finally {
             await cleanupFixture(root);
+        }
+    });
+
+    it('--root-dir-name reproduces the archive of a crate with that basename', async ({
+        expect,
+    }) => {
+        const root = await buildFixture();
+        const movedRoot = path.join(path.dirname(root), 'contracts');
+        const sha = async (zipPath: string) =>
+            createHash('sha256')
+                .update(await readFile(zipPath))
+                .digest('hex');
+        try {
+            await packageSource({}, { cwd: root });
+            const original = await sha(path.join(root, '.artifacts', `${ROOT}-source.zip`));
+            await rm(path.join(root, '.artifacts'), { recursive: true, force: true });
+            await rename(root, movedRoot);
+
+            await packageSource({ rootDirName: ROOT }, { cwd: movedRoot });
+            const zipPath = path.join(movedRoot, '.artifacts', `${ROOT}-source.zip`);
+
+            expect(await sha(zipPath)).toBe(original);
+            expect((await unzipRawKeys(zipPath)).every((k) => k.startsWith(ROOT_PREFIX))).toBe(
+                true,
+            );
+        } finally {
+            await cleanupFixture(movedRoot);
         }
     });
 

@@ -66,6 +66,7 @@ export interface RunVerifiableBuildFromArchiveOptions {
     outputDir: string;
     stellarVersion: string;
     rustVersion?: string;
+    rootDirName?: string;
 }
 
 /**
@@ -595,6 +596,7 @@ export const runVerifiableBuildFromArchive = async (
         outputDir,
         stellarVersion,
         rustVersion,
+        rootDirName: rootDirNameOverride,
     }: RunVerifiableBuildFromArchiveOptions,
     { cwd }: Pick<ToolCommandExecutionOptions, 'cwd'>,
 ): Promise<void> => {
@@ -612,7 +614,7 @@ export const runVerifiableBuildFromArchive = async (
     const wrapper = new VerifiableBuildWrapper();
 
     try {
-        const rootDirName = path.basename(cwd);
+        const rootDirName = rootDirNameOverride ?? path.basename(cwd);
         await extractZip(archiveBytes, extractionDir, rootDirName);
 
         const buildRoot = path.join(extractionDir, rootDirName);

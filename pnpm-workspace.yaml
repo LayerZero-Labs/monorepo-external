@@ -436,3 +436,4 @@ overrides:
   ws@^8: ^8.21.0
   zod@^4: 4.6.7
   http-cache-semantics@4: 4.3.0
+  fflate@0.4: 0.4.9

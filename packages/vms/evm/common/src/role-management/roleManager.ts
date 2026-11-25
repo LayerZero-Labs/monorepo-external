@@ -6,6 +6,7 @@ import type {
     GetRoleMembersWithSpecializedInput,
     HasRoleWithSpecializedInput,
     IsAdminTransferStartedOrCompleteWithSpecializedInput,
+    IsRoleManagerWithSpecializedInput,
 } from '@layerzerolabs/dw-model';
 import type { FunctionPointer } from '@layerzerolabs/function-pointer';
 import type { ChainType, InferChainNamesForChainType } from '@layerzerolabs/layerzero-definitions';
@@ -20,11 +21,13 @@ import {
     getRoleMembers,
     hasRole,
     isAdminTransferStartedOrComplete,
+    isRoleManager,
 } from './role';
 import type {
     EvmAccessControl2StepContractGetter,
     EvmContractGetter,
     EvmEnumerableContractGetter,
+    IsRoleManagerFunctionPointer,
 } from './types';
 
 const generateCreateSetRoleTransactions =
@@ -32,6 +35,7 @@ const generateCreateSetRoleTransactions =
         contractGetter,
         providerAdapter,
         hasRoleFunctionPointer,
+        isRoleManagerFunctionPointer,
         validRoles,
         contractName,
         chainName,
@@ -46,6 +50,7 @@ const generateCreateSetRoleTransactions =
                 args: { role: R[number]; accountAddress: NormalizedHexString },
             ) => Promise<boolean>
         >;
+        isRoleManagerFunctionPointer?: IsRoleManagerFunctionPointer;
         validRoles: R;
         contractName: string;
         chainName: InferChainNamesForChainType<ChainType.EVM>;
@@ -65,6 +70,7 @@ const generateCreateSetRoleTransactions =
             contractGetter,
             providerAdapter,
             hasRoleFunctionPointer,
+            isRoleManagerFunctionPointer,
             contractName,
             address,
             role,
@@ -165,6 +171,7 @@ export const generateRoleManagement = <R extends readonly string[]>({
     contractGetter,
     providerAdapter,
     hasRoleFunctionPointer,
+    isRoleManagerFunctionPointer,
     validRoles,
     contractName,
     chainName,
@@ -179,6 +186,7 @@ export const generateRoleManagement = <R extends readonly string[]>({
             args: { role: R[number]; accountAddress: NormalizedHexString },
         ) => Promise<boolean>
     >;
+    isRoleManagerFunctionPointer?: IsRoleManagerFunctionPointer;
     validRoles: R;
     contractName: string;
     chainName: InferChainNamesForChainType<ChainType.EVM>;
@@ -189,6 +197,7 @@ export const generateRoleManagement = <R extends readonly string[]>({
         contractGetter,
         providerAdapter,
         hasRoleFunctionPointer,
+        isRoleManagerFunctionPointer,
         validRoles,
         contractName,
         chainName,
@@ -207,6 +216,7 @@ export const generateEnumerableRoleManagement = <R extends readonly string[]>({
     contractGetter,
     providerAdapter,
     hasRoleFunctionPointer,
+    isRoleManagerFunctionPointer,
     validRoles,
     contractName,
     chainName,
@@ -221,6 +231,7 @@ export const generateEnumerableRoleManagement = <R extends readonly string[]>({
             args: { role: R[number]; accountAddress: NormalizedHexString },
         ) => Promise<boolean>
     >;
+    isRoleManagerFunctionPointer?: IsRoleManagerFunctionPointer;
     validRoles: R;
     contractName: string;
     chainName: InferChainNamesForChainType<ChainType.EVM>;
@@ -231,6 +242,7 @@ export const generateEnumerableRoleManagement = <R extends readonly string[]>({
         contractGetter,
         providerAdapter,
         hasRoleFunctionPointer,
+        isRoleManagerFunctionPointer,
         validRoles,
         contractName,
         chainName,
@@ -277,12 +289,16 @@ export const generateAdmin2StepManagement = <R extends readonly string[]>({
     gas: bigint;
 }): {
     getPendingAdmin: GetPendingAdminWithSpecializedInput;
+    isRoleManager: IsRoleManagerWithSpecializedInput;
     isAdminTransferStartedOrComplete: IsAdminTransferStartedOrCompleteWithSpecializedInput;
     createBeginAdminTransferTransactions: CreateBeginAdminTransferTransactionsWithSpecializedInput;
     createAcceptAdminTransferTransactions: CreateAcceptAdminTransferTransactionsWithSpecializedInput;
 } => ({
     getPendingAdmin: async ({ address }) =>
         getPendingAdmin({ contractGetter, providerAdapter, address, chainName }),
+
+    isRoleManager: async ({ address }, caller) =>
+        isRoleManager({ contractGetter, providerAdapter, address, adminRole, caller, chainName }),
 
     isAdminTransferStartedOrComplete: async ({ address }, { newAdmin }) =>
         isAdminTransferStartedOrComplete({

@@ -132,6 +132,11 @@ export const getPendingAdminSchema = functionSchema({
     output: z.promise(normalizedHexSchema),
 });
 
+export const isRoleManagerSchema = functionSchema({
+    input: z.tuple([normalizedHexSchema]),
+    output: z.promise(z.boolean()),
+});
+
 export const isAdminTransferStartedOrCompleteSchema = functionSchema({
     input: z.tuple([z.object({ newAdmin: normalizedHexSchema })]),
     output: z.promise(z.boolean()),
@@ -149,6 +154,7 @@ export const createAcceptAdminTransferTransactionsSchema = functionSchema({
 
 export const generateAdmin2StepSchemas = () => ({
     getPendingAdmin: getPendingAdminSchema,
+    isRoleManager: isRoleManagerSchema,
     isAdminTransferStartedOrComplete: isAdminTransferStartedOrCompleteSchema,
     createBeginAdminTransferTransactions: createBeginAdminTransferTransactionsSchema,
     createAcceptAdminTransferTransactions: createAcceptAdminTransferTransactionsSchema,
@@ -157,6 +163,11 @@ export const generateAdmin2StepSchemas = () => ({
 export const getPendingAdminWithSpecializedInputSchema = functionSchema({
     input: z.tuple([z.object({ address: normalizedHexSchema })]),
     output: z.promise(normalizedHexSchema),
+});
+
+export const isRoleManagerWithSpecializedInputSchema = functionSchema({
+    input: z.tuple([z.object({ address: normalizedHexSchema }), normalizedHexSchema]),
+    output: z.promise(z.boolean()),
 });
 
 export const isAdminTransferStartedOrCompleteWithSpecializedInputSchema = functionSchema({
@@ -185,6 +196,9 @@ export const createAcceptAdminTransferTransactionsWithSpecializedInputSchema = f
 
 export type GetPendingAdminWithSpecializedInput = z.infer<
     typeof getPendingAdminWithSpecializedInputSchema
+>;
+export type IsRoleManagerWithSpecializedInput = z.infer<
+    typeof isRoleManagerWithSpecializedInputSchema
 >;
 export type IsAdminTransferStartedOrCompleteWithSpecializedInput = z.infer<
     typeof isAdminTransferStartedOrCompleteWithSpecializedInputSchema

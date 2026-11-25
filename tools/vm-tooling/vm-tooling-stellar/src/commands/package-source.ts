@@ -131,15 +131,15 @@ export interface PackageSourceOptions {
     include?: string[];
     /** Native Node glob patterns to drop; always wins over the allow-list and `--include`. */
     exclude?: string[];
+    rootDirName?: string;
 }
 
 /**
  * Package the self-contained crate in `cwd` into a byte-deterministic source .zip and print its
  * SHA-256 (for `--meta source_sha256=…`).
  *
- * Zips the parent of `cwd` via DeterministicZip with a predicate that keeps only paths under the
- * crate basename (e.g. `stellar/…`), so the archive extracts into exactly one top-level folder
- * named after the crate. Filtering is include-only: only `.rs`, `.lock`, `Cargo.toml`, root
+ * Zips `cwd` via DeterministicZip under one top-level folder, the crate basename (e.g.
+ * `stellar/…`) or `--root-dir-name`, so the archive extracts into exactly that folder. Filtering is include-only: only `.rs`, `.lock`, `Cargo.toml`, root
  * `rust-toolchain.toml` / `rustfmt.toml` / `clippy.toml`, and anything named by `--include` are
  * packaged; `--exclude` always wins over that allow-list. Non-source directories (`node_modules`,
  * `target`, …) are pruned by the predicate. Symlinks outside those pruned dirs cause
@@ -150,12 +150,11 @@ export interface PackageSourceOptions {
  * exist at the crate root.
  */
 export const packageSource = async (
-    { output, include = [], exclude = [] }: PackageSourceOptions,
+    { output, include = [], exclude = [], rootDirName: rootDirNameOverride }: PackageSourceOptions,
     { cwd }: Pick<ToolCommandExecutionOptions, 'cwd'>,
 ): Promise<void> => {
     const sourceDir = path.resolve(cwd);
-    const rootDirName = path.basename(sourceDir);
-    const parentDir = path.dirname(sourceDir);
+    const rootDirName = rootDirNameOverride ?? path.basename(sourceDir);
     const outputPath = output
         ? path.resolve(sourceDir, output)
         : path.join(sourceDir, ARTIFACTS_DIR, `${rootDirName}-source.zip`);
@@ -171,7 +170,7 @@ export const packageSource = async (
         }
     }
 
-    // The archive is built by walking parentDir; the only safe in-tree output location is the
+    // The archive is built by walking sourceDir; the only safe in-tree output location is the
     // always-pruned .artifacts/ dir. Reject any other output inside sourceDir.
     const relOutput = path.relative(sourceDir, outputPath);
     const isOutputInsideSource =
@@ -199,8 +198,9 @@ export const packageSource = async (
 
     let bytes: Uint8Array;
     try {
-        bytes = await zipDirectoryToUint8Array(parentDir, {
+        bytes = await zipDirectoryToUint8Array(sourceDir, {
             pathInclusionPredicate: countingPredicate,
+            rootName: rootDirName,
         });
     } catch (cause) {
         throw new Error(`Failed to package source: ${sourceDir}`, { cause });
