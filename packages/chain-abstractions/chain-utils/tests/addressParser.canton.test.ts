@@ -10,11 +10,16 @@ import {
 } from '@layerzerolabs/common-canton';
 import { cantonGlobalAddress, isCantonGlobalAddress } from '@layerzerolabs/common-canton/browser';
 import { normalizeHex } from '@layerzerolabs/common-chain-model';
-import { tileHex, trim0x } from '@layerzerolabs/common-encoding-utils';
+import { hexToBytes, tileHex, trim0x } from '@layerzerolabs/common-encoding-utils';
 import { type CantonString, ChainName } from '@layerzerolabs/layerzero-definitions';
 
 import { addressParser } from '../src/addressParser';
-import { decodeCantonRefAddress, encodeCantonRefAddress } from '../src/addressParser/canton';
+import {
+    cantonBytes32HexToNormalized,
+    cantonNormalizedToBytes32Hex,
+    decodeCantonRefAddress,
+    encodeCantonRefAddress,
+} from '../src/addressParser/canton';
 
 const parser = addressParser(ChainName.CANTON);
 
@@ -196,10 +201,10 @@ describe('encode/decode ref-address', () => {
 
 describe('Canton global peer encoding', () => {
     it.each(['00', '01', '02', '03', 'ff'])(
-        'round-trips a peer ending in %s through existing VM parser calls',
+        'round-trips a peer ending in %s through the parser and bytes32 helpers',
         (suffix) => {
             const bytes32 = `0x00${'ab'.repeat(30)}${suffix}` as const;
-            const peer = parser.bytes32ToNormalized(bytes32);
+            const peer = cantonBytes32HexToNormalized(bytes32);
             const native = parser.normalizedToNativeString(peer);
             expect(peer).toBe(normalizeHex(`${bytes32}03`));
             expect(native).toBe(cantonGlobalAddress(bytes32));
@@ -210,11 +215,12 @@ describe('Canton global peer encoding', () => {
                 chainName: ChainName.CANTON,
                 nativeAddress: cantonGlobalAddress(bytes32),
             });
-            expect(parser.normalizedToBytes32Hex(peer)).toBe(bytes32);
-            expect(parser.nativeToBytes32Hex(native)).toBe(bytes32);
-            expect(parser.normalizedToBytes32(peer)).toEqual(parser.nativeToBytes32(native));
-            expect(parser.nativeToBytes(native)).toEqual(parser.normalizedToBytes32(peer));
-            expect(parser.nativeToBytes32(native)).toHaveLength(32);
+            expect(cantonNormalizedToBytes32Hex(peer)).toBe(bytes32);
+            expect(cantonNormalizedToBytes32Hex(parser.parseNative(native))).toBe(bytes32);
+            expect(parser.nativeToBytes(native)).toEqual(
+                hexToBytes(cantonNormalizedToBytes32Hex(peer)),
+            );
+            expect(parser.nativeToBytes(native)).toHaveLength(32);
             expect(() => parser.normalizedToParty(peer)).toThrow();
             expect(() => parser.normalizedToCid(peer)).toThrow();
             expect(() => parser.normalizedToDeferredValue(peer)).toThrow();
@@ -227,8 +233,7 @@ describe('Canton global peer encoding', () => {
             const native = cantonDeferredAddress(`<<CANTON_DEFERRED:${JSON.stringify({ type })}>>`);
             const normalized = parser.parseNative(native);
             expect(parser.normalizedToNativeString(normalized)).toBe(native);
-            expect(() => parser.normalizedToBytes32Hex(normalized)).toThrow();
-            expect(() => parser.nativeToBytes32(asNative(native))).toThrow();
+            expect(() => cantonNormalizedToBytes32Hex(normalized)).toThrow();
         },
     );
 
@@ -239,38 +244,29 @@ describe('Canton global peer encoding', () => {
         ]) {
             const normalized = parser.parseNative(native);
             expect(parser.normalizedToNativeString(normalized)).toBe(native);
-            expect(() => parser.normalizedToBytes32Hex(normalized)).toThrow();
-            expect(() => parser.nativeToBytes32Hex(asNative(native))).toThrow();
+            expect(() => cantonNormalizedToBytes32Hex(normalized)).toThrow();
         }
-        expect(() => parser.normalizedToBytes32Hex(normalizeHex(`0x${'ab'.repeat(33)}`))).toThrow();
-    });
-
-    it('preserves undefined for optional addresses', () => {
-        expect(parser.bytes32ToNormalized(undefined)).toBeUndefined();
-        expect(parser.normalizedToBytes32Hex(undefined)).toBeUndefined();
-        expect(parser.normalizedToBytes32(undefined)).toBeUndefined();
-        expect(parser.nativeToBytes32Hex(undefined)).toBeUndefined();
-        expect(parser.nativeToBytes32(undefined)).toBeUndefined();
+        expect(() => cantonNormalizedToBytes32Hex(normalizeHex(`0x${'ab'.repeat(33)}`))).toThrow();
     });
 
     it('distinguishes a hash containing a deferred payload from the deferred reference', () => {
         const sentinel = cantonDeferredAddress('<<CANTON_DEFERRED:{"type":"senderParty"}>>');
         const deferred = parser.parseNative(sentinel);
-        const global = parser.bytes32ToNormalized(
+        const global = cantonBytes32HexToNormalized(
             `0x${String(deferred).slice(2).padStart(64, '0')}`,
         );
         expect(global).not.toBe(deferred);
-        expect(parser.normalizedToBytes32Hex(global)).toBe(
+        expect(cantonNormalizedToBytes32Hex(global)).toBe(
             `0x${String(deferred).slice(2).padStart(64, '0')}`,
         );
-        expect(() => parser.normalizedToBytes32Hex(deferred)).toThrow();
+        expect(() => cantonNormalizedToBytes32Hex(deferred)).toThrow();
         expect(parser.normalizedToDeferredValue(deferred)).toEqual({ type: 'senderParty' });
     });
 
     it('round-trips zero despite normalized hex stripping the leading tag nibble', () => {
-        const global = parser.bytes32ToNormalized(`0x${'00'.repeat(32)}`);
+        const global = cantonBytes32HexToNormalized(`0x${'00'.repeat(32)}`);
         expect(global).toBe(normalizeHex('0x03'));
-        expect(parser.normalizedToBytes32Hex(global)).toBe(`0x${'00'.repeat(32)}`);
+        expect(cantonNormalizedToBytes32Hex(global)).toBe(`0x${'00'.repeat(32)}`);
     });
 
     it('validates explicit global constructors and rejects untagged native hex', () => {
@@ -315,10 +311,8 @@ describe('Canton OApp filter address (type 04)', () => {
         );
     });
 
-    it('rejects bytes32, party and contract-id conversions', () => {
+    it('rejects party and contract-id conversions', () => {
         const normalized = parser.parseNative(OAPP_FILTER);
-        expect(() => parser.nativeToBytes32Hex(asNative(OAPP_FILTER))).toThrow();
-        expect(() => parser.normalizedToBytes32Hex(normalized)).toThrow();
         expect(() => parser.normalizedToParty(normalized)).toThrow(/Not a canton party address/);
         expect(() => parser.normalizedToCid(normalized)).toThrow(/Not a canton contract ID/);
     });

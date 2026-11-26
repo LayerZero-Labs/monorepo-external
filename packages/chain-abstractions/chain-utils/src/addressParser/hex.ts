@@ -46,28 +46,6 @@ export const hexAddressParser = (
             assertNative(address, chainName);
             return hexToBytes(address);
         },
-        nativeToBytes32Hex: (nativeAddress) => {
-            if (nativeAddress === undefined) return undefined as any;
-            const address = getAddress(nativeAddress);
-            assertNative(address, chainName);
-            return hexZeroPad(address, 32);
-        },
-        nativeToBytes32: (nativeAddress) => {
-            if (nativeAddress === undefined) return undefined as any;
-            return hexToBytes(addressParser(chainName).nativeToBytes32Hex(nativeAddress));
-        },
-        normalizedToBytes32Hex: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexZeroPad(address as unknown as HexString, 32);
-        },
-        normalizedToBytes32: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexToBytes(addressParser(chainName).normalizedToBytes32Hex(address));
-        },
-        bytes32ToNormalized: (bytes32Hex) => {
-            if (bytes32Hex === undefined) return undefined as any;
-            return normalizeHex(bytes32Hex);
-        },
         parseNative: (nativeAddress) => {
             // Specific case to make tron a little less flaky, handle the 41 prefix
             if (chainName === ChainName.TRON && nativeAddress) {

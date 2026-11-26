@@ -243,26 +243,6 @@ export const cantonAddressParser = (
             const address = extractCantonAddress(nativeAddress as string) as HexString;
             return hexToBytes(address);
         },
-        nativeToBytes32Hex: (address) => {
-            if (address === undefined) return undefined as any;
-            return globalAddressToBytes32(String(address));
-        },
-        nativeToBytes32: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexToBytes(globalAddressToBytes32(String(address)));
-        },
-        normalizedToBytes32Hex: (address) => {
-            if (address === undefined) return undefined as any;
-            return cantonNormalizedToBytes32Hex(address);
-        },
-        normalizedToBytes32: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexToBytes(cantonNormalizedToBytes32Hex(address));
-        },
-        bytes32ToNormalized: (bytes32Hex) => {
-            if (bytes32Hex === undefined) return undefined as any;
-            return cantonBytes32HexToNormalized(bytes32Hex);
-        },
         parseNative: (nativeAddress) => {
             if (nativeAddress === undefined) return undefined as any;
             return normalizeCantonAddress(nativeAddress);

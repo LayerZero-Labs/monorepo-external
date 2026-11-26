@@ -2498,9 +2498,6 @@ importers:
       '@layerzerolabs/typescript-utils':
         specifier: workspace:*
         version: link:../../typescript-utils
-      '@stellar/stellar-sdk':
-        specifier: 'catalog:'
-        version: 16.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@ton/core':
         specifier: 0.59.1
         version: 0.59.1(@ton/crypto@3.3.0)

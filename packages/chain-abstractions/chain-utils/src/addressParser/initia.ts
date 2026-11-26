@@ -56,33 +56,16 @@ export const initiaAddressParser: (
             }
             return normalizeHex(AccAddress.toHex(nativeAddress.toString()) as HexString);
         },
-        nativeToBytes32Hex: (nativeAddress) => {
-            if (nativeAddress === undefined) return undefined as any;
-            // naturally ton is 32 bytes, pad it anyway
-            return hexZeroPad(
-                addressParser(chainName).nativeToNormalized(nativeAddress) as unknown as HexString,
-                32,
-            );
-        },
         nativeToBytes: (nativeAddress) => {
             if (nativeAddress === undefined) return undefined as any;
-            return hexToBytes(addressParser(chainName).nativeToBytes32Hex(nativeAddress));
-        },
-        nativeToBytes32: (nativeAddress) => {
-            if (nativeAddress === undefined) return undefined as any;
-            return hexToBytes(addressParser(chainName).nativeToBytes32Hex(nativeAddress));
-        },
-        normalizedToBytes32Hex: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexZeroPad(address as unknown as HexString, 32);
-        },
-        normalizedToBytes32: (address) => {
-            if (address === undefined) return undefined as any;
-            return hexToBytes(addressParser(chainName).normalizedToBytes32Hex(address));
-        },
-        bytes32ToNormalized: (bytes32Hex) => {
-            if (bytes32Hex === undefined) return undefined as any;
-            return normalizeHex(bytes32Hex);
+            return hexToBytes(
+                hexZeroPad(
+                    addressParser(chainName).nativeToNormalized(
+                        nativeAddress,
+                    ) as unknown as HexString,
+                    32,
+                ),
+            );
         },
         parseNative: (nativeAddress) => {
             assertNative(nativeAddress, chainName);

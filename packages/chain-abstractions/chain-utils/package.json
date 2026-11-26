@@ -30,7 +30,6 @@
         "@layerzerolabs/layerzero-definitions": "workspace:*",
         "@layerzerolabs/static-chain-info": "workspace:*",
         "@layerzerolabs/typescript-utils": "workspace:*",
-        "@stellar/stellar-sdk": "catalog:",
         "@ton/core": "catalog:",
         "bs58": "catalog:"
     },
