@@ -57,13 +57,27 @@ export type AddressParser<T extends ChainName> = {
     nativeToBytes: <Address extends NativeOrString<T> | undefined>(
         nativeAddress: Address,
     ) => MaybeUndefinedMapped<Address, Uint8Array>;
+    nativeToBytes32Hex: <Address extends NativeOrString<T> | undefined>(
+        nativeAddress: Address,
+    ) => MaybeUndefinedMapped<Address, HexString>;
+    nativeToBytes32: <Address extends NativeOrString<T> | undefined>(
+        nativeAddress: Address,
+    ) => MaybeUndefinedMapped<Address, Uint8Array>;
+    normalizedToBytes32Hex: <Address extends NormalizedHexString | undefined>(
+        address: Address,
+    ) => MaybeUndefinedMapped<Address, HexString>;
+    normalizedToBytes32: <Address extends NormalizedHexString | undefined>(
+        address: Address,
+    ) => MaybeUndefinedMapped<Address, Uint8Array>;
+    bytes32ToNormalized: <B extends HexString | undefined>(
+        bytes32Hex: B,
+    ) => MaybeUndefinedMapped<B, NormalizedHexString>;
     validateNative: (
         nativeAddress: string | undefined,
     ) => nativeAddress is ResolvedEncodingForChainName<T>;
     /**
      * Parse a native address to a string if it is valid.
      * Throws an error if the native address is invalid.
-     * On Stellar this is StrKey-only.
      * @param nativeAddress - The native address to parse.
      * @returns The parsed native address.
      */

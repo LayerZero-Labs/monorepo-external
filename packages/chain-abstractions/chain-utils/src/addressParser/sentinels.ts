@@ -1,4 +1,3 @@
-import { stellarSentinelNormalizedFromLabel } from '@layerzerolabs/address-utils-stellar';
 import { type NormalizedHexString, normalizeHex } from '@layerzerolabs/common-chain-model';
 import { tileHex, trim0x } from '@layerzerolabs/common-encoding-utils';
 import { ChainName, type ResolvedEncodingForChainName } from '@layerzerolabs/layerzero-definitions';
@@ -6,6 +5,7 @@ import { StaticChainConfigs } from '@layerzerolabs/static-chain-info';
 
 import { cantonSentinelNormalizedFromLabel } from './canton';
 import { addressParser } from './index';
+import { stellarSentinelNormalizedFromLabel } from './stellar';
 import type { AddressParser, AddressSentinelNormalizedFromLabel } from './types';
 
 /** Default sentinel: tile `label` across the chain's native address byte width. */
@@ -47,9 +47,7 @@ const resolveSentinelNormalizedFromLabel = <T extends ChainName>(
         return cantonSentinelNormalizedFromLabel as AddressSentinelNormalizedFromLabel<T>;
     }
     if (chainName === ChainName.STELLAR) {
-        // chainName unused — required by AddressSentinelNormalizedFromLabel
-        return ((_chainName, label) =>
-            stellarSentinelNormalizedFromLabel(label)) as AddressSentinelNormalizedFromLabel<T>;
+        return stellarSentinelNormalizedFromLabel as AddressSentinelNormalizedFromLabel<T>;
     }
     return tiledSentinelNormalizedFromLabel as AddressSentinelNormalizedFromLabel<T>;
 };

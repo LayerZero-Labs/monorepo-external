@@ -29,7 +29,4 @@ export default [
             },
         },
     },
-    {
-        ignores: ['packages/vms/ton/ton/src/**'],
-    },
 ];
