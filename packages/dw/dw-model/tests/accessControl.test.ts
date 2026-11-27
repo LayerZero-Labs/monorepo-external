@@ -9,6 +9,7 @@ import {
     accessControlConfigSchema,
     assertAccessControlConfig,
     findAccessControlIssues,
+    ownable2StepRoleCatalog,
     type RoleCatalog,
     withoutRole,
     withRole,
@@ -273,5 +274,13 @@ describe('assertAccessControlConfig', () => {
 
     it('passes a valid config', () => {
         expect(() => assertAccessControlConfig(valid, [executor, endpoint], catalog)).not.toThrow();
+    });
+});
+
+describe('ownable2StepRoleCatalog', () => {
+    it('catalogs the given role as a single, enumerable holder with a two-step transfer', () => {
+        expect(ownable2StepRoleCatalog('owner')).toEqual({
+            owner: { holders: 'single', enumerable: true, transfer: 'twoStep' },
+        });
     });
 });

@@ -121,6 +121,7 @@ catalogs:
     '@solana/web3.js': 1.99.0
     '@stellar/stellar-sdk': ^16.4.0
     '@ton/core': ^0.59.0
+    '@ton/crypto': 3.3.0
     '@types/bn.js': ^5.1.6
     '@types/chai': ^4.3.16
     '@types/command-line-args': ^5.0.0
@@ -152,6 +153,7 @@ catalogs:
     command-line-args: ^5.2.1
     command-line-usage: ^6.1.0
     commander: 13.1.0
+    dataloader: ^2.2.2
     depcheck: ^1.4.3
     dotenv: 16.4.7
     es-toolkit: ^1.39.10
@@ -371,7 +373,7 @@ overrides:
   '@ton/core': 0.59.1
   '@ton/crypto': 3.3.0
   '@ton/test-utils>chai': 5.3.3
-  '@ton/ton': npm:@layerzerolabs/ton@15.1.0-rc.11
+  '@ton/ton': workspace:@layerzerolabs/ton@*
   '@types/react': 19.2.6
   '@types/react-dom': 19.2.3
   adm-zip: ^0.6.1
@@ -437,3 +439,4 @@ overrides:
   zod@^4: 4.6.7
   http-cache-semantics@4: 4.3.0
   fflate@0.4: 0.4.9
+  ajv@6: 6.14.0

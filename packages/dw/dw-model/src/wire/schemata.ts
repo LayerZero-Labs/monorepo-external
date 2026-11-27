@@ -15,20 +15,7 @@ export const wireWorkflowFilterArgsSchema = {
 };
 
 export const wireWorkflowChainResultSchema = z.object({
-    results: z.array(
-        z.union([
-            z.object({
-                name: z.string(),
-                success: z.literal(false),
-                error: z.string(),
-            }),
-            z.object({
-                name: z.string(),
-                success: z.literal(true),
-                txHash: z.string(),
-            }),
-        ]),
-    ),
+    sent: z.int().nonnegative(),
 });
 
 export const wireWorkflowChainStateSchema = wireWorkflowChainResultSchema.extend({

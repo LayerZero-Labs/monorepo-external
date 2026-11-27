@@ -43,28 +43,49 @@ const initIfNeeded = async (
 
 // ── Per-program init ─────────────────────────────────────────────────────────
 
-const initEndpoint = async (umi: Umi, admin: Signer): Promise<void> => {
+interface Eids {
+    endpoint: number;
+    uln: number;
+    remote?: { send: number; receive: number };
+}
+
+const TEST_EIDS: Eids = {
+    endpoint: SRC_EID,
+    uln: DST_EID,
+    remote: { send: DST_EID, receive: SRC_EID },
+};
+
+const initEndpoint = async (umi: Umi, admin: Signer, eids: Eids): Promise<void> => {
     await initIfNeeded(
         umi,
         endpoint.pda.setting()[0],
         [
-            endpoint.initEndpoint(admin, { eid: SRC_EID, admin: admin.publicKey }),
+            endpoint.initEndpoint(admin, { eid: eids.endpoint, admin: admin.publicKey }),
             endpoint.registerLibrary(admin, { messageLibProgram: uln.programId }),
             endpoint.registerLibrary(admin, { messageLibProgram: simpleMessageLib.programId }),
-            await endpoint.setDefaultSendLibrary(umi.rpc, admin, {
-                messageLibProgram: uln.programId,
-                remote: DST_EID,
-            }),
-            await endpoint.setDefaultReceiveLibrary(umi.rpc, admin, {
-                messageLibProgram: uln.programId,
-                remote: SRC_EID,
-            }),
+            ...(eids.remote
+                ? [
+                      await endpoint.setDefaultSendLibrary(umi.rpc, admin, {
+                          messageLibProgram: uln.programId,
+                          remote: eids.remote.send,
+                      }),
+                      await endpoint.setDefaultReceiveLibrary(umi.rpc, admin, {
+                          messageLibProgram: uln.programId,
+                          remote: eids.remote.receive,
+                      }),
+                  ]
+                : []),
         ],
         admin,
     );
 };
 
-const initExecutor = async (umi: Umi, admin: Signer, infraExecutor: Signer): Promise<void> => {
+const initExecutor = async (
+    umi: Umi,
+    admin: Signer,
+    infraExecutor: Signer,
+    eids: Eids,
+): Promise<void> => {
     await initIfNeeded(
         umi,
         executor.pda.config()[0],
@@ -78,22 +99,26 @@ const initExecutor = async (umi: Umi, admin: Signer, infraExecutor: Signer): Pro
             }),
             executor.setPriceFeed(admin, priceFeed.programId),
             executor.setDefaultMultiplierBps(admin, defaultMultiplierBps),
-            executor.setDstConfig(admin, [
-                {
-                    eid: DST_EID,
-                    lzReceiveBaseGas: 10000,
-                    lzComposeBaseGas: 10000,
-                    multiplierBps: some(13000),
-                    floorMarginUsd: some(10000n),
-                    nativeDropCap: BigInt(1e7),
-                } satisfies UMI.ExecutorProgram.types.DstConfig,
-            ]),
+            ...(eids.remote
+                ? [
+                      executor.setDstConfig(admin, [
+                          {
+                              eid: eids.remote.send,
+                              lzReceiveBaseGas: 10000,
+                              lzComposeBaseGas: 10000,
+                              multiplierBps: some(13000),
+                              floorMarginUsd: some(10000n),
+                              nativeDropCap: BigInt(1e7),
+                          } satisfies UMI.ExecutorProgram.types.DstConfig,
+                      ]),
+                  ]
+                : []),
         ],
         admin,
     );
 };
 
-const initPriceFeed = async (umi: Umi, admin: Signer): Promise<void> => {
+const initPriceFeed = async (umi: Umi, admin: Signer, eids: Eids): Promise<void> => {
     await initIfNeeded(
         umi,
         priceFeed.pda.priceFeed()[0],
@@ -103,23 +128,27 @@ const initPriceFeed = async (umi: Umi, admin: Signer): Promise<void> => {
                 updaters: [admin.publicKey],
             }),
             priceFeed.setSolPrice(admin, BigInt(1e10)),
-            priceFeed.setPrice(admin, {
-                dstEid: DST_EID,
-                priceRatio: BigInt(1e10),
-                gasPriceInUnit: BigInt(1e9),
-                gasPerByte: 1,
-                modelType: {
-                    __kind: 'Arbitrum',
-                    gasPerL2Tx: BigInt(1e6),
-                    gasPerL1CalldataByte: 1,
-                },
-            }),
+            ...(eids.remote
+                ? [
+                      priceFeed.setPrice(admin, {
+                          dstEid: eids.remote.send,
+                          priceRatio: BigInt(1e10),
+                          gasPriceInUnit: BigInt(1e9),
+                          gasPerByte: 1,
+                          modelType: {
+                              __kind: 'Arbitrum',
+                              gasPerL2Tx: BigInt(1e6),
+                              gasPerL1CalldataByte: 1,
+                          },
+                      }),
+                  ]
+                : []),
         ],
         admin,
     );
 };
 
-const initDvns = async (umi: Umi, admin: Signer): Promise<void> => {
+const initDvns = async (umi: Umi, admin: Signer, eids: Eids): Promise<void> => {
     // DVNs are independent — init in parallel.
     // dvn.initDVN() is async (throws if already initialized), so we check the PDA
     // manually instead of using initIfNeeded (which would evaluate the await before the check).
@@ -141,19 +170,23 @@ const initDvns = async (umi: Umi, admin: Signer): Promise<void> => {
                         ),
                         msglibs: [uln.pda.messageLib()[0]],
                         quorum: 1,
-                        vid: DST_EID % 30000,
+                        vid: eids.uln % 30000,
                         priceFeed: priceFeed.pda.priceFeed()[0],
                     }),
                     dvn.setDefaultMultiplierBps(admin, defaultMultiplierBps),
                     dvn.setPriceFeed(admin, priceFeed.programId),
-                    dvn.setDstConfig(admin, [
-                        {
-                            eid: DST_EID,
-                            dstGas: 10000,
-                            multiplierBps: some(defaultMultiplierBps),
-                            floorMarginUsd: none(),
-                        },
-                    ]),
+                    ...(eids.remote
+                        ? [
+                              dvn.setDstConfig(admin, [
+                                  {
+                                      eid: eids.remote.send,
+                                      dstGas: 10000,
+                                      multiplierBps: some(defaultMultiplierBps),
+                                      floorMarginUsd: none(),
+                                  },
+                              ]),
+                          ]
+                        : []),
                 ],
                 admin,
             );
@@ -161,14 +194,14 @@ const initDvns = async (umi: Umi, admin: Signer): Promise<void> => {
     );
 };
 
-const initSimpleMessageLib = async (umi: Umi, admin: Signer): Promise<void> => {
+const initSimpleMessageLib = async (umi: Umi, admin: Signer, eids: Eids): Promise<void> => {
     await initIfNeeded(
         umi,
         simpleMessageLib.pda.messageLib()[0],
         [
             simpleMessageLib.initSimpleMessageLib(admin, {
                 admin: admin.publicKey,
-                eid: SRC_EID,
+                eid: eids.endpoint,
                 nativeFee: 1e4,
                 lzTokenFee: 0,
             }),
@@ -178,7 +211,7 @@ const initSimpleMessageLib = async (umi: Umi, admin: Signer): Promise<void> => {
     );
 };
 
-const initUln = async (umi: Umi, admin: Signer): Promise<void> => {
+const initUln = async (umi: Umi, admin: Signer, eids: Eids): Promise<void> => {
     const requiredDvns = dvns.map((programId) => new UMI.DvnPDA(programId).config()[0]).sort();
     const ulnConfig: UMI.UlnProgram.types.UlnConfig = {
         confirmations: 1n,
@@ -199,7 +232,7 @@ const initUln = async (umi: Umi, admin: Signer): Promise<void> => {
         [
             uln.initUln(admin, {
                 admin: admin.publicKey,
-                eid: DST_EID,
+                eid: eids.uln,
                 endpointProgram: endpoint.programId,
             }),
             uln.setTreasury(admin, {
@@ -208,18 +241,18 @@ const initUln = async (umi: Umi, admin: Signer): Promise<void> => {
                 nativeFeeBps: 100,
                 nativeReceiver: admin.publicKey,
             }),
-            await uln.initOrUpdateDefaultConfig(umi.rpc, admin, {
-                executorConfig: some(executorConfig),
-                receiveUlnConfig: some(ulnConfig),
-                remote: SRC_EID,
-                sendUlnConfig: some(ulnConfig),
-            }),
-            await uln.initOrUpdateDefaultConfig(umi.rpc, admin, {
-                executorConfig: some(executorConfig),
-                receiveUlnConfig: some(ulnConfig),
-                remote: DST_EID,
-                sendUlnConfig: some(ulnConfig),
-            }),
+            ...(eids.remote
+                ? await Promise.all(
+                      [eids.remote.receive, eids.remote.send].map((remote) =>
+                          uln.initOrUpdateDefaultConfig(umi.rpc, admin, {
+                              executorConfig: some(executorConfig),
+                              receiveUlnConfig: some(ulnConfig),
+                              remote,
+                              sendUlnConfig: some(ulnConfig),
+                          }),
+                      ),
+                  )
+                : []),
         ],
         admin,
     );
@@ -231,14 +264,15 @@ const initUln = async (umi: Umi, admin: Signer): Promise<void> => {
  * Initialize LayerZero infrastructure on the test validator.
  * Idempotent — safe to call multiple times.
  */
-export const initInfrastructure = async (umi: Umi): Promise<void> => {
+export const initInfrastructure = async (umi: Umi, localEid?: number): Promise<void> => {
     const admin = umi.payer;
     const infraExecutor = createSignerFromSeed('infra-executor');
+    const eids: Eids = localEid === undefined ? TEST_EIDS : { endpoint: localEid, uln: localEid };
 
-    await initEndpoint(umi, admin);
-    await initExecutor(umi, admin, infraExecutor);
-    await initPriceFeed(umi, admin);
-    await initDvns(umi, admin);
-    await initSimpleMessageLib(umi, admin);
-    await initUln(umi, admin);
+    await initEndpoint(umi, admin, eids);
+    await initExecutor(umi, admin, infraExecutor, eids);
+    await initPriceFeed(umi, admin, eids);
+    await initDvns(umi, admin, eids);
+    await initSimpleMessageLib(umi, admin, eids);
+    await initUln(umi, admin, eids);
 };

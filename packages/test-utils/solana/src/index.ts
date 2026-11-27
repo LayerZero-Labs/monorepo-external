@@ -32,4 +32,4 @@ export {
 export type { PacketSentEvent, TestContext, TestEnvironment, TestKeys } from './types';
 
 // Global setup
-export { default as globalSetup, LZ_PROGRAMS } from './global-setup';
+export { extractPrograms, default as globalSetup, LZ_PROGRAMS } from './global-setup';

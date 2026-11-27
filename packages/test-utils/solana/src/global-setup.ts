@@ -60,8 +60,9 @@ export const LZ_PROGRAMS = [
     { name: 'blocked_messagelib', id: UMI.BlockedMessageLibProgram.BLOCKED_MESSAGELIB_PROGRAM_ID },
 ];
 
-const extractPrograms = async (): Promise<void> => {
-    const programsDir = path.join(process.cwd(), 'target/programs');
+export const extractPrograms = async (
+    programsDir = path.join(process.cwd(), 'target/programs'),
+): Promise<void> => {
     await mkdir(programsDir, { recursive: true });
 
     // Check cache, try to read version file, skip if valid

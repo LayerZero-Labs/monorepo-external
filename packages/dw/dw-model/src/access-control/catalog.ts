@@ -47,3 +47,7 @@ export const proxiedRbac2StepRoleCatalog = (
         ]),
     ),
 });
+
+export const ownable2StepRoleCatalog = (ownerRole: string): ContractRoleCatalog => ({
+    [ownerRole]: { holders: 'single', enumerable: true, transfer: 'twoStep' },
+});

@@ -1,0 +1,49 @@
+{
+    "name": "@layerzerolabs/ton",
+    "version": "0.0.0",
+    "private": false,
+    "description": "LayerZero's fork of @ton/ton, the TON client library",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/src/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/require.js",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/src/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "LICENSE"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest --run --pass-with-no-tests --typecheck"
+    },
+    "dependencies": {
+        "axios": "catalog:",
+        "dataloader": "catalog:",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "@layerzerolabs/tsup-configuration": "workspace:*",
+        "@layerzerolabs/typescript-configuration": "workspace:*",
+        "@ton/core": "catalog:",
+        "@ton/crypto": "catalog:",
+        "tsup": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "@ton/core": ">=0.59.0",
+        "@ton/crypto": ">=3.2.0"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    }
+}

@@ -3,7 +3,12 @@ import z from 'zod';
 import { chainNameSchema } from '@layerzerolabs/layerzero-definitions';
 import { functionSchema } from '@layerzerolabs/zod-utils';
 
-import { plannerBatchSizeSchema, wireWorkflowFilterArgsSchema } from './schemata';
+import {
+    plannerBatchSizeSchema,
+    wireWorkflowFilterArgsSchema,
+    type WireWorkflowOrchestratorResult,
+    wireWorkflowOrchestratorResultSchema,
+} from './schemata';
 
 const commonArgsSchema = z.object({
     callerWorkflowId: z.string(),
@@ -25,7 +30,7 @@ export type CommonArgs = z.infer<typeof commonArgsSchema>;
 export interface WiringPlannerActivityFactoryImpl<T> {
     createPlan: (customArgs: T, commonArgs: CommonArgs) => Promise<void>;
     enactPlan: (customArgs: T, commonArgs: CommonArgs) => Promise<void>;
-    assertPlan: (customArgs: T, commonArgs: CommonArgs) => Promise<void>;
+    assertPlan: (customArgs: T, commonArgs: CommonArgs) => Promise<WireWorkflowOrchestratorResult>;
 }
 
 export const createWiringPlannerActivityFactorySchema = <T extends z.ZodType>(
@@ -42,7 +47,7 @@ export const createWiringPlannerActivityFactorySchema = <T extends z.ZodType>(
         }),
         assertPlan: functionSchema({
             input: z.tuple([customArgs, commonArgsSchema]),
-            output: z.promise(z.void()),
+            output: z.promise(wireWorkflowOrchestratorResultSchema),
         }),
     });
 };

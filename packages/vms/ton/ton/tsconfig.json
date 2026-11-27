@@ -1,0 +1,11 @@
+{
+    "extends": "@layerzerolabs/typescript-configuration/tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "strictPropertyInitialization": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts", "dist"],
+    "include": ["src/**/*"]
+}
