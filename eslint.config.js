@@ -4,6 +4,9 @@ import baseConfig from '@layerzerolabs/eslint-configuration/base';
 export default [
     ...baseConfig,
     {
+        ignores: ['**/*.figma.ts'],
+    },
+    {
         files: [
             'tools/truesight/src/**/*.{ts,tsx}',
             // The legacy truesight is a Create React App tool whose components are
